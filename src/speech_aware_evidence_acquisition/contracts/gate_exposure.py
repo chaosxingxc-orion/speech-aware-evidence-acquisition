@@ -811,6 +811,55 @@ class _ExposureAndCarrierMixin:
                     f"{path} (first: {sorted(shared)[:3]}); model touch refused"
                 )
 
+    def _declared_resume_predecessors(
+        self, plan: "ExecutionPlan", states: Mapping[str, str]
+    ) -> frozenset:
+        """The interrupted attempts of ``plan.run_id`` that ``plan.attempt_id``
+        resumes, read from ``runs/<run>/<attempt>/resume-declaration.json``
+        (written by ``core.flight.runtime`` before its first gate touch).
+
+        Refuses, by name, a declaration that names this attempt itself, an
+        attempt that has no record, or one that is FINALIZED. Empty (the
+        non-resume case) when the file is absent.
+        """
+
+        path = (
+            Path(self.data_root) / "runs" / plan.run_id / str(plan.attempt_id)
+            / "resume-declaration.json"
+        )
+        if not path.is_file():
+            return frozenset()
+        try:
+            document = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError) as error:
+            raise GateClosed(f"resume declaration unreadable ({path}): {error}") from error
+        entries = document.get("predecessors") if isinstance(document, Mapping) else None
+        if (
+            not isinstance(document, Mapping)
+            or document.get("schema") != "saea-resume-declaration-v1"
+            or document.get("run_id") != plan.run_id
+            or document.get("attempt_id") != plan.attempt_id
+            or not isinstance(entries, list)
+            or not entries
+        ):
+            raise GateClosed(f"resume declaration {path} is malformed or names another attempt")
+        names = []
+        for entry in entries:
+            name = entry.get("attempt_id") if isinstance(entry, Mapping) else None
+            if not isinstance(name, str) or not name or name == plan.attempt_id:
+                raise GateClosed(f"resume declaration {path} names an invalid predecessor")
+            if name not in states:
+                raise GateClosed(
+                    f"resume declaration {path} names attempt {name!r}, which has no attempt record"
+                )
+            if states[name] == "FINALIZED":
+                raise GateClosed(
+                    f"attempt {plan.run_id!r}/{name!r} is FINALIZED; a settled attempt is "
+                    "consumed and cannot be resumed; model touch refused"
+                )
+            names.append(name)
+        return frozenset(names)
+
     def _require_final_report_attempt_budget(
         self, plan: "ExecutionPlan", allowance: Mapping[str, object]
     ) -> None:
@@ -823,6 +872,14 @@ class _ExposureAndCarrierMixin:
         a fresh run id, never something this gate lets through. The preparation
         passes are label-free encoder work and keep the ordinary one-recovery
         budget the rest of this repository uses.
+
+        One narrow exception (owner decision 309, 2026-10-14): an attempt that
+        RESUMES an interrupted, never-FINALIZED attempt of the same run --
+        declared in its own ``resume-declaration.json``, keeping that attempt's
+        complete rows and flying only the rows it never completed -- takes the
+        interrupted attempt's slot (:meth:`_declared_resume_predecessors`). It is
+        still one attempt, flies no row twice and selects nothing; a fresh
+        attempt that declares no predecessor is counted exactly as before.
         """
 
         read_ids = {
@@ -845,7 +902,17 @@ class _ExposureAndCarrierMixin:
                     document.get("state") if isinstance(document, Mapping) else "UNKNOWN"
                 )
         own = plan.attempt_id
-        distinct = len(states) + (1 if own is not None and own not in states else 0)
+        # Owner decision 309 (2026-10-14): a RESUME of an interrupted attempt
+        # (a crash -- power loss, host restart -- leaves the attempt OPENED with
+        # no manifest) takes over that attempt's slot instead of being counted
+        # as a second attempt. The exemption is deliberately narrow: it applies
+        # only to attempts the plan's own attempt directory declares in
+        # ``resume-declaration.json``, never to a FINALIZED one (a settled read
+        # is consumed), and the resume still counts as ONE attempt. A fresh
+        # attempt that declares nothing is counted exactly as before.
+        superseded = self._declared_resume_predecessors(plan, states)
+        counted = {name: state for name, state in states.items() if name not in superseded}
+        distinct = len(counted) + (1 if own is not None and own not in counted else 0)
         if distinct > limit:
             raise GateClosed(
                 f"{FINAL_REPORT_SPLIT_ROLE!r} {kind} run {plan.run_id!r} allows at most "

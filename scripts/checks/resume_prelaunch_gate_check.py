@@ -8,7 +8,9 @@ So before a resume cell's generation flight opens, this gate:
 
 1. reads the named cell's ``resume_from`` declaration from ``configs/experiment/<experiment>.json``
    (today a single ``{"attempt_id", "trace_sha256"}`` object; this reader also accepts a LIST of
-   such objects, so a future multi-predecessor resume does not need a new gate);
+   such objects, so a future multi-predecessor resume does not need a new gate; owner decision 309
+   adds the mode-B object ``{"attempt_id", "checkpoint_sha256"}``, verified by hash and chain and
+   not replayed -- a kept row is the stored canonical record);
 2. verifies, for every declared predecessor, that its trace file on the data root hashes to the
    declared ``trace_sha256`` -- the identity binding a resume-recovery depends on
    (``core.flight.resume.predecessor_trace_path``, read-only, zero model contact);
@@ -104,13 +106,27 @@ def resume_declarations(cell: dict[str, Any]) -> list[dict[str, str]]:
         raise GateError("resume_from must be an object or a list of objects")
     declarations: list[dict[str, str]] = []
     for item in candidates:
-        if not isinstance(item, dict) or set(item) != {"attempt_id", "trace_sha256"}:
+        if not isinstance(item, dict) or set(item) not in (
+            {"attempt_id", "trace_sha256"}, {"attempt_id", "checkpoint_sha256"},
+        ):
             raise GateError(
-                "each resume_from entry must declare exactly {'attempt_id', 'trace_sha256'}"
+                "each resume_from entry must declare exactly {'attempt_id', 'trace_sha256'} "
+                "(mode A) or {'attempt_id', 'checkpoint_sha256'} (mode B, owner decision 309)"
             )
-        attempt_id, trace_sha256 = item["attempt_id"], item["trace_sha256"]
+        attempt_id = item["attempt_id"]
         if not isinstance(attempt_id, str) or not attempt_id.strip():
             raise GateError("resume_from.attempt_id must be a non-empty string")
+        if "checkpoint_sha256" in item:
+            if not _is_sha256(item["checkpoint_sha256"]):
+                raise GateError(
+                    "resume_from.checkpoint_sha256 must be a 64-hex SHA-256 of the "
+                    "predecessor attempt's row checkpoint file"
+                )
+            declarations.append(
+                {"attempt_id": attempt_id, "checkpoint_sha256": item["checkpoint_sha256"]}
+            )
+            continue
+        trace_sha256 = item["trace_sha256"]
         if not _is_sha256(trace_sha256):
             raise GateError(
                 "resume_from.trace_sha256 must be a 64-hex SHA-256 of the predecessor attempt's "
@@ -118,6 +134,30 @@ def resume_declarations(cell: dict[str, Any]) -> list[dict[str, str]]:
             )
         declarations.append({"attempt_id": attempt_id, "trace_sha256": trace_sha256})
     return declarations
+
+
+def _verify_checkpoint_identity(
+    data_root: Path, run_id: str, declaration: dict[str, str]
+) -> tuple[list[str], int]:
+    """Mode B: the checkpoint must hash to its pin and chain end to end. Returns
+    ``(keepable sample ids, rows the checkpoint holds)`` -- no replay is possible or
+    needed: a kept row is the stored canonical record, used verbatim."""
+
+    from speech_aware_evidence_acquisition.core.row_checkpoint import (  # noqa: PLC0415
+        RowCheckpointError, checkpoint_path, read_checkpoint,
+    )
+
+    attempt_dir = data_root / "runs" / run_id / declaration["attempt_id"]
+    path = checkpoint_path(attempt_dir, run_id)
+    if not path.is_file():
+        raise GateError(
+            f"predecessor attempt {declaration['attempt_id']!r} has no row checkpoint at {path}"
+        )
+    try:
+        document = read_checkpoint(path, expected_sha256=declaration["checkpoint_sha256"])
+    except RowCheckpointError as error:
+        raise GateError(str(error)) from error
+    return [row.sample_id for row in document.rows if row.keepable], len(document.rows)
 
 
 def _verify_trace_identity(data_root: Path, run_id: str, declaration: dict[str, str]) -> None:
@@ -196,11 +236,45 @@ def main(argv: list[str] | None = None) -> int:
                 "note": "cell declares no resume_from; nothing to replay",
             }, indent=2, sort_keys=True))
             return 0
+        checkpoint_kept: list[str] = []
         for declaration in declarations:
-            _verify_trace_identity(data_root, run_id, declaration)
+            if "checkpoint_sha256" in declaration:
+                keepable, _held = _verify_checkpoint_identity(data_root, run_id, declaration)
+                checkpoint_kept.extend(keepable)
+            else:
+                _verify_trace_identity(data_root, run_id, declaration)
     except GateError as error:
         print(f"resume prelaunch gate REFUSED: {error}", file=sys.stderr)
         return 2
+    trace_declarations = [d for d in declarations if "trace_sha256" in d]
+    checkpoint_twice = len(checkpoint_kept) - len(set(checkpoint_kept))
+
+    if not trace_declarations:
+        # Mode B only (owner decision 309): the identity and the chain were verified above; a
+        # stored row is not re-rendered, so there is nothing for the replay checker to read.
+        if checkpoint_twice:
+            print(
+                f"resume prelaunch gate REFUSED: {checkpoint_twice} row(s) sealed twice across "
+                f"{len(declarations)} checkpoint predecessor(s)", file=sys.stderr,
+            )
+            return 1
+        print(json.dumps({
+            "schema": SCHEMA_PROOF,
+            "experiment": args.experiment,
+            "cell": args.cell,
+            "run_id": run_id,
+            "predecessor_attempts": [d["attempt_id"] for d in declarations],
+            "mode": "checkpoint",
+            "rows_checked": len(checkpoint_kept),
+            "rows_failing": 0,
+            "sealed_twice": 0,
+            "checker_sha256": hashlib.sha256(
+                (Path(__file__).resolve().parents[2] / "src" / "speech_aware_evidence_acquisition"
+                 / "core" / "row_checkpoint.py").read_bytes()
+            ).hexdigest(),
+            "code_commit": _git_head(repo_root),
+        }, indent=2, sort_keys=True))
+        return 0
 
     checker = (args.checker or (repo_root / "scripts" / "analysis" / "replay_seal_consistency.py"))
     checker = Path(checker).resolve()
@@ -213,7 +287,7 @@ def main(argv: list[str] | None = None) -> int:
         "--experiment", args.experiment, "--run-id", run_id,
         "--repo-root", str(repo_root), "--data-root", str(data_root),
     ]
-    for declaration in declarations:
+    for declaration in trace_declarations:
         command += ["--attempt", declaration["attempt_id"]]
     completed = subprocess.run(command, capture_output=True, text=True)
 
@@ -229,9 +303,9 @@ def main(argv: list[str] | None = None) -> int:
             print(completed.stderr[-1000:], file=sys.stderr)
         return 2
 
-    rows_checked = int(report.get("rows_checked_total") or 0)
+    rows_checked = int(report.get("rows_checked_total") or 0) + len(checkpoint_kept)
     rows_failing = int(report.get("rows_failing_total") or 0)
-    sealed_twice = int((report.get("union") or {}).get("sealed_twice") or 0)
+    sealed_twice = int((report.get("union") or {}).get("sealed_twice") or 0) + checkpoint_twice
     checks = _check_names(report)
     if completed.returncode != 0 or rows_failing or sealed_twice:
         print(

@@ -132,8 +132,10 @@ from .resume import (
     MergedPredecessors,
     PredecessorAttempt,
     ReplayedEpisodeResult,
+    ReplayedPhaseSummary,
     ResumeDeclaration,
     ResumeRecoveryError,
+    read_checkpoint_predecessor,
     read_predecessor_attempt,
     resume_declarations_from_document,
 )
@@ -1595,6 +1597,13 @@ class FlightRuntime:
         # -- and only when -- it narrows. ``None`` for every ordinary flight,
         # which is what keeps an uninterrupted flight byte for byte unchanged.
         self._identity_packet_bindings: Mapping[str, Mapping[str, object]] | None = None
+        # Owner decision 309 (2026-10-14): every phase-program flight makes
+        # each settled row durable (core.row_checkpoint). ``True`` here; a
+        # ``object.__new__`` dispatch skeleton never runs __init__ and so keeps
+        # it off (every reader of these goes through getattr).
+        self._row_checkpointing: bool = True
+        self._row_checkpoint_writer = None
+        self._row_checkpoint_report: Mapping[str, object] | None = None
 
         self.receipts = FlightReceipts(run_id=run_id, attempt_id=attempt_id)
         self._composed = None
@@ -1780,6 +1789,69 @@ class FlightRuntime:
             return None
         return tuple(self._resume_flown_sample_ids)
 
+    def _write_resume_declaration(self, plan: ExecutionPlan) -> None:
+        """Record which attempts of this run this attempt RESUMES, in
+        ``<attempt dir>/resume-declaration.json`` (owner decision 309).
+
+        The exposure gate's one-read rule counts a run's attempts
+        (``contracts.gate_exposure._require_final_report_attempt_budget``); it
+        reads this file to exempt the named predecessors -- and only those, and
+        only while they were never FINALIZED -- from the count, so a resume
+        that keeps the predecessor's complete rows and flies only the rest is
+        not a "second attempt". Nothing is written for a flight that resumes
+        nothing, so a non-resume attempt is counted exactly as before.
+        """
+
+        declarations = getattr(self, "_resume_declarations", ())
+        if not declarations:
+            return
+        run_dir = self._run_dir()
+        run_dir.mkdir(parents=True, exist_ok=True)
+        document = {
+            "schema": "saea-resume-declaration-v1",
+            "run_id": plan.run_id,
+            "attempt_id": plan.attempt_id,
+            "predecessors": [
+                {
+                    "attempt_id": declaration.attempt_id,
+                    "mode": declaration.mode,
+                    "pin_sha256": (
+                        declaration.checkpoint_sha256
+                        if declaration.mode == "checkpoint" else declaration.trace_sha256
+                    ),
+                }
+                for declaration in declarations
+            ],
+        }
+        (run_dir / "resume-declaration.json").write_text(
+            json.dumps(document, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8", newline="\n",
+        )
+
+    def _supersede_resume_predecessors(self) -> None:
+        """Settle each predecessor a resume-recovery builds on.
+
+        A crashed attempt (power loss, host restart, a killed server) never
+        reaches ``abort()``: its attempt record stays OPENED forever. Once this
+        attempt is about to take over its rows the predecessor is dead, so it is
+        marked ABORTED with the reason (``AttemptStore.abort_if_opened``; an
+        already FINALIZED or ABORTED record is left exactly as it is). Called
+        from ``run_phases`` -- never from the read-only ``preflight``/``check``.
+        """
+
+        if getattr(self, "_resume", None) is None:
+            return
+        store = self._attempt_store_factory(self._data_root)
+        for predecessor in self._resume.predecessors:
+            store.abort_if_opened(
+                self._run_id, predecessor.attempt_id,
+                reason=(
+                    f"superseded by resume-recovery attempt {self._attempt_id!r} "
+                    f"({getattr(predecessor, 'mode', 'trace')} resume); the process that "
+                    "flew it died without aborting it"
+                ),
+            )
+
     def _load_resume_predecessor(
         self, values: Mapping[str, object], sample_ids: Sequence[str]
     ) -> Mapping[str, object]:
@@ -1802,17 +1874,24 @@ class FlightRuntime:
 
         declarations = self._resume_declarations
         policy = values.get("policy")
+        needs_native = any(declaration.mode == "trace" for declaration in declarations)
         if (
             not isinstance(policy, str)
             or policy == "fixed"
             or policy in self._obs_policy_names()
-            or not isinstance(values.get("native_episode"), Mapping)
+            or (needs_native and not isinstance(values.get("native_episode"), Mapping))
         ):
             raise FlightRuntimeError(
                 "resume-recovery replays the native role episode's own terminal "
                 f"receipt, and policy {policy!r} does not produce one; teach "
                 "core.flight.resume that dispatch's terminal custody before "
-                "declaring resume_from for it"
+                "declaring resume_from for it (mode B, a checkpoint, needs a "
+                "phase-program policy that checkpoints its rows)"
+            )
+        if not needs_native and self.shows_construction_targets():
+            raise FlightRuntimeError(
+                "checkpoint resume (mode B) does not cover construction-visible arms: "
+                "their fixed dispatch does not checkpoint rows"
             )
         if self.execution_unit_roster() is not None:
             raise FlightRuntimeError(
@@ -1828,16 +1907,34 @@ class FlightRuntime:
         for declaration in declarations:
             attempt_dir = self._predecessor_attempt_dir(declaration.attempt_id)
             try:
-                predecessor = read_predecessor_attempt(
-                    run_id=self._run_id,
-                    attempt_id=declaration.attempt_id,
-                    attempt_dir=attempt_dir,
-                    expected_trace_sha256=declaration.trace_sha256,
-                    program_id=program.program_id,
-                    # E4-1 (2026-09-29): a relisten-armed cell's kept rows
-                    # carry their re-derived saea-relisten-v1 receipts.
-                    relisten=self._declared_relisten_block(),
-                )
+                if declaration.mode == "checkpoint":
+                    # Owner decision 309: the predecessor made each settled row
+                    # durable (core.row_checkpoint); keep what it made durable.
+                    # The kept rows' trace is materialized under THIS attempt's
+                    # directory, never in the predecessor's.
+                    predecessor = read_checkpoint_predecessor(
+                        run_id=self._run_id,
+                        attempt_id=declaration.attempt_id,
+                        attempt_dir=attempt_dir,
+                        expected_checkpoint_sha256=declaration.checkpoint_sha256,
+                        materialize_dir=(
+                            self._run_dir() / "resume-predecessors" / declaration.attempt_id
+                        ),
+                        protocol_hash=self._plan.protocol_hash,
+                        split_identity_hash=self._plan.split_identity_hash,
+                        implementation=self.row_checkpoint_implementation(),
+                    )
+                else:
+                    predecessor = read_predecessor_attempt(
+                        run_id=self._run_id,
+                        attempt_id=declaration.attempt_id,
+                        attempt_dir=attempt_dir,
+                        expected_trace_sha256=declaration.trace_sha256,
+                        program_id=program.program_id,
+                        # E4-1 (2026-09-29): a relisten-armed cell's kept rows
+                        # carry their re-derived saea-relisten-v1 receipts.
+                        relisten=self._declared_relisten_block(),
+                    )
             except ResumeRecoveryError as error:
                 raise FlightRuntimeError(str(error)) from error
             predecessors.append(predecessor)
@@ -1886,6 +1983,14 @@ class FlightRuntime:
                 "trace_record_count": predecessor.record_count,
                 "predecessor_contacts": predecessor.contact_count(),
                 "kept": len(predecessor.complete_sample_ids),
+                **(
+                    {
+                        "mode": "checkpoint",
+                        "checkpoint_path": str(predecessor.checkpoint_path),
+                        "checkpoint_sha256": predecessor.checkpoint_sha256,
+                    }
+                    if getattr(predecessor, "mode", None) == "checkpoint" else {}
+                ),
             }
             for predecessor in predecessors
         ]
@@ -4873,6 +4978,10 @@ class FlightRuntime:
             ])
         plan = self._build_execution_plan(values, carrier_lock_key, identity_hash)
         self._plan = plan
+        # Owner decision 309: BEFORE the first gate touch below, so a gate that
+        # counts a run's attempts can tell a resume of an interrupted attempt
+        # from a fresh second attempt.
+        self._write_resume_declaration(plan)
         if values.get("system_episode_policy") is not None:
             self._load_system_policy_catalog(default_phase_program(values.get("policy")), refresh=True)
         self._artifact_result_binding = validate_artifact_result_binding(
@@ -7934,6 +8043,15 @@ class FlightRuntime:
             live_options["stop_policy"] = planner
         if tool_dispatcher is not None:
             live_options["tools_for_phase"] = tool_dispatcher
+        # Owner decision 309: each settled row is made durable (row checkpoint)
+        # the moment its episode completes. Only the CONTINUOUS form qualifies:
+        # it runs one trajectory per sample, so a sample settles exactly once.
+        # The per-phase barrier form (rails.phase_runner.run_program) runs the
+        # same sample through one runner call per phase and settles it only
+        # after the last, so it is not row-addressable and keeps no checkpoint.
+        checkpoint_attached = continuous and self._attach_row_checkpoint(
+            sink, client, plan, program, policy, model_free_check=model_free_check,
+        )
         try:
             if continuous:
                 summaries = (
@@ -7991,6 +8109,8 @@ class FlightRuntime:
                     review_specs, review_for_phase
                 )
         finally:
+            if checkpoint_attached:
+                sink.row_checkpoint = None
             emit_planner_records(planner, sink, record_namespace=program.program_id)
             flush = getattr(client, "flush_trace_buffer", None)
             if isinstance(sink, TraceBuffer) and callable(flush):
@@ -9675,6 +9795,7 @@ class FlightRuntime:
             # predecessors' own recorded custody instead.
             self._output_rows = []
             self._phase_summaries = ()
+            self._supersede_resume_predecessors()
             return self.receipts.record(
                 "run_phases",
                 {
@@ -9692,6 +9813,7 @@ class FlightRuntime:
                 },
             )
         self.assert_generation_lease()
+        self._supersede_resume_predecessors()
         baseline_values = self._composed.values
         policy = baseline_values.get("policy")
         if not isinstance(policy, str) or not policy:
@@ -9908,6 +10030,18 @@ class FlightRuntime:
             # are a read of what happened rather than a second tally kept
             # alongside it.
             "native_episode_dispositions": self._episode_disposition_counts(),
+            # Owner decision 309: how many settled rows reached the durable
+            # row checkpoint during this dispatch (absent when none is kept).
+            **(
+                {
+                    "row_checkpoint": {
+                        "path": str(self._row_checkpoint_writer.path),
+                        "rows": self._row_checkpoint_writer.row_count,
+                    }
+                }
+                if getattr(self, "_row_checkpoint_writer", None) is not None
+                else {}
+            ),
         }
         require_mandatory_throughput_fields(
             "run_phases", payload, ("contacts_per_second", "tokens_per_second")
@@ -11134,6 +11268,163 @@ class FlightRuntime:
             })
         client.flush_trace_buffer(buffer)
 
+    # -- owner decision 309: durable row-by-row checkpoints ----------------
+
+    @staticmethod
+    def row_checkpoint_implementation() -> Mapping[str, str]:
+        """The code identity a row checkpoint is written under and a resume
+        must match: the sha256 of the three modules whose behaviour decides the
+        stored bytes (this stage, the runner, the checkpoint format)."""
+
+        from .. import row_checkpoint as _format  # noqa: PLC0415
+        from ...rails import runner as _runner  # noqa: PLC0415
+
+        return {
+            "runtime": _sha256_file(Path(__file__)),
+            "runner": _sha256_file(Path(_runner.__file__)),
+            "row_checkpoint": _sha256_file(Path(_format.__file__)),
+        }
+
+    def _attach_row_checkpoint(
+        self, sink: object, client: object, plan: ExecutionPlan, program: object,
+        policy: str, *, model_free_check: bool,
+    ) -> bool:
+        """Make every settled row of this dispatch durable.
+
+        Opens ``<attempt dir>/<run_id>.rows.ckpt.jsonl`` (once per attempt) and
+        hangs a ``row_checkpoint`` hook on the trace sink the runner already
+        receives, so no runner signature changes. Off for: a wire check or any
+        dispatch whose plan is not this attempt's own bound plan (scratch
+        plans), an execution-unit roster (its rows are stitched at the seal and
+        are not row-addressable), and a sink that cannot carry the hook.
+        """
+
+        if (
+            not getattr(self, "_row_checkpointing", False)
+            or model_free_check
+            or getattr(self, "_plan", None) is not plan
+            or self.execution_unit_roster() is not None
+        ):
+            return False
+        from ..row_checkpoint import RowCheckpointWriter  # noqa: PLC0415
+
+        writer = getattr(self, "_row_checkpoint_writer", None)
+        if writer is None:
+            writer = RowCheckpointWriter(
+                self._run_dir(), plan.run_id, plan.attempt_id,
+                identity={
+                    "protocol_hash": plan.protocol_hash,
+                    "split_identity_hash": plan.split_identity_hash,
+                    "config_hash": getattr(self._composed, "config_hash", None),
+                    "policy": policy,
+                    "implementation": dict(self.row_checkpoint_implementation()),
+                },
+            )
+            self._row_checkpoint_writer = writer
+
+        def hook(*, outcome: object, trace_records: Sequence[object]) -> None:
+            self._checkpoint_row(
+                outcome=outcome, trace_records=trace_records, client=client,
+                program=program, policy=policy,
+            )
+
+        try:
+            sink.row_checkpoint = hook
+        except AttributeError:
+            return False
+        return True
+
+    def _checkpoint_row(
+        self, *, outcome: object, trace_records: Sequence[object], client: object,
+        program: object, policy: str,
+    ) -> None:
+        """Append one settled row to the checkpoint: its canonical outputs
+        record (rendered by the SAME :meth:`_canonical_output_rows` stage the
+        seal uses, from this row's own result and this row's own request
+        records) plus its serialized trace. A row the canonical stage refuses
+        is recorded as NOT rendered, with the reason, and is re-flown whole by
+        a resume; the seal stays the authority and still refuses it. A write
+        failure propagates: durability that silently stops is the defect."""
+
+        from types import SimpleNamespace  # noqa: PLC0415
+
+        from ..row_checkpoint import serialize_trace_records  # noqa: PLC0415
+
+        sample_id = outcome.prepared.sample.sample_id
+        rendered: list[Mapping[str, object]] = []
+        reason: str | None = None
+        try:
+            view = SimpleNamespace(
+                sample_id=sample_id,
+                final_response_text=outcome.final_response_text,
+                contacts=outcome.contacts,
+                native_episode_receipt=outcome.native_episode_receipt,
+                solver_group=getattr(outcome, "solver_group", None),
+                supply_variants=getattr(outcome, "supply_variants", None),
+                relisten=getattr(outcome, "relisten", None),
+                initial_query_state=outcome.prepared.initial_query_state,
+                final_query_state=outcome.final_query_state,
+            )
+            summaries = (ReplayedPhaseSummary((view,), getattr(program, "program_id", None)),)
+            phase_rows = self._rows_from_phase_summaries(summaries, policy=policy)
+            timings = tuple(
+                timing for timing in (getattr(client, "timings", ()) or ())
+                if timing.sample_id == sample_id
+            )
+            rendered = self._canonical_output_rows(
+                client, output_rows=phase_rows, timings=timings, phase_summaries=summaries,
+            )
+        except Exception as error:  # noqa: BLE001 -- recorded, never swallowed silently
+            rendered = []
+            reason = f"{type(error).__name__}: {error}"[:600]
+        self._row_checkpoint_writer.append_row(
+            sample_id=sample_id,
+            complete=reason is None,
+            output_rows=rendered,
+            trace_lines=serialize_trace_records(trace_records),
+            reason=reason,
+        )
+
+    def _seal_row_checkpoint(self, canonical_rows) -> Mapping[str, object] | None:
+        """Close the checkpoint and hold it against the rows the seal writes.
+
+        Every FLOWN sample needs exactly one checkpoint row and a complete
+        row's record must equal the sealed row byte for byte; any disagreement
+        refuses the seal by name BEFORE a byte of the bundle is written. Returns
+        the manifest block (path, whole-file sha256, counts, chain tip), or
+        ``None`` when no row ever reached the checkpoint -- a runner that does
+        not call the hook (a test double) is reported as NOT-EXERCISED, not
+        hidden.
+        """
+
+        writer = getattr(self, "_row_checkpoint_writer", None)
+        if writer is None:
+            return None
+        from ..row_checkpoint import (  # noqa: PLC0415
+            RowCheckpointError, compare_with_sealed, read_checkpoint,
+        )
+
+        writer.close()
+        try:
+            document = read_checkpoint(writer.path)
+        except RowCheckpointError as error:
+            raise FlightRuntimeError(f"row checkpoint is unreadable at the seal: {error}") from error
+        if not document.rows:
+            self._row_checkpoint_report = {"status": "NOT-EXERCISED", "rows": 0}
+            return None
+        report = compare_with_sealed(
+            document,
+            {str(row.get("sample_id")): row for row in canonical_rows},
+            self._flight_roster_sample_ids(),
+        )
+        self._row_checkpoint_report = {**report, "sha256": document.sha256, "path": str(document.path)}
+        if report["problems"]:
+            raise FlightRuntimeError(
+                "the row checkpoint disagrees with the rows this seal would write: "
+                + "; ".join(report["problems"])
+            )
+        return document.manifest_block()
+
     def _emit_seal_time_traces(
         self, client: object, canonical_rows, *, run_id: str | None = None,
     ) -> None:
@@ -11902,6 +12193,16 @@ class FlightRuntime:
             kept_ids = predecessor.complete_sample_ids
             if not kept_ids:
                 continue
+            canonical_for = getattr(predecessor, "canonical_rows_for", None)
+            if canonical_for is not None:
+                # Mode B (owner decision 309): a kept row IS the canonical
+                # record its own attempt rendered through this same stage and
+                # made durable; nothing is replayed or re-rendered.
+                if getattr(self, "_seal_only", False):
+                    for result in predecessor.results_for(list(kept_ids)):
+                        replayed_by_sample[result.sample_id] = result
+                _absorb(canonical_for(list(kept_ids)))
+                continue
             summaries, timings = predecessor.replay(
                 kept_ids, controller_policy_id=policy_id,
             )
@@ -12325,6 +12626,10 @@ class FlightRuntime:
         canonical_rows, predecessor_block, seal_only_phase_results = (
             self._merged_canonical_rows()
         )
+        # Owner decision 309: the row checkpoint must agree with the rows about
+        # to be written (refuses before any bundle byte exists) and its sha256
+        # is recorded in the manifest below.
+        row_checkpoint_block = self._seal_row_checkpoint(canonical_rows)
         self._emit_seal_time_traces(self._client, canonical_rows)
         with outputs_path.open("w", encoding="utf-8") as handle:
             for row in canonical_rows:
@@ -12464,6 +12769,14 @@ class FlightRuntime:
                 if predecessor_block is not None
                 else {}
             ),
+            # Owner decision 309: passed ONLY when the flight checkpointed its
+            # rows, so a manifest_builder seam that predates it keeps its
+            # signature and an unchecked flight keeps its bytes.
+            **(
+                {"row_checkpoint": row_checkpoint_block}
+                if row_checkpoint_block is not None
+                else {}
+            ),
         )
         verified = self._bundle_verifier(manifest_path)
         merged_ledger_cells = self._default_ledger_cells(self._plan)
@@ -12586,6 +12899,11 @@ class FlightRuntime:
                     }
                 }
                 if predecessor_block is not None
+                else {}
+            ),
+            **(
+                {"row_checkpoint": dict(self._row_checkpoint_report)}
+                if getattr(self, "_row_checkpoint_report", None) is not None
                 else {}
             ),
             "phases_path": str(phases_path) if phases_path is not None else None,
@@ -13854,6 +14172,14 @@ class FlightRuntime:
         if not isinstance(reason, str) or not reason.strip():
             raise FlightRuntimeError("abort reason must be a non-empty string")
         close_error = None
+        # Owner decision 309: an aborted attempt's row checkpoint stays on disk
+        # (it is what a resume reads); just stop writing to it.
+        checkpoint_writer = getattr(self, "_row_checkpoint_writer", None)
+        if checkpoint_writer is not None:
+            try:
+                checkpoint_writer.close()
+            except Exception:  # noqa: BLE001 -- the abort below must still happen
+                pass
         try:
             self._close_live_speech_provider(finalize=False, reason=reason)
         except Exception as error:  # preserve the primary flight abort below

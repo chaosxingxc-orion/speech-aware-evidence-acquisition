@@ -143,6 +143,11 @@ def backfill(
     declarations = resume_declarations_from_document(cell.resume_from)
     predecessors = []
     for declaration in declarations:
+        if declaration.mode != "trace":
+            raise BackfillError(
+                f"predecessor {declaration.attempt_id!r} is a row-checkpoint (mode B) "
+                "declaration; this backfill replays traces and has no checkpoint reader"
+            )
         attempt_dir = data_root / "runs" / run_id / declaration.attempt_id
         try:
             predecessor = read_predecessor_attempt(

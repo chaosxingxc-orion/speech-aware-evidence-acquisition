@@ -72,3 +72,22 @@ keep correct than two. C stays available for a genuinely long campaign (it is a 
 decision, not a custody one) and would need the cross-manifest merge rule before its first use. D
 is not pursued: it buys the same granularity as B while weakening the invariant that an outputs
 artifact's hash describes a finished attempt.
+
+## 2026-10-14 — mode B landed (owner decision 309)
+
+The "What B would add later" trigger fired: the NX-T R1 column died in a host restart with no trace on
+disk, because nothing a flight produces is durable before its seal (design and root cause:
+`2026-10-14-row-checkpoints-and-resume-mode-b-design.md`). Mode B is now implemented in the cheap form
+described above, with one difference from the sketch: the checkpoint also stores the row's serialized
+trace lines, so it is self-contained custody and mode A's I7r check is reused unchanged — a resume
+materializes the kept rows' lines as the predecessor trace under its own attempt directory, and the
+verifier re-derives that file from the pinned checkpoint.
+
+* Every phase-program flight in the continuous form now appends one fsynced, hash-chained record per
+  settled row to `<run_id>.rows.ckpt.jsonl`; the seal holds it against the sealed rows and pins its
+  sha256 in the manifest (`row_checkpoint`).
+* `resume_from` accepts `{"attempt_id", "checkpoint_sha256"}` (mode B) beside the mode-A form; a list may
+  mix them. Mode A stays, for attempts that were flown before checkpoints existed.
+* The table row "Works on attempts that are ALREADY aborted" is unchanged: mode B recovers only attempts
+  flown after the writer exists. Still not covered: the per-phase barrier form, fixed and obs policies and
+  execution-unit rosters (they do not checkpoint rows).

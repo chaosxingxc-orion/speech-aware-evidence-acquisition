@@ -49,6 +49,7 @@ from __future__ import annotations
 import base64
 import hashlib
 import json
+import os
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Mapping, Sequence
@@ -100,20 +101,39 @@ class ResumeDeclaration:
     """What a recovery cell declares about the attempt it resumes."""
 
     attempt_id: str
-    trace_sha256: str
+    trace_sha256: str | None = None
+    #: Mode B (owner decision 309, 2026-10-14): the pin of the predecessor's
+    #: ``<run_id>.rows.ckpt.jsonl`` instead of its trace. Exactly one of
+    #: ``trace_sha256`` (mode A, trace replay) and ``checkpoint_sha256`` (mode B,
+    #: checkpoint replay) is declared.
+    checkpoint_sha256: str | None = None
+
+    @property
+    def mode(self) -> str:
+        return "checkpoint" if self.checkpoint_sha256 is not None else "trace"
 
     @classmethod
     def from_document(cls, document: object) -> "ResumeDeclaration":
-        if not isinstance(document, Mapping) or set(document) != {
-            "attempt_id", "trace_sha256",
-        }:
+        if not isinstance(document, Mapping) or set(document) not in (
+            {"attempt_id", "trace_sha256"}, {"attempt_id", "checkpoint_sha256"},
+        ):
             raise ResumeRecoveryError(
-                "resume_from must declare exactly {'attempt_id', 'trace_sha256'}"
+                "resume_from must declare exactly {'attempt_id', 'trace_sha256'} "
+                "(mode A, trace replay) or {'attempt_id', 'checkpoint_sha256'} "
+                "(mode B, checkpoint replay)"
             )
         attempt_id = document["attempt_id"]
-        trace_sha256 = document["trace_sha256"]
         if not isinstance(attempt_id, str) or not attempt_id.strip():
             raise ResumeRecoveryError("resume_from.attempt_id must be a non-empty string")
+        if "checkpoint_sha256" in document:
+            checkpoint_sha256 = document["checkpoint_sha256"]
+            if not _is_sha256(checkpoint_sha256):
+                raise ResumeRecoveryError(
+                    "resume_from.checkpoint_sha256 must be a 64-hex SHA-256 of the "
+                    "predecessor attempt's row checkpoint file"
+                )
+            return cls(attempt_id=attempt_id, checkpoint_sha256=checkpoint_sha256)
+        trace_sha256 = document["trace_sha256"]
         if not _is_sha256(trace_sha256):
             raise ResumeRecoveryError(
                 "resume_from.trace_sha256 must be a 64-hex SHA-256 of the "
@@ -1190,7 +1210,210 @@ def read_predecessor_attempt(
     )
 
 
+#: The ``mode`` a manifest ``predecessor_attempt`` block carries when its rows
+#: were kept from a row checkpoint (mode B) rather than a replayed trace.
+RESUME_MODE_CHECKPOINT = "checkpoint"
+
+
+@dataclass(frozen=True)
+class CheckpointPredecessor(PredecessorAttempt):
+    """Mode B (owner decision 309, 2026-10-14): a predecessor read from its
+    ``<run_id>.rows.ckpt.jsonl`` instead of its trace.
+
+    The checkpoint stores each row's CANONICAL outputs record exactly as the
+    seal renders it, so nothing is replayed: a kept row is the stored record.
+    The bundle still holds every kept row against exactly one trace (I7r): this
+    object materializes the kept rows' own serialized trace lines, in
+    checkpoint order, as a trace file under THIS attempt's directory (never in
+    the predecessor's), and ``trace_path`` / ``trace_sha256`` name that file.
+    The verifier re-derives it from the pinned checkpoint, so it is a pure
+    function of bytes the predecessor wrote durably.
+    """
+
+    mode: str = RESUME_MODE_CHECKPOINT
+    checkpoint_path: Path = Path()
+    checkpoint_sha256: str = ""
+    canonical: Mapping[str, tuple] = field(default_factory=dict)
+    row_costs: Mapping[str, Mapping[str, object]] = field(default_factory=dict)
+
+    @property
+    def started_sample_ids(self) -> tuple[str, ...]:
+        return tuple(sorted(self.row_costs))
+
+    def contact_count(self) -> int:
+        return sum(int(cost.get("calls", 0)) for cost in self.row_costs.values())
+
+    def cost_totals(self) -> dict[str, object]:
+        """The spend the checkpoint made durable. A row that was in flight when
+        the process died never reached the file, so its contacts are not here:
+        this is a lower bound, exactly as a trace-derived total is."""
+
+        totals = {
+            "calls_used": 0, "audio_seconds_used": 0.0, "latency_seconds_total": 0.0,
+            "prompt_tokens_total": 0, "completion_tokens_total": 0, "tool_calls": 0,
+        }
+        for cost in self.row_costs.values():
+            totals["calls_used"] += int(cost.get("calls", 0))
+            totals["audio_seconds_used"] += float(cost.get("audio_seconds", 0.0))
+            totals["latency_seconds_total"] += float(cost.get("latency_seconds", 0.0))
+            totals["prompt_tokens_total"] += int(cost.get("prompt_tokens", 0))
+            totals["completion_tokens_total"] += int(cost.get("completion_tokens", 0))
+            totals["tool_calls"] += int(cost.get("tool_calls", 0))
+        return totals
+
+    def replay(self, sample_ids, *, controller_policy_id=None):
+        raise ResumeRecoveryError(
+            "a checkpoint predecessor keeps stored canonical rows and replays nothing; "
+            "use canonical_rows_for()"
+        )
+
+    def results_for(self, sample_ids: Sequence[str]) -> tuple[ReplayedEpisodeResult, ...]:
+        missing = [s for s in sample_ids if s not in self.complete]
+        if missing:
+            raise ResumeRecoveryError(
+                f"{len(missing)} requested sample(s) are not COMPLETE in checkpoint of "
+                f"attempt {self.attempt_id!r}, e.g. {missing[:5]}; a resume keeps every "
+                "complete row and re-flies every other one -- it never selects"
+            )
+        order = {sample_id: index for index, sample_id in enumerate(self._sample_order)}
+        return tuple(self.complete[s] for s in sorted(sample_ids, key=order.__getitem__))
+
+    def canonical_rows_for(self, sample_ids: Sequence[str]) -> list[Mapping[str, object]]:
+        """The stored canonical outputs rows of ``sample_ids`` (all COMPLETE)."""
+
+        return [
+            dict(self.canonical[result.sample_id][0])
+            for result in self.results_for(list(sample_ids))
+        ]
+
+    def manifest_block(
+        self, kept_sample_ids: Sequence[str], *, flown: int, partial: int,
+    ) -> dict[str, object]:
+        return {
+            **super().manifest_block(kept_sample_ids, flown=flown, partial=partial),
+            "mode": RESUME_MODE_CHECKPOINT,
+            "checkpoint_path": str(self.checkpoint_path),
+            "checkpoint_sha256": self.checkpoint_sha256,
+        }
+
+
+def read_checkpoint_predecessor(
+    *,
+    run_id: str,
+    attempt_id: str,
+    attempt_dir: Path,
+    expected_checkpoint_sha256: str,
+    materialize_dir: Path,
+    protocol_hash: str | None = None,
+    split_identity_hash: str | None = None,
+    implementation: Mapping[str, str] | None = None,
+) -> CheckpointPredecessor:
+    """Read one aborted attempt's row checkpoint (mode B); model-free, read-only.
+
+    Refuses, by name: a missing or re-hashed file, a broken chain, a header for
+    another run / attempt / protocol / split, and -- per ROW, never for the
+    file -- a row that is not COMPLETE, whose arm group is not complete, whose
+    stored record does not name its own sample, or whose named request is not in
+    its own stored trace. Those rows are INCOMPLETE and re-flown whole.
+    """
+
+    from ..row_checkpoint import (  # noqa: PLC0415
+        RowCheckpointError, checkpoint_path, kept_trace_text, read_checkpoint,
+        sha256_file,
+    )
+
+    path = checkpoint_path(Path(attempt_dir), run_id)
+    if not path.is_file():
+        raise ResumeRecoveryError(
+            f"predecessor attempt {attempt_id!r} has no row checkpoint at {path}"
+        )
+    try:
+        document = read_checkpoint(path, expected_sha256=expected_checkpoint_sha256)
+    except RowCheckpointError as error:
+        raise ResumeRecoveryError(str(error)) from error
+    header = document.header
+    for name, expected in (
+        ("run_id", run_id), ("attempt_id", attempt_id),
+        ("protocol_hash", protocol_hash), ("split_identity_hash", split_identity_hash),
+    ):
+        if expected is not None and header.get(name) != expected:
+            raise ResumeRecoveryError(
+                f"row checkpoint {path} was written for {name} {header.get(name)!r}, not "
+                f"{expected!r}; a resume applies only when the code, config and split "
+                "are unchanged"
+            )
+    if implementation is not None:
+        # Owner decision 22: a resume applies only when the code is unchanged. A
+        # stored row is used verbatim, so a flown row rendered by different code
+        # would make the merged outputs a blend of two implementations.
+        recorded = header.get("implementation")
+        if recorded != dict(implementation):
+            differing = sorted(
+                key for key in set(dict(implementation)) | set(recorded or {})
+                if (recorded or {}).get(key) != dict(implementation).get(key)
+            )
+            detail = ", ".join(differing) if differing else "no code identity recorded"
+            raise ResumeRecoveryError(
+                f"row checkpoint {path} was written by different code ({detail}); a "
+                "resume applies only when the code that flew the predecessor is the "
+                "code that finishes it"
+            )
+    kept_rows = []
+    incomplete: dict[str, str] = {}
+    complete: dict[str, ReplayedEpisodeResult] = {}
+    canonical: dict[str, tuple] = {}
+    for row in document.rows:
+        defect = row.keep_defect()
+        if defect is None:
+            record = row.output_rows[0]
+            wanted = {f"{record.get('request_id')}/request", f"{record.get('request_id')}/response"}
+            present = set()
+            for line in row.trace_lines:
+                present.add(json.loads(line)["record_id"])
+            if len(row.output_rows) != 1 or record.get("sample_id") != row.sample_id:
+                defect = "the stored record does not name its own sample"
+            elif not wanted <= present:
+                defect = "the stored trace lacks the request/response the stored record names"
+        if defect is not None:
+            incomplete[row.sample_id] = defect
+            continue
+        kept_rows.append(row)
+        record = row.output_rows[0]
+        complete[row.sample_id] = ReplayedEpisodeResult(
+            sample_id=row.sample_id,
+            final_response_text=str(record.get("pre_projection_text", record.get("text", ""))),
+            contacts=(),
+            native_episode_receipt=dict(record.get("native_episode_receipt") or {}),
+            solver_group=record.get("solver_group"),
+            relisten=record.get("relisten"),
+        )
+        canonical[row.sample_id] = row.output_rows
+    destination = Path(materialize_dir) / f"{run_id}.trace.jsonl"
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    temporary = destination.with_name(destination.name + ".partial")
+    temporary.write_text(kept_trace_text(kept_rows), encoding="utf-8", newline="\n")
+    os.replace(temporary, destination)
+    return CheckpointPredecessor(
+        run_id=run_id,
+        attempt_id=attempt_id,
+        trace_path=destination,
+        trace_sha256=sha256_file(destination),
+        contacts={},
+        complete=complete,
+        incomplete=incomplete,
+        record_count=sum(len(row.trace_lines) for row in kept_rows),
+        _sample_order=tuple(row.sample_id for row in document.rows),
+        checkpoint_path=path,
+        checkpoint_sha256=document.sha256,
+        canonical=canonical,
+        row_costs={row.sample_id: dict(row.cost) for row in document.rows},
+    )
+
+
 __all__ = [
+    "CheckpointPredecessor",
+    "RESUME_MODE_CHECKPOINT",
+    "read_checkpoint_predecessor",
     "NATIVE_EPISODE_RECORD_SUFFIX",
     "NATIVE_ROLE_CONTACT_RECORD_SUFFIX",
     "NON_WIRE_CONTACT_BLOCKS",
