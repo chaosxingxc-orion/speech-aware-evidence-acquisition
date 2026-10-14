@@ -7,7 +7,7 @@
     "both-on"
   ],
   "cell": "slurp-native-stage3-nxt-r1-thinking-policy-fold-b-v1",
-  "composed_config_hash": "0e19d4b2ea882167fbe67ddbd16ea02ce7ec0d80e16b6447fe5e5e4f8ffc93bb",
+  "composed_config_hash": "b9f1b25dfee7940c6a6147a7609ccc9490858672f56c64f8aab3c7ac6cf6ce3d",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-v1",
     "carrier_lock_key": "slurp",
@@ -15,7 +15,7 @@
     "planned_gpu_hours": 41.4,
     "planned_model_calls": 17280,
     "planned_speech_audio_seconds": 50477,
-    "protocol_hash": "572c615ded13b241b5483e4cd29cfbb40a8ccb21a69d376666f20dc5b38dd1e5",
+    "protocol_hash": "88c89621a8f3dc9bad44cb07d24a1d8c20842439d8a1dec13b256ccdae0232d9",
     "run_id": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
@@ -55,7 +55,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "0308106481901c17efbf5d185fe214ddbaf02e0704153f3501e31ecbf0485eea"
+    "sha256": "095ed78a22838946d2575335fde1ff13427f5bf2863593f9527f86cc990fc71b"
   },
   "purpose": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1: thinking-policy column flight (five arms in one flight) of NX-T R1.",
   "registered_at_utc": "2026-10-14T11:52:20Z",

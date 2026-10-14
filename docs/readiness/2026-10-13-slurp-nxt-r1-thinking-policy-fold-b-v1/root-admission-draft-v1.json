@@ -7,7 +7,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/protocol-registered-v1.json",
-      "sha256": "0308106481901c17efbf5d185fe214ddbaf02e0704153f3501e31ecbf0485eea"
+      "sha256": "095ed78a22838946d2575335fde1ff13427f5bf2863593f9527f86cc990fc71b"
     },
     "registered_facts": {
       "path": "docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/registered-facts-v1.json",
