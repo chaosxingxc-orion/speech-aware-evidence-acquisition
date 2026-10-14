@@ -56,7 +56,29 @@ def _manifest_document(
     now: Callable[[], datetime],
     predecessor_attempt: Mapping[str, object] | None = None,
     predecessor_attempts: Sequence[Mapping[str, object]] | None = None,
+    row_checkpoint: Mapping[str, object] | None = None,
 ) -> dict[str, object]:
+    if row_checkpoint is not None:
+        # Owner decision 309: the attempt's durable row checkpoint, pinned by
+        # its whole-file sha256. Shape-checked here; the content (hash, chain,
+        # counts, byte equality with the outputs rows) is re-derived from disk
+        # by core.bundle.verify_bundle.
+        from ..row_checkpoint import RowCheckpointError, is_sha256  # noqa: PLC0415
+
+        expected = {
+            "schema", "path", "sha256", "row_count", "complete_rows",
+            "unrendered_rows", "last_sha",
+        }
+        if (
+            status != STATUS_COMPLETED
+            or not isinstance(row_checkpoint, Mapping)
+            or set(row_checkpoint) != expected
+            or not is_sha256(row_checkpoint.get("sha256"))
+        ):
+            raise BundleError(
+                "row_checkpoint must be a COMPLETED manifest's block with exactly "
+                f"{sorted(expected)} and a 64-hex sha256"
+            )
     if status not in _VALID_STATUSES:
         raise BundleError(
             f"manifest status must be one of {_VALID_STATUSES}, got {status!r}"
@@ -292,6 +314,11 @@ def _manifest_document(
             if predecessor_attempts is not None
             else {}
         ),
+        **(
+            {"row_checkpoint": dict(row_checkpoint)}
+            if row_checkpoint is not None
+            else {}
+        ),
         "session_receipt": session_meta,
         "outputs": outputs_meta,
         "raw_trace": raw_trace_meta,
@@ -335,8 +362,12 @@ def build_manifest(
     now: Callable[[], datetime] = lambda: datetime.now(timezone.utc),
     predecessor_attempt: Mapping[str, object] | None = None,
     predecessor_attempts: Sequence[Mapping[str, object]] | None = None,
+    row_checkpoint: Mapping[str, object] | None = None,
 ) -> Path:
     """Build and durably write one attempt's run manifest; return its path.
+
+    ``row_checkpoint`` (owner decision 309) is the attempt's durable row
+    checkpoint block (``core.row_checkpoint.CheckpointDocument.manifest_block``).
 
     ``predecessor_attempt`` is passed only by a resume-recovery (E10, owner
     decision 22): the aborted attempt of this same run id whose COMPLETE rows
@@ -367,6 +398,7 @@ def build_manifest(
         now=now,
         predecessor_attempt=predecessor_attempt,
         predecessor_attempts=predecessor_attempts,
+        row_checkpoint=row_checkpoint,
     )
     manifest_path = _confine_child_path(
         run_dir, f"{plan.run_id}.run-manifest.json", "run manifest path"

@@ -6747,8 +6747,16 @@ def _run_agent_openjiuwen(
     knowledge_value_renderer: object = None,
     native_episode_binding: NativeEpisodeRunBinding | None = None,
     thinking_policy: Mapping[str, object] | None = None,
+    on_outcome: Callable[[_AgentRuntimeOutcome], object] | None = None,
 ) -> tuple[_AgentRuntimeOutcome, ...]:
-    """Run the speech AgentLoop on the pinned openJiuwen workflow engine."""
+    """Run the speech AgentLoop on the pinned openJiuwen workflow engine.
+
+    ``on_outcome`` (owner decision 309, 2026-10-14) is called ONCE per row, the
+    moment its episode has settled and its ``final_outcome`` is set -- before
+    any other row finishes -- so the caller can make the row durable. It runs
+    gold-free (scoring is still deferred to after the whole window) and its
+    exceptions propagate: a checkpoint that cannot be written fails the row
+    loudly rather than silently losing durability. ``None`` changes nothing."""
 
     from ..reproduction.ojw import (  # noqa: PLC0415
         DEFAULT_WORKFLOW_TIMEOUT_SECONDS,
@@ -6898,6 +6906,10 @@ def _run_agent_openjiuwen(
                     **timing, "sample_id": sample_id, "execution_unit_id": unit_id,
                 }},
             )
+            # Decision 309: the row is whole here (episode records, then its
+            # own timing record); make it durable before the next row's work.
+            if on_outcome is not None and state.final_outcome is not None:
+                on_outcome(state.final_outcome)
 
         panel_participation = native_episode_binding.workflow_panel
         if panel_participation is not None:
@@ -7314,6 +7326,8 @@ def _run_agent_openjiuwen(
                 final_supply=_supply_for_state(snapshot, state.query_state),
                 trace_buffer=combine_trace_buffers(state),
             )
+            if on_outcome is not None:
+                on_outcome(state.final_outcome)
             publish_workflow_state(state, session)
             return
         if advance.next_query_state is None or advance.next_contact is None:
@@ -8014,6 +8028,38 @@ def run_speech_native_agent_loop(
 
     flight_lock = read_flight_lock(Path(data_root))
     outcomes: list[_AgentRuntimeOutcome | None]
+
+    # Owner decision 309 (2026-10-14): the gold-free runtime trace of a row is
+    # emitted -- exactly as before, into the same buffer, after the row's own
+    # records -- the moment the row settles instead of after the whole window,
+    # and the row is handed to the sink's optional ``row_checkpoint`` so the
+    # flight can make it durable. Idempotent per row; the record order inside
+    # every row's buffer, and the order the buffers reach the trace sink, are
+    # unchanged, so an uninterrupted flight's trace bytes are too.
+    row_checkpoint = getattr(trace_sink, "row_checkpoint", None)
+    runtime_trace_by_task: dict[int, str] = {}
+
+    def settle_outcome(outcome: _AgentRuntimeOutcome) -> str:
+        index = outcome.prepared.index
+        known = runtime_trace_by_task.get(index)
+        if known is not None:
+            return known
+        runtime_trace_sha256 = _emit_agent_runtime_trace(
+            sink=outcome.trace_buffer,
+            controller_policy_id=controller_policy_id,
+            agent_executor_id=agent_executor_id,
+            agent_executor_version=agent_executor_version,
+            snapshot_sha256=snapshot_sha256,
+            outcome=outcome,
+            record_namespace=trace_record_namespace,
+        )
+        runtime_trace_by_task[index] = runtime_trace_sha256
+        if callable(row_checkpoint) and outcome.prepared.execution_unit_id is None:
+            row_checkpoint(
+                outcome=outcome, trace_records=tuple(outcome.trace_buffer.iter_records()),
+            )
+        return runtime_trace_sha256
+
     if agent_executor_id == "openjiuwen-workflow-v1":
         outcomes = list(
             _run_agent_openjiuwen(
@@ -8038,6 +8084,7 @@ def run_speech_native_agent_loop(
                 knowledge_value_renderer=knowledge_value_renderer,
                 native_episode_binding=native_episode_binding,
                 thinking_policy=thinking_policy,
+                on_outcome=settle_outcome,
             )
         )
     else:
@@ -8103,17 +8150,7 @@ def run_speech_native_agent_loop(
     try:
         for outcome in outcomes:
             assert outcome is not None
-            runtime_trace_sha256s.append(
-                _emit_agent_runtime_trace(
-                    sink=outcome.trace_buffer,
-                    controller_policy_id=controller_policy_id,
-                    agent_executor_id=agent_executor_id,
-                    agent_executor_version=agent_executor_version,
-                    snapshot_sha256=snapshot_sha256,
-                    outcome=outcome,
-                    record_namespace=trace_record_namespace,
-                )
-            )
+            runtime_trace_sha256s.append(settle_outcome(outcome))
             outcome.trace_buffer.flush_into(trace_sink)
     finally:
         for outcome in outcomes:

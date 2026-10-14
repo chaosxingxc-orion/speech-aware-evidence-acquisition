@@ -216,6 +216,19 @@ def verify_bundle(manifest_path: Path) -> VerifiedBundle:
         predecessor_records=predecessor_records if kept_sample_ids else None,
         kept_sample_ids=kept_sample_ids,
     )
+    # Owner decision 309 (2026-10-14): an attempt that made its rows durable
+    # pins its row checkpoint in the manifest. The file is re-hashed, its chain
+    # re-verified, and every COMPLETE row's stored canonical record must equal
+    # the sealed outputs row of the same sample byte for byte. A manifest
+    # without the block (every manifest sealed before this change) is unchanged.
+    row_checkpoint_block = manifest.get("row_checkpoint")
+    if row_checkpoint_block is not None:
+        from ..row_checkpoint import RowCheckpointError, verify_manifest_block
+
+        try:
+            verify_manifest_block(row_checkpoint_block, outputs_rows)
+        except RowCheckpointError as error:
+            raise BundleError(f"row_checkpoint: {error}") from error
 
     # ------------------------------------------------------------------
     # I-1 fix: the plan block is RE-VALIDATED as a genuine

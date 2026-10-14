@@ -133,4 +133,18 @@ def test_completed_and_failing_native_episode_traces_survive_once(tmp_path):
     }
     assert all(row["batch_started_ns"] <= row["admitted_ns"] <= row["finished_ns"]
                for row in timing)
-    assert channel_counts["USE"] == len(contact_use) + len(terminal_use) + len(timing)
+    # Owner decision 309 (2026-10-14): a row's gold-free runtime records are
+    # emitted when ITS episode settles, not after the whole window, so the
+    # completed row's `runtime-use` record now survives a failing sibling too.
+    # The failing row never settled and has none; the gold-bearing posthoc
+    # record is still emitted only after the whole window and so is absent.
+    runtime_use = [
+        record_id for channel, record_id, _payload in harness.trace.records
+        if channel == "USE" and record_id.endswith("/runtime-use")
+    ]
+    assert len(runtime_use) == 1 and runtime_use[0].startswith(f"{completed_id}/")
+    assert not any(record_id.endswith("/posthoc-use")
+                   for _channel, record_id, _payload in harness.trace.records)
+    assert channel_counts["USE"] == (
+        len(contact_use) + len(terminal_use) + len(timing) + len(runtime_use)
+    )

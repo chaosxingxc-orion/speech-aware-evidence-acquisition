@@ -169,6 +169,54 @@ _PREDECESSOR_FIELDS = frozenset(
 )
 
 
+#: The extra fields of a checkpoint-mode (mode B) block: ``mode`` is the
+#: literal ``"checkpoint"``; the path and whole-file sha256 pin the
+#: predecessor's ``<run_id>.rows.ckpt.jsonl``, from which ``trace_path`` (a file
+#: this resume materialized) is a pure function.
+_CHECKPOINT_PREDECESSOR_FIELDS = frozenset({"mode", "checkpoint_path", "checkpoint_sha256"})
+
+
+def _verify_checkpoint_predecessor(block: Mapping[str, object], raw_trace: bytes) -> None:
+    """I7r for mode B: the declared trace is exactly the kept rows' stored
+    trace lines, in checkpoint order, from the pinned checkpoint.
+
+    The checkpoint is re-hashed against its declared sha256 and its chain is
+    re-verified; every kept sample must be a COMPLETE, arm-complete row of it;
+    and the predecessor trace the rows are held against must equal, byte for
+    byte, what those rows' stored trace lines concatenate to. So a mode-B kept
+    row is held against the bytes its own attempt durably recorded, through the
+    same one-trace-per-row check a mode-A row gets.
+    """
+
+    from ..row_checkpoint import (  # noqa: PLC0415
+        RowCheckpointError, kept_trace_text, read_checkpoint,
+    )
+
+    try:
+        document = read_checkpoint(
+            Path(str(block["checkpoint_path"])),
+            expected_sha256=str(block["checkpoint_sha256"]),
+        )
+    except RowCheckpointError as error:
+        raise BundleError(f"{error} ({RESUME_PREDECESSOR_INVARIANT})") from error
+    by_sample = document.by_sample()
+    kept_rows = []
+    for sample_id in block["kept_sample_ids"]:
+        row = by_sample.get(sample_id)
+        if row is None or not row.keepable:
+            raise BundleError(
+                f"predecessor_attempt keeps sample {sample_id!r}, which is not a COMPLETE "
+                f"row of the pinned checkpoint ({RESUME_PREDECESSOR_INVARIANT})"
+            )
+        kept_rows.append(row)
+    kept_rows.sort(key=lambda row: row.seq)
+    if raw_trace != kept_trace_text(kept_rows).encode("utf-8"):
+        raise BundleError(
+            "predecessor_attempt trace is not the kept rows' stored trace lines from the "
+            f"pinned checkpoint ({RESUME_PREDECESSOR_INVARIANT})"
+        )
+
+
 def _kept_sample_ids_sha256(sample_ids: Sequence[str]) -> str:
     """The kept-row list hash, byte for byte as ``core.flight.resume`` mints it."""
 
@@ -188,10 +236,27 @@ def _validate_predecessor_block(
     two can never drift into disagreeing about what a resumed manifest is.
     """
 
-    if not isinstance(block, Mapping) or set(block) != _PREDECESSOR_FIELDS:
+    # Owner decision 309 (2026-10-14): a block whose rows were kept from a row
+    # checkpoint (mode B) carries three more fields. Without ``mode`` the block
+    # is the original mode-A shape, byte for byte.
+    is_checkpoint = isinstance(block, Mapping) and block.get("mode") == "checkpoint"
+    expected_fields = (
+        _PREDECESSOR_FIELDS | _CHECKPOINT_PREDECESSOR_FIELDS
+        if is_checkpoint else _PREDECESSOR_FIELDS
+    )
+    if not isinstance(block, Mapping) or set(block) != expected_fields:
         raise BundleError(
             "run manifest predecessor_attempt must be an object with exactly "
-            f"{sorted(_PREDECESSOR_FIELDS)} ({RESUME_PREDECESSOR_INVARIANT})"
+            f"{sorted(expected_fields)} ({RESUME_PREDECESSOR_INVARIANT})"
+        )
+    if is_checkpoint and (
+        not isinstance(block.get("checkpoint_path"), str)
+        or not block["checkpoint_path"].strip()
+        or not _is_sha256(block.get("checkpoint_sha256"))
+    ):
+        raise BundleError(
+            "predecessor_attempt.checkpoint_path / checkpoint_sha256 must be a path and a "
+            f"64-hex SHA-256 ({RESUME_PREDECESSOR_INVARIANT})"
         )
     if block.get("schema") != RESUME_PREDECESSOR_SCHEMA:
         raise BundleError(
@@ -320,6 +385,8 @@ def verify_predecessor_attempt(
             f"manifest declares {block['trace_sha256']} -- the predecessor trace "
             f"changed after it was declared ({RESUME_PREDECESSOR_INVARIANT})"
         )
+    if block.get("mode") == "checkpoint":
+        _verify_checkpoint_predecessor(block, raw)
     return _verify_raw_trace(raw, None), kept
 
 
@@ -443,6 +510,8 @@ def verify_predecessor_attempts(
                 f"{block['trace_sha256']} -- the predecessor trace changed after "
                 f"it was declared ({RESUME_PREDECESSOR_INVARIANT})"
             )
+        if block.get("mode") == "checkpoint":
+            _verify_checkpoint_predecessor(block, raw)
         trace_records = _verify_raw_trace(raw, None)
         for sample_id in kept:
             per_sample[sample_id] = trace_records
