@@ -7,7 +7,10 @@
 #   arm     the five-arm column flight (one `cell` step, ONE session). REFUSES to start until the coordinator's sign-off marker exists (SIGNOFF_MARKER: a one-line
 #           file after the coordinator read the smoke's per-arm per-node table with `bash scripts/flights/nx/nxt_r1_read.sh smoke` -- above all whether a
 #           no-think arm still emits reasoning bytes or a think marker); it WAITS for the marker (NXT1_SIGNOFF_WAIT_SECONDS, default 43200) and aborts on a batch-STOP.
-#   all     smoke, then the wait for the marker, then the column flight: the registered arc in ONE invocation (the default).
+#   all     smoke, then the wait for the marker, then the column flight: the registered arc in ONE invocation (the default). REFUSES (exit 9) when the smoke attempt
+#           already exists on the data root: a (run_id, attempt_id) pair is a one-time key and the sealed smoke is never re-flown.
+#   arm-only  the RECOVERY entry (rec1, nxt_r1_family.RECOVERIES): the column flight alone under the rec1 attempt ids. REQUIRES the smoke to be sealed (its run manifest
+#           reads COMPLETED, exit 9 otherwise) and the sign-off marker to exist already (exit 5 otherwise; it never waits).
 #
 # Registered order: swap to think-budget-np4 -> smoke -> sign-off -> the column flight -> swap back to slurp-np4. Both segments fly from ONE flight commit
 # (/home/chao/nxt1-flight-commit.txt, written by the flip).
@@ -16,7 +19,7 @@
 # ruling 303 A: the P3.1 chain has finished); the THINK-BUDGET session is the RESIDENT one (a mismatch exits 6 and starts nothing); the other geometry's session
 # is not recorded resident; the cells are flipped (nxt_r1_flip.sh). WHILE the Thinking session is resident the idle watchdog MUST be held
 # (/home/chao/saea-queue/watchdog.hold).
-#   bash scripts/flights/nx/batch_chain_nxt_r1.sh [smoke|arm|all]
+#   bash scripts/flights/nx/batch_chain_nxt_r1.sh [smoke|arm|all|arm-only]
 SEGMENT=${1:-all}
 SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
@@ -31,8 +34,35 @@ THINK_SESSION=serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1
 INSTRUCT_SESSION=serving-slurp-native-candidate-five-train-a-np4-v1
 COMMIT=$(cat /home/chao/$SHORT-flight-commit.txt) || exit 1
 case "$SEGMENT" in
-  smoke|arm|all) export BATCH_SESSION=$THINK_SESSION; OTHER=$INSTRUCT_SESSION ;;
-  *) echo "usage: batch_chain_nxt_r1.sh [smoke|arm|all]"; exit 64 ;;
+  smoke|arm|all|arm-only) export BATCH_SESSION=$THINK_SESSION; OTHER=$INSTRUCT_SESSION ;;
+  *) echo "usage: batch_chain_nxt_r1.sh [smoke|arm|all|arm-only]"; exit 64 ;;
+esac
+
+smoke_state() {  # prints sealed | opened | none for the registered smoke, read from the data root with the family's own ids
+  PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src NXT1_MAIN=$MAIN NXT1_DATA=$DATA /home/chao/.venvs/speechrl/bin/python -B - <<'PY'
+import json
+import os
+import sys
+
+sys.path.insert(0, os.environ["NXT1_MAIN"] + "/scripts/flights/nx")
+import nxt_r1_family as fam  # noqa: E402
+
+s, data = fam.CELLS["smoke"], os.environ["NXT1_DATA"]
+manifest = os.path.join(data, "runs", s["run"], s["attempt"], s["run"] + ".run-manifest.json")
+attempt = os.path.join(data, "attempts", s["run"], s["attempt"] + ".json")
+try:
+    sealed = json.load(open(manifest, encoding="utf-8")).get("status") == "COMPLETED"
+except (OSError, ValueError):
+    sealed = False
+print("sealed" if sealed else ("opened" if os.path.exists(attempt) else "none"))
+PY
+}
+SMOKE_STATE=$(smoke_state)
+case "$SEGMENT" in
+  all) [ "$SMOKE_STATE" = none ] || { echo "segment all refused: the smoke attempt already exists on the data root (state $SMOKE_STATE); the sealed smoke is never re-flown; use arm-only" >> $LOG; echo "refusing: smoke state $SMOKE_STATE; use arm-only"; exit 9; } ;;
+  arm-only)
+    [ "$SMOKE_STATE" = sealed ] || { echo "segment arm-only refused: the smoke is not sealed (state $SMOKE_STATE)" >> $LOG; echo "refusing: smoke state $SMOKE_STATE"; exit 9; }
+    [ -s "$SIGNOFF_MARKER" ] || { echo "segment arm-only refused: no sign-off marker $SIGNOFF_MARKER" >> $LOG; echo "refusing: no sign-off marker"; exit 5; } ;;
 esac
 echo "chain start $(date -u +%FT%TZ) segment $SEGMENT commit $COMMIT session $BATCH_SESSION" >> $LOG
 if [ -n "$(pgrep -af 'core.flight.cli|batch_driver.sh|lease_cli' | grep -v pgrep)" ]; then echo "a batch is running; abort" >> $LOG; exit 7; fi
@@ -102,5 +132,6 @@ wait_signoff() {
 case "$SEGMENT" in
   smoke) run_driver smoke; exit $? ;;
   arm) wait_signoff || exit $?; run_driver arm; exit $? ;;
+  arm-only) run_driver arm; exit $? ;;
   all) run_driver smoke || exit $?; wait_signoff || exit $?; run_driver arm; exit $? ;;
 esac

@@ -77,6 +77,14 @@ def rd(path: str, root: Path = REPO_ROOT) -> str:
     return dv.rd(path, root)
 
 
+def same_json(path: str, document: Mapping[str, Any], root: Path = REPO_ROOT) -> bool:
+    """True when the file on disk already holds exactly this document (key order aside): an unchanged cell is not rewritten, so a recovery of one cell
+    leaves the other cell's committed bytes alone."""
+
+    target = Path(root) / path
+    return target.is_file() and json.loads(target.read_text(encoding="utf-8")) == document
+
+
 def parent_stem(key: str) -> str:
     """The parent cell's id stem (``thinking-system-fold-b-lock`` / ``...-smoke-4``) the experiment text is rewritten from."""
 
@@ -138,6 +146,9 @@ def derive_baseline(key: str, *, repo_root: Path = REPO_ROOT, write: bool = True
     if "thinking_policy" in document:
         raise SystemExit("the column cell declares no cell-level thinking_policy")
     document["what_this_is"] = f"{ROLE_TEXT[key]} " + WHAT_THIS_IS
+    rec = fam.recovery(key)
+    if rec:
+        document["what_this_is"] += f" Recovery rec1 ({rec['recovered_at']}): {rec['root_cause']}."
     episode = document["native_episode"]
     if episode.get("finite_completion_policy") != "deliver-latest-or-abstain" or episode.get("react_exhaustion_policy") != "continue-without-answer":
         raise SystemExit("the native_episode finite-completion / ReAct-exhaustion policies are not the registered ones")
@@ -153,7 +164,7 @@ def derive_baseline(key: str, *, repo_root: Path = REPO_ROOT, write: bool = True
     stray = [k for k in moved if not any(k == p or k.startswith(p + ".") for p in ALLOWED_DIFFS)]
     if stray:
         raise SystemExit(f"leaves moved beyond the registered diff: {stray[:12]}")
-    if write:
+    if write and not same_json(out, document, repo_root):
         dv.wr(out, dv.dump_like(raw, document), repo_root)
     return {"path": out, "document": document, "block": block, "program": composed.program_id, "ceiling": composed.program_ceiling,
             "loader_verification": dv.loader_verification(block, document, repo_root)}
@@ -162,8 +173,8 @@ def derive_baseline(key: str, *, repo_root: Path = REPO_ROOT, write: bool = True
 def budgets(key: str, repo_root: Path = REPO_ROOT) -> tuple[dict, dict]:
     spec = fam.CELLS[key]
     rows = spec["rows"]
-    calls = fam.generation_calls(key)
-    audio = fam.audio_cap(spec["roster"])
+    calls = fam.generation_calls(key)               # a recovered cell: the original plan plus the failed attempts' realised spend (run-cumulative)
+    audio = fam.cell_audio_cap(key)
     family = {
         "asr_calls": 0, "ceilings_are_not_targets": True, "encoder_calls": 0, "fit_endpoint_calls_cap": fam.fit_contact_cap(rows),
         "generation_calls_cap": calls, "gpu_hours_fit_inclusive": spec["gpu_hours"], "native_task_contract_calls_cap": calls,
@@ -203,7 +214,7 @@ def derive_experiment(key: str, *, repo_root: Path = REPO_ROOT, write: bool = Tr
     if len(ids) != spec["rows"]:
         raise SystemExit(f"{fam.ROSTER[spec['roster']]} has {len(ids)} rows, expected {spec['rows']}")
     rows = spec["rows"]
-    calls = fam.generation_calls(key)
+    calls = fam.original_generation_calls(key)      # the first-attempt arithmetic below; the cap itself is cumulative for a recovered cell
     family, plan = budgets(key, repo_root)
     document["date"] = fam.DATE
     document["experiment_id"] = spec["run"]
@@ -229,7 +240,7 @@ def derive_experiment(key: str, *, repo_root: Path = REPO_ROOT, write: bool = Tr
     cell.update(attempt_id=spec["attempt"], model_fragment=spec["model"],
                 allowed_execution_stages=["check", "prepare-supply", "worker"] + ([] if smoke else ["campaign"]))
     document["generation_budget"] = {
-        "cap": calls, "target": calls,
+        "cap": plan["planned_model_calls"], "target": plan["planned_model_calls"],
         "definition": (
             f"The review-off module graph (perception 1, solver 1; Reviewer and Planner never visited) under program {fam.PROGRAM} with the five-arm "
             f"thinking-policy column at the Perception node: {rows:,} x {fam.CONTACTS_PER_ROW} = {rows * fam.CONTACTS_PER_ROW:,} is the exact program "
@@ -239,6 +250,14 @@ def derive_experiment(key: str, *, repo_root: Path = REPO_ROOT, write: bool = Tr
             f"{tf.FIT_ENDPOINTS_PER_CONTACT} = {fam.fit_contact_cap(rows):,} tokenizer endpoint calls under its own run id {spec['fit_run']}. The GPU-hour "
             f"ceiling is a BOUND (rows x {fam.ARM_MIX_ROWS} full-row equivalents / {fam.ROWS_PER_MINUTE_FULL} rows per minute / 60 x {fam.GPU_MARGIN}, "
             "ceil 0.1), never a target. The budget is RUN-CUMULATIVE across every attempt of this run id.")}
+    rec = fam.recovery(key)
+    if rec:
+        # prose only: the cap above is the cumulative one (the original ceiling plus the failed attempt's realised spend)
+        spent_calls, spent_audio = fam.predecessor_spend(key)
+        document["generation_budget"]["definition"] += (
+            f" Recovery rec1 (the cell's single one; a second failure closes the cell): the failed predecessor attempt {rec['predecessor_attempt_id']} spent "
+            f"{spent_calls:,} contacts and {spent_audio:g} speech-seconds, so the run-cumulative budget is the original plan plus that spend: "
+            f"{plan['planned_model_calls']:,} calls, {plan['planned_speech_audio_seconds']:,} speech-seconds.")
     out = f"configs/experiment/{spec['cell']}.json"
     cell["readiness"] = {
         "reason": (f"{ROLE_TEXT[key]} Registered before contact on {fam.DATE} by script (decision 58) from the 268-B Thinking lock cell and the module "
@@ -283,7 +302,7 @@ def derive_experiment(key: str, *, repo_root: Path = REPO_ROOT, write: bool = Tr
     leftovers = [m.group(0) for m in re.finditer(r".{40}(?:thinking-system|THINKING-SYSTEM|owner decision 268|Thinking system arm).{20}", json.dumps(document))]
     if leftovers:
         raise SystemExit(f"inherited parent identity text survived the rewrite ({key}): {leftovers[:3]}")
-    if write:
+    if write and not same_json(out, document, repo_root):
         dv.wr(out, dv.dump_like(raw, document), repo_root)
     return {"path": out, "document": document}
 

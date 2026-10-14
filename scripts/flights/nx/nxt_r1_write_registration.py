@@ -8,16 +8,27 @@ ONE package ``docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/`
 ``stage3_measurement`` blocks keyed by run id, ``protocol-registered-v1.json``, the four plan files, ``analysis-recipe-v1.json``,
 ``root-admission-draft-v1.json``, ``countersign-row-texts-v1.json``, ``draft-ledger-rows.md``) and, beside it, the preregistration.
 
-    python -B scripts/flights/nx/nxt_r1_write_registration.py --study-commit <sha> --registered-at 2026-10-13T12:00:00.000000+00:00
+    python -B scripts/flights/nx/nxt_r1_write_registration.py --study-commit <sha> [--registered-at 2026-10-13T12:00:00.000000+00:00]
         [--root DIR] [--append-ledger] [--no-derive]
+        [--recovery-registered-at <UTC>] [--recovery-base-commit <sha>] [--append-recovery-ledger]
+
+RECOVERY rec1 (owner decision 309 A, 2026-10-14): ``nxt_r1_family.RECOVERIES`` re-registers the column flight under new attempt ids, a new FIT run and
+attempt, and run-cumulative caps (scripts/flights/lib/recovery.py). The writer then supersedes the first-attempt plans, writes the ``-rec1`` plans with the
+recovery block, re-verifies the committed predecessor snapshot against the data root when present, and puts the recovery ledger block (two DRAFT rows) in
+``draft-ledger-rows.md``; ``--append-recovery-ledger`` also appends that block to ``docs/exposure-ledger.md`` (idempotent). ``--registered-at`` defaults to the
+first registration's stamp.
 """
 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import io
 import json
+import os
+import re
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -27,6 +38,7 @@ sys.path.insert(0, str(HERE))
 import nxt_r1_derive_cells as dc  # noqa: E402
 import nxt_r1_family as fam  # noqa: E402
 
+rcv = fam.rcv                                       # scripts/flights/lib/recovery.py (the generic recovery mechanism)
 REPO_ROOT = fam.REPO_ROOT
 if str(REPO_ROOT / "src") not in sys.path:
     sys.path.insert(0, str(REPO_ROOT / "src"))
@@ -145,19 +157,31 @@ def cost_estimate() -> dict:
                    "perception_share_of_a_row": round(fam.PERCEPTION_SHARE_OF_ROW, 3),
                    "single_node_off_cost_note": "0.6 is the larger of the Perception share (0.588) and the Solver share (0.412), rounded up: a no-think contact costs a few hundred tokens, not zero"},
         "arm_mix_rows": fam.ARM_MIX_ROWS,
-        "column_flight": {"contacts": fam.program_calls("arm"), "plan_ceiling_calls": fam.generation_calls("arm"), "expected_gpu_hours": round(expected, 2),
-                          "planned_ceiling_gpu_hours": fam.CELLS["arm"]["gpu_hours"]},
+        "column_flight": {"contacts": fam.program_calls("arm"), "plan_ceiling_calls": fam.original_generation_calls("arm"), "expected_gpu_hours": round(expected, 2),
+                          "planned_ceiling_gpu_hours": fam.CELLS["arm"]["gpu_hours"],
+                          "run_cumulative_plan_calls": fam.generation_calls("arm"), "run_cumulative_speech_audio_seconds": fam.cell_audio_cap("arm")},
         "smoke": {"contacts": fam.program_calls("smoke"), "planned_ceiling_gpu_hours": fam.CELLS["smoke"]["gpu_hours"]},
         "registered_total_gpu_hours": round(fam.CELLS["arm"]["gpu_hours"] + fam.CELLS["smoke"]["gpu_hours"], 1),
         "reference_268b": "one 268-B arm pass: 1,080 rows, 2,160 contacts, 9.78 GPU-h at 1.84 rows/min (spent about 9.4 against the 8.4 ceiling: the lesson of the measured-throughput rule)",
         "fallback_note": (f"The answer-only fallback adds at most one contact per budgeted-thinking contact: {fam.THINKING_CONTACTS_PER_ROW} per row (both-on 2 + twin 2 + "
                           f"perception-off 1 + solver-off 1 + both-off 0); planned_model_calls is rows x ({fam.CONTACTS_PER_ROW} + {fam.FALLBACK_CONTACTS_PER_ROW_CEILING}) = "
-                          f"{fam.generation_calls('arm')} (program maximum {fam.program_calls('arm')}). The runner requires only rows x ({fam.CONTACTS_PER_ROW} + 2). "
+                          f"{fam.original_generation_calls('arm')} (program maximum {fam.program_calls('arm')}). The runner requires only rows x ({fam.CONTACTS_PER_ROW} + 2). "
                           f"The FIT cap stays structural (rows x program contacts x endpoints = {fam.fit_contact_cap(fam.ROWS)})."),
     }
 
 
-def plan_docs(root: Path, ids: Mapping[str, Mapping], commit: str, at: str, protocol_sha: str, pkg: str) -> dict:
+def existing_plan(root: Path, pkg: str, key: str) -> dict | None:
+    """The cell's committed generation plan (rec1 name first, then the first-attempt name), or ``None`` on a first registration."""
+
+    spec = fam.CELLS[key]
+    for name in (fam.plan_file_name(key, "generation"), rcv.plan_file_name(spec["prefix"], "generation", False)):
+        path = Path(root) / pkg / name
+        if path.is_file():
+            return json.loads(path.read_text(encoding="utf-8"))
+    return None
+
+
+def plan_docs(root: Path, ids: Mapping[str, Mapping], commit: str, at: str, protocol_sha: str, pkg: str, recov: Mapping[str, Mapping] | None = None) -> dict:
     docs = {}
     arms_doc = {arm: ({"thinking_policy": fam.POLICIES[arm]} if arm in fam.POLICIES else {"thinking_policy": None, "role": "twin" if arm == fam.TWIN else "delivering"})
                 for arm in fam.ARM_ORDER}
@@ -174,6 +198,17 @@ def plan_docs(root: Path, ids: Mapping[str, Mapping], commit: str, at: str, prot
                 "one_factor": ("The per-node thinking decoding of the non-delivering arms (enable_thinking false at the named node). The delivering arm is the 268-B lock form "
                                f"(budget {fam.tsf.THINK_BUDGET_TOKENS} + reserve {fam.tsf.THINK_ANSWER_RESERVE_TOKENS} = cap {fam.tsf.THINK_MAX_TOKENS}); the system, the "
                                "knowledge supply, the sealed query vectors and the roster are the 268-B lock's.")}
+        prior = existing_plan(root, pkg, key)
+        if prior and prior.get("preparation_base_commit"):
+            base["preparation_base_commit"] = prior["preparation_base_commit"]      # the commit the supply was prepared on does not move with a recovery
+        pin = json.loads((Path(root) / "configs" / "baseline" / f"{i['baseline_fragment']}.json").read_text(encoding="utf-8")).get("prepared_phase_supply")
+        if isinstance(pin, dict) and re.fullmatch(r"[0-9a-f]{64}", str(pin.get("sha256"))) and set(pin["sha256"]) != {"0"}:
+            # the cell's own first-phase supply is already minted (same run id): the plan carries the baseline's pin, as refresh_registered_plan_pins.py leaves it
+            base["prepared_phase_supply"] = dict(pin)
+            base["prepared_phase_supply_annotations"] = {"note": "the flip mints this cell's own first-phase supply under its own run id (item E16)"}
+        if recov and key in recov:
+            base["recovery"] = json.loads(json.dumps(recov[key]))
+            base["recovery_budget"] = rcv.recovery_budget(fam.RECOVERIES, key, i["family_budget"])
         gen = dict(i["execution_plan"], attempt_id=i["attempt_id"], carrier_lock_key=i["carrier_lock_key"], protocol_hash=i["protocol_hash"],
                    run_id=i["run_id"], schema="saea-execution-plan-v1", split_identity_hash=i["split_identity_hash"], study="speech-aware-evidence-acquisition")
         route = ("Shared core.flight.cli worker on this cell alone (the batch driver's smoke step); never scored." if key == "smoke" else
@@ -193,6 +228,8 @@ def plan_docs(root: Path, ids: Mapping[str, Mapping], commit: str, at: str, prot
 
 LEDGER_COLUMNS = reg.LEDGER_COLUMNS
 INHERITED = reg.LEDGER_INHERITED
+RECOVERY_LEDGER_MARK = "## Cell NXT-R1 recovery rec1: "
+RECOVERY_AUTHORITY = "owner ruling 304 of 2026-10-13 (the per-node thinking-policy column) and owner decision 309 A of 2026-10-14 (recovery re-registration)"
 THINK_MODEL_TEXT = ("Frozen Qwen3-Omni-30B-A3B-Thinking Q4_K_M (qwen3-omni-30b-a3b-thinking-gguf-q4km), decoder-only build 04ccc72a, c98304 np4 x 24,576 "
                     f"max{fam.tsf.THINK_MAX_TOKENS} (reasoning budget {fam.tsf.THINK_BUDGET_TOKENS}), q8_0 KV, --reasoning-format deepseek (model fragment {fam.THINK_MODEL}); "
                     "its own promoted speech packets; module program " + fam.PROGRAM + "; per-arm enable_thinking false at the named node; no tool authority")
@@ -203,6 +240,8 @@ SCOPE = (f"the 268-B Thinking lock system (plain review-off COMP-1b module graph
 def draft_rows(ids: Mapping[str, Mapping], commit: str, at: str, pkg: str, shas: Mapping[str, str]) -> list[list[str]]:
     rows = []
     for key in fam.ALL_KEYS:
+        if fam.recovery(key):
+            continue                    # a recovered cell's two rows are the recovery block (rcv.recovery_ledger_block), written beside this table
         i = ids[key]
         for fit in (False, True):
             plan = f"{pkg}/{fam.plan_file_name(key, 'fit' if fit else 'generation')}"
@@ -234,6 +273,15 @@ def countersign_texts(ids: Mapping[str, Mapping]) -> dict:
     rows = {}
     for key in fam.ALL_KEYS:
         i = ids[key]
+        if fam.recovery(key):
+            spec = fam.CELLS[key]
+            clause = (f"the generation run id {i['run_id']} is unchanged; the decision receipt {fam.DECISION_RELPATH} is re-minted by the coordinator "
+                      f"(nxt_r1_mint_receipt.py --supersede) so that its eligible_run_ids list the new FIT run id {i['fit_run_id']}")
+            for run, label in ((i["run_id"], f"the {spec['role']}"), (i["fit_run_id"], f"live phase-fit identity of the {spec['role']}")):
+                rows[run] = rcv.countersign_text(
+                    fam.RECOVERIES, key, authority=RECOVERY_AUTHORITY, role=spec["role"], label=label, attempt=i["attempt_id"], fit_run=i["fit_run_id"],
+                    fit_attempt=i["fit_attempt_id"], receipt_clause=clause, tail="the READ row stays a draft until the column flight is sealed")
+            continue
         rows[i["run_id"]] = head + f"{fam.CELLS[key]['role']}" + tail
         rows[i["fit_run_id"]] = head + f"live phase-fit identity of the {fam.CELLS[key]['role']}" + tail
     rows[fam.READ_RUN_ID] = ("REGISTERED BEFORE READ (root countersigned <UTC timestamp> by root flight operations on the coordinator's brief: owner ruling 304 of "
@@ -328,8 +376,95 @@ def readme_text(ids: Mapping[str, Mapping], cost: Mapping[str, Any]) -> str:
         "| `draft-ledger-rows.md` | the DRAFT exposure rows (also appended at the end of `docs/exposure-ledger.md`) |\n")
 
 
-def write_package(root: Path, commit: str, at: str, *, append_ledger: bool = False, derive: bool = True) -> dict:
+def original_registered_at(root: Path) -> str:
+    """The first registration's stamp (kept by a recovery: the plans, protocol and facts keep their original ``registered_at_utc``; the recovery
+    carries its own stamp in its ``recovery`` block)."""
+
+    return json.loads((Path(root) / fam.package_file("registered-facts-v1.json")).read_text(encoding="utf-8"))["registered_at_utc"]
+
+
+def verify_snapshots(root: Path, data_root: str | None) -> dict:
+    """Re-read each predecessor's attempt record on the data root and compare it with the committed snapshot receipt (skipped, and said so, when the
+    data root or the record is absent: a CI checkout has no data root). A disagreement raises."""
+
+    out = {}
+    for key in fam.ALL_KEYS:
+        if not fam.recovery(key):
+            continue
+        snap = rcv.load_snapshot(Path(root) / fam.PREDECESSOR_SNAPSHOT[key])
+        record = Path(data_root or "/nonexistent") / "attempts" / snap["run_id"] / f"{snap['attempt_id']}.json"
+        if data_root and record.is_file():
+            fresh = rcv.verify_predecessor_snapshot(snap, data_root)
+            out[key] = {"verified": True, "state_now": fresh["state"], "actual_calls": fresh["actual_calls"],
+                        "actual_audio_seconds": fresh["actual_audio_seconds"]}
+        else:
+            out[key] = {"verified": False, "reason": "no attempt record on the data root (snapshot receipt used as committed)"}
+    return out
+
+
+def recovery_blocks(root: Path, ids: Mapping[str, Mapping], at: str, recovery_at: str, recovery_base: str, worktree: str, branch: str) -> dict:
+    """The recovery ledger block (two DRAFT rows) of every recovered cell, keyed by cell key."""
+
+    out = {}
+    for key in fam.ALL_KEYS:
+        if not fam.recovery(key):
+            continue
+        i, spec = ids[key], fam.CELLS[key]
+        scope = f"Cell NXT-R1 {spec['role']} -- RECOVERY rec1: {SCOPE}; re-flown whole after the host restart that killed the first attempt"
+        out[key] = rcv.recovery_ledger_block(
+            fam.RECOVERIES, key, mark=RECOVERY_LEDGER_MARK, authority=RECOVERY_AUTHORITY, package=fam.PACKAGE, role=spec["role"], run=i["run_id"],
+            fit_run=i["fit_run_id"], attempt=i["attempt_id"], fit_attempt=i["fit_attempt_id"], session=fam.THINK_SESSION, scope=scope,
+            fit_scope=f"Cell NXT-R1 {spec['role']} -- RECOVERY rec1 live phase-fit spend identity, request envelopes only, no generation.",
+            model_tool=THINK_MODEL_TEXT, carrier=f"slurp TRAIN Fold B {i['rows']:,}", split_hash=i["split_identity_hash"], caps=i["family_budget"],
+            config_hash=i["composed_config_hash"], protocol_hash=i["protocol_hash"], registered_at=recovery_at, base_commit=recovery_base,
+            worktree=worktree, branch=branch, plan_names=(fam.plan_file_name(key, "generation"), fam.plan_file_name(key, "fit")), inherited=INHERITED)
+    return out
+
+
+def recovery_markdown(ids: Mapping[str, Mapping]) -> str:
+    """The README / preregistration recovery text: one section per recovered cell."""
+
+    out = ""
+    for key in fam.ALL_KEYS:
+        if not fam.recovery(key):
+            continue
+        i, spec = ids[key], fam.CELLS[key]
+        out += rcv.recovery_section(
+            fam.RECOVERIES, key, role=spec["role"], run=i["run_id"], attempt=i["attempt_id"], fit_run=i["fit_run_id"], fit_attempt=i["fit_attempt_id"],
+            caps=i["family_budget"], plan_names=(fam.plan_file_name(key, "generation"), fam.plan_file_name(key, "fit")))
+    return out
+
+
+def recovery_sequence_text(ids: Mapping[str, Mapping]) -> str:
+    """The coordinator's recovery sequence (README only)."""
+
+    arm, smoke = ids["arm"], ids["smoke"]
+    return (
+        "\n### Recovery sequence (the coordinator's; it replaces steps 2 to 6 above for the recovered column flight)\n\n"
+        "1. Re-run the writer on master with the recovery ledger block: `python -B scripts/flights/nx/nxt_r1_write_registration.py --study-commit <sha> "
+        "--recovery-registered-at <UTC> --append-recovery-ledger`.\n"
+        f"2. Countersign the two new rows (`{arm['run_id']}` recovery row, `{arm['fit_run_id']}`) with `countersign-row-texts-v1.json`; fold the first-attempt "
+        "generation row of the same run id into the recovery row.\n"
+        "3. `python scripts/flights/nx/nxt_r1_mint_receipt.py --supersede` (the old receipt is renamed to a dated backup first; the new receipt lists the "
+        "rec1 FIT run id and carries the recovery block and the new plan sha256).\n"
+        "4. The flip converges both cells (both readiness blocks pin the decision receipt, whose sha256 changed): "
+        f"`bash scripts/flights/batch/flip_package_ext4.sh --flip \"scripts/flights/nx/nxt_r1_flip.sh\" --package {fam.PACKAGE} --cells "
+        f"{smoke['experiment']},{arm['experiment']} --pins-commit-msg /home/chao/nxt1-pins-commit.txt`. The smoke is flipped, never re-flown.\n"
+        "5. Hold the idle watchdog; `bash scripts/flights/batch/serving_swap.sh " + fam.THINK_SWAP_TARGET + "`.\n"
+        "6. `bash scripts/flights/nx/batch_chain_nxt_r1.sh arm-only` (refuses unless the smoke is sealed and the sign-off marker exists; `all` refuses "
+        "because it would re-fly the sealed smoke).\n"
+        "7. Optional hygiene: mark the OPENED predecessor attempt aborted (`AttemptStore.abort_if_opened`); its realised spend counts either way.\n")
+
+
+def write_package(root: Path, commit: str, at: str | None, *, append_ledger: bool = False, derive: bool = True, recovery_at: str | None = None,
+                  recovery_base: str | None = None, append_recovery_ledger: bool = False, recovery_worktree: str = "", recovery_branch: str = "",
+                  data_root: str | None = None) -> dict:
     root = Path(root)
+    at = at or original_registered_at(root)
+    recovery_at = recovery_at or datetime.now(timezone.utc).isoformat()
+    recovery_base = recovery_base or commit
+    snapshot_check = verify_snapshots(root, data_root)
+    recov = {k: rcv.persisted_recovery(fam.RECOVERIES, k, recovery_at, recovery_base) for k in fam.ALL_KEYS if fam.recovery(k)}
     derived = dc.derive(repo_root=root) if derive else None
     loader = {k: (derived["cells"][k]["loader_verification"] if derived else {"ok": True}) for k in fam.ALL_KEYS}
     pkg = fam.PACKAGE
@@ -351,9 +486,21 @@ def write_package(root: Path, commit: str, at: str, *, append_ledger: bool = Fal
         "schema": "saea-registered-protocol-v1", "status": STATUS, "study_commit_at_registration": commit,
         "the_question": ("Which nodes of the locked Thinking system do not need thinking (owner ruling 304)? Each non-delivering arm is read PAIRED per row against "
                          "the delivering both-on arm on the same 1,080 Fold B rows in one flight, with the in-flight twin as the null.")}
+    snapshot_refs = {k: {"path": fam.PREDECESSOR_SNAPSHOT[k],
+                         "sha256": hashlib.sha256((root / fam.PREDECESSOR_SNAPSHOT[k]).read_bytes()).hexdigest()} for k in recov}
+    if recov:
+        protocol["recovery"] = json.loads(json.dumps(recov))
+        protocol["predecessor_snapshots"] = snapshot_refs
+        protocol["superseded_attempt_ids"] = [a for k in recov for a in (fam.recovery(k)["predecessor_attempt_id"], fam.recovery(k)["predecessor_fit_attempt_id"])]
+        protocol["recovery_note"] = " ".join(f"[{fam.CELLS[k]['role']}] {fam.recovery(k)['reason']}" for k in recov)
+        protocol["failure_policy"] += " Recovery rec1 is spent for a recovered cell: a second failure closes it."
     protocol_sha = reg.wjson(root, f"{pkg}/protocol-registered-v1.json", protocol)
-    plans = plan_docs(root, ids, commit, at, protocol_sha, pkg)
+    plans = plan_docs(root, ids, commit, at, protocol_sha, pkg, recov)
     shas = {name: reg.wjson(root, f"{pkg}/{name}", doc) for name, doc in plans.items()}
+    for key in recov:
+        for stale in fam.superseded_plan_file_names(key):       # the first-attempt plans are superseded: removed from the package (git keeps them)
+            if (root / pkg / stale).is_file():
+                (root / pkg / stale).unlink()
     shas["protocol-registered-v1.json"] = protocol_sha
     recipe = {
         "authority": f"{DECISIONS} ({fam.OWNER_RULINGS}); {SPEC}; {INSTRUMENT}",
@@ -399,6 +546,10 @@ def write_package(root: Path, commit: str, at: str, *, append_ledger: bool = Fal
         "rows": fam.ROWS, "schema": "saea-registered-facts-v1", "stage3_measurement": measurement_blocks(ids),
         "study_commit_at_registration": commit, "thinking_knobs": json.loads(json.dumps(fam.THINKING_KNOBS)), "no_think_node": json.loads(json.dumps(fam.NO_THINK_KNOBS)),
         "thinking_arms": {a: (fam.POLICIES.get(a)) for a in fam.ARM_ORDER}, "status": "DRAFT-HELD"}
+    if recov:
+        facts["recovery"] = json.loads(json.dumps(recov))
+        facts["predecessor_snapshots"] = snapshot_refs
+        facts["recovery_budget"] = {k: rcv.recovery_budget(fam.RECOVERIES, k, ids[k]["family_budget"]) for k in recov}
     shas["registered-facts-v1.json"] = reg.wjson(root, f"{pkg}/registered-facts-v1.json", facts)
     draft = {
         "_draft_note": ("A DRAFT for the coordinator to mint on the data root with scripts/flights/nx/nxt_r1_mint_receipt.py. It authorises "
@@ -420,25 +571,39 @@ def write_package(root: Path, commit: str, at: str, *, append_ledger: bool = Fal
         "recorded_at_utc": None, "schema": "saea-campaign-decision-v1",
         "service": {"expected_session_id": fam.THINK_SESSION, "model_fragment": fam.THINK_MODEL, "no_child_start_stop": True},
         "status": "DRAFT-NOT-MINTED"}
+    if recov:
+        draft["recovery"] = json.loads(json.dumps(recov))
+        draft["recovery_budget"] = {k: rcv.recovery_budget(fam.RECOVERIES, k, ids[k]["family_budget"]) for k in recov}
+        draft["antecedents"]["predecessor_snapshots"] = snapshot_refs
+        draft["antecedents"]["recovery_plans"] = {
+            k: {kind: {"path": f"{pkg}/{fam.plan_file_name(k, kind)}", "sha256": shas[fam.plan_file_name(k, kind)]} for kind in ("generation", "fit")}
+            for k in recov}
+        draft["supersedes_receipt"] = {"path": fam.DECISION_RELPATH, "note": ("the first-registration receipt lists the first four run ids; this one appends the rec1 FIT "
+                                                                           "run id. nxt_r1_mint_receipt.py --supersede renames the old receipt to a dated backup first.")}
     shas["root-admission-draft-v1.json"] = reg.wjson(root, f"{pkg}/root-admission-draft-v1.json", draft)
     row_cells = draft_rows(ids, commit, at, pkg, shas)
     lines = [fam.LEDGER_MARK + " (DRAFT, root countersignature pending)", "",
-             "Five unconsumed rows -- two generation rows, their two live-phase-fit identities and the READ row -- for NX-T R1 of owner ruling 304. "
+             f"{len(row_cells)} unconsumed rows -- the cells still on their first attempt (generation row and live-phase-fit identity each) and the READ row; a "
+             "recovered cell's two rows follow this table as a recovery block -- for NX-T R1 of owner ruling 304. "
              f"Package {pkg}. No row is countersigned and no row authorises a contact. No serving row: the Thinking session is the 268-B think-budget-np4 session "
              "(the same registered swap target); its serving row is the coordinator's at the swap.",
              "", "| " + " | ".join(LEDGER_COLUMNS) + " |", "| " + " | ".join("---" for _ in LEDGER_COLUMNS) + " |"]
     lines += [reg.table_row(cells) for cells in row_cells]
     rows_text = "\n".join(lines) + "\n"
-    shas["draft-ledger-rows.md"] = reg.wr(root, f"{pkg}/draft-ledger-rows.md", rows_text)
+    blocks = recovery_blocks(root, ids, at, recovery_at, recovery_base, recovery_worktree, recovery_branch)
+    shas["draft-ledger-rows.md"] = reg.wr(root, f"{pkg}/draft-ledger-rows.md", rows_text + "".join(blocks.values()))
     shas["countersign-row-texts-v1.json"] = reg.wjson(root, f"{pkg}/countersign-row-texts-v1.json", countersign_texts(ids))
-    shas["README.md"] = reg.wr(root, f"{pkg}/README.md", readme_text(ids, cost))
+    recovery_md = recovery_markdown(ids)
+    shas["README.md"] = reg.wr(root, f"{pkg}/README.md", readme_text(ids, cost) + recovery_md + (recovery_sequence_text(ids) if recov else ""))
     prereg = (f"# NX-T R1: the per-node thinking-policy column, preregistration (DRAFT / HELD)\n\nRegistered {at[:10]} at study commit `{commit}` by script. "
               "Development numbers only.\n\n"
               f"Runs: `{arm['run_id']}` / `{arm['fit_run_id']}`; `{smoke['run_id']}` / `{smoke['fit_run_id']}`; read `{fam.READ_RUN_ID}`.\n\n"
               f"The node words and the read rule are in `{pkg}/README.md`.\n\n## The measurement declaration\n\n```json\n"
               + json.dumps({"stage3_measurement": measurement_blocks(ids)}, indent=2, ensure_ascii=False, sort_keys=True) + "\n```\n")
-    shas["__prereg__"] = reg.wr(root, fam.PREREG, prereg)
-    result = {"package": pkg, "ids": ids, "shas": shas, "blockers": blockers, "loader_verification": loader}
+    shas["__prereg__"] = reg.wr(root, fam.PREREG, prereg + recovery_md)
+    result = {"package": pkg, "ids": ids, "shas": shas, "blockers": blockers, "loader_verification": loader, "predecessor_snapshot_check": snapshot_check}
+    if append_recovery_ledger:
+        result["recovery_ledger_appended"] = {k: rcv.append_recovery_ledger_block(root / reg.LEDGER, blocks[k], ids[k]["attempt_id"]) for k in blocks}
     if append_ledger:
         ledger = root / reg.LEDGER
         current = io.open(ledger, encoding="utf-8", newline="").read()
@@ -453,12 +618,25 @@ def write_package(root: Path, commit: str, at: str, *, append_ledger: bool = Fal
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=(__doc__ or "").splitlines()[0])
     parser.add_argument("--study-commit", required=True)
-    parser.add_argument("--registered-at", required=True)
+    parser.add_argument("--registered-at", default=None,
+                        help="the first registration's stamp; default: the one already in registered-facts-v1.json (a recovery keeps it)")
     parser.add_argument("--root", default=str(REPO_ROOT), help="repository (or overlay) root to read and write")
     parser.add_argument("--append-ledger", action="store_true", help="append the DRAFT rows at the END of docs/exposure-ledger.md (idempotent)")
+    parser.add_argument("--append-recovery-ledger", action="store_true",
+                        help="append ONLY the recovered cell's two DRAFT rows (rec1) as a new ledger block; idempotent on the rec1 attempt id")
+    parser.add_argument("--recovery-registered-at", default=None,
+                        help="UTC timestamp of the recovery re-registration (default: now); recorded in the recovery plan and ledger rows")
+    parser.add_argument("--recovery-base-commit", default=None, help="the commit the recovery was registered on top of (default: --study-commit)")
+    parser.add_argument("--recovery-branch", default="sonnet/nxt1-rec1")
+    parser.add_argument("--recovery-worktree", default="/home/chao/saea-worktrees/sonnet-nxt1-rec1")
+    parser.add_argument("--data-root", default=os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR"),
+                        help="re-verify the predecessor snapshot against this data root when its attempt record is present")
     parser.add_argument("--no-derive", action="store_true", help="do not re-derive the fragments first")
     args = parser.parse_args(argv)
-    result = write_package(Path(args.root), args.study_commit, args.registered_at, append_ledger=args.append_ledger, derive=not args.no_derive)
+    result = write_package(Path(args.root), args.study_commit, args.registered_at, append_ledger=args.append_ledger, derive=not args.no_derive,
+                           recovery_at=args.recovery_registered_at, recovery_base=args.recovery_base_commit,
+                           append_recovery_ledger=args.append_recovery_ledger, recovery_worktree=args.recovery_worktree,
+                           recovery_branch=args.recovery_branch, data_root=args.data_root)
     print(json.dumps({k: v for k, v in result.items() if k != "ids"}, indent=2, sort_keys=True))
     return 0
 

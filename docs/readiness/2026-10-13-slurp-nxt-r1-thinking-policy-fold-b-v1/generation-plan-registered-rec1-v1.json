@@ -7,15 +7,15 @@
     "both-on"
   ],
   "cell": "slurp-native-stage3-nxt-r1-thinking-policy-fold-b-v1",
-  "composed_config_hash": "b9f1b25dfee7940c6a6147a7609ccc9490858672f56c64f8aab3c7ac6cf6ce3d",
+  "composed_config_hash": "6bbe2c7e4390f1f93cbe20f5ddfb2e72fec46ca1a00a7374af9727fc1365bd88",
   "execution_plan": {
-    "attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-v1",
+    "attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-rec1-v1",
     "carrier_lock_key": "slurp",
     "execution_profile": "bounded-discovery-probe",
     "planned_gpu_hours": 41.4,
-    "planned_model_calls": 17280,
-    "planned_speech_audio_seconds": 50477,
-    "protocol_hash": "88c89621a8f3dc9bad44cb07d24a1d8c20842439d8a1dec13b256ccdae0232d9",
+    "planned_model_calls": 18484,
+    "planned_speech_audio_seconds": 53776,
+    "protocol_hash": "d14d120a69b3f6de53cfddd016e456f5cecb63481aa1394e68e68cdec3424dc7",
     "run_id": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
@@ -30,11 +30,11 @@
     "ceilings_are_not_targets": true,
     "encoder_calls": 0,
     "fit_endpoint_calls_cap": 43200,
-    "generation_calls_cap": 17280,
+    "generation_calls_cap": 18484,
     "gpu_hours_fit_inclusive": 41.4,
-    "native_task_contract_calls_cap": 17280,
+    "native_task_contract_calls_cap": 18484,
     "official_complete_scoring_jobs": 1,
-    "repeated_speech_audio_seconds_cap": 50477
+    "repeated_speech_audio_seconds_cap": 53776
   },
   "no_think_node": {
     "answer_reserve_tokens": 1024,
@@ -57,9 +57,50 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "095ed78a22838946d2575335fde1ff13427f5bf2863593f9527f86cc990fc71b"
+    "sha256": "7a3bc25eafe16e71751142fefc10452e2221dc5653cb9d0d54eaad27dc252481"
   },
   "purpose": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1: thinking-policy column flight (five arms in one flight) of NX-T R1.",
+  "recovery": {
+    "amendment": "RECOVERY 2026-10-14 (the cell's single one; owner decision 309 A, coordinator brief, Fable 5.1). The generation budget is run-cumulative across the attempts of the run id (core/model/adapter.py; every attempt state counts, an OPENED one included), so the rec1 plan carries the original plan plus the failed attempt's recorded spend (1,204 calls, 3298.26 speech-seconds, read from the attempt record into docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/predecessor-snapshot-arm-rec1-v1.json). The FIT cap is structural and unchanged (rows x program contacts x endpoints per contact). The FIT run id and the FIT attempt id both take the rec1 marker because the cell is re-flown whole and a (run_id, attempt_id) pair is a one-time key; the generation run id is unchanged. The registered GPU-hour ceiling does not change.",
+    "base_commit": "e5eaee22289199997ecea7a01bc5aa5ca026b7d6",
+    "fit_cap_rule": "The FIT cap is structural: rows x program contacts x endpoints per contact.",
+    "predecessor_attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-v1",
+    "predecessor_fit_attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-fit-v1",
+    "predecessor_fit_run_id": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-FIT-V1",
+    "predecessor_state": "OPENED at flight commit 37e177e3e from 2026-10-14T12:18:45Z, killed by a host restart at 15:29Z; 1,204 calls / 3298.26 speech-seconds realised per its attempt record (reserved 17,280 / 50,477); no trace was written (the run directory holds only the session-attach receipt); preserved unread.",
+    "predecessors": [
+      {
+        "attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-v1",
+        "contacts_spent": 1204,
+        "speech_seconds_spent": 3298.2618750000015,
+        "state": "OPENED"
+      }
+    ],
+    "reason": "The predecessor attempt was killed by a Windows Update forced restart of the host (System event log 1074: 15:29Z MoUsoCoreWorker \"operating system: Service Pack (planned)\", 15:33Z TrustedInstaller \"operating system: upgrade (planned)\"). The trace sink buffers until the seal, so the attempt left no trace and the E10 mode-A resume has nothing to replay; the column flight is re-flown WHOLE under the rec1 ids. The smoke cell sealed at 2026-10-14T12:16Z, was signed off at 12:18:33Z and is NOT re-flown.",
+    "recovered_at": "2026-10-14",
+    "recovery_index": 1,
+    "registered_at_utc": "2026-10-14T16:30:00.000000+00:00",
+    "root_cause": "infrastructure, not the cell: a Windows Update forced restart (System event log 1074) killed the host session; no defect in the cell, the runtime or any registered knob",
+    "rule": "A second failure closes the cell; the fix is proven on a four-row dry run."
+  },
+  "recovery_budget": {
+    "cumulative_plan": {
+      "planned_model_calls": 18484,
+      "planned_speech_audio_seconds": 53776
+    },
+    "failed_attempt_spend": {
+      "attempt_ids": [
+        "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-v1"
+      ],
+      "model_calls": 1204,
+      "speech_audio_seconds": 3298.2618750000015
+    },
+    "original_plan": {
+      "planned_model_calls": 17280,
+      "planned_speech_audio_seconds": 50477
+    },
+    "rule": "The adapter budget is run-cumulative across the attempts of a run id; the FIT cap is structural and never scaled."
+  },
   "registered_at_utc": "2026-10-14T11:52:20Z",
   "schema": "saea-registered-generation-plan-v1",
   "scoring": "Per-arm official column scoring after a successful seal; no partial score.",

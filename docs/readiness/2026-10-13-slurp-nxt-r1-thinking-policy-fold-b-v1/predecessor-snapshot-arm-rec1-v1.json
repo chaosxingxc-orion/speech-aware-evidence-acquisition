@@ -1,0 +1,20 @@
+{
+  "actual_audio_seconds": 3298.2618750000015,
+  "actual_calls": 1204,
+  "attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-v1",
+  "attempt_record_relpath": "attempts/SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1/attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-v1.json",
+  "attempt_record_sha256": "c9c94a4fcc445b01eaf6f6c59c1c5b037c47eba9707d847b7eba3500e6ac8cf9",
+  "fit": {
+    "attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-fit-v1",
+    "attempt_record_present": false,
+    "prepared_dir_present": true,
+    "prepared_request_fit_envelopes": 1204,
+    "run_id": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-FIT-V1"
+  },
+  "reserved_audio_seconds": 50477.0,
+  "reserved_calls": 17280,
+  "run_id": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1",
+  "schema": "saea-recovery-predecessor-snapshot-v1",
+  "snapshotted_at_utc": "2026-10-14T16:12:24.506523+00:00",
+  "state": "OPENED"
+}

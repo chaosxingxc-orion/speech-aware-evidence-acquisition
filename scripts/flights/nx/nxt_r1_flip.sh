@@ -8,6 +8,9 @@
 # Root runs this ONLY after: 1. countersigning the five DRAFT rows with countersign-row-texts-v1.json; 2. minting the receipt with
 # scripts/flights/nx/nxt_r1_mint_receipt.py; 3. no other experiment in flight (the P3.1 chain SAEA-Chain-TSYSD has finished: ruling 303 A, serial GPU);
 # 4. the thinking-policy harness commit being on master. --allow-output-change must never be passed.
+# RECOVERY rec1 (2026-10-14): after the rec1 re-registration and the re-mint (nxt_r1_mint_receipt.py --supersede) BOTH cells are flipped again (default KINDS
+# "smoke arm"): each readiness block pins the decision receipt, whose sha256 changed, and the shared protocol sha256 changed. Flipping is not flying: the sealed
+# smoke is never re-flown (batch_chain_nxt_r1.sh arm-only).
 MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 # Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
@@ -28,6 +31,13 @@ fi
 if [ -n "$(pgrep -af 'core.flight.cli|batch_driver.sh' | grep -v pgrep)" ]; then echo "a batch is running; abort"; exit 7; fi
 declare -A CELL=([smoke]=slurp-native-stage3-$SLUG-smoke-4-v1 [arm]=slurp-native-stage3-$SLUG-v1)
 declare -A PLAN=([smoke]=smoke-generation [arm]=generation)
+# RECOVERY (rec1, nxt_r1_family.RECOVERIES): the recovered cell's plans are <prefix>-plan-registered-rec1-v1.json; repin_loop_generic.sh reads the marker from
+# PLAN_REC. The marker comes from the family (empty for a cell on its first attempt), never from a literal here.
+declare -A REC_OF
+for KIND in smoke arm; do
+  REC_OF[$KIND]=$(PYTHONDONTWRITEBYTECODE=1 PYTHONPATH="$MAIN/src" /home/chao/.venvs/speechrl/bin/python -B -c \
+    "import sys; sys.path.insert(0, '$DIRD'); import nxt_r1_family as f; print(f.rec_suffix('$KIND'))") || { echo "cannot read the recovery marker of $KIND from the family"; exit 66; }
+done
 for KIND in $KINDS; do
   printf '%s\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\n' \
     "research: flip $LABEL ($KIND) to ready (owner ruling 304: the per-node thinking-policy column on the Thinking core, TRAIN Fold B, claims_benefit false; re-pinned by scripts/flights/repin_cell.py, decision receipt slurp-nxt-r1-thinking-policy-fold-b-admission-v1)" \
@@ -37,7 +47,7 @@ CONVERGED=""
 for pass in 1 2 3 4; do
   BEFORE=$(git rev-parse HEAD)
   for KIND in $KINDS; do
-    NXT1_KIND=$KIND bash "$SP/repin_loop_generic.sh" "$DIRD/nxt_r1_repin_cell.sh" "$RD" "${CELL[$KIND]}" "${PLAN[$KIND]}" "/home/chao/$SHORT-$KIND-commit.txt" || exit $?
+    PLAN_REC="${REC_OF[$KIND]}" NXT1_KIND=$KIND bash "$SP/repin_loop_generic.sh" "$DIRD/nxt_r1_repin_cell.sh" "$RD" "${CELL[$KIND]}" "${PLAN[$KIND]}" "/home/chao/$SHORT-$KIND-commit.txt" || exit $?
   done
   AFTER=$(git rev-parse HEAD)
   echo "######## convergence pass $pass: HEAD ${BEFORE:0:8} -> ${AFTER:0:8}"

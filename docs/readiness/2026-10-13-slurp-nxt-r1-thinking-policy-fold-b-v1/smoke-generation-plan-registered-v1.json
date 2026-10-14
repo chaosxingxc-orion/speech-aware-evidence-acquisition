@@ -57,7 +57,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "095ed78a22838946d2575335fde1ff13427f5bf2863593f9527f86cc990fc71b"
+    "sha256": "7a3bc25eafe16e71751142fefc10452e2221dc5653cb9d0d54eaad27dc252481"
   },
   "purpose": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-SMOKE-4-V1: four-row form smoke of the thinking-policy column of NX-T R1.",
   "registered_at_utc": "2026-10-14T11:52:20Z",
