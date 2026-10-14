@@ -19,17 +19,17 @@
       "arm": {
         "fit": {
           "path": "docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/fit-plan-registered-rec1-v1.json",
-          "sha256": "55413c38df5ca427c10b2bc33781f3a1c684a1e1e9a80ff74e0d5ec9359eab89"
+          "sha256": "c39487167f6f1554f3dfed7dd220a773be656b09943234aa250ef6a864bd40eb"
         },
         "generation": {
           "path": "docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/generation-plan-registered-rec1-v1.json",
-          "sha256": "ec0f08d541dab2d2c323a05be4b586c894613436d937035254849a6bf3531cf0"
+          "sha256": "54d303765ddeb5e25de73c2c7d8f3d4588985f59a46a9d18f534c5d45c839c93"
         }
       }
     },
     "registered_facts": {
       "path": "docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/registered-facts-v1.json",
-      "sha256": "13c3a96b79d822fb19725a99c46b795b9aedf02d59afde1c87f36b2df5fbc837"
+      "sha256": "9a9d2f12c2ffeba01eab9737e077371221962b9e27d139042db23433c8cd62a9"
     },
     "registration_base_commit": "283ab0045"
   },
