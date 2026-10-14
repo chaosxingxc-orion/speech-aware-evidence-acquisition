@@ -1,0 +1,114 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker",
+        "campaign"
+      ],
+      "attempt_id": "attempt-slurp-milestone-successor3-thinking-system-generation-v1",
+      "baseline_fragment": "slurp-milestone-successor3-thinking-system-baseline-v1",
+      "cell_id": "slurp-milestone-successor3-thinking-system-v1",
+      "dataset_fragment": "slurp-speech-native-test-sample-3010",
+      "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
+      "readiness": {
+        "reason": "Cell SUCCESSOR3-THINKING-SYSTEM registered before contact on 2026-10-14 by script (decision 58) from the P3.1 lock cell (read NOMINATED on DEV-2000-ADDED 2026-10-13) under owner ruling 301 A. HELD: (1) the Thinking packets of the sample are produced in the coordinator's GPU swap window under their own countersigned exposure row (which itself needs the v2 allowance, owner decision 308) and this baseline's packet-receipt pin is 64 zeros until then; (2) root countersigns the DRAFT rows and mints the admission receipt; (3) the flip (successor3_thinking_flip.sh) mints this cell's own supply (item E16). --allow-output-change must never be passed. Nothing here authorises a flight, a flip, a mint or a countersignature.",
+        "requirements": [
+          {
+            "expected_decision_id": "slurp-milestone-successor3-admission-v1",
+            "kind": "decision",
+            "reason": "Decision slurp-milestone-successor3-admission-v1 pinned by scripts/flights/repin_cell.py.",
+            "relpath": "coordination/slurp-milestone-successor3-thinking-system-v1/root-admission-v1.json",
+            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+          },
+          {
+            "kind": "preparation",
+            "reason": "PINNED: this roster's own exemplar-intent agreement table (SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1), built model-free (zero model, encoder, server, GPU and network contacts) by scripts/build_slurp_intent_exemplar_agreement.py against the MILESTONE-00-PLAN cell, as the DEV-2000-ADDED table was built against the sealed DEV plan cell, and read from its receipt prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1/receipt.json (sha256 3e2c9018228a449de7665604b1de25525d2e8ff9d37bf78965051829b4784f21); the derive script verified the sha256 against the file bytes on the data root.",
+            "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1/agreement.jsonl",
+            "sha256": "3402e9756ff2b955ad73d51a5ca7c60f11b3f40e0d6a652e34cf353d4a65ac4f"
+          },
+          {
+            "kind": "preparation",
+            "reason": "PINNED: the sample's intent-boundary segment vectors (preparation 2's zero-contact alias), produced by the label-free sample preparations (owner decision 156) and read from their summary receipt prepared/slurp-test-sample-3010-preparations-v1/summary-queries.json (sha256 c9ce5f432a58cdb09f92cc442f43b372e04285cca2faf46ff120bab3342d8f6a); the derive script verified the sha256 against the file bytes on the data root.",
+            "relpath": "vectors/slurp-test-sample-3010-v1/query-vectors-speech-segments.jsonl",
+            "sha256": "7e26ade08462f6336e2cb5869d89b1c49fb2534e2821b6550b6431aabe21f898"
+          },
+          {
+            "kind": "preparation",
+            "reason": "PINNED: the sample's content-dimension query vectors (preparation 3), produced by the label-free sample preparations (owner decision 156) and read from their summary receipt prepared/slurp-test-sample-3010-preparations-v1/summary-queries.json (sha256 c9ce5f432a58cdb09f92cc442f43b372e04285cca2faf46ff120bab3342d8f6a); the derive script verified the sha256 against the file bytes on the data root.",
+            "relpath": "vectors/slurp-test-sample-3010-v1/query-vectors-speech-content-v1.jsonl",
+            "sha256": "6fa16b47318561a9085cdbd39cb0a43088bff5b2827d07e67262017f9aee5dbc"
+          },
+          {
+            "kind": "preparation",
+            "reason": "This cell's OWN prepared first-phase Perception supply, minted model-free under its own run id with core.flight.cli prepare-supply at the flip from the sample's segment vectors, the centroid key file SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1 and this roster's agreement table (item E16). PENDING until the flip: 64 zeros. The review-off graph and the lock-v2.2 normaliser never touch the first-phase supply, so its selection output is expected to equal successor 2's supply selection output (same vectors, key file and table); the flip's re-derivation checks this and a different digest means the knowledge channel moved -- stop and report. --allow-output-change must never be passed.",
+            "relpath": "prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-THINKING-SYSTEM-V1/phase-supply-v1.json",
+            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-THINKING-SYSTEM-V1"
+    }
+  ],
+  "core_read_design": {
+    "arms": {
+      "lock": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-THINKING-SYSTEM-V1"
+    },
+    "chain": "swap to the Thinking session (think-budget-np4) -> lock arm (one cell, no smoke, no twin) -> swap back",
+    "reading": "official SLU-F1 paired per recording, prompt-clustered: the Thinking system arm minus the SEALED successor-2 column (cross-flight), against the DECLARED DEV twin offset (no in-chain replicate on the sample)",
+    "this_cell": "Thinking system arm (lock) on the signed test sample"
+  },
+  "date": "2026-10-14",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 35.5,
+    "planned_model_calls": 12040,
+    "planned_speech_audio_seconds": 32826,
+    "split_role": "final-report"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-THINKING-SYSTEM-V1",
+  "failure_policy": "ONE ATTEMPT, EVER (owner decision 151; allowance milestone_rule; contracts.gate_exposure._ExposureAndCarrierMixin._require_final_report_attempt_budget). Stop and preserve on the first failure. There is NO recovery re-registration, NO resume-recovery (the E10 clause of the source cell does not apply to a final-report read run id: the gate refuses a second attempt of a read run id even as a recovery), no re-score, no re-projection of delivered bytes, no best-of, no row filtering and no roster, role-graph, prompt, knowledge, geometry or cap change. A failed attempt consumes the milestone number; a further milestone needs a fresh run id in a SUCCESSOR allowance under a fresh coordinator report to the owner. A partial manifest is never scored and never read.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 24080,
+    "generation_calls_cap": 12040,
+    "gpu_hours_fit_inclusive": 35.5,
+    "native_task_contract_calls_cap": 12040,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 32826
+  },
+  "fragment_kind": "saea-slurp-milestone-successor3-thinking-system-v1",
+  "generation_budget": {
+    "cap": 12040,
+    "definition": "The review-off module graph (perception 1, solver 1; Reviewer and Planner never visited) under program phase-native-module-v1-c2: 3,010 x 2 = 6,020 is the exact program maximum; the plan ceiling adds 2 answer-only fallback contacts per row (core.reasoning_knobs): 12,040 = 3,010 x 4. The live phase fit makes 3010 x 2 x 4 = 24,080 tokenizer endpoint calls under its own run id SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-THINKING-SYSTEM-FIT-V1. The GPU-hour ceiling is a BOUND (rows / 1.84 rows per minute measured at np4 / 60 x 1.3, ceil 0.1 = 35.5), never a target. The budget is RUN-CUMULATIVE across every attempt of this run id (there is exactly one).",
+    "target": 12040
+  },
+  "owner_allowance": {
+    "path": "docs/receipts/owner/2026-10-13-slurp-test-sample-allowance-successor-3.json",
+    "sha256": "062f79e771376ea6da00121fda0e91e893c837f361c719c165faab3ebd9371df"
+  },
+  "population": {
+    "count": 3010,
+    "dataset_fragment": "slurp-speech-native-test-sample-3010",
+    "decision_population": "The signed SLURP test SAMPLE SLURP-TEST-SAMPLE-3010-V1 (3,010 recordings, 682 prompts; roster receipt docs/receipts/rosters/slurp-test-sample-3010-v1.json). It is NOT an unexposed sample: the label-free preparations (owner decision 156), the failed original PLAN generation, the SEALED successor-1 pair and the SEALED successor-2 composed column are inherited exposure in full. The closure roster SLURP-TEST-CLOSURE-10068-V1 stays untouched.",
+    "roster_receipt": "docs/receipts/rosters/slurp-test-sample-3010-v1.json",
+    "split_identity_hash": "0164dabf7b30f8e06f830ba28af849cef7459e8c8821cfbea7a56cabb32470f9"
+  },
+  "preserve_wire_responses": true,
+  "purpose": "SUCCESSOR-3 test-sample milestone (owner ruling 301 A; allowance docs/receipts/owner/2026-10-13-slurp-test-sample-allowance-successor-3.json): does the locked system on the Thinking core (SLURP lock candidate v3.0, NOMINATED on DEV-2000-ADDED by P3.1) keep the sealed successor-2 column's accuracy -- and by how much does it differ -- on the signed test sample, with official pooled SLU-F1 (slurp-slu-official-test) primary and intent the guard? ONE attempt, ever; the milestone is consumed whether the arm gains, loses or is neutral. Cross-flight against the SEALED successor-2 run (nothing re-flown); NO in-chain replicate, so the DEV twin offset is declared. claims_benefit is false. Development evidence under owner decision 28; never a test claim and never the final read. Nothing here authorises a flight, a readiness flip or an admission entry.",
+  "service_session": "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
+  "split_id": "TEST-SAMPLE",
+  "stage3_algorithm": {
+    "id": "shared-rollout",
+    "note": "SUCCESSOR-3: ONE rollout of the locked system on the Thinking core on the signed test sample, scored once with the official scorer. No update operator, no selection, no tuning on the sample and no benefit claim of its own: it replicates the P3.1 DEV transfer on a fresh test sample as a milestone.",
+    "operators_used": [
+      "rollout",
+      "scoring"
+    ]
+  }
+}

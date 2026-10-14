@@ -1,0 +1,13 @@
+{
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-TEST-SAMPLE-3010-THINKING-PACKETS-GPU-V1",
+  "feature_root": "/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6",
+  "legacy_cache_dir": "/home/chao/feat-cache/slurp-thinking-gpu-q4km-test-sample-3010",
+  "owner_allowance": {
+    "path": "docs/receipts/owner/2026-10-14-slurp-test-sample-allowance-successor-3-v2-DRAFT.json",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "preregistration": "docs/readiness/2026-10-14-slurp-milestone-successor3-thinking-system-v1-preregistration.md",
+  "promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6/TEST-SAMPLE-3010-promotion.json",
+  "purpose": "Exposure row SAEA-SLURP-TEST-SAMPLE-3010-THINKING-PACKETS-GPU-V1 (package docs/readiness/2026-10-14-slurp-milestone-successor3-thinking-system-v1): materialize the Thinking-core speech-feature packets for the 3,010 recordings of the signed SLURP test SAMPLE (SLURP-TEST-SAMPLE-3010-V1, 8,206.437 s) by one GPU encoder pass inside a serving-swap window: one contact per row at max_tokens 1 (the response is never read), then ADDITIVE promotion into the existing Thinking packet root under the new receipt TEST-SAMPLE-3010-promotion.json. The Instruct packets of these rows are not valid input to the Thinking decoder (the audio-encoder tensors differ). Label-free: no gold, transcript or model output is opened. A final-report preparation: it is refused unless the pinned owner allowance (docs/receipts/owner/2026-10-14-slurp-test-sample-allowance-successor-3-v2-DRAFT.json, a DRAFT until the owner signs decision 308) is authorised and lists this run id. Keep the Fold B and DEV Thinking packets and receipts untouched."
+}

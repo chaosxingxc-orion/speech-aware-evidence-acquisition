@@ -1,0 +1,179 @@
+{
+  "contacts_per_row": 2,
+  "dispatch_authority": false,
+  "generation_rows": 3010,
+  "leaves_changed_from_the_p31_dev_cell": {
+    "bookkeeping": [
+      "native_contact_fit.attempt_id",
+      "native_contact_fit.run_id",
+      "prepared_phase_supply.relpath",
+      "prepared_phase_supply.sha256",
+      "what_this_is"
+    ],
+    "experiment_fragment_own_block": [
+      "cells",
+      "core_read_design.arms.aa",
+      "core_read_design.arms.lock",
+      "core_read_design.chain",
+      "core_read_design.reading",
+      "core_read_design.this_cell",
+      "date",
+      "experiment_id",
+      "fragment_kind",
+      "populations",
+      "purpose",
+      "stage3_algorithm.note"
+    ],
+    "role_bound": [
+      "execution_plan.split_role",
+      "failure_policy",
+      "owner_allowance.path",
+      "owner_allowance.sha256",
+      "scorers",
+      "split_role"
+    ],
+    "roster_bound": [
+      "audio_seconds_total",
+      "count",
+      "d1_manifest_sha256",
+      "d1_media_supplement",
+      "d1_media_supplement_sha256",
+      "execution_plan.planned_gpu_hours",
+      "execution_plan.planned_model_calls",
+      "execution_plan.planned_speech_audio_seconds",
+      "family_budget.fit_endpoint_calls_cap",
+      "family_budget.generation_calls_cap",
+      "family_budget.gpu_hours_fit_inclusive",
+      "family_budget.native_task_contract_calls_cap",
+      "family_budget.repeated_speech_audio_seconds_cap",
+      "generation_budget.cap",
+      "generation_budget.definition",
+      "generation_budget.target",
+      "items",
+      "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.relpath",
+      "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.sha256",
+      "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.tool_contact_ledger_row",
+      "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.embedded_signal",
+      "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.relpath",
+      "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.sha256",
+      "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.tool_contact_ledger_row",
+      "knowledge_stores.train-exemplars.phase_supply.solver.query_source.embedded_signal",
+      "knowledge_stores.train-exemplars.phase_supply.solver.query_source.relpath",
+      "knowledge_stores.train-exemplars.phase_supply.solver.query_source.sha256",
+      "knowledge_stores.train-exemplars.phase_supply.solver.query_source.tool_contact_ledger_row",
+      "native_contact_fit.contact_cap",
+      "population.count",
+      "population.dataset_fragment",
+      "population.decision_population",
+      "population.roster_receipt",
+      "population.split_identity_hash",
+      "preparation_source_receipts",
+      "runtime_view_sha256",
+      "seed",
+      "source_binding_sha256",
+      "speech_packet_promotion_receipt",
+      "speech_packet_promotion_receipt_sha256",
+      "split_id",
+      "split_identity_hash",
+      "split_name",
+      "what_the_train_exemplars_store_is"
+    ]
+  },
+  "leaves_unchanged": "every other composed leaf equals the P3.1 lock cell's value (the proof in registered-facts-v1.json composed_config_diffs)",
+  "owner_decisions": [
+    "25",
+    "28/86",
+    "139",
+    "141",
+    "151",
+    "207/213",
+    "250 A (successor-2 exception)",
+    "299 A",
+    "301 A",
+    "308 (proposed)"
+  ],
+  "p31_dev_to_successor3_replacements": {
+    "attempt_id": [
+      "attempt-slurp-native-stage3-thinking-system-dev2000-added-lock-generation-v1",
+      "attempt-slurp-milestone-successor3-thinking-system-generation-v1"
+    ],
+    "baseline": [
+      "slurp-native-stage3-thinking-system-dev2000-added-lock-baseline-v1",
+      "slurp-milestone-successor3-thinking-system-baseline-v1"
+    ],
+    "cell": [
+      "slurp-native-stage3-thinking-system-dev2000-added-lock-v1",
+      "slurp-milestone-successor3-thinking-system-v1"
+    ],
+    "dataset_fragment": [
+      "slurp-speech-native-dev2000-added",
+      "slurp-speech-native-test-sample-3010"
+    ],
+    "fit_attempt_id": [
+      "attempt-slurp-native-stage3-thinking-system-dev2000-added-lock-fit-v1",
+      "attempt-slurp-milestone-successor3-thinking-system-fit-v1"
+    ],
+    "fit_run_id": [
+      "SAEA-SLURP-STAGE3-THINKING-SYSTEM-DEV2000-ADDED-LOCK-FIT-V1",
+      "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-THINKING-SYSTEM-FIT-V1"
+    ],
+    "owner_allowance": [
+      null,
+      {
+        "path": "docs/receipts/owner/2026-10-13-slurp-test-sample-allowance-successor-3.json",
+        "sha256": "062f79e771376ea6da00121fda0e91e893c837f361c719c165faab3ebd9371df"
+      }
+    ],
+    "roster_receipt": [
+      "docs/receipts/rosters/slurp-dev-2000-added-v1.json",
+      "docs/receipts/rosters/slurp-test-sample-3010-v1.json"
+    ],
+    "run_id": [
+      "SAEA-SLURP-STAGE3-THINKING-SYSTEM-DEV2000-ADDED-LOCK-V1",
+      "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-THINKING-SYSTEM-V1"
+    ],
+    "scorer": [
+      "slurp-slu-official",
+      "slurp-slu-official-test"
+    ],
+    "speech_packet_promotion_receipt": [
+      "/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6/DEV-2000-ADDED-promotion.json",
+      "/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6/TEST-SAMPLE-3010-promotion.json"
+    ],
+    "split_role": [
+      "dev",
+      "final-report"
+    ]
+  },
+  "reused_from_successor2": {
+    "note": "the sample's speech-query vectors, alias, encode receipt and agreement table; never rebuilt",
+    "pins": [
+      {
+        "relpath": "preparation-runs/SAEA-SLURP-TEST-SAMPLE-3010-SPEECH-QUERY-ENCODING-V1/encode-v1/receipt.json",
+        "sha256": "7b73093f76bb99c61a8c68438295a54f8b17072d4abb0c6a9a29e5bbc642b732"
+      },
+      {
+        "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1/agreement.jsonl",
+        "sha256": "3402e9756ff2b955ad73d51a5ca7c60f11b3f40e0d6a652e34cf353d4a65ac4f"
+      },
+      {
+        "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1/receipt.json",
+        "sha256": "3e2c9018228a449de7665604b1de25525d2e8ff9d37bf78965051829b4784f21"
+      },
+      {
+        "relpath": "prepared/SAEA-SLURP-TEST-SAMPLE-3010-ALIAS-V1/query-dimension-alias.json",
+        "sha256": "ac5c829c55912a844dca0e139721695ae34c7b1a65c92ad2c60be79cfd3f6e11"
+      },
+      {
+        "relpath": "vectors/slurp-test-sample-3010-v1/query-vectors-speech-content-v1.jsonl",
+        "sha256": "6fa16b47318561a9085cdbd39cb0a43088bff5b2827d07e67262017f9aee5dbc"
+      },
+      {
+        "relpath": "vectors/slurp-test-sample-3010-v1/query-vectors-speech-segments.jsonl",
+        "sha256": "7e26ade08462f6336e2cb5869d89b1c49fb2534e2821b6550b6431aabe21f898"
+      }
+    ]
+  },
+  "source_baseline": "slurp-native-stage3-thinking-system-dev2000-added-lock-baseline-v1",
+  "source_cell": "slurp-native-stage3-thinking-system-dev2000-added-lock-v1"
+}

@@ -1,0 +1,395 @@
+{
+  "authority": "owner ruling 301 A (2026-10-13), decision 299 A, P3.1 read NOMINATED (2026-10-13) (docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md); allowance docs/receipts/owner/2026-10-13-slurp-test-sample-allowance-successor-3.json; the instrument docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+  "blockers_before_the_flip": [
+    "packets-need-the-v2-allowance: The signed successor-3 allowance (docs/receipts/owner/2026-10-13-slurp-test-sample-allowance-successor-3.json) permits only the generation id and the FIT id. The Thinking packets of the sample are an encoder pass over slurp:test: rows under the final-report role, so contracts.plan.require_owner_split_allowance refuses it unless a pinned, authorised allowance lists SAEA-SLURP-TEST-SAMPLE-3010-THINKING-PACKETS-GPU-V1 in preparation_run_ids (successor 1's packets pass SAEA-SN-TEST-SAMPLE-3010-PREPROCESS cleared the guard exactly that way through the 2026-09-27 allowance). The signed bytes are NOT edited: docs/receipts/owner/2026-10-14-slurp-test-sample-allowance-successor-3-v2-DRAFT.json is a DRAFT v2 successor that supersedes the signed receipt by sha, adds the packets id (encoder contact only, no answers, one attempt, its own countersigned exposure row, a GPU swap window) and carries the Thinking ceilings. The packets experiment fragment pins its path with 64 zeros: the driver (dry-run, --run, --promote-only) and the chain refuse while the pin is zero. The guard is unmodified.",
+    "packets-window-before-the-cells: The cell's baseline pins the Thinking sample promotion receipt TEST-SAMPLE-3010-promotion.json by path; its sha256 is the zero sentinel until the swap window writes it. Mint, flip and chain fail closed on the sentinel.",
+    "ceilings-exceed-the-allowance-budget-block: The signed allowance's budgets block (6,020 generation calls, 4.6 GPU-h, 16,413 audio seconds) is successor 2's. The Thinking ceilings from the P3.1 rule are 12,040 plan calls (6,020 program contacts), 35.5 GPU-h and 32,826 audio seconds (FIT cap 24,080 equals the allowance's). No code enforces the block (the gate reads status, split, permitted ids and the attempt budget), but the owner should know; the v2 draft carries the Thinking ceilings.",
+    "allowance-run-ids-block-names-successor-2: The signed allowance's run_ids block still describes the successor-2 ids. Documentation only: the gate uses permitted_run_ids, read_run_ids and preparation_run_ids, which are correct. The v2 draft corrects the block.",
+    "no-in-chain-replicate-the-twin-offset-is-declared: The read has no in-chain twin: the null is the DEV twin offset (SLU 0.6144 pp, intent 1.6 pp; the intent offset exceeds the 0.65 pp guard), borrowed from a 1,000-row DEV roster. A resolved SLU gain over successor 2 is reported against it; it is not a measured null of the sample.",
+    "one-experiment-in-flight: Ruling 303 A: one experiment in flight. The Thinking session think-budget-np4 is shared with other Thinking packages; the chain refuses while any flight is alive."
+  ],
+  "cells": {
+    "thinking": {
+      "attempt_id": "attempt-slurp-milestone-successor3-thinking-system-generation-v1",
+      "cell": "slurp-milestone-successor3-thinking-system-v1",
+      "composed_config_hash": "dd931dc79d0fb18cf05e2743d550834074377ca0839c849b1ab099e75ec51724",
+      "experiment": "slurp-milestone-successor3-thinking-system-v1",
+      "fit_attempt_id": "attempt-slurp-milestone-successor3-thinking-system-fit-v1",
+      "fit_run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-THINKING-SYSTEM-FIT-V1",
+      "program": "phase-native-module-v1-c2",
+      "protocol_hash": "3a469e3de6c49e18850d33dafe7a038b467c4470f4b256ed771d8a2ca618c6c4",
+      "rows": 3010,
+      "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-THINKING-SYSTEM-V1",
+      "split_identity_hash": "0164dabf7b30f8e06f830ba28af849cef7459e8c8821cfbea7a56cabb32470f9"
+    }
+  },
+  "decision_rule_fixed_here": "Read the Thinking arm (SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-THINKING-SYSTEM-V1) against the SEALED successor-2 column (SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR2-COMPOSED-V1) on the same 3,010 rows, CROSS-FLIGHT (nothing is re-flown; no in-chain replicate by design). PRIMARY: official pooled SLU-F1 (slurp-slu-official-test), post-stratified natural mixture (equal-stratum beside it), paired per recording with a prompt-clustered bootstrap, 10,000 draws, seed 20261014. GUARD: intent accuracy (scenario_action exact), same contrast. DECLARED NULL: |o| = the DEV P3.1 twin offset (SLU 0.6144 pp / intent 1.6 pp), borrowed, not measured on the sample. HARM MARGIN 2.5 pp. Verdict words are successor 2's: NEUTRAL iff the CI95 lower bound of (Thinking minus successor 2) on SLU-F1 and on intent is at or above -2.5 pp and the read is not HARM; HARM iff the CI95 upper bound on SLU-F1 or on intent is below -|o| (a resolved loss beyond the declared offset, owner decision 25); UNRESOLVED iff the lower bound is under -2.5 pp while neither HARM nor NEUTRAL. NOMINATED is NOT a registered outcome (claims_benefit false): a point above the bar and a CI95 lower bound above |o| are REPORTED beside the word as 'gain reported, not claimed' and would need their own replicated read. Reported beside, CONTEXT ONLY: per-intent and per-scenario tables in the post-stratified natural-mixture and equal-stratum weightings (58 intents), the recording-channel split, the cost table, per-node cap-hit / empty / forced-close counts. The verdict word is the coordinator's (owner decision 139). A milestone development read (owner decisions 28, 151, 301), never a test claim.",
+  "development_numbers_only": "Every number is a milestone development number (owner decisions 28, 86, 151, 301); never a test claim and never the final read.",
+  "failure_policy": "ONE ATTEMPT, EVER (owner decision 151; allowance milestone_rule; contracts.gate_exposure._ExposureAndCarrierMixin._require_final_report_attempt_budget). Stop and preserve on the first failure. There is NO recovery re-registration, NO resume-recovery (the E10 clause of the source cell does not apply to a final-report read run id: the gate refuses a second attempt of a read run id even as a recovery), no re-score, no re-projection of delivered bytes, no best-of, no row filtering and no roster, role-graph, prompt, knowledge, geometry or cap change. A failed attempt consumes the milestone number; a further milestone needs a fresh run id in a SUCCESSOR allowance under a fresh coordinator report to the owner. A partial manifest is never scored and never read.",
+  "model_free_proofs_landed_before_contact": {
+    "composed_config_diffs": {
+      "composition_delta_commutes": {
+        "commutes": true,
+        "components_list": "compared after neutralising roster-bound strings and pins: equal",
+        "graph_leaves_moved_by_the_core_swap_on_dev": [
+          "answer_reserve_tokens",
+          "decoding_params.chat_template_kwargs.enable_thinking",
+          "decoding_params.max_tokens",
+          "decoding_params.thinking_budget_tokens",
+          "enable_thinking",
+          "forced_close_message_sha256",
+          "geometry_basis",
+          "model_lock_key",
+          "preflight_budget_mode",
+          "reasoning_budget_tokens",
+          "reasoning_content_guard",
+          "reasoning_context_policy",
+          "runtime_receipt",
+          "server_args",
+          "server_env.LLAMA_SPEECH_DECODER_SHA256",
+          "server_env.LLAMA_SPEECH_FEATURE_ROOT",
+          "service_session",
+          "speech_feature_root"
+        ],
+        "successor2_to_successor3_moves_exactly_these": [
+          "answer_reserve_tokens",
+          "decoding_params.chat_template_kwargs.enable_thinking",
+          "decoding_params.max_tokens",
+          "decoding_params.thinking_budget_tokens",
+          "enable_thinking",
+          "forced_close_message_sha256",
+          "geometry_basis",
+          "model_lock_key",
+          "preflight_budget_mode",
+          "reasoning_budget_tokens",
+          "reasoning_content_guard",
+          "reasoning_context_policy",
+          "runtime_receipt",
+          "server_args",
+          "server_env.LLAMA_SPEECH_DECODER_SHA256",
+          "server_env.LLAMA_SPEECH_FEATURE_ROOT",
+          "service_session",
+          "speech_feature_root"
+        ]
+      },
+      "mapping_square": {
+        "every_shared_roster_and_role_leaf_equals_successor2": true,
+        "exempt_run_specific_leaves": [
+          "execution_plan.",
+          "family_budget.",
+          "generation_budget.",
+          "native_contact_fit.",
+          "population.decision_population",
+          "owner_allowance.",
+          "what_the_train_exemplars_store_is",
+          "preparation_source_receipts",
+          "speech_packet_promotion_receipt",
+          "speech_packet_promotion_receipt_sha256"
+        ],
+        "leaves_only_in_the_p31_to_s3_mapping": [],
+        "leaves_only_in_the_r5_to_s2_mapping": [],
+        "note": "the R5 DEV -> successor-2 mapping and the P3.1 DEV -> successor-3 mapping move the SAME roster- and role-bound leaves; each shared leaf equals successor 2's value except the exempt run-specific leaves (budgets, ids, allowance pin, decision_population) and the two packet-receipt leaves, which differ by design (successor 2 pins the Instruct sample receipt, successor 3 the Thinking sample receipt)",
+        "thinking_receipt_leaves": {
+          "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6/TEST-SAMPLE-3010-promotion.json",
+          "speech_packet_promotion_receipt_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+        }
+      },
+      "r5_dev_to_s2_mapping": {
+        "role_bound": [
+          "execution_plan.split_role",
+          "failure_policy",
+          "owner_allowance.path",
+          "owner_allowance.sha256",
+          "scorers",
+          "split_role"
+        ],
+        "roster_bound": [
+          "audio_seconds_total",
+          "count",
+          "d1_manifest_sha256",
+          "d1_media_supplement",
+          "d1_media_supplement_sha256",
+          "execution_plan.planned_gpu_hours",
+          "execution_plan.planned_model_calls",
+          "execution_plan.planned_speech_audio_seconds",
+          "family_budget.fit_endpoint_calls_cap",
+          "family_budget.generation_calls_cap",
+          "family_budget.gpu_hours_fit_inclusive",
+          "family_budget.native_task_contract_calls_cap",
+          "family_budget.repeated_speech_audio_seconds_cap",
+          "generation_budget.cap",
+          "generation_budget.definition",
+          "generation_budget.target",
+          "items",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.relpath",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.sha256",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.tool_contact_ledger_row",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.embedded_signal",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.relpath",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.sha256",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.tool_contact_ledger_row",
+          "knowledge_stores.train-exemplars.phase_supply.solver.query_source.embedded_signal",
+          "knowledge_stores.train-exemplars.phase_supply.solver.query_source.relpath",
+          "knowledge_stores.train-exemplars.phase_supply.solver.query_source.sha256",
+          "knowledge_stores.train-exemplars.phase_supply.solver.query_source.tool_contact_ledger_row",
+          "native_contact_fit.contact_cap",
+          "population.count",
+          "population.dataset_fragment",
+          "population.decision_population",
+          "population.roster_receipt",
+          "population.split_identity_hash",
+          "preparation_source_receipts",
+          "runtime_view_sha256",
+          "seed",
+          "source_binding_sha256",
+          "speech_packet_promotion_receipt",
+          "speech_packet_promotion_receipt_sha256",
+          "split_id",
+          "split_identity_hash",
+          "split_name",
+          "what_the_train_exemplars_store_is"
+        ]
+      },
+      "s3_vs_p31_lock_dev": {
+        "anything_else": [],
+        "bookkeeping": [
+          "native_contact_fit.attempt_id",
+          "native_contact_fit.run_id",
+          "prepared_phase_supply.relpath",
+          "prepared_phase_supply.sha256",
+          "what_this_is"
+        ],
+        "composition_factor": [],
+        "experiment_fragment_own_block": [
+          "cells",
+          "core_read_design.arms.aa",
+          "core_read_design.arms.lock",
+          "core_read_design.chain",
+          "core_read_design.reading",
+          "core_read_design.this_cell",
+          "date",
+          "experiment_id",
+          "fragment_kind",
+          "populations",
+          "purpose",
+          "stage3_algorithm.note"
+        ],
+        "role_bound": [
+          "execution_plan.split_role",
+          "failure_policy",
+          "owner_allowance.path",
+          "owner_allowance.sha256",
+          "scorers",
+          "split_role"
+        ],
+        "roster_bound": [
+          "audio_seconds_total",
+          "count",
+          "d1_manifest_sha256",
+          "d1_media_supplement",
+          "d1_media_supplement_sha256",
+          "execution_plan.planned_gpu_hours",
+          "execution_plan.planned_model_calls",
+          "execution_plan.planned_speech_audio_seconds",
+          "family_budget.fit_endpoint_calls_cap",
+          "family_budget.generation_calls_cap",
+          "family_budget.gpu_hours_fit_inclusive",
+          "family_budget.native_task_contract_calls_cap",
+          "family_budget.repeated_speech_audio_seconds_cap",
+          "generation_budget.cap",
+          "generation_budget.definition",
+          "generation_budget.target",
+          "items",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.relpath",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.sha256",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.tool_contact_ledger_row",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.embedded_signal",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.relpath",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.sha256",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.tool_contact_ledger_row",
+          "knowledge_stores.train-exemplars.phase_supply.solver.query_source.embedded_signal",
+          "knowledge_stores.train-exemplars.phase_supply.solver.query_source.relpath",
+          "knowledge_stores.train-exemplars.phase_supply.solver.query_source.sha256",
+          "knowledge_stores.train-exemplars.phase_supply.solver.query_source.tool_contact_ledger_row",
+          "native_contact_fit.contact_cap",
+          "population.count",
+          "population.dataset_fragment",
+          "population.decision_population",
+          "population.roster_receipt",
+          "population.split_identity_hash",
+          "preparation_source_receipts",
+          "runtime_view_sha256",
+          "seed",
+          "source_binding_sha256",
+          "speech_packet_promotion_receipt",
+          "speech_packet_promotion_receipt_sha256",
+          "split_id",
+          "split_identity_hash",
+          "split_name",
+          "what_the_train_exemplars_store_is"
+        ]
+      },
+      "s3_vs_successor2": {
+        "bookkeeping": [
+          "native_contact_fit.attempt_id",
+          "native_contact_fit.run_id",
+          "prepared_phase_supply.relpath",
+          "prepared_phase_supply.sha256",
+          "what_this_is"
+        ],
+        "composition_delta_graph_leaves": [
+          "answer_reserve_tokens",
+          "decoding_params.chat_template_kwargs.enable_thinking",
+          "decoding_params.max_tokens",
+          "decoding_params.thinking_budget_tokens",
+          "enable_thinking",
+          "forced_close_message_sha256",
+          "geometry_basis",
+          "model_lock_key",
+          "preflight_budget_mode",
+          "reasoning_budget_tokens",
+          "reasoning_content_guard",
+          "reasoning_context_policy",
+          "runtime_receipt",
+          "server_args",
+          "server_env.LLAMA_SPEECH_DECODER_SHA256",
+          "server_env.LLAMA_SPEECH_FEATURE_ROOT",
+          "service_session",
+          "speech_feature_root"
+        ],
+        "experiment_fragment_own_block": [
+          "cells",
+          "core_read_design.arms.lock",
+          "core_read_design.chain",
+          "core_read_design.reading",
+          "core_read_design.this_cell",
+          "date",
+          "experiment_id",
+          "fragment_kind",
+          "purpose",
+          "stage3_algorithm.id",
+          "stage3_algorithm.note",
+          "stage3_algorithm.operators_used"
+        ],
+        "role_bound": [
+          "owner_allowance.path",
+          "owner_allowance.sha256"
+        ],
+        "roster_bound": [
+          "execution_plan.planned_gpu_hours",
+          "execution_plan.planned_model_calls",
+          "execution_plan.planned_speech_audio_seconds",
+          "family_budget.generation_calls_cap",
+          "family_budget.gpu_hours_fit_inclusive",
+          "family_budget.native_task_contract_calls_cap",
+          "family_budget.repeated_speech_audio_seconds_cap",
+          "generation_budget.cap",
+          "generation_budget.definition",
+          "generation_budget.target",
+          "population.decision_population",
+          "speech_packet_promotion_receipt",
+          "speech_packet_promotion_receipt_sha256"
+        ]
+      }
+    }
+  },
+  "one_shot_semantics": "ONE per run id, ever; no recovery, no resume, no re-score, no re-read (allowance attempt_budget and milestone_rule)",
+  "prohibitions": [
+    "No contact before every prerequisite in the README is cleared, root countersigns the rows, mints the decision receipt and the cell is flipped.",
+    "ONE attempt per run id, ever: no re-fly, no recovery, no resume, no re-score, no re-projection, no best-of, no tuning on the sample.",
+    "No smoke on the sample (the allowance lists a test-sample smoke as not authorised; the form proof is the flown P3.1 DEV chain); no twin; no re-flight, re-score or re-read of the sealed successor-2 run; no closure-roster or FULL-test contact.",
+    "No k, tau, fuse_coverage, w_prior, store, release, snapshot, roster, role-graph, thinking-knob or geometry change. --allow-output-change is never passed.",
+    "No utterance text, gold label, transcript, model output or reasoning text is printed or persisted by any read; aggregates, counts and hashes only.",
+    "The packets encoder pass is a final-report preparation: it runs only under a countersigned exposure row AND an authorised allowance that lists its run id (the v2 DRAFT, owner decision 308)."
+  ],
+  "protocol_id": "slurp-milestone-successor3-thinking-system-protocol-v1",
+  "registered_at_utc": "2026-10-14T12:00:00+00:00",
+  "schema": "saea-registered-protocol-v1",
+  "stage3_measurement": {
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-THINKING-SYSTEM-V1": {
+      "admission": "no-harm",
+      "bar_pp": 2.5,
+      "claim": "no-harm",
+      "claims_benefit": false,
+      "comparator_attempt_id": "attempt-slurp-milestone-successor2-composed-generation-v1",
+      "comparator_run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR2-COMPOSED-V1",
+      "declared_flight_offset": {
+        "intent_pp": 1.6,
+        "scope": "DECLARED, borrowed from the DEV P3.1 read (the in-chain twin aa minus the lock arm, DEV-2000-ADDED, n 1,000): the sample has NO in-chain replicate by design. LIMITATION: the DEV twin offset is a different roster and a different n; it is the null this read uses, not a measured null of the sample. The intent offset (1.6 pp) is large against the intent guard (0.65 pp) and is carried as read.",
+        "signed": {
+          "intent_pp": 1.6,
+          "slu_pp": -0.6144
+        },
+        "slu_pp": 0.6144,
+        "source": "analysis/SAEA-SLURP-SYSTEM-THINKING-CORE-DEV2000-ADDED-READ-V1/read.json (data root); sha256 f110be353fdce378555e41544f50e51eca61717af93e5f56095af3ed25d931f5"
+      },
+      "design_statement": "CROSS-FLIGHT AGAINST A SEALED COLUMN, NO IN-CHAIN REPLICATE, BY DESIGN: the allowance permits one generation run id (lock arm only), the sealed successor-2 run must not be re-flown, and a second flight would consume a second attempt. Instrument rule 4 refuses 'a single cross-flight contrast against an older sealed comparator with no in-chain replicate' (stage3_effect_floor_check.py scopes cells by a 'stage3' token in the fragment stem or experiment id, which this cell, like successors 1 and 2, does not carry, so the refusal is not mechanically enforced); the exception is the owner's: ruling 301 A fixes the declared DEV twin offset with the no-in-chain-replicate limitation stated in the read, the same exception decision 250 A made for successor 2.",
+      "expected_effect_basis": {
+        "dev_point": {
+          "intent_ci95": [
+            0.996,
+            4.0716
+          ],
+          "intent_pp": 2.5,
+          "slu_ci95": [
+            5.4586,
+            9.6175
+          ],
+          "slu_pp": 7.5179
+        },
+        "primary": "official pooled SLU-F1 (slurp-slu-official-test), post-stratified natural mixture, Thinking system minus the SEALED successor-2 column",
+        "reading": "+7.5179 pp is the DEV point of the Thinking lock arm minus the sealed Instruct NX R5 composed column (CI95 [5.4586, 9.6175]); it is the measured number of the P3.1 read (owner decision 139: a measured number, not a prior), declared at registration. claims_benefit stays false in the sense of successor 2's read-qualification: a point above the bar is REPORTED, never claimed."
+      },
+      "expected_effect_pp": 7.5179,
+      "expected_effect_status": "the P3.1 DEV point (owner decision 139), declared at registration",
+      "harm_margin_pp": 2.5,
+      "harm_margin_pp_by_metric": {
+        "intent_accuracy": 2.5,
+        "slu_f1": 2.5
+      },
+      "measurement_design": "cross-flight-no-replicate",
+      "note": "SUCCESSOR-3 = the SLURP lock candidate v3.0 (the locked system on the Thinking core) on the signed test sample (owner ruling 301 A). Primary: official pooled SLU-F1 (post-stratified natural mixture; equal-stratum beside it); guard: intent (scenario_action exact). Contrast: Thinking arm minus the SEALED successor-2 column. No claim of benefit. tuning_roster / read_roster (item D3): the vote pool and the centroid key are TRAIN construction artifacts, the v4 rule set behind v4g was selected on the A2 DEV pool and confirmed on TRAIN Fold A and Fold B, COMP-1b on DEV-2000-ADDED; the Thinking transfer was read on TRAIN Fold B (268-B) and DEV-2000-ADDED (P3.1) without tuning; all are disjoint from the sample by its disjointness proof (docs/checks/speech-aware-evidence-acquisition/2026-09-27-slurp-test-sample-roster/disjointness.json, CLEAN); nothing was chosen or tuned on the sample.",
+      "own_null": {
+        "flag": "NO OWN NULL EXISTS FOR SLURP-TEST-SAMPLE-3010-V1 for the Thinking core (no A/A pair flew on it); the DEV twin offset is declared in its place.",
+        "intent_pp": 1.6,
+        "kind": "DECLARED-DEV-TWIN-OFFSET-NOT-MEASURED-ON-THE-SAMPLE",
+        "scaled_fallback_for_context": {
+          "flag": "NO OWN NULL EXISTS FOR SLURP-TEST-SAMPLE-3010-V1 (no A/A pair has flown on it, and the allowance names no second PLAN read id that could measure one). Declared guard = the DEV-2000-ADDED own null scaled by sqrt(913 / 682) at the PROMPT level (rho = 1, conservative: every recording of a prompt moves together; design note section 4 'Sample paired h 1.33'). The recording-level scaling sqrt(1000 / 3010) is given beside it and is the OPTIMISTIC bound; the read reports both.",
+          "h_intent": 1.3329,
+          "h_intent_recording_scaled": 0.664,
+          "h_slu": 1.4492,
+          "h_slu_recording_scaled": 0.7219,
+          "kind": "FALLBACK-SCALED-NOT-MEASURED",
+          "n": 3010,
+          "n_prompts": 682,
+          "source": "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d, row 'cross-flight A/A, DEV-2000-ADDED' (the B6 pair); scaling: docs/readiness/2026-09-27-slurp-test-sample-design-v1.md section 4"
+        },
+        "slu_pp": 0.6144
+      },
+      "owner_ruling_301_a": {
+        "date": "2026-10-13",
+        "ruling": "Sign the successor-3 allowance now (same terms as v2: one attempt per id, aggregate-only, no smoke, no re-fly); only the lock arm flies on the sample; the comparator is the sealed successor-2 read; the declared twin offset is the DEV twin offset, with the no-in-chain-replicate limitation stated in the read.",
+        "source": "docs/receipts/owner/2026-10-13-slurp-test-sample-allowance-successor-3.json"
+      },
+      "primary_metric": "official pooled SLU-F1 (slurp-slu-official-test), Thinking arm minus the sealed successor-2 column beyond the declared DEV twin offset; intent accuracy (scenario_action exact) the non-inferiority guard",
+      "primary_metric_key": "slu",
+      "read_roster": "SLURP-TEST-SAMPLE-3010-V1",
+      "roster": "TEST-SAMPLE (SLURP-TEST-SAMPLE-3010-V1, split identity 0164dabf7b30f8e06f830ba28af849cef7459e8c8821cfbea7a56cabb32470f9), 3,010 recordings / 682 prompts",
+      "rows": 3010,
+      "tuning_roster": [
+        "slurp-train-construction-pool-agree-kprobe-r01-excluded",
+        "SLURP-EVO-FOLD-A-V2",
+        "SLURP-DEV-2000-ADDED-V1"
+      ]
+    }
+  },
+  "status": "REGISTERED_BEFORE_CONTACT_HELD_BLOCKED_ON_PACKETS_AND_V2_ALLOWANCE",
+  "study_commit_at_registration": "23ef41de8",
+  "the_composition": "The locked system on the Thinking core on the signed test sample: COMP-1b's two components ON (agree-vote-seed, w_agree 1.0, recall k 60, with THIS roster's vote table SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1; centroid-boundary-key) on lock v2.2 (v4g at delivery) with the Reviewer loop OFF (Perception then Solver, 2 contacts per row), the locked Solver template, every node thinking at budget 3072 -- the P3.1 lock arm's bytes with only the roster moved.",
+  "the_question": "Does the locked system on the Thinking core (SLURP lock candidate v3.0, NOMINATED on DEV-2000-ADDED), flown once on the signed test sample, keep the sealed successor-2 column's accuracy and by how much does it differ, with official SLU-F1 primary and intent the guard, against the declared DEV twin offset?",
+  "verdict_words": [
+    "NEUTRAL",
+    "HARM",
+    "UNRESOLVED"
+  ]
+}
