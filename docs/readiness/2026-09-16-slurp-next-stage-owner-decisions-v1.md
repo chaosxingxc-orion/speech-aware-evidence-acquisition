@@ -2685,3 +2685,20 @@ receipt's `authored` / `source` fields. The loop is ready for its next use on th
   is now unlocked (lock arm only; its Thinking packets for the 3,010-row sample need their own countersigned packets row and a GPU swap window).
 - **Next (307 order):** NX-T R1 (per-node thinking policy, ruling 304) launches now on the Thinking base; the successor-3 test read is built in
   parallel and flies after NX-T R1 in the serial queue (303 A). Results note: Opus, `docs/results/2026-10-14-slurp-p31-thinking-system-dev2000-added-read.md`.
+
+### NX-T R1 LAUNCHED: the per-node thinking-policy column at flight commit 37e177e3e (coordinator, 2026-10-14 12:10Z)
+
+- Sequence (README "Chain sequence"): re-derived and registered at study commit 8132badd8 (11:52Z; writer `nxt_r1_write_registration.py
+  --append-ledger`); the four flight rows (smoke-4 generation + FIT, column generation + FIT) countersigned 11:52:23Z, the READ row stays a draft
+  until the column seals; receipt minted (sha 87acf1be...); committed 04603b8cd; Opus's P3.1 note merged 40706d54a BEFORE the flip (no concurrent
+  merge and flip); ext4 flip 12:00-12:05Z (smoke 57515cc42, arm 14de6c0a3, pins 37e177e3e; gate PASS for both cells; master fast-forwarded);
+  handoff refreshed 23ef41de8; serving = the recycled `think-budget-np4` session (11:44Z restart); watchdog hold present; chain task
+  SAEA-Chain-NXT1 (`/home/chao/saea-queue/chain_nxt1.sh`, log `/home/chao/nxt1-chain.out`) started 12:08Z: smoke-4 (40 contacts) ->
+  coordinator reads `nxt_r1_read.sh smoke` (above all: does a no-think arm still emit reasoning bytes or a think marker?) -> sign-off marker
+  `/home/chao/nxt1-decode-signoff.marker` -> the five-arm column (1,080 rows, 10,800 contacts, ceiling 41.4 GPU-h, expected 31.8).
+- Ordering note (coordinator, for the owner): ruling 301 A reads "the test read flies automatically once P3.1 reads NOMINATED"; it is NOMINATED, but
+  its package (the sample's Thinking packets stage + the successor-3 cell) is still in build (Sonnet, worktree `sonnet-successor3-test-read`),
+  while NX-T R1 was ready and flipped; under ready-first serial GPU (303 A) NX-T R1 flies first and the test read follows it in the queue.
+  If the owner prefers the test read before the node rounds, say so: the column can be held after the smoke (the sign-off marker is the gate).
+- Open engineering recorded: the DEV reader's decision-299 note string says "TRAIN Fold B" on a DEV read (text only, numbers correct);
+  `flight_registration_check.py` does not inspect the thinking-variant group (package prerequisite 6).
