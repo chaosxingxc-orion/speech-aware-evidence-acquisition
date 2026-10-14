@@ -1,0 +1,82 @@
+{
+  "arms": {
+    "arm": {
+      "attempt_id": "attempt-slurp-milestone-successor3-thinking-system-generation-v1",
+      "fit_run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-THINKING-SYSTEM-FIT-V1",
+      "outputs_sha256": "PENDING_SEAL",
+      "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-THINKING-SYSTEM-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    },
+    "comparator": {
+      "attempt_id": "attempt-slurp-milestone-successor2-composed-generation-v1",
+      "role": "the SEALED successor-2 column (the Instruct NX R5 composed arm on this sample): the cross-flight comparator the registered claim is read against; never re-flown",
+      "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR2-COMPOSED-V1"
+    }
+  },
+  "boundary": "A milestone read on the signed test sample. No utterance text, transcript, gold label string, model output or reasoning text is printed or persisted: ids, counts, rates and hashes only.",
+  "declared_flight_offset": {
+    "intent_pp": 1.6,
+    "scope": "DECLARED, borrowed from the DEV P3.1 read (the in-chain twin aa minus the lock arm, DEV-2000-ADDED, n 1,000): the sample has NO in-chain replicate by design. LIMITATION: the DEV twin offset is a different roster and a different n; it is the null this read uses, not a measured null of the sample. The intent offset (1.6 pp) is large against the intent guard (0.65 pp) and is carried as read.",
+    "signed": {
+      "intent_pp": 1.6,
+      "slu_pp": -0.6144
+    },
+    "slu_pp": 0.6144,
+    "source": "analysis/SAEA-SLURP-SYSTEM-THINKING-CORE-DEV2000-ADDED-READ-V1/read.json (data root); sha256 f110be353fdce378555e41544f50e51eca61717af93e5f56095af3ed25d931f5"
+  },
+  "no_in_chain_replicate": "By design: one new generation run id, lock arm only. The DEV P3.1 twin offset is declared, not measured (declared_flight_offset).",
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-PAIRED-ANALYSIS-V1"
+  },
+  "read_driver": {
+    "command": "bash scripts/flights/nx/successor3_thinking_read.sh",
+    "passes": [
+      "vs-comparator (Thinking arm minus the sealed successor-2 column; cross-flight; THE REGISTERED CLAIM, read beyond the declared offset)"
+    ],
+    "reader": "scripts/analysis/slurp_successor3_thinking_read.py",
+    "refusal": "the driver refuses before any score is opened unless this READ row is root countersigned and both sealed run manifests exist",
+    "scorer": "slurp-slu-official-test",
+    "strata_source": "scorer: post-stratification by gold intent INSIDE the official-scoring step (--strata-source scorer), aggregates only"
+  },
+  "read_run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-PAIRED-ANALYSIS-V1",
+  "recipe_id": "slurp-milestone-successor3-thinking-system-paired-analysis-v1",
+  "registered_at_utc": "2026-10-14T12:00:00+00:00",
+  "resampling": {
+    "bootstrap_draws": 10000,
+    "metrics": [
+      "scenario_action_exact",
+      "slu_f1_f1"
+    ],
+    "seed": 20261014,
+    "unit": "prompt cluster (paired)"
+  },
+  "schema": "saea-slurp-paired-analysis-recipe-v1",
+  "steps": [
+    "1. Refuse unless the Thinking manifest is COMPLETE at 3,010 rows with this registration's composed config hash (as re-pinned at the flip), sealed, with one successful complete official slurp-slu-official-test score, the sealed successor-2 manifest is present, and the READ row is root countersigned.",
+    "2. THE DELIVERY CHECK (gold-free): the arm's flown first-phase boundary selections equal its own prepared supply. A mismatch is an engineering defect, is reported, and consumes the milestone (no re-fly).",
+    "3. THE STRUCTURAL CHECK (gold-free): exactly 2 program contacts per row (perception, solver) plus at most 2 answer-only fallbacks, no Reviewer or Planner row, every row delivered through saea-deliver-normalise-v4g, zero reasoning markers delivered.",
+    "4. Primary: official pooled SLU-F1 post-stratified, Thinking minus the sealed successor-2 column, paired per recording, prompt-clustered, 10,000 draws, seed 20261014. Guard: intent accuracy. Equal-stratum beside it. Apply the protocol's rule against the declared offset and the harm margin 2.5; print the no-in-chain-replicate limitation with the word.",
+    "5. Context: per-intent and per-scenario tables in both weightings; recording-channel split; per-node cap-hit / empty / forced-close counts; the cost table.",
+    "6. Write the read under its own id; every number is a MILESTONE development number (owner decisions 28, 151, 301), never a test claim."
+  ],
+  "title": "Test-sample SUCCESSOR3-THINKING-SYSTEM -- the locked system on the Thinking core against the sealed successor-2 column on SLURP-TEST-SAMPLE-3010-V1",
+  "verdict_rule": {
+    "harm_margin_pp": 2.5,
+    "reported_beside": [
+      "gain_reported_not_claimed: SLU CI95 lower bound above the declared SLU offset",
+      "point against the 2.5 pp bar"
+    ],
+    "text": "Read the Thinking arm (SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-THINKING-SYSTEM-V1) against the SEALED successor-2 column (SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR2-COMPOSED-V1) on the same 3,010 rows, CROSS-FLIGHT (nothing is re-flown; no in-chain replicate by design). PRIMARY: official pooled SLU-F1 (slurp-slu-official-test), post-stratified natural mixture (equal-stratum beside it), paired per recording with a prompt-clustered bootstrap, 10,000 draws, seed 20261014. GUARD: intent accuracy (scenario_action exact), same contrast. DECLARED NULL: |o| = the DEV P3.1 twin offset (SLU 0.6144 pp / intent 1.6 pp), borrowed, not measured on the sample. HARM MARGIN 2.5 pp. Verdict words are successor 2's: NEUTRAL iff the CI95 lower bound of (Thinking minus successor 2) on SLU-F1 and on intent is at or above -2.5 pp and the read is not HARM; HARM iff the CI95 upper bound on SLU-F1 or on intent is below -|o| (a resolved loss beyond the declared offset, owner decision 25); UNRESOLVED iff the lower bound is under -2.5 pp while neither HARM nor NEUTRAL. NOMINATED is NOT a registered outcome (claims_benefit false): a point above the bar and a CI95 lower bound above |o| are REPORTED beside the word as 'gain reported, not claimed' and would need their own replicated read. Reported beside, CONTEXT ONLY: per-intent and per-scenario tables in the post-stratified natural-mixture and equal-stratum weightings (58 intents), the recording-channel split, the cost table, per-node cap-hit / empty / forced-close counts. The verdict word is the coordinator's (owner decision 139). A milestone development read (owner decisions 28, 151, 301), never a test claim.",
+    "words": [
+      "NEUTRAL",
+      "HARM",
+      "UNRESOLVED"
+    ]
+  },
+  "weightings": {
+    "equal_stratum": "1/58 over the intents present in the sample (reported beside the primary weighting)",
+    "natural_mixture": "POST-STRATIFIED (PRIMARY weighting): per-intent values weighted by the full-test per-intent shares in population-counts-v1.json; the raw roster mean is NOT the natural-mixture number",
+    "post_stratification": "58 strata carried of 59 counted; computed and bootstrapped inside the scorer process; aggregates only"
+  }
+}

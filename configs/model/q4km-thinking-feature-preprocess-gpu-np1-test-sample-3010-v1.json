@@ -1,0 +1,42 @@
+{
+  "model_lock_key": "qwen3-omni-30b-a3b-thinking-gguf-q4km",
+  "model_materialization_root": "/home/chao",
+  "transport": "llama-server",
+  "base_url": "http://127.0.0.1:8081",
+  "timeout_seconds": 900.0,
+  "runtime_receipt": "receipts/runtime-q4km-thinking-preprocess-gpu.json",
+  "server_args": [
+    "-c",
+    "16384",
+    "-np",
+    "1",
+    "-ngl",
+    "999",
+    "-fa",
+    "on",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0",
+    "-b",
+    "512",
+    "-ub",
+    "128"
+  ],
+  "serving_geometry": {
+    "slots": 1,
+    "slot_tokens": 16384,
+    "max_tokens": 1
+  },
+  "decoding_params": {
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1
+  },
+  "prompt_order": "evidence-first-system-v2",
+  "server_env": {
+    "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/slurp-thinking-gpu-q4km-test-sample-3010",
+    "GGML_CUDA_DISABLE_GRAPHS": "1"
+  },
+  "preparation_basis": "Successor 3 (owner ruling 301 A): the GPU encoder pass for the Thinking speech packets of the signed SLURP test SAMPLE (3,010 slurp:test: rows). Identical to q4km-thinking-feature-preprocess-gpu-np1-dev2000-added-v1 in every serving flag, the model pins and the runtime receipt; it differs ONLY in the legacy feature cache directory (its own, so no Fold B or DEV cache entry is a foreign entry for this roster). Offline, label-free packet preparation only: one-token responses are discarded unread, no answer is scored. The card holds one core: the chain is scripts/flights/direct/direct_fb_packets_gpu.sh --stage test-sample-3010 inside a serving-swap window."
+}

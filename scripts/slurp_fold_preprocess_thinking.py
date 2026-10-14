@@ -54,8 +54,12 @@ Modes::
     python -B scripts/slurp_fold_preprocess_thinking.py --roster thinking-dev2000-added --run           # via direct_fb_packets_gpu.sh --stage dev2000-added
     python -B scripts/slurp_fold_preprocess_thinking.py --roster thinking-dev2000-added --check-ledger  # exit 0 only if countersigned
     python -B scripts/slurp_fold_preprocess_thinking.py --roster thinking-dev2000-added --pin-receipt   # verification only (DEV cells pin the sha at derive time)
+    python -B scripts/slurp_fold_preprocess_thinking.py --roster thinking-test-sample-3010 --dry-run       # successor 3: the sample Thinking packets (contacts nothing)
+    python -B scripts/slurp_fold_preprocess_thinking.py --roster thinking-test-sample-3010 --run           # via direct_fb_packets_gpu.sh --stage test-sample-3010
+    python -B scripts/slurp_fold_preprocess_thinking.py --roster thinking-test-sample-3010 --check-ledger  # exit 0 only if countersigned
+    python -B scripts/slurp_fold_preprocess_thinking.py --roster thinking-test-sample-3010 --pin-receipt   # verification only (the successor-3 cells pin the sha at derive time)
     python -B scripts/slurp_fold_preprocess_thinking.py --check-ledger                       # exit 0 only if countersigned
-    python -B scripts/slurp_fold_preprocess_thinking.py --smoke-rate                         # exit 0 only if the measured rate fits the cap
+    python -B scripts/slurp_fold_preprocess_thinking.py --smoke-rate                        # exit 0 only if the measured rate fits the cap
     python -B scripts/slurp_fold_preprocess_thinking.py --pin-receipt [--write]              # model-free
 
 ``--geometry`` is ``gpu`` (default; one worker at the server's own ``-np 1`` batching) or ``cpu`` (superseded; refused without ``--allow-cpu``).
@@ -67,6 +71,14 @@ and substitutes its sha256 for the zero sentinel in the two Thinking baselines (
 ``split_role="dev"``, encoded on the GPU into its OWN legacy cache and promoted ADDITIVELY into the existing Thinking packet root under the NEW
 receipt ``DEV-2000-ADDED-promotion.json`` (the Fold B receipt and packets are never touched; the packet root may already be populated by Fold B).
 Its run id, sidecar fragment (own cache dir), experiment fragment and row totals are :data:`DEV_SPEC`; the Fold B rosters are unchanged.
+
+``thinking-test-sample-3010`` (successor 3, the Thinking system on the signed SLURP test sample) is the DEV form on the 3,010 ``slurp:test:`` rows of
+``SLURP-TEST-SAMPLE-3010-V1`` (:data:`SAMPLE_SPEC`): run id ``SAEA-SLURP-TEST-SAMPLE-3010-THINKING-PACKETS-GPU-V1``, its own legacy cache, ADDITIVE
+promotion into the existing Thinking packet root under the NEW receipt ``TEST-SAMPLE-3010-promotion.json`` (Fold B and DEV receipts are never touched). Its
+split role is ``final-report``, so ``contracts.plan.require_owner_split_allowance`` gates it exactly as it gates the Instruct sample pass
+(``scripts/slurp_evo_fold_preprocess.py --roster test-sample-3010``): the experiment fragment pins ``owner_allowance`` and the dry-run and every
+media-reading mode refuse unless the pinned allowance is ``authorised`` and lists this run id in ``preparation_run_ids``. The guard is never weakened.
+The pass is label-free: it opens media and media identity only, never a transcript, label or model output.
 
 Label-free by construction: samples come from the frozen runtime view of Fold B, which carries media identity and nothing else.
 No gold, transcript or model output is opened, read or printed; the one-token responses are discarded unread.
@@ -204,6 +216,7 @@ class DevSpec(NamedTuple):
     expected_rows: int
     row_calls: int             # the ledger row total of calls before any failed-attempt spend
     row_speech_seconds: int
+    label: str = "DEV-2000-ADDED"   # the roster's name in messages
 
 
 #: Mirrors ``scripts/flights/direct/thinking_system_dev_family`` (a test asserts the equality).
@@ -221,6 +234,28 @@ DEV_SPEC = DevSpec(
     expected_rows=1000, row_calls=1000, row_speech_seconds=2984,
 )
 DEV_ROSTER_KEY = "thinking-dev2000-added"
+
+#: Successor 3 (the Thinking system on the signed SLURP test sample, allowance ``docs/receipts/owner/2026-10-13-slurp-test-sample-allowance-successor-3.json``):
+#: the DEV form on the 3,010 ``slurp:test:`` rows. The split role is ``final-report``: the composed config carries ``owner_allowance`` and EVERY
+#: mode that can reach the media (``--run``, ``--promote-only``) and the dry-run refuse unless ``contracts.plan.require_owner_split_allowance`` accepts
+#: it for THIS run id (the successor-1 packets pass, ``SAEA-SN-TEST-SAMPLE-3010-PREPROCESS``, passed the same guard through its allowance's
+#: ``preparation_run_ids``). Mirrors ``scripts/flights/nx/successor3_thinking_family`` (a test asserts the equality).
+SAMPLE_SPEC = DevSpec(
+    run_id="SAEA-SLURP-TEST-SAMPLE-3010-THINKING-PACKETS-GPU-V1",
+    sidecar_fragment="q4km-thinking-feature-preprocess-gpu-np1-test-sample-3010-v1",
+    experiment_fragment="slurp-test-sample-3010-thinking-preprocess-gpu-v1",
+    dataset_fragment="slurp-speech-native-test-sample-3010",
+    sample_id_prefix="slurp:test:",
+    split_role="final-report",
+    packet_root=Path(fam.THINK_PACKET_ROOT),
+    legacy_cache=Path("/home/chao/feat-cache/slurp-thinking-gpu-q4km-test-sample-3010"),
+    promotion_receipt=Path(fam.THINK_PACKET_ROOT) / "TEST-SAMPLE-3010-promotion.json",
+    roster_receipt="docs/receipts/rosters/slurp-test-sample-3010-v1.json",
+    expected_rows=3010, row_calls=3010, row_speech_seconds=8207,
+    label="TEST-SAMPLE-3010",
+)
+SAMPLE_ROSTER_KEY = "thinking-test-sample-3010"
+FINAL_REPORT_ROLE = "final-report"
 #: The active DEV spec, set by ``apply_roster`` (None for the Fold B rosters, whose behaviour is unchanged).
 ACTIVE_DEV: DevSpec | None = None
 
@@ -246,6 +281,9 @@ def _rosters(geometry: Geometry) -> dict[str, ThinkingRoster]:
     if geometry.key == "gpu":   # the DEV roster exists on the GPU geometry only
         rosters[DEV_ROSTER_KEY] = ThinkingRoster(
             DEV_ROSTER_KEY, None, True, "attempt-packets-thinking-gpu-dev2000-added-v1", DEV_SPEC.row_calls, DEV_SPEC.row_speech_seconds, 1.0, DEV_SPEC)
+        rosters[SAMPLE_ROSTER_KEY] = ThinkingRoster(
+            SAMPLE_ROSTER_KEY, None, True, "attempt-packets-thinking-gpu-test-sample-3010-v1", SAMPLE_SPEC.row_calls, SAMPLE_SPEC.row_speech_seconds, 1.0,
+            SAMPLE_SPEC)
     return rosters
 
 
@@ -324,7 +362,9 @@ def check_config_identity(values: Mapping[str, object], repo: Path = REPO) -> No
         raise SystemExit("the Thinking roots may not be the Instruct roots")
     expected_rows = ACTIVE_DEV.expected_rows if ACTIVE_DEV is not None else fam.ROWS
     roster_path = ACTIVE_DEV.roster_receipt if ACTIVE_DEV is not None else fam.ROSTER["arm"]
-    label = "DEV-2000-ADDED" if ACTIVE_DEV is not None else "Fold B"
+    label = ACTIVE_DEV.label if ACTIVE_DEV is not None else "Fold B"
+    if ACTIVE_DEV is not None and ACTIVE_DEV.split_role == FINAL_REPORT_ROLE and not isinstance(values.get("owner_allowance"), Mapping):
+        raise SystemExit("a final-report roster's composed config must pin owner_allowance={path, sha256}")
     roster_doc = json.loads((repo / roster_path).read_text(encoding="utf-8"))
     if values.get("split_identity_hash") != roster_doc.get("split_identity_hash"):
         raise SystemExit("the dataset view split identity differs from the %s roster receipt" % label)
@@ -413,7 +453,7 @@ def ledger_state(
         problems.append("execution profile %r, registered %r" % (row.get("execution profile"), EXECUTION_PROFILE))
     expected_role = ACTIVE_DEV.split_role if ACTIVE_DEV is not None else "discovery"
     if row.get("split role") != expected_role or row.get("split identity hash") != split_identity_hash:
-        problems.append("split role / identity differ from the %s roster" % ("DEV-2000-ADDED" if ACTIVE_DEV is not None else "Fold B"))
+        problems.append("split role / identity differ from the %s roster" % (ACTIVE_DEV.label if ACTIVE_DEV is not None else "Fold B"))
     try:
         numbers = (int(row["calls"]), int(row["speech audio seconds"]), float(row["gpu hours"]))
     except (KeyError, ValueError):
@@ -428,6 +468,25 @@ def ledger_state(
     state["draft"] = draft
     state["countersigned"] = (not draft) and bool(COUNTERSIGNED_TOKEN.search(text)) and not problems
     return state
+
+
+def allowance_problems(values: Mapping[str, object], *, repo: Path = REPO) -> list[str]:
+    """For a ``final-report`` roster: the refusal of ``contracts.plan.require_owner_split_allowance`` for THIS run id, else ``[]``.
+
+    The guard is the contract's own (the same call the Instruct sample driver makes in every mode); it is never weakened or bypassed here: the pinned
+    allowance must exist at its pinned bytes, read ``authorised``, name the sample's carrier and split identity, and list this run id in
+    ``permitted_run_ids``. Every other roster returns ``[]`` (their split roles are not owner-allowance-gated).
+    """
+
+    if ACTIVE_DEV is None or ACTIVE_DEV.split_role != FINAL_REPORT_ROLE:
+        return []
+    try:
+        evo.require_owner_split_allowance(
+            run_id=RUN_ID, execution_profile=str(values["execution_profile"]), carrier_lock_key=evo.SLURP_LOCK_KEY,
+            split_identity_hash=str(values["split_identity_hash"]), owner_allowance=values.get("owner_allowance"), source_root=repo)
+    except Exception as error:  # noqa: BLE001 -- ExecutionScopeError and malformed pins alike are reported verbatim as refusals
+        return ["owner allowance guard (contracts.plan.require_owner_split_allowance): %s" % error]
+    return []
 
 
 # ------------------------------------------------------------------------------------------------------- attempts
@@ -728,6 +787,8 @@ def _prepare(args, roster: ThinkingRoster, *, repo: Path, lock_path: Path | None
     problems = root_problems(
         roster, packet_root=PACKET_ROOT, legacy_cache=LEGACY_CACHE, promotion_receipt=PROMOTION_RECEIPT,
         allow_populated_root=bool(getattr(args, "promote_only", False)) or ACTIVE_DEV is not None)   # the DEV promotion is ADDITIVE on the Fold B root
+    # A final-report roster (the test sample) is refused HERE, before any media is opened, unless the pinned owner allowance accepts this run id.
+    problems.extend(allowance_problems(values, repo=repo))
     return composed, values, pins, runtime_receipt, ledger, items, slots, attempt_id, problems, context
 
 
@@ -1058,7 +1119,7 @@ def pin_receipt(args, *, repo: Path = REPO, lock_path: Path | None = None, recei
     expected_ids = {str(item["sample_id"]).replace(":", "/") for item in values["items"]}  # type: ignore[union-attr]
     packets = list(document["packets"])  # type: ignore[arg-type]
     if document["count"] != expected_rows or {str(p["packet_id"]) for p in packets} != expected_ids:
-        raise SystemExit("the promotion receipt does not cover exactly the %d %s rows" % (expected_rows, "DEV-2000-ADDED" if ACTIVE_DEV is not None else "Fold B"))
+        raise SystemExit("the promotion receipt does not cover exactly the %d %s rows" % (expected_rows, ACTIVE_DEV.label if ACTIVE_DEV is not None else "Fold B"))
     if document["runtime_receipt_sha256"] != evo.canonical_sha256(runtime_receipt):
         raise SystemExit("the promotion receipt was produced under a different runtime receipt than the committed Thinking one")
     for packet in packets:
@@ -1082,7 +1143,9 @@ def pin_receipt(args, *, repo: Path = REPO, lock_path: Path | None = None, recei
                     handle.write(new_text)
     summary = {"promotion_receipt": str(receipt_path), "promotion_receipt_sha256": sha256, "packets": len(packets),
                "baselines_changed": changed, "written": bool(args.write and changed),
-               "next": ("re-run scripts/flights/direct/thinking_system_dev_derive_cells.py --require-receipt and the DEV package writer, then commit"
+               "next": (("re-run scripts/flights/nx/successor3_thinking_derive_cells.py --require-receipt and the successor-3 package writer, then commit"
+                         if ACTIVE_DEV.split_role == FINAL_REPORT_ROLE else
+                         "re-run scripts/flights/direct/thinking_system_dev_derive_cells.py --require-receipt and the DEV package writer, then commit")
                         if ACTIVE_DEV is not None else
                         "commit the two baselines, then re-pin per the package README (direct_fb_flip.sh; never --allow-output-change)")}
     print(json.dumps(summary, indent=2, sort_keys=True))

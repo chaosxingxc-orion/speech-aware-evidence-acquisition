@@ -306,7 +306,7 @@ def test_the_driver_dev_roster_mirrors_the_family_and_leaves_fold_b_alone():
     assert spec.expected_rows == fam.ROWS and spec.split_role == fam.SPLIT_ROLE and spec.dataset_fragment == fam.DATASET
     assert spec.roster_receipt == fam.ROSTER_RECEIPT and spec.row_speech_seconds == 2984 and spec.row_calls == 1000
     assert spec.legacy_cache != drv.GEOMETRIES["gpu"].legacy_cache                  # its own cache: no Fold B entry is foreign to it
-    assert drv.ACTIVE_DEV is None and set(drv.ROSTERS) == {"thinking-smoke-4", "thinking-fold-b", fam.PACKETS_ROSTER_KIND}
+    assert drv.ACTIVE_DEV is None and set(drv.ROSTERS) == {"thinking-smoke-4", "thinking-fold-b", fam.PACKETS_ROSTER_KIND, "thinking-test-sample-3010"}   # successor 3 adds the sample roster
     fold_receipt, fold_run = drv.PROMOTION_RECEIPT, drv.RUN_ID
     drv.apply_roster(fam.PACKETS_ROSTER_KIND)
     assert drv.ACTIVE_DEV is spec and drv.RUN_ID == fam.PACKETS_ROW_ID and drv.PROMOTION_RECEIPT == spec.promotion_receipt
