@@ -2728,3 +2728,26 @@ receipt's `authored` / `source` fields. The loop is ready for its next use on th
   decision 266-era finding "Thinking needs its own packets"). **C:** defer the test read until after the node rounds (then the amended allowance
   is signed later, and the lock form may change).
 - Until signed, the package carries a DRAFT v2 receipt with a zero pin and the chain refuses to start; the test read is queued after NX-T R1 anyway.
+
+### Successor-3 test-read package merged, HELD behind decision 308 (coordinator, 2026-10-14 13:05Z)
+
+- Sonnet's package merged e048c6e1a (branch commit 366eb8fd1, 37 files): cell `slurp-milestone-successor3-thinking-system-v1` derived from the
+  P3.1 lock cell with successor 2's leaf moves (44 roster-bound, 6 role-bound, 5 bookkeeping, 12 experiment-block leaves; the delta successor 2
+  -> successor 3 equals the delta R5-composed-DEV -> P3.1-lock-DEV on 18 leaves, path for path, values identical; `anything_else` empty);
+  package `docs/readiness/2026-10-14-slurp-milestone-successor3-thinking-system-v1/` (+ preregistration page); packets stage `--stage
+  test-sample-3010` (roster `thinking-test-sample-3010`, run id `SAEA-SLURP-TEST-SAMPLE-3010-THINKING-PACKETS-GPU-V1`, receipt
+  `TEST-SAMPLE-3010-promotion.json`, create-only, Fold B / DEV receipts untouched); scripts `scripts/flights/nx/successor3_thinking_*` and
+  `batch_chain_successor3_thinking.sh` (no smoke on the sample; refuses until the v2 allowance pin is non-zero); reader
+  `scripts/analysis/slurp_successor3_thinking_read.py` (successor 2's words NEUTRAL / HARM / UNRESOLVED, claims_benefit false, DEV twin offset
+  SLU 0.6144 / intent 1.6 as the declared null, no in-chain replicate stated, seed 20261014); ceiling 35.5 GPU-h = ceil_0.1(3010 / 1.84 / 60 x 1.3),
+  6,020 contacts, 12,040 plan calls, 24,080 FIT endpoint calls, 32,826 audio seconds. DRAFT v2 allowance
+  `docs/receipts/owner/2026-10-14-slurp-test-sample-allowance-successor-3-v2-DRAFT.json` (adds the packets preparation id and the Thinking
+  budgets; signature "DRAFT: awaiting owner decision 308"); the signed successor-3 bytes are untouched; `src/` untouched (guard unchanged).
+- Gates on the branch: engineering_base, harness_admission, finite_completion_policy, stage3_effect_floor, stage3_algorithm_label,
+  derived_media_confinement PASS; flight_registration tree mode FAIL 61 blocking, identical to master's 61 (pre-existing, none successor-3);
+  launch mode on the cell shows only the expected pre-countersign blockers. Not exercised: the real packets promotion, chain, flip, mint, read.
+- Sequence once 308 A is signed: sign v2 (status authorised) -> `successor3_thinking_packets_fragments.py pin-allowance` -> registration
+  (`--append-ledger`) -> countersign the packets row -> packets swap window `direct_fb_packets_gpu.sh --run --stage test-sample-3010` ->
+  `--pin-receipt`, close the row -> derive `--require-receipt`, re-write -> countersign generation + FIT (READ after the seal) -> mint -> flip ->
+  chain (after NX-T R1 seals; serial GPU) -> read. The allowance's `budgets` are not code-enforced (Sonnet found no consumer); the registered
+  plans carry the ceilings that are.

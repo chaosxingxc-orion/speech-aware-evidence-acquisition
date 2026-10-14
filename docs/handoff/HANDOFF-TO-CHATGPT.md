@@ -1,6 +1,19 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-14T12:06:22Z
+Last refreshed: 2026-10-14T12:52:48Z
+
+## NX-T R1 column FLYING at 37e177e3e (12:18Z; smoke: no-think nodes emit no reasoning; projected 24.5 GPU-h); successor-3 test-read package merged e048c6e1a, HELD behind decision 308 (allowance amendment: packets preparation id + Thinking budgets) (2026-10-14T12:52:48Z, Fable 5.1 root)
+
+NX-T R1: smoke-4 sealed 12:16Z; every no-think node 0 reasoning characters / 0 think markers / 0 empty answers; measured mix 3.32 rows per
+both-on row; marker written 12:18:33Z; column (1,080 rows, 10,800 contacts) flying via SAEA-Chain-NXT1 (`/home/chao/nxt1-chain.out`); after
+the seal: `nxt_r1_read.sh columns`, countersign the READ row, `nxt_r1_read.sh` (words NEEDS-THINKING / GAIN / NO-RESOLVED-LOSS per arm).
+Successor 3 (Thinking system on the 3,010-row test sample, lock arm only, comparator = sealed successor-2 run, DEV twin offset as the null):
+package `docs/readiness/2026-10-14-slurp-milestone-successor3-thinking-system-v1/`, scripts `scripts/flights/nx/successor3_thinking_*`,
+packets stage `direct_fb_packets_gpu.sh --stage test-sample-3010`; ceiling 35.5 GPU-h. BLOCKED on owner decision 308 (registry 12:45Z):
+the signed allowance lists no preparation id for the sample's Thinking packets pass (a `slurp:test` encoder contact) and carries successor 2's
+budgets; DRAFT v2 receipt on file with a zero pin. Queue: NX-T R1 seal (~2026-10-15 13:00Z) -> successor-3 packets window + test read.
+
+Superseded stamp: 2026-10-14T12:06:22Z
 
 ## P3.1 READ NOMINATED (Thinking system on DEV-2000-ADDED: SLU +7.52 [+5.46, +9.62], intent +2.50 [+1.00, +4.07] over the Instruct system; lock candidate v3.0); NX-T R1 registered and flipping (2026-10-14T12:06:22Z, Fable 5.1 root)
 
