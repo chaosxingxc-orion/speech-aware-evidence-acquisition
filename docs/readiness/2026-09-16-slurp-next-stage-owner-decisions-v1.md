@@ -2861,3 +2861,26 @@ Owner (verbatim): 「决策312：不加，决策313,314,315：按照你的建议
 - Order of work now: geometry package (Sonnet, in build) -> register / countersign / mint / flip / chain / read (about 2 h GPU) -> rec1
   registration on the chosen geometry -> column re-fly; checkpoint + resume mode B (Sonnet, in build) merges when ready and applies to the
   flights after it; successor-3 test read follows the column.
+
+### 315 A VOID (the card is 24 GB); checkpoints + rec1 merged; decisions 316-317 proposed (coordinator, 2026-10-14 18:10Z)
+
+- **Fact (geometry package, Sonnet, branch `sonnet/think-geometry` 597767cdd, NOT merged):** the GPU is an RTX 5090 Laptop with 24,463 MiB (llama.cpp
+  reports 23,119 MiB free at load), not 32 GB. KV at q8_0 = 52,224 B per token (48 layers x 4 KV heads x 256 x 34/32; measured slope 53.30 KiB) over a
+  17,857 MiB base: np4 x 24,576 = 22,974 MiB (measured 22,976; 145 MiB headroom); np6 x 24,576 = 25,532 MiB (2,413 over); np8 x 24,576 = 28,091 MiB
+  (4,972 over). Smaller slots refuse the largest rows (max Solver prompt 14,641 tokens; a 20,480 slot leaves 13,310). The geometry lever is CLOSED
+  on this card at q8_0 KV; 315 A's premise fails, so the receipt does not fly and NX-T R1 rec1 re-flies on np4 now. The branch keeps the
+  fragments, the `think-budget-np6/np8` targets, the 18-row probe design and the reader for a later q4_0-KV question; it also appended seven DRAFT
+  ledger rows, which is why it stays unmerged.
+- **Merged on master:** rec1 generic recovery (221106e8d, `scripts/flights/lib/recovery.py`; geometry table corrected to the 24,576 slot 3f9bb2e92,
+  tests 62c029f01) and row checkpoints + resume mode B (37bb85a2b): every row is appended + fsynced to `<run>.rows.ckpt.jsonl` as it settles
+  (1.66 ms per row measured), the seal verifies the file and records its sha, `resume_from = {attempt_id, checkpoint_sha256}` keeps complete
+  rows (multi-arm rows only when every arm is present) and flies the rest; the root cause of the total loss was the in-memory TraceBuffer flushed
+  only after every row settled (`rails/runner.py`, `core/flight/runtime.py`; design note `docs/superpowers/specs/2026-10-14-row-checkpoints-and-resume-mode-b-design.md`).
+  Merging moved `runtime.py` / `rails/runner.py`, so every registered cell is re-pinned at its flight commit by the flip (as always).
+- **316 (proposed): resume of a test-sample read.** The one-attempt test-read budget (`contracts/gate_exposure.py`) now exempts exactly the
+  attempts a resume declaration names (never a FINALIZED one). This is a narrow reading of "no repeat, no best-of": a resume keeps completed
+  rows, flies only rows never completed, selects nothing. A (recommended): accept; a resumed test read is reported as such (kept / flown counts).
+  B: refuse resumes on test reads (a crash forfeits the attempt).
+- **317 (proposed): q4_0 KV cache as a throughput lever.** np6 x 24,576 at q4_0 KV would fit (21,921 MiB) and could raise contacts/min by about
+  50 %, but KV quantisation changes decoding (never flown here) and would be a base change needing its own Fold B read (about 20 GPU-h) before
+  adoption. A: defer until after NX-T R1/R2 (recommended: R2's budget cut is the larger lever); B: run the q4_0 read right after NX-T R1.
