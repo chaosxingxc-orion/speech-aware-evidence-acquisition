@@ -11,18 +11,20 @@
       "slots": 4
     },
     "think-budget-np6": {
-      "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np6-ctx20k-budget3072-max4096-v1",
+      "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np6-ctx24k-budget3072-max4096-v1",
       "provisional": true,
       "session": "serving-slurp-thinking-module-fold-b-np6-budget3072-max4096-v1",
-      "slot_tokens": 20480,
-      "slots": 6
+      "slot_tokens": 24576,
+      "slots": 6,
+      "note": "provisional until the geometry receipt package lands (coordinator 2026-10-14 17:10Z): the slot keeps the control context 24,576 because the measured maximum Solver prompt is 14,641 tokens; only the slot count changes"
     },
     "think-budget-np8": {
-      "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np8-ctx16k-budget3072-max4096-v1",
+      "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np8-ctx24k-budget3072-max4096-v1",
       "provisional": true,
       "session": "serving-slurp-thinking-module-fold-b-np8-budget3072-max4096-v1",
-      "slot_tokens": 16384,
-      "slots": 8
+      "slot_tokens": 24576,
+      "slots": 8,
+      "note": "provisional until the geometry receipt package lands (coordinator 2026-10-14 17:10Z): the slot keeps the control context 24,576 because the measured maximum Solver prompt is 14,641 tokens; only the slot count changes"
     }
   }
 }
