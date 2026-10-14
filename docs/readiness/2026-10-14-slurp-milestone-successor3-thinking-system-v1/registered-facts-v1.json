@@ -13,19 +13,19 @@
     "sha256_pinned_in_the_fragment": "062f79e771376ea6da00121fda0e91e893c837f361c719c165faab3ebd9371df",
     "smoke": "NOT REGISTERED: the allowance lists a test-sample smoke as not authorised; the form proof is the flown P3.1 DEV chain.",
     "status": "authorised (signed 2026-10-13, ruling 301 A)",
-    "v2_draft": "docs/receipts/owner/2026-10-14-slurp-test-sample-allowance-successor-3-v2-DRAFT.json",
+    "v2_draft": "docs/receipts/owner/2026-10-14-slurp-test-sample-allowance-successor-3-v2.json",
     "v2_draft_sha256_at_registration": "4991ed040bff0d8a86f4999fe3196d91d435eaa0f1845771a090306b88de5509"
   },
   "authority_relpaths": [
     "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
     "docs/receipts/owner/2026-10-13-slurp-test-sample-allowance-successor-3.json",
-    "docs/receipts/owner/2026-10-14-slurp-test-sample-allowance-successor-3-v2-DRAFT.json",
+    "docs/receipts/owner/2026-10-14-slurp-test-sample-allowance-successor-3-v2.json",
     "docs/readiness/2026-10-10-slurp-milestone-successor2-composed-v1/README.md",
     "docs/readiness/2026-10-13-slurp-system-thinking-core-dev2000-added-v1/README.md",
     "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md"
   ],
   "blockers_before_the_flip": [
-    "packets-need-the-v2-allowance: The signed successor-3 allowance (docs/receipts/owner/2026-10-13-slurp-test-sample-allowance-successor-3.json) permits only the generation id and the FIT id. The Thinking packets of the sample are an encoder pass over slurp:test: rows under the final-report role, so contracts.plan.require_owner_split_allowance refuses it unless a pinned, authorised allowance lists SAEA-SLURP-TEST-SAMPLE-3010-THINKING-PACKETS-GPU-V1 in preparation_run_ids (successor 1's packets pass SAEA-SN-TEST-SAMPLE-3010-PREPROCESS cleared the guard exactly that way through the 2026-09-27 allowance). The signed bytes are NOT edited: docs/receipts/owner/2026-10-14-slurp-test-sample-allowance-successor-3-v2-DRAFT.json is a DRAFT v2 successor that supersedes the signed receipt by sha, adds the packets id (encoder contact only, no answers, one attempt, its own countersigned exposure row, a GPU swap window) and carries the Thinking ceilings. The packets experiment fragment pins its path with 64 zeros: the driver (dry-run, --run, --promote-only) and the chain refuse while the pin is zero. The guard is unmodified.",
+    "packets-need-the-v2-allowance: The signed successor-3 allowance (docs/receipts/owner/2026-10-13-slurp-test-sample-allowance-successor-3.json) permits only the generation id and the FIT id. The Thinking packets of the sample are an encoder pass over slurp:test: rows under the final-report role, so contracts.plan.require_owner_split_allowance refuses it unless a pinned, authorised allowance lists SAEA-SLURP-TEST-SAMPLE-3010-THINKING-PACKETS-GPU-V1 in preparation_run_ids (successor 1's packets pass SAEA-SN-TEST-SAMPLE-3010-PREPROCESS cleared the guard exactly that way through the 2026-09-27 allowance). The signed bytes are NOT edited: docs/receipts/owner/2026-10-14-slurp-test-sample-allowance-successor-3-v2.json is a DRAFT v2 successor that supersedes the signed receipt by sha, adds the packets id (encoder contact only, no answers, one attempt, its own countersigned exposure row, a GPU swap window) and carries the Thinking ceilings. The packets experiment fragment pins its path with 64 zeros: the driver (dry-run, --run, --promote-only) and the chain refuse while the pin is zero. The guard is unmodified.",
     "packets-window-before-the-cells: The cell's baseline pins the Thinking sample promotion receipt TEST-SAMPLE-3010-promotion.json by path; its sha256 is the zero sentinel until the swap window writes it. Mint, flip and chain fail closed on the sentinel.",
     "ceilings-exceed-the-allowance-budget-block: The signed allowance's budgets block (6,020 generation calls, 4.6 GPU-h, 16,413 audio seconds) is successor 2's. The Thinking ceilings from the P3.1 rule are 12,040 plan calls (6,020 program contacts), 35.5 GPU-h and 32,826 audio seconds (FIT cap 24,080 equals the allowance's). No code enforces the block (the gate reads status, split, permitted ids and the attempt budget), but the owner should know; the v2 draft carries the Thinking ceilings.",
     "allowance-run-ids-block-names-successor-2: The signed allowance's run_ids block still describes the successor-2 ids. Documentation only: the gate uses permitted_run_ids, read_run_ids and preparation_run_ids, which are correct. The v2 draft corrects the block.",

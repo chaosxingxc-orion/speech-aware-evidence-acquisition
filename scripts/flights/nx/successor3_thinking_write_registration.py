@@ -39,7 +39,7 @@ from speech_aware_evidence_acquisition.core.config import compose, protocol_hash
 STATUS = "REGISTERED_BEFORE_CONTACT_HELD_BLOCKED_ON_PACKETS_AND_V2_ALLOWANCE"
 DECISIONS = reg.OWNER_DECISIONS
 INSTRUMENT = reg.INSTRUMENT_NOTE
-V2_ALLOWANCE = "docs/receipts/owner/2026-10-14-slurp-test-sample-allowance-successor-3-v2-DRAFT.json"
+V2_ALLOWANCE = "docs/receipts/owner/2026-10-14-slurp-test-sample-allowance-successor-3-v2.json"
 DATA_ROOT = Path(os.environ.get("SPEECHRL_DATA_DIR") or os.environ.get("SAEA_DATA_ROOT") or "/home/chao/saea-data/speechrl-data")
 LEDGER_COLUMNS = reg.LEDGER_COLUMNS
 INHERITED = ("The SLURP test SAMPLE SLURP-TEST-SAMPLE-3010-V1 is not an unexposed sample: the label-free sample preparations (owner decision 156), the failed original PLAN "

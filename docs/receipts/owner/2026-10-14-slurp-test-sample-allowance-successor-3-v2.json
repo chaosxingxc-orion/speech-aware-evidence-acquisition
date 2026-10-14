@@ -131,8 +131,13 @@
   },
   "schema": "saea-owner-split-allowance-v1",
   "signature": {
-    "status": "DRAFT: awaiting owner decision 308",
-    "recorded_by": "coordinator Fable 5.1"
+    "status": "authorised",
+    "signed_by": "owner, in conversation (decision 308 A, 2026-10-14 about 16:00Z)",
+    "owner_words_verbatim_chinese": "决策308：按你的建议走",
+    "english_translation_by_coordinator": "Decision 308: go with your recommendation (option A: sign the v2 amendment adding the Thinking packets preparation run id and the Thinking ceilings)",
+    "recorded_by": "coordinator Fable 5.1",
+    "recorded_at_utc": "2026-10-14T15:58:04+00:00",
+    "registry": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md, section 'Decision 308 (proposed)' (12:45Z) and the ruling section of 2026-10-14 16:00Z"
   },
   "split": {
     "audio_seconds_total": 8206.436875,
@@ -155,7 +160,7 @@
     "split_name": "TEST-SAMPLE",
     "utterances": 682
   },
-  "status": "draft-awaiting-owner-signature",
+  "status": "authorised",
   "study": "speech-aware-evidence-acquisition",
   "supersedes": {
     "path": "docs/receipts/owner/2026-10-13-slurp-test-sample-allowance-successor-3.json",

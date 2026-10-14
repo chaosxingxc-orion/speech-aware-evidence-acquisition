@@ -27,7 +27,7 @@ sys.path.insert(0, str(HERE))
 import successor3_thinking_family as fam  # noqa: E402
 
 ROOT = fam.REPO_ROOT
-V2 = "docs/receipts/owner/2026-10-14-slurp-test-sample-allowance-successor-3-v2-DRAFT.json"
+V2 = "docs/receipts/owner/2026-10-14-slurp-test-sample-allowance-successor-3-v2.json"
 MODEL_SRC = "configs/model/q4km-thinking-feature-preprocess-gpu-np1-dev2000-added-v1.json"
 MODEL_OUT = f"configs/model/{fam.PACKETS_SIDECAR_FRAGMENT}.json"
 EXPERIMENT_OUT = f"configs/experiment/{fam.PACKETS_EXPERIMENT_FRAGMENT}.json"

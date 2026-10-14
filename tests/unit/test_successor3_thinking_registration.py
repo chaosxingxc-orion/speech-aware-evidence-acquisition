@@ -216,11 +216,16 @@ def test_packets_guard_refuses_while_the_v2_pin_is_zero_and_is_never_bypassed():
     drv.apply_roster(drv.SAMPLE_ROSTER_KEY)
     _, values = drv.compose_values(REPO)
     problems = drv.allowance_problems(values, repo=REPO)
-    assert len(problems) == 1 and "require_owner_split_allowance" in problems[0]
-    assert values["owner_allowance"]["sha256"] == fam.ZERO or json.loads((REPO / pk.V2).read_text(encoding="utf-8"))["status"] == "authorised"
     v2 = js(pk.V2)
-    assert v2["status"] == "draft-awaiting-owner-signature" or v2["status"] == "authorised"
-    assert v2["signature"]["status"] in ("DRAFT: awaiting owner decision 308",) or v2["status"] == "authorised"
+    if v2["status"] == "authorised":
+        # owner decision 308 A (2026-10-14): the v2 receipt is signed and pinned; the contract accepts the packets pass
+        assert problems == [], problems
+        assert values["owner_allowance"]["sha256"] == hashlib.sha256((REPO / pk.V2).read_bytes()).hexdigest() != fam.ZERO
+        assert v2["signature"]["status"] == "authorised" and v2["signature"].get("signed_by")
+    else:
+        assert len(problems) == 1 and "require_owner_split_allowance" in problems[0]
+        assert values["owner_allowance"]["sha256"] == fam.ZERO
+        assert v2["signature"]["status"] == "DRAFT: awaiting owner decision 308"
     # every other roster is not owner-allowance gated
     drv.apply_roster("thinking-dev2000-added")
     assert drv.allowance_problems({}, repo=REPO) == []
@@ -242,7 +247,11 @@ def test_v2_allowance_draft_supersedes_by_sha_and_adds_only_the_packets_id():
     assert v2["supersedes"]["path"] == fam.ALLOWANCE and v2["supersedes"]["sha256"] == hashlib.sha256((REPO / fam.ALLOWANCE).read_bytes()).hexdigest()
     assert v2["permitted_run_ids"] == [fam.RUN, fam.FIT_RUN, fam.PACKETS_RUN]
     assert v2["read_run_ids"] == [fam.RUN] and v2["preparation_run_ids"] == [fam.FIT_RUN, fam.PACKETS_RUN]
-    assert v2["split"] == signed["split"] and v2["signature"] == {"status": "DRAFT: awaiting owner decision 308", "recorded_by": "coordinator Fable 5.1"}
+    assert v2["split"] == signed["split"]
+    if v2["status"] == "authorised":
+        assert v2["signature"]["status"] == "authorised" and v2["signature"]["recorded_by"] == "coordinator Fable 5.1" and v2["signature"].get("signed_by")
+    else:
+        assert v2["signature"] == {"status": "DRAFT: awaiting owner decision 308", "recorded_by": "coordinator Fable 5.1"}
     assert signed["permitted_run_ids"] == [fam.RUN, fam.FIT_RUN]       # the signed bytes are not edited
     assert v2["status"] != "authorised" or v2["signature"].get("signed_by")
 
