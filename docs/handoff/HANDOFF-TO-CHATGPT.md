@@ -1,6 +1,24 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-13T18:57:21Z
+Last refreshed: 2026-10-14T12:06:22Z
+
+## P3.1 READ NOMINATED (Thinking system on DEV-2000-ADDED: SLU +7.52 [+5.46, +9.62], intent +2.50 [+1.00, +4.07] over the Instruct system; lock candidate v3.0); NX-T R1 registered and flipping (2026-10-14T12:06:22Z, Fable 5.1 root)
+
+P3.1 both arms sealed at 37b0ed0aa (lock 02:35Z, aa 11:42Z; 2,000 contacts each; summed latency 35.07 / 35.62 h); read
+`SAEA-SLURP-SYSTEM-THINKING-CORE-DEV2000-ADDED-READ-V1` 11:45Z: levels lock 74.69 / 84.5, twin 74.08 / 86.1, Instruct system 67.18 / 82.0, bare
+38.09 / 61.7; twin offset SLU -0.61 [-1.88, +0.69], intent +1.60 [+0.60, +2.67] (bounds the intent attribution); Fold B replication share 1.05;
+completion 100 %, 0 reasoning leaks. Note (Opus, merged 40706d54a): `docs/results/2026-10-14-slurp-p31-thinking-system-dev2000-added-read.md`.
+Registry 11:50Z. Consequence: the Thinking system (lock v2.2 + v4g on the Thinking core, budget 3,072 / cap 4,096 / drop-reasoning-v1) is the
+SLURP lock candidate v3.0; the successor-3 test read (301 A) is unlocked and queued AFTER NX-T R1 (ready-first serial GPU, 303 A): it still needs the
+Thinking packets for the 3,010-row sample (own countersigned packets row + GPU swap window) and its package. NX-T R1 (ruling 304, the per-node
+thinking-policy column: both-on delivering, both-on-twin, perception-off, solver-off, both-off; Fold B 1,080 rows; program c10; ceiling 41.4 GPU-h)
+registered at 8132badd8 (11:52Z; four flight rows countersigned, READ row draft, receipt minted sha 87acf1be...), committed 04603b8cd, flipped to flight commit 37e177e3e (gate PASS both cells, 12:05Z); chain
+next: `batch_chain_nxt_r1.sh all` on the recycled think-budget-np4 session (smoke -> `/home/chao/nxt1-decode-signoff.marker` after
+`nxt_r1_read.sh smoke` -> column). Open engineering: the DEV reader's decision-299 note string says "TRAIN Fold B" on the DEV read (text only);
+flight_registration_check does not inspect the thinking-variant group; only 13 of 18 scenarios exist on DEV-2000-ADDED (alarm, audio, cooking,
+music, takeaway absent).
+
+Superseded stamp: 2026-10-13T18:57:21Z
 
 ## Owner rulings 301-307: SLURP training-free RL iteration on the Thinking base comes BEFORE carriers; successor-3 allowance signed; NX-T R1 (per-node thinking) in build (2026-10-13T18:57:21Z, Fable 5.1 root)
 
