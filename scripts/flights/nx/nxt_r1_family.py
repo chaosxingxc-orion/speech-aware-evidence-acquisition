@@ -31,18 +31,21 @@ from __future__ import annotations
 
 import json
 import math
+import re
 import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 DIRECT_DIR = HERE.parent / "direct"
 TFRL_DIR = HERE.parent / "tfrl"
-for _dir in (HERE, DIRECT_DIR, TFRL_DIR):
+LIB_DIR = HERE.parent / "lib"
+for _dir in (HERE, DIRECT_DIR, TFRL_DIR, LIB_DIR):
     if str(_dir) not in sys.path:
         sys.path.insert(0, str(_dir))
 
 import thinking_system_family as tsf  # noqa: E402
 import tfrl_family as tf  # noqa: E402
+import recovery as rcv  # noqa: E402
 
 REPO_ROOT = tf.REPO_ROOT
 
@@ -90,7 +93,110 @@ PROGRAM = f"phase-native-module-v1-c{CONTACTS_PER_ROW}"     # phase-native-modul
 #: 1 (its Solver) + solver-off 1 (its Perception) + both-off 0.
 THINKING_CONTACTS_PER_ROW = 2 + 2 + 1 + 1
 FALLBACK_CONTACTS_PER_ROW_CEILING = THINKING_CONTACTS_PER_ROW   # 6; the runner requires >= 2 for the module family, a larger plan is legal
-THINK_SESSION, THINK_MODEL, THINK_SWAP_TARGET = tsf.THINK_SESSION, tsf.THINK_MODEL, tsf.THINK_SWAP_TARGET
+# ---- the Thinking serving geometry (owner decision 315 A, 2026-10-14) ----------------------------------------------------------------
+#: The column flight (the ``arm`` cell) runs on whichever Thinking serving geometry a throughput receipt picks: the np4 x 24k control (default), np6 x 20k
+#: or np8 x 16k. ONLY the geometry leaves move (the serving session, the model-fragment reference and, inside that fragment, ``server_args`` /
+#: ``profile_slot_count`` / ``geometry_basis``); the decoding knobs (budget 3,072 / cap 4,096 / drop-reasoning-v1) never move with geometry. The smoke is sealed
+#: on the control and always stays on it. The choice is committed state: ``<package>/geometry-selection-v1.json`` (absent = the control, byte-identical to the
+#: first registration); ``--geometry`` on the derive / writer writes it through :func:`select_geometry`.
+#: Resolution is data-driven: the geometry row of ``scripts/flights/batch/serving_lib.sh`` (``G_SID`` / ``G_FRAGMENT``) when it has one, else the provisional
+#: table ``nxt_r1_geometry_targets.json``. The np6 / np8 path is UNTESTED until their fragments and serving rows land.
+CONTROL_SESSION, CONTROL_MODEL, CONTROL_SWAP_TARGET = tsf.THINK_SESSION, tsf.THINK_MODEL, tsf.THINK_SWAP_TARGET
+CONTROL_SLOTS, CONTROL_SLOT_TOKENS = tsf.THINK_SLOTS, tsf.SLOT_TOKENS
+DEFAULT_GEOMETRY = CONTROL_SWAP_TARGET                      # think-budget-np4
+GEOMETRY_TABLE_PATH = HERE / "nxt_r1_geometry_targets.json"
+GEOMETRY_SELECTION = f"{PACKAGE}/geometry-selection-v1.json"
+SERVING_LIB = "scripts/flights/batch/serving_lib.sh"
+#: Composed-config leaves a geometry change may move (``compose`` values of the arm cell); the experiment's ``service_session`` and the cell's
+#: ``model_fragment`` reference move with them. Anything else that moves refuses the derive.
+GEOMETRY_LEAVES = ("server_args", "geometry_basis", "profile_slot_count")
+GEOMETRY_EXPERIMENT_KEYS = ("service_session", "cells.0.model_fragment")
+
+
+def _serving_lib_row(target: str, root: Path) -> dict | None:
+    path = Path(root) / SERVING_LIB
+    if not path.is_file():
+        return None
+    match = re.search(rf"^\s*{re.escape(target)}\)\s*\n(.*?);;", path.read_text(encoding="utf-8"), re.M | re.S)
+    if not match:
+        return None
+    sid, fragment = re.search(r"G_SID=(\S+)", match.group(1)), re.search(r"G_FRAGMENT=(\S+)", match.group(1))
+    return {"session": sid.group(1), "model_fragment": fragment.group(1)} if sid and fragment else None
+
+
+def resolve_geometry(target: str, root: Path | str | None = None) -> dict:
+    """Resolve a serving target to its session, model fragment and slot geometry. Raises ``ValueError`` for an unknown target."""
+
+    root = Path(root) if root else REPO_ROOT
+    table = json.loads(GEOMETRY_TABLE_PATH.read_text(encoding="utf-8"))["targets"]
+    row, hint = _serving_lib_row(target, root), table.get(target)
+    if row is None and hint is None:
+        raise ValueError(f"unknown serving geometry target {target!r}: no row in {SERVING_LIB} and none in {GEOMETRY_TABLE_PATH.name}")
+    chosen = row or hint
+    source = f"{SERVING_LIB} geometry row" if row else f"{GEOMETRY_TABLE_PATH.name} (provisional: {SERVING_LIB} has no row for it yet)"
+    fragment_path = root / "configs" / "model" / f"{chosen['model_fragment']}.json"
+    present = fragment_path.is_file()
+    slots, slot_tokens = (hint or {}).get("slots"), (hint or {}).get("slot_tokens")
+    if present:
+        args = json.loads(fragment_path.read_text(encoding="utf-8"))["server_args"]
+        total, slots = int(args[args.index("-c") + 1]), int(args[args.index("-np") + 1])
+        slot_tokens = total // slots
+    if not slots or not slot_tokens:
+        raise ValueError(f"geometry {target!r}: no slot geometry (fragment absent and no table hint)")
+    return {"target": target, "session": chosen["session"], "model_fragment": chosen["model_fragment"], "source": source, "fragment_present": present,
+            "fragment_path": f"configs/model/{chosen['model_fragment']}.json", "slots": int(slots), "slot_tokens": int(slot_tokens),
+            "provisional": row is None and bool((hint or {}).get("provisional"))}
+
+
+def _read_selection(root: Path) -> str:
+    path = Path(root) / GEOMETRY_SELECTION
+    return json.loads(path.read_text(encoding="utf-8"))["target"] if path.is_file() else DEFAULT_GEOMETRY
+
+
+ACTIVE_GEOMETRY = resolve_geometry(_read_selection(REPO_ROOT))
+THINK_SESSION, THINK_MODEL, THINK_SWAP_TARGET = ACTIVE_GEOMETRY["session"], ACTIVE_GEOMETRY["model_fragment"], ACTIVE_GEOMETRY["target"]
+
+
+def geometry_of(key: str) -> dict:
+    """The serving geometry a cell runs on: the smoke is sealed on the control; the arm follows the selection."""
+
+    return resolve_geometry(CONTROL_SWAP_TARGET) if key == "smoke" else ACTIVE_GEOMETRY
+
+
+def select_geometry(target: str, root: Path | str | None = None, *, write: bool = True) -> dict:
+    """Select the arm's serving geometry: refuses a non-control target whose model fragment is not on disk, writes (or, for the control, removes) the
+    committed selection file, and updates this module's identities in place."""
+
+    global ACTIVE_GEOMETRY, THINK_SESSION, THINK_MODEL, THINK_SWAP_TARGET, THINK_SLOTS
+    root = Path(root) if root else REPO_ROOT
+    geometry = resolve_geometry(target, root)
+    if target != DEFAULT_GEOMETRY and not geometry["fragment_present"]:
+        raise ValueError(f"geometry {target!r}: model fragment {geometry['fragment_path']} is not present in this tree; the np6/np8 path waits for its fragment")
+    path = root / GEOMETRY_SELECTION
+    if write:
+        if target == DEFAULT_GEOMETRY:
+            if path.is_file():
+                path.unlink()
+        else:
+            path.write_bytes((json.dumps({"schema": "saea-nxt-r1-geometry-selection-v1", "target": target, "decision": "owner decision 315 A (2026-10-14)",
+                                          "session": geometry["session"], "model_fragment": geometry["model_fragment"]}, indent=2, sort_keys=True) + "\n").encode("utf-8"))
+    ACTIVE_GEOMETRY = geometry
+    THINK_SESSION, THINK_MODEL, THINK_SWAP_TARGET, THINK_SLOTS = geometry["session"], geometry["model_fragment"], geometry["target"], geometry["slots"]
+    if "CELLS" in globals():
+        CELLS["arm"]["model"], CELLS["arm"]["session"] = THINK_MODEL, THINK_SESSION
+    return geometry
+
+
+def think_model_text(key: str) -> str:
+    """The ledger model/tool text of a cell, geometry-aware (the control reads ``c98304 np4 x 24,576``)."""
+
+    g = geometry_of(key)
+    return ("Frozen Qwen3-Omni-30B-A3B-Thinking Q4_K_M (qwen3-omni-30b-a3b-thinking-gguf-q4km), decoder-only build 04ccc72a, "
+            f"c{g['slots'] * g['slot_tokens']} np{g['slots']} x {g['slot_tokens']:,} max{tsf.THINK_MAX_TOKENS} (reasoning budget {tsf.THINK_BUDGET_TOKENS}), q8_0 KV, "
+            f"--reasoning-format deepseek (model fragment {g['model_fragment']}); its own promoted speech packets; module program {PROGRAM}; "
+            "per-arm enable_thinking false at the named node; no tool authority")
+
+
 THINK_PACKET_ROOT, THINK_PROMOTION_RECEIPT = tsf.THINK_PACKET_ROOT, tsf.THINK_PROMOTION_RECEIPT
 THINKING_KNOBS = json.loads(json.dumps(tsf.THINKING_KNOBS))
 NO_THINK_KNOBS = {"enable_thinking": False, "answer_reserve_tokens": tsf.THINK_ANSWER_RESERVE_TOKENS, "max_tokens": tsf.THINK_ANSWER_RESERVE_TOKENS,
@@ -110,7 +216,7 @@ ROWS_PER_MINUTE_FULL = 1.84                                                     
 GPU_MARGIN, GPU_ROUND_H = tf.GPU_PLAN_MARGIN, tf.GPU_PLAN_ROUND_H
 SMOKE_GPU_HOURS = tsf.SMOKE_GPU_HOURS
 PERCEPTION_SHARE_OF_ROW = tsf.SMOKE_MEASURED_S_PER_CONTACT["perception"] / (sum(tsf.SMOKE_MEASURED_S_PER_CONTACT.values()))
-THINK_SLOTS = tsf.THINK_SLOTS
+THINK_SLOTS = ACTIVE_GEOMETRY["slots"]
 
 
 def expected_gpu_hours(rows: int) -> float:
@@ -132,8 +238,90 @@ def arm_row_equivalent_rows_per_minute(arm: str) -> float:
     return ROWS_PER_MINUTE_FULL / ROW_COST[arm]
 
 
+# ---- the single recovery (rec1) of a cell --------------------------------------------------------------------------------------------
+#: A (run_id, attempt_id) pair is a one-time key, so a cell whose attempt stopped is re-flown WHOLE under the ``-rec1`` attempt ids (generation AND the live
+#: phase fit) with a plan that carries the original plan plus the failed attempt's realised spend (the adapter budget is run-cumulative across the attempts of
+#: a run id). The package protocol fixes ONE root-diagnosed recovery per run id; a second failure closes the cell. Generic mechanism:
+#: ``scripts/flights/lib/recovery.py``. The failed attempt's spend is the committed snapshot receipt's (read from the attempt record by the lib's CLI, never
+#: typed here); the writer re-verifies it against the data root whenever the root is present.
+REC = rcv.REC
+PREDECESSOR_SNAPSHOT = {"arm": f"{PACKAGE}/predecessor-snapshot-arm-rec1-v1.json"}
+_ARM_FIT_ATTEMPT_FIRST = "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-fit-v1"
+
+
+def _arm_recovery() -> dict:
+    snap = rcv.load_snapshot(REPO_ROOT / PREDECESSOR_SNAPSHOT["arm"])
+    fit = snap.get("fit") or {}
+    calls, audio = snap["actual_calls"], snap["actual_audio_seconds"]
+    return {
+        "recovery_index": 1,
+        "recovered_at": "2026-10-14",
+        "ledger_title": "the column flight re-registration (Windows Update forced restart)",
+        "agent": "the NX-T R1 recovery agent (Sonnet)",
+        "registered_at_utc": None,                      # the writer's --recovery-registered-at
+        "base_commit": None,                            # the writer's --recovery-base-commit
+        "worktree": None,
+        "branch": None,
+        "predecessor_attempt_id": snap["attempt_id"],
+        "predecessor_fit_run_id": fit["run_id"],
+        "predecessor_fit_attempt_id": fit["attempt_id"],
+        "fit_predecessor_phrase": (f"no attempt record was opened for it, its prepared directory holds {fit['prepared_request_fit_envelopes']:,} "
+                                   "request-fit envelopes preserved unread on the data root"),
+        "predecessor_state": (
+            f"{snap['state']} at flight commit 37e177e3e from 2026-10-14T12:18:45Z, killed by a host restart at 15:29Z; {calls:,} calls / {audio:.2f} "
+            f"speech-seconds realised per its attempt record (reserved {snap['reserved_calls']:,} / {snap['reserved_audio_seconds']:,.0f}); no trace was "
+            "written (the run directory holds only the session-attach receipt); preserved unread."),
+        "predecessors": [rcv.predecessor_from_snapshot(snap)],
+        "reason": (
+            "The predecessor attempt was killed by a Windows Update forced restart of the host (System event log 1074: 15:29Z MoUsoCoreWorker \"operating "
+            "system: Service Pack (planned)\", 15:33Z TrustedInstaller \"operating system: upgrade (planned)\"). The trace sink buffers until the seal, so "
+            "the attempt left no trace and the E10 mode-A resume has nothing to replay; the column flight is re-flown WHOLE under the rec1 ids. The smoke "
+            "cell sealed at 2026-10-14T12:16Z, was signed off at 12:18:33Z and is NOT re-flown."),
+        "root_cause": ("infrastructure, not the cell: a Windows Update forced restart (System event log 1074) killed the host session; no defect in the "
+                       "cell, the runtime or any registered knob"),
+        "amendment": (
+            "RECOVERY 2026-10-14 (the cell's single one; owner decision 309 A, coordinator brief, Fable 5.1). The generation budget is run-cumulative across "
+            "the attempts of the run id (core/model/adapter.py; every attempt state counts, an OPENED one included), so the rec1 plan carries the original "
+            f"plan plus the failed attempt's recorded spend ({calls:,} calls, {audio:g} speech-seconds, read from the attempt record into "
+            f"{PREDECESSOR_SNAPSHOT['arm']}). The FIT cap is structural and unchanged (rows x program contacts x endpoints per contact). The FIT run id and "
+            "the FIT attempt id both take the rec1 marker because the cell is re-flown whole and a (run_id, attempt_id) pair is a one-time key; the generation "
+            "run id is unchanged. The registered GPU-hour ceiling does not change."),
+        "fix": ("none in the cell; infrastructure: the Windows Update auto-restart policy is set (decision 310 A) and the data-disk mount task is fixed "
+                "(decision 311)"),
+        "unchanged": ("Unchanged: the smoke cell `slurp-native-stage3-nxt-r1-thinking-policy-fold-b-smoke-4-v1` (sealed, signed off, not re-flown; its "
+                      "baseline, experiment, ids and attempt are untouched) and every registered knob, arm, policy, roster, prompt, geometry, cap and the "
+                      "41.4 GPU-hour ceiling of the arm cell."),
+        "rule": "A second failure closes the cell; the fix is proven on a four-row dry run.",
+        "fit_cap_rule": "The FIT cap is structural: rows x program contacts x endpoints per contact.",
+    }
+
+
+RECOVERIES: dict[str, dict] = {"arm": _arm_recovery()}
+for _rec in RECOVERIES.values():
+    rcv.validate_recovery(_rec)
+
+
+def recovery(key: str) -> dict | None:
+    """The cell's recovery record, or ``None`` when the cell is on its first attempt."""
+
+    return RECOVERIES.get(key)
+
+
+def rec_suffix(key: str) -> str:
+    return rcv.rec_suffix(RECOVERIES, key)
+
+
+def predecessor_spend(key: str) -> tuple[int, float]:
+    return rcv.predecessor_spend(RECOVERIES, key)
+
+
+def cumulative_budget(key: str, original_calls: int, original_audio: float) -> tuple[int, int]:
+    return rcv.cumulative_budget(RECOVERIES, key, original_calls, original_audio)
+
+
 def _spec(key: str, role: str, rows: int, roster: str, scoring_jobs: int, gpu: float, *, ids_stem: str, parent_key: str) -> dict:
     up = ids_stem.upper()
+    rec, rec_up = rec_suffix(key), rec_suffix(key).upper()
     parent = PARENT[parent_key]
     return {
         "key": key, "role": role, "rows": rows, "roster": roster, "gpu_hours": gpu, "scoring_jobs": scoring_jobs,
@@ -141,10 +329,10 @@ def _spec(key: str, role: str, rows: int, roster: str, scoring_jobs: int, gpu: f
         "cell": f"slurp-native-stage3-{ids_stem}-v1",
         "baseline": f"slurp-native-stage3-{ids_stem}-baseline-v1",
         "run": f"SAEA-SLURP-STAGE3-{up}-V1",
-        "fit_run": f"SAEA-SLURP-STAGE3-{up}-FIT-V1",
-        "attempt": f"attempt-slurp-native-stage3-{ids_stem}-generation-v1",
-        "fit_attempt": f"attempt-slurp-native-stage3-{ids_stem}-fit-v1",
-        "model": THINK_MODEL, "session": THINK_SESSION,
+        "fit_run": f"SAEA-SLURP-STAGE3-{up}-FIT{rec_up}-V1",
+        "attempt": f"attempt-slurp-native-stage3-{ids_stem}-generation{rec}-v1",
+        "fit_attempt": f"attempt-slurp-native-stage3-{ids_stem}-fit{rec}-v1",
+        "model": CONTROL_MODEL if key == "smoke" else THINK_MODEL, "session": CONTROL_SESSION if key == "smoke" else THINK_SESSION,
         "prefix": "smoke-" if key == "smoke" else "",
         "campaign": f"configs/campaign/slurp-native-stage3-{ids_stem}-v1.json",
     }
@@ -161,17 +349,25 @@ ALL_KEYS = ("smoke", "arm")
 
 
 def eligible_run_ids() -> list[str]:
-    """The decision receipt's eligible run ids: each cell's generation run id then its FIT run id, in chain order."""
+    """The decision receipt's eligible run ids: each cell's generation run id then its first-registration FIT run id, in chain order, then the rec1 FIT run
+    id of each recovered cell (the minted receipt of the first registration lists exactly the first four; the rec1 receipt appends the new FIT run id)."""
 
     out: list[str] = []
     for key in ALL_KEYS:
-        out += [CELLS[key]["run"], CELLS[key]["fit_run"]]
+        rec = recovery(key)
+        out += [CELLS[key]["run"], rec["predecessor_fit_run_id"] if rec else CELLS[key]["fit_run"]]
+    out += [CELLS[key]["fit_run"] for key in ALL_KEYS if recovery(key)]
     return out
 
 
 def eligible_attempt_ids() -> list[str]:
+    """Each cell's attempt ids, in chain order; a recovered cell lists its first-attempt ids (superseded, spent) then its rec1 ids."""
+
     out: list[str] = []
     for key in ALL_KEYS:
+        rec = recovery(key)
+        if rec:
+            out += [rec["predecessor_attempt_id"], rec["predecessor_fit_attempt_id"]]
         out += [CELLS[key]["attempt"], CELLS[key]["fit_attempt"]]
     return out
 
@@ -187,7 +383,15 @@ def package_file(name: str) -> str:
 
 
 def plan_file_name(key: str, plan_kind: str) -> str:
-    return f"{CELLS[key]['prefix']}{plan_kind}-plan-registered-v1.json"
+    """Package file name of a cell's registered plan; a recovered cell's plans carry the ``-rec1`` marker."""
+
+    return rcv.plan_file_name(CELLS[key]["prefix"], plan_kind, key in RECOVERIES)
+
+
+def superseded_plan_file_names(key: str) -> list[str]:
+    """First-attempt plan names a recovery supersedes (removed from the package; the failed attempt stays on the data root)."""
+
+    return rcv.superseded_plan_file_names(CELLS[key]["prefix"], key in RECOVERIES)
 
 
 def roster_doc(kind: str) -> dict:
@@ -204,10 +408,22 @@ def audio_cap(kind: str) -> int:
     return math.ceil(roster_audio(kind) * (CONTACTS_PER_ROW + FALLBACK_CONTACTS_PER_ROW_CEILING) - 1e-9)
 
 
-def generation_calls(key: str) -> int:
-    """The plan ceiling: rows x (program contacts + fallback contacts per row) = rows x 16."""
+def original_generation_calls(key: str) -> int:
+    """The first-attempt plan ceiling: rows x (program contacts + fallback contacts per row) = rows x 16."""
 
     return CELLS[key]["rows"] * (CONTACTS_PER_ROW + FALLBACK_CONTACTS_PER_ROW_CEILING)
+
+
+def generation_calls(key: str) -> int:
+    """The plan ceiling: the original ceiling, plus the failed attempts' realised calls for a recovered cell (run-cumulative budget)."""
+
+    return cumulative_budget(key, original_generation_calls(key), 0)[0]
+
+
+def cell_audio_cap(key: str) -> int:
+    """The cell's speech-second ceiling: the original cap, plus the failed attempts' realised seconds for a recovered cell (rounded up)."""
+
+    return cumulative_budget(key, 0, audio_cap(CELLS[key]["roster"]))[1]
 
 
 def program_calls(key: str) -> int:

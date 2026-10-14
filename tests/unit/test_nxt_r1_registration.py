@@ -58,11 +58,20 @@ def composed(key: str):
 
 def test_ids_are_unique_and_follow_the_registered_pattern():
     runs = [fam.CELLS[k][f] for k in fam.ALL_KEYS for f in ("run", "fit_run")]
-    assert len(set(runs)) == 4 and fam.eligible_run_ids() == runs
+    assert len(set(runs)) == 4
+    # rec1: the first four ids (the first-registration receipt's list, in its order) then the rec1 FIT run id
+    first_fit = fam.recovery("arm")["predecessor_fit_run_id"]
+    assert fam.eligible_run_ids() == [fam.CELLS["smoke"]["run"], fam.CELLS["smoke"]["fit_run"], fam.CELLS["arm"]["run"], first_fit, fam.CELLS["arm"]["fit_run"]]
+    assert first_fit == "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-FIT-V1"
+    assert fam.CELLS["arm"]["fit_run"] == "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-FIT-REC1-V1"
     assert fam.CELLS["arm"]["run"] == "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1"
     assert fam.CELLS["arm"]["cell"] == "slurp-native-stage3-nxt-r1-thinking-policy-fold-b-v1"
     assert fam.CELLS["smoke"]["cell"] == "slurp-native-stage3-nxt-r1-thinking-policy-fold-b-smoke-4-v1"
-    assert fam.CELLS["arm"]["attempt"] == "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-v1"
+    assert fam.CELLS["arm"]["attempt"] == "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-rec1-v1"
+    assert fam.CELLS["arm"]["fit_attempt"] == "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-fit-rec1-v1"
+    # the smoke is NOT recovered: its ids are the first-registration ids
+    assert fam.recovery("smoke") is None and fam.CELLS["smoke"]["attempt"] == "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-smoke-4-generation-v1"
+    assert fam.CELLS["smoke"]["fit_run"] == "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-SMOKE-4-FIT-V1"
     assert fam.PACKAGE == "docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1" and fam.SHORT == "nxt1"
     for key in fam.ALL_KEYS:
         assert experiment(key)["cells"][0]["run_id"] == fam.CELLS[key]["run"]
@@ -170,7 +179,9 @@ def test_budgets_follow_the_formula_in_one_place():
     assert round(fam.expected_gpu_hours(1080), 2) == 31.79 and fam.planned_gpu_hours(1080) == 41.4 == arm["gpu_hours"]
     assert fam.planned_gpu_hours(1080) == round(__import__("math").ceil(round(1080 * 3.25 / 1.84 / 60 * 1.3 / 0.1, 9)) * 0.1, 1)
     assert fam.CELLS["smoke"]["gpu_hours"] == 0.5
-    assert fam.generation_calls("arm") == 1080 * 16 == 17280 and fam.program_calls("arm") == 10800 and fam.generation_calls("smoke") == 64
+    assert fam.original_generation_calls("arm") == 1080 * 16 == 17280 and fam.program_calls("arm") == 10800 and fam.generation_calls("smoke") == 64
+    # rec1: the registered caps are run-cumulative: the original plan plus the failed attempt's realised spend (the snapshot receipt's, 1,204 calls)
+    assert fam.generation_calls("arm") == 17280 + 1204 == 18484 and fam.cell_audio_cap("arm") == 53776 == fam.audio_cap("arm") + 3299
     assert fam.FALLBACK_CONTACTS_PER_ROW_CEILING == 6 == 2 + 2 + 1 + 1 + 0
     assert fam.fit_contact_cap(1080) == 43200 == 1080 * 10 * tsf.tf.FIT_ENDPOINTS_PER_CONTACT and fam.fit_contact_cap(4) == 160
     assert fam.audio_cap("smoke") == fam.tsf.math.ceil(fam.roster_audio("smoke") * 16 - 1e-9) and fam.audio_cap("arm") == fam.tsf.math.ceil(fam.roster_audio("arm") * 16 - 1e-9)
@@ -248,7 +259,8 @@ def test_plans_protocol_receipt_and_ledger_agree():
     assert draft["eligible_run_ids"] == fam.eligible_run_ids() and draft["eligible_attempt_ids"] == fam.eligible_attempt_ids()
     assert draft["decision_id"] == fam.DECISION_ID and draft["status"] == "DRAFT-NOT-MINTED" and draft["service"]["expected_session_id"] == fam.THINK_SESSION
     texts = json.loads((PKG / "countersign-row-texts-v1.json").read_text(encoding="utf-8"))
-    assert set(texts["rows"]) == set(fam.eligible_run_ids()) | {fam.READ_RUN_ID} and draft_rows.count(f"| {fam.READ_RUN_ID} |") == 1
+    current = {fam.CELLS[k][f] for k in fam.ALL_KEYS for f in ("run", "fit_run")}          # the superseded first FIT run id has no countersign text
+    assert set(texts["rows"]) == current | {fam.READ_RUN_ID} and draft_rows.count(f"| {fam.READ_RUN_ID} |") == 1
     recipe = json.loads((PKG / "analysis-recipe-v1.json").read_text(encoding="utf-8"))
     assert recipe["read_run_id"] == fam.READ_RUN_ID and recipe["arms"] == list(fam.ARM_ORDER) and recipe["twin"] == "both-on-twin"
     assert (REPO / fam.PREREG).is_file()
@@ -373,3 +385,319 @@ def test_the_structural_dry_run_script_compiles_and_states_the_registered_node_d
     assert dry.expected_node_decoding("solver-off") == {"perception": dry.ON, "solver": dry.OFF}
     assert dry.expected_node_decoding("both-off") == {"perception": dry.OFF, "solver": dry.OFF}
     assert dry.ON["max_tokens"] == 4096 and dry.OFF["max_tokens"] == 1024 and dry.OFF["thinking_budget_tokens"] is None
+
+
+# ---- recovery rec1 (owner decision 309 A): the column flight re-registered after a Windows Update forced restart ----------------------------------
+
+
+def _plan(key: str, kind: str) -> dict:
+    return json.loads((PKG / fam.plan_file_name(key, kind)).read_text(encoding="utf-8"))
+
+
+def test_the_predecessor_spend_is_the_snapshot_receipts_and_it_is_cumulative():
+    snap = json.loads((REPO / fam.PREDECESSOR_SNAPSHOT["arm"]).read_text(encoding="utf-8"))
+    assert snap["schema"] == "saea-recovery-predecessor-snapshot-v1" and snap["run_id"] == fam.CELLS["arm"]["run"]
+    assert snap["attempt_id"] == "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-v1" and snap["state"] == "OPENED"
+    assert (snap["actual_calls"], snap["actual_audio_seconds"]) == (1204, 3298.2618750000015)
+    assert (snap["reserved_calls"], snap["reserved_audio_seconds"]) == (17280, 50477.0)
+    assert snap["fit"]["prepared_request_fit_envelopes"] == 1204 and snap["fit"]["attempt_record_present"] is False
+    assert fam.recovery("arm")["predecessors"] == [{"attempt_id": snap["attempt_id"], "state": "OPENED", "contacts_spent": 1204,
+                                                    "speech_seconds_spent": 3298.2618750000015}]
+    assert fam.predecessor_spend("arm") == (1204, 3298.2618750000015) and fam.predecessor_spend("smoke") == (0, 0.0)
+    assert fam.cumulative_budget("arm", 17280, 50477) == (18484, 53776)
+    assert fam.recovery("arm")["predecessor_fit_run_id"] == snap["fit"]["run_id"]
+    assert fam.recovery("arm")["predecessor_fit_attempt_id"] == snap["fit"]["attempt_id"]
+
+
+def test_rec1_plans_carry_the_recovery_block_and_the_run_cumulative_caps():
+    gen, fit = _plan("arm", "generation"), _plan("arm", "fit")
+    assert fam.plan_file_name("arm", "generation") == "generation-plan-registered-rec1-v1.json"
+    assert fam.plan_file_name("arm", "fit") == "fit-plan-registered-rec1-v1.json"
+    assert fam.plan_file_name("smoke", "generation") == "smoke-generation-plan-registered-v1.json"
+    for stale in fam.superseded_plan_file_names("arm"):
+        assert not (PKG / stale).exists()
+    assert fam.superseded_plan_file_names("smoke") == []
+    assert gen["execution_plan"]["attempt_id"] == fam.CELLS["arm"]["attempt"]
+    assert fit["execution_plan"]["attempt_id"] == fam.CELLS["arm"]["fit_attempt"]
+    assert gen["execution_plan"]["run_id"] == fam.CELLS["arm"]["run"] and fit["execution_plan"]["run_id"] == fam.CELLS["arm"]["fit_run"]
+    for plan in (gen, fit):
+        ep = plan["execution_plan"]
+        assert ep["planned_speech_audio_seconds"] == 53776 and ep["planned_gpu_hours"] == 41.4      # the ceiling does not change; the audio cap grows by the spend
+        assert plan["recovery"]["predecessor_attempt_id"] == fam.recovery("arm")["predecessor_attempt_id"] and plan["recovery"]["recovery_index"] == 1
+        assert plan["recovery"]["predecessors"][0]["contacts_spent"] == 1204 and plan["recovery"]["root_cause"].startswith("infrastructure")
+        assert plan["recovery_budget"]["original_plan"] == {"planned_model_calls": 17280, "planned_speech_audio_seconds": 50477}
+        assert plan["recovery_budget"]["cumulative_plan"] == {"planned_model_calls": 18484, "planned_speech_audio_seconds": 53776}
+    assert gen["execution_plan"]["planned_model_calls"] == 18484
+    assert fit["execution_plan"]["planned_model_calls"] == 43200 == fam.fit_contact_cap(1080)
+    # the supply is already minted under the same run id: the plan carries the baseline's pin, not the placeholder
+    assert gen["prepared_phase_supply"] == baseline("arm")["prepared_phase_supply"] and gen["prepared_phase_supply"]["sha256"] != "MINTED_AT_THE_FLIP"
+    exp = experiment("arm")
+    assert exp["execution_plan"]["planned_model_calls"] == 18484 == exp["family_budget"]["generation_calls_cap"] == exp["generation_budget"]["cap"]
+    assert exp["family_budget"]["repeated_speech_audio_seconds_cap"] == 53776 and exp["family_budget"]["fit_endpoint_calls_cap"] == 43200
+    assert baseline("arm")["native_contact_fit"]["attempt_id"] == fam.CELLS["arm"]["fit_attempt"]
+    assert "Recovery rec1" in baseline("arm")["what_this_is"] and "Recovery rec1" in exp["generation_budget"]["definition"]
+
+
+def test_the_smoke_cell_is_untouched_by_the_recovery():
+    for kind in ("generation", "fit"):
+        plan = _plan("smoke", kind)
+        assert "recovery" not in plan and "recovery_budget" not in plan
+        assert plan["execution_plan"]["attempt_id"] == fam.CELLS["smoke"]["attempt" if kind == "generation" else "fit_attempt"]
+        assert "-rec1" not in plan["execution_plan"]["attempt_id"] and "REC1" not in plan["execution_plan"]["run_id"]
+    smoke_plan = _plan("smoke", "generation")
+    assert smoke_plan["execution_plan"]["planned_model_calls"] == fam.generation_calls("smoke") == 64 and smoke_plan["preparation_base_commit"] == "8132badd8"
+    assert "Recovery rec1" not in baseline("smoke")["what_this_is"]
+    assert baseline("smoke")["native_contact_fit"]["attempt_id"] == fam.CELLS["smoke"]["fit_attempt"]
+    assert experiment("smoke")["cells"][0]["attempt_id"] == fam.CELLS["smoke"]["attempt"]
+
+
+def test_protocol_facts_and_draft_receipt_carry_the_recovery_block_and_the_new_plan_shas():
+    protocol = json.loads((PKG / "protocol-registered-v1.json").read_text(encoding="utf-8"))
+    assert set(protocol["recovery"]) == {"arm"} and protocol["recovery"]["arm"]["predecessors"][0]["contacts_spent"] == 1204
+    assert protocol["cells"]["arm"]["attempt_id"] == fam.CELLS["arm"]["attempt"] and protocol["cells"]["arm"]["fit_run_id"] == fam.CELLS["arm"]["fit_run"]
+    assert protocol["cells"]["smoke"]["attempt_id"] == fam.CELLS["smoke"]["attempt"]
+    assert fam.recovery("arm")["predecessor_attempt_id"] in protocol["superseded_attempt_ids"]
+    facts = json.loads((PKG / "registered-facts-v1.json").read_text(encoding="utf-8"))
+    assert facts["recovery_budget"]["arm"]["cumulative_plan"]["planned_model_calls"] == 18484
+    assert facts["accounting"]["arm_generation_calls"] == 18484
+    assert facts["accounting"]["cost_estimate"]["column_flight"]["planned_ceiling_gpu_hours"] == 41.4
+    draft = json.loads((PKG / "root-admission-draft-v1.json").read_text(encoding="utf-8"))
+    assert draft["recovery"]["arm"]["recovery_index"] == 1 and draft["budget"]["generation_calls_cap"] == 18484
+    for kind in ("generation", "fit"):
+        entry = draft["antecedents"]["recovery_plans"]["arm"][kind]
+        assert entry["path"] == f"{fam.PACKAGE}/{fam.plan_file_name('arm', kind)}"
+        assert entry["sha256"] == hashlib.sha256((PKG / fam.plan_file_name("arm", kind)).read_bytes()).hexdigest()
+    snap_entry = draft["antecedents"]["predecessor_snapshots"]["arm"]
+    assert snap_entry["sha256"] == hashlib.sha256((REPO / snap_entry["path"]).read_bytes()).hexdigest()
+    assert draft["supersedes_receipt"]["path"] == fam.DECISION_RELPATH
+
+
+def test_the_recovery_ledger_block_and_the_countersign_texts():
+    rows = (PKG / "draft-ledger-rows.md").read_text(encoding="utf-8")
+    block = rows[rows.index("## Cell NXT-R1 recovery rec1: "):]
+    data = [ln for ln in block.splitlines() if ln.startswith("| 2026")]
+    assert len(data) == 2 and all(ln.count("|") == 16 for ln in data)
+    assert f"| {fam.CELLS['arm']['run']} |" in data[0] and f"| {fam.CELLS['arm']['fit_run']} |" in data[1]
+    assert "| no | 18484 | 53776 | 41.4 |" in data[0] and "| no | 43200 | 53776 | 41.4 |" in data[1]
+    assert "17280 + 1204 = 18484 calls" in data[0] and fam.CELLS["arm"]["attempt"] in data[0] and fam.recovery("arm")["predecessor_fit_run_id"] in data[1]
+    assert "root countersigned" not in block
+    texts = json.loads((PKG / "countersign-row-texts-v1.json").read_text(encoding="utf-8"))["rows"]
+    for run in (fam.CELLS["arm"]["run"], fam.CELLS["arm"]["fit_run"]):
+        assert "RECOVERY rec1" in texts[run] and "1204 calls" in texts[run] and "nxt_r1_mint_receipt.py --supersede" in texts[run]
+        assert fam.CELLS["arm"]["attempt"] in texts[run]
+    assert "RECOVERY" not in texts[fam.CELLS["smoke"]["run"]]
+    readme = (PKG / "README.md").read_text(encoding="utf-8")
+    prereg = (REPO / fam.PREREG).read_text(encoding="utf-8")
+    for text in (readme, prereg):
+        assert "## Recovery rec1: the thinking-policy column flight" in text and "17280 + 1204 = 18484 calls" in text and "Windows Update" in text
+    assert "Recovery sequence" in readme and "arm-only" in readme and not re.search(r"[^\x00-\x7f]", prereg)
+
+
+def test_the_writer_is_idempotent_on_the_recovery_ledger(tmp_path):
+    import nxt_r1_write_registration as writer
+
+    ids = writer.identities(REPO)
+    blocks = writer.recovery_blocks(REPO, ids, "x", "2026-10-14T16:30:00+00:00", "abc", "/wt", "br")
+    assert set(blocks) == {"arm"}
+    ledger = tmp_path / "ledger.md"
+    ledger.write_text("# Ledger\n", encoding="utf-8")
+    assert writer.rcv.append_recovery_ledger_block(ledger, blocks["arm"], ids["arm"]["attempt_id"]) is True
+    assert writer.rcv.append_recovery_ledger_block(ledger, blocks["arm"], ids["arm"]["attempt_id"]) is False
+    assert ledger.read_text(encoding="utf-8").count(f"| {ids['arm']['run_id']} |") == 1
+
+
+def test_the_mint_supersedes_only_the_first_registration_receipt(tmp_path):
+    from datetime import datetime, timezone
+
+    import nxt_r1_mint_receipt as mint
+
+    first = fam.eligible_run_ids()[:4]
+    path = tmp_path / "root-admission-v1.json"
+    path.write_text(json.dumps({"decision_id": fam.DECISION_ID, "eligible_run_ids": first}), encoding="utf-8")
+    assert mint.check_supersedable(str(path)) == first
+    for bad in ({"decision_id": "other", "eligible_run_ids": first}, {"decision_id": fam.DECISION_ID, "eligible_run_ids": fam.eligible_run_ids()},
+                {"decision_id": fam.DECISION_ID, "eligible_run_ids": list(reversed(first))}, {"decision_id": fam.DECISION_ID, "eligible_run_ids": []}):
+        path.write_text(json.dumps(bad), encoding="utf-8")
+        with pytest.raises(SystemExit):
+            mint.check_supersedable(str(path))
+    stamp = datetime(2026, 10, 14, 17, 0, 5, tzinfo=timezone.utc)
+    assert mint.backup_name("/d/root-admission-v1.json", stamp) == "/d/root-admission-v1.json.superseded-20261014T170005Z-by-rec1.bak"
+
+
+def test_the_chain_flip_and_read_scripts_consume_the_family_record():
+    nx = REPO / "scripts" / "flights" / "nx"
+    chain, flip, read = [(nx / n).read_text(encoding="utf-8") for n in ("batch_chain_nxt_r1.sh", "nxt_r1_flip.sh", "nxt_r1_read.sh")]
+    for script in ("batch_chain_nxt_r1.sh", "nxt_r1_flip.sh", "nxt_r1_read.sh", "nxt_r1_repin_cell.sh"):
+        assert subprocess.run(["bash", "-n", str(nx / script)], capture_output=True).returncode == 0
+    # arm-only: the smoke must be sealed and the marker present; all refuses to re-fly the smoke attempt; the chain flies the family's rec1 ids
+    assert "arm|arm-only)" in chain and "arm-only) run_driver arm" in chain and "use arm-only" in chain and "exit 9" in chain
+    assert '"$SMOKE_STATE" = sealed' in chain and "COMPLETED" in chain and "no sign-off marker" in chain
+    assert 'spec["attempt"]' in chain and "gen_attempt_id" in chain and "generation-v1" not in chain
+    assert "PLAN_REC=" in flip and "rec_suffix" in flip and "generation-v1" not in read and "nxt_r1_family" in read
+
+
+def test_the_writer_cli_exposes_the_recovery_flags():
+    out = subprocess.run([sys.executable, "-B", str(REPO / "scripts/flights/nx/nxt_r1_write_registration.py"), "--help"], capture_output=True, text=True, cwd=REPO)
+    assert out.returncode == 0
+    for flag in ("--append-recovery-ledger", "--recovery-registered-at", "--recovery-base-commit", "--study-commit"):
+        assert flag in out.stdout
+
+
+# ---- serving geometry of the re-flown arm (owner decision 315 A) --------------------------------------------------------------------------
+
+
+def _fake_repo(tmp_path: Path, *, lib_row: bool, fragment: dict | None) -> Path:
+    """A repo-shaped temp root: scripts/flights/batch/serving_lib.sh with an np6 row (or not) and configs/model with the np6 fragment (or not)."""
+
+    root = tmp_path / "repo"
+    (root / "scripts/flights/batch").mkdir(parents=True)
+    (root / "configs/model").mkdir(parents=True)
+    rows = "    think-budget-np6)\n      G_SID=serving-test-np6\n      G_FRAGMENT=frag-np6\n      G_LABEL=X ;;\n" if lib_row else ""
+    (root / "scripts/flights/batch/serving_lib.sh").write_text("case \"$1\" in\n" + rows + "    *) return 1 ;;\nesac\n", encoding="utf-8")
+    if fragment is not None:
+        (root / "configs/model/frag-np6.json").write_text(json.dumps(fragment), encoding="utf-8")
+    return root
+
+
+def _np6_fragment(**overrides) -> dict:
+    doc = json.loads((REPO / "configs/model" / f"{fam.CONTROL_MODEL}.json").read_text(encoding="utf-8"))
+    args = list(doc["server_args"])
+    args[args.index("-c") + 1], args[args.index("-np") + 1] = "122880", "6"
+    doc.update(server_args=args, profile_slot_count=6, geometry_basis="np6 x 20480 test geometry basis")
+    doc.update(overrides)
+    return doc
+
+
+def test_the_default_geometry_is_the_control_and_the_selection_file_is_absent():
+    g = fam.ACTIVE_GEOMETRY
+    assert g["target"] == fam.DEFAULT_GEOMETRY == "think-budget-np4" and not (REPO / fam.GEOMETRY_SELECTION).exists()
+    assert (g["session"], g["model_fragment"]) == (fam.CONTROL_SESSION, fam.CONTROL_MODEL) == (fam.tsf.THINK_SESSION, fam.tsf.THINK_MODEL)
+    assert (g["slots"], g["slot_tokens"], g["fragment_present"], g["provisional"]) == (4, 24576, True, False)
+    assert fam.CELLS["arm"]["model"] == fam.CONTROL_MODEL and fam.CELLS["arm"]["session"] == fam.CONTROL_SESSION
+    assert fam.CELLS["smoke"]["model"] == fam.CONTROL_MODEL and fam.THINK_SLOTS == 4
+    assert "c98304 np4 x 24,576 max4096" in fam.think_model_text("arm") and fam.think_model_text("arm") == fam.think_model_text("smoke")
+    facts = json.loads((PKG / "registered-facts-v1.json").read_text(encoding="utf-8"))
+    proof = facts["geometry"]
+    assert proof["is_control"] is True and proof["moved_leaves"] == [] and proof["stray_leaves"] == [] and proof["ok"] is True
+    assert proof["allowed_leaves"] == ["server_args", "geometry_basis", "profile_slot_count"]
+    assert proof["decoding_knobs_never_move"] == {"reasoning_budget_tokens": 3072, "completion_cap": 4096, "reasoning_context_policy": "drop-reasoning-v1"}
+    assert facts["context_fit"]["slot_tokens"] == 24576 and facts["context_fit"]["prompt_limit_tokens"] == fam.PROMPT_LIMIT_THINKING == 17406
+    assert facts["context_fit"]["solver_prompt_fits_measured_max"] is True
+
+
+def test_the_geometry_table_agrees_with_the_serving_lib_row_for_every_target_the_lib_knows():
+    table = json.loads(fam.GEOMETRY_TABLE_PATH.read_text(encoding="utf-8"))
+    assert table["default"] == fam.DEFAULT_GEOMETRY and set(table["targets"]) == {"think-budget-np4", "think-budget-np6", "think-budget-np8"}
+    for target, hint in table["targets"].items():
+        row = fam._serving_lib_row(target, REPO)
+        if target == "think-budget-np4":
+            assert row == {"session": hint["session"], "model_fragment": hint["model_fragment"]} and hint["provisional"] is False
+        elif row is not None:                                   # the other agent's rows, once they land, must agree with (or replace) the hints
+            assert row["session"] == hint["session"] and row["model_fragment"] == hint["model_fragment"]
+        else:
+            assert hint["provisional"] is True
+        assert hint["slots"] * hint["slot_tokens"] in (98304, 122880, 131072)
+
+
+def test_geometry_resolution_is_data_driven_and_refuses_what_is_not_there(tmp_path):
+    root = _fake_repo(tmp_path, lib_row=True, fragment=_np6_fragment())
+    g = fam.resolve_geometry("think-budget-np6", root)
+    assert (g["session"], g["model_fragment"], g["slots"], g["slot_tokens"]) == ("serving-test-np6", "frag-np6", 6, 20480)
+    assert g["fragment_present"] is True and g["provisional"] is False and "serving_lib.sh geometry row" in g["source"]
+    root2 = _fake_repo(tmp_path / "b", lib_row=False, fragment=None)
+    hinted = fam.resolve_geometry("think-budget-np8", root2)
+    assert hinted["provisional"] is True and hinted["fragment_present"] is False and (hinted["slots"], hinted["slot_tokens"]) == (8, 16384)
+    with pytest.raises(ValueError, match="unknown serving geometry"):
+        fam.resolve_geometry("think-budget-np9", root2)
+    with pytest.raises(ValueError, match="not present"):
+        fam.select_geometry("think-budget-np8", root2, write=True)
+    assert not (root2 / fam.GEOMETRY_SELECTION).exists() and fam.ACTIVE_GEOMETRY["target"] == "think-budget-np4"
+
+
+def test_select_geometry_moves_only_the_arm_and_writes_or_removes_the_selection_file(tmp_path):
+    root = _fake_repo(tmp_path, lib_row=True, fragment=_np6_fragment())
+    (root / fam.PACKAGE).mkdir(parents=True)
+    smoke_before = dict(fam.CELLS["smoke"])
+    try:
+        g = fam.select_geometry("think-budget-np6", root)
+        selection = json.loads((root / fam.GEOMETRY_SELECTION).read_text(encoding="utf-8"))
+        assert selection["target"] == "think-budget-np6" and selection["session"] == "serving-test-np6" and "315 A" in selection["decision"]
+        assert (fam.THINK_SESSION, fam.THINK_MODEL, fam.THINK_SWAP_TARGET, fam.THINK_SLOTS) == ("serving-test-np6", "frag-np6", "think-budget-np6", 6)
+        assert (fam.CELLS["arm"]["session"], fam.CELLS["arm"]["model"]) == ("serving-test-np6", "frag-np6") and fam.CELLS["smoke"] == smoke_before
+        assert fam.geometry_of("smoke")["target"] == "think-budget-np4" and g["slot_tokens"] == 20480 and fam.THINK_SLOTS == 6
+        assert "c122880 np6 x 20,480 max4096" in fam.think_model_text("arm") and "c98304 np4 x 24,576" in fam.think_model_text("smoke")
+        fam.select_geometry("think-budget-np4", root)                        # the control removes the selection file
+        assert not (root / fam.GEOMETRY_SELECTION).exists() and fam.CELLS["arm"]["session"] == fam.CONTROL_SESSION
+    finally:
+        fam.select_geometry("think-budget-np4", REPO, write=False)
+    assert fam.ACTIVE_GEOMETRY["target"] == "think-budget-np4" and fam.CELLS["arm"]["model"] == fam.CONTROL_MODEL and fam.THINK_SLOTS == 4
+
+
+def _overlay_root(tmp_path: Path, fragment: dict) -> Path:
+    """A repo-shaped overlay: every entry of the real tree symlinked, except configs/model, which is the real fragments plus the np6 test fragment."""
+
+    root = tmp_path / "overlay"
+    root.mkdir(parents=True)
+    for entry in REPO.iterdir():
+        if entry.name not in ("configs", ".git"):
+            (root / entry.name).symlink_to(entry)
+    (root / "configs").mkdir()
+    for entry in (REPO / "configs").iterdir():
+        if entry.name != "model":
+            (root / "configs" / entry.name).symlink_to(entry)
+    (root / "configs/model").mkdir()
+    for entry in (REPO / "configs/model").iterdir():
+        (root / "configs/model" / entry.name).symlink_to(entry)
+    name = fam.resolve_geometry("think-budget-np6", REPO)["model_fragment"]        # the lib row once it lands, else the provisional hint
+    (root / "configs/model" / f"{name}.json").write_text(json.dumps(fragment), encoding="utf-8")
+    return root
+
+
+def test_the_geometry_proof_accepts_only_the_geometry_leaves(tmp_path):
+    import nxt_r1_derive_cells as derive
+
+    ok_root = _overlay_root(tmp_path / "ok", _np6_fragment())
+    hint = {"model_fragment": fam.resolve_geometry("think-budget-np6", REPO)["model_fragment"]}     # the overlay holds a fragment under this name
+    try:
+        fam.select_geometry("think-budget-np6", ok_root, write=False)
+        proof = derive.geometry_proof(ok_root)
+        assert proof["ok"] is True and proof["is_control"] is False and proof["target"] == "think-budget-np6" and proof["stray_leaves"] == []
+        assert proof["moved_leaves"] and all(any(k.startswith(p) for p in fam.GEOMETRY_LEAVES) for k in proof["moved_leaves"])
+        assert {k.split("[")[0].split(".")[0] for k in proof["moved_leaves"]} <= set(fam.GEOMETRY_LEAVES)
+        # a decoding knob riding along with the geometry refuses the derive
+        bad = _np6_fragment(decoding_params={**_np6_fragment()["decoding_params"], "seed": 1})
+        (ok_root / "configs/model" / f"{hint['model_fragment']}.json").unlink()
+        (ok_root / "configs/model" / f"{hint['model_fragment']}.json").write_text(json.dumps(bad), encoding="utf-8")
+        fam.select_geometry("think-budget-np6", ok_root, write=False)
+        with pytest.raises(SystemExit, match="does not compose|beyond the geometry set"):
+            derive.geometry_proof(ok_root)
+        # so does a server flag other than the -c / -np values
+        flag = _np6_fragment()
+        flag["server_args"] = flag["server_args"] + ["--extra-flag"]
+        (ok_root / "configs/model" / f"{hint['model_fragment']}.json").unlink()
+        (ok_root / "configs/model" / f"{hint['model_fragment']}.json").write_text(json.dumps(flag), encoding="utf-8")
+        fam.select_geometry("think-budget-np6", ok_root, write=False)
+        with pytest.raises(SystemExit, match="beyond the geometry set"):
+            derive.geometry_proof(ok_root)
+    finally:
+        fam.select_geometry("think-budget-np4", REPO, write=False)
+    assert fam.ACTIVE_GEOMETRY["target"] == "think-budget-np4"
+
+
+def test_the_server_arg_mask_ignores_only_the_slot_geometry_values():
+    import nxt_r1_derive_cells as derive
+
+    a = ["-c", "98304", "-np", "4", "-fa", "on"]
+    b = ["-c", "122880", "-np", "6", "-fa", "on"]
+    assert derive._server_args_without_geometry(a) == derive._server_args_without_geometry(b)
+    assert derive._server_args_without_geometry(a) != derive._server_args_without_geometry(["-c", "98304", "-np", "4", "-fa", "off"])
+
+
+def test_the_derive_and_writer_accept_geometry_and_the_chain_swaps_to_the_chosen_target():
+    for script in ("nxt_r1_derive_cells.py", "nxt_r1_write_registration.py"):
+        out = subprocess.run([sys.executable, "-B", str(REPO / "scripts/flights/nx" / script), "--help"], capture_output=True, text=True, cwd=REPO)
+        assert out.returncode == 0 and "--geometry" in out.stdout and "think-budget-np4" in out.stdout
+    chain = (REPO / "scripts/flights/nx/batch_chain_nxt_r1.sh").read_text(encoding="utf-8")
+    assert "ARM_SWAP_TARGET" in chain and 'serving_swap.sh "$SWAP_TARGET"' in chain and "ACTIVE_GEOMETRY" in chain
+    assert "THINK_SESSION=serving-slurp" not in chain and "f.THINK_SESSION" in chain and "f.CONTROL_SESSION" in chain
+    assert "arm geometry" in chain and "exit 9" in chain

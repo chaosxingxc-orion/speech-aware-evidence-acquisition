@@ -11,8 +11,8 @@ source "$MAIN/scripts/flights/batch/read_lib.sh"
 export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src
 cd "$MAIN" || exit 1
 STAGE=${1:-read}
-RUN=SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1
-ATTEMPT=attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-v1
+# The arm cell's run and attempt come from the family (the rec1 attempt id after a recovery), never from a literal here.
+eval "$($PY -B -c "import sys; sys.path.insert(0, 'scripts/flights/nx'); import nxt_r1_family as f; print('RUN=%s ATTEMPT=%s' % (f.CELLS['arm']['run'], f.CELLS['arm']['attempt']))")" || exit 66
 ANALYSIS=$SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-NXT-R1-THINKING-POLICY-FOLD-B-READ-V1
 if [ "$STAGE" = "columns" ]; then
   mkdir -p "$ANALYSIS/columns"
