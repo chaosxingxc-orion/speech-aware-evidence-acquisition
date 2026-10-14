@@ -55,7 +55,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "114656e950e87525c52cf648952691105310775e56ea72c39274dae54f0e052a"
+    "sha256": "0308106481901c17efbf5d185fe214ddbaf02e0704153f3501e31ecbf0485eea"
   },
   "purpose": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-FIT-V1: request envelopes only; reads nothing.",
   "registered_at_utc": "2026-10-14T11:52:20Z",
