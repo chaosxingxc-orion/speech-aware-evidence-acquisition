@@ -2800,3 +2800,47 @@ causes and find ways and methods to raise experimental efficiency."
   the Thinking core, budget 3,072 / cap 4,096 / drop-reasoning-v1; ruling 304), replicated on Fold B and DEV; it is the delivering arm of every
   node round; only the test-sample claim (successor 3) is still open.
 - **Efficiency analysis and measures:** section "Experimental efficiency: root causes and measures" below.
+
+### Experimental efficiency: root causes and measures (coordinator, 2026-10-14 16:20Z; owner question of 16:05Z)
+
+**Where the time goes (2026-10-12 00:00Z to 2026-10-14 16:00Z, 64 h wall, one RTX 5090).** Flights: 268-B lock + twin about 19 h, P3.1 lock +
+twin about 18 h, NX-T R1 smoke + the lost column 3.4 h -- about 41 h of GPU science (about 64 %). The rest: the data-disk cut-over window
+(about 6.5 h, no flight by design), packets windows and serving swaps (about 1 h), flips / registrations / reads between seals (about 5 h), the
+Windows Update reboot and its recovery (about 1 h so far, plus the 3 h of flight lost). Per read: one development read costs 9-10 GPU-h per arm
+on the Thinking core against about 3 on the Instruct core.
+
+**Root causes, ranked.**
+1. **The Thinking core's per-contact cost.** About 2,000 reasoning tokens per contact at about 35 tokens/s per slot: 58 s (Perception) and
+   70 s (Solver) per contact, 98 s per lock row at four slots; 46 % of Solver contacts are forced-closed at the 3,072 budget (the budget is the
+   cost driver, not the answer). The Instruct lock row cost about 30 s. Every n = 1,080 read is therefore 3x the Instruct era.
+2. **Design cost per read.** Decision 231 fixes n = 1,080 same-flight paired (the floor that resolves 1.5 pp); a cross-flight read needs a
+   twin (+1 arm); the first node round carries five arms (3.32 lock-row equivalents per row). So one node round = 25-40 GPU-h.
+3. **Serving geometry never tuned for the Thinking core.** The Instruct sweep doubled contacts/min (24.8 -> 50.2) by geometry alone; the Thinking
+   session runs the inherited np4 x 24,576 q8 KV with 9 GB of VRAM idle; MoE decode is memory-bound, so more slots raise aggregate tokens/s.
+4. **One serial GPU and gaps between flights.** Every seal -> read -> registration -> flip -> chain hand-off idles the GPU (35 min today), and
+   the packets / cut-over / swap windows are exclusive.
+5. **Fragile infrastructure with no checkpointing.** A crash loses the whole flight (today: 3 GPU-h and a day); earlier: terminal closes,
+   WSLENV staleness, a hollow flip, stale task registrations -- each costs coordinator hours and GPU idle.
+6. **Ceremony per flight.** Derive, register, countersign, mint, flip, sign-off, chain, close rows, read: about 1-1.5 coordinator hours per
+   package and a human-gated sign-off between smoke and column.
+
+**Measures (ordered by expected gain per effort).**
+- M1 **Thinking serving geometry receipt** (GPU, about 1 h, a 4-row form proof per geometry under one registered row): np6 x 20k and np8 x 16k
+  against np4 x 24k; expected +50-100 % contacts/min; applies to every later flight. Prerequisite: the prompt sizes (Perception about 3.6k,
+  Solver about 9k tokens + 4k completion) fit 16k.
+- M2 **Reasoning budget as the first optimisation target** (NX-T R2, already planned): a 1,536 / 2,048 budget column; if the Solver reads
+  NO-RESOLVED-LOSS at 1,536 the lock row halves in cost. NX-T R1 (per-node off) may halve it earlier.
+- M3 **Drop the twin in same-flight node columns.** The in-flight A/A offset on this core is measured twice (268-B SLU +1.15, P3.1 -0.61); a
+  same-flight paired column needs no twin (the paired floor is 0.7 pp); keep twins only for cross-flight reads. Saves 30 % of a five-arm round.
+- M4 **Two candidate arms per round, sequential rounds** instead of four; the column's cost falls from 3.32 to about 2.2 row equivalents.
+- M5 **Checkpoint + resume (309, in build)**: a crash costs only the rows in flight; the chain can resume unattended.
+- M6 **Machine sign-off**: the smoke's decode-cost table is already computed by the reader; let the chain write the marker itself when the
+  registered conditions hold (no reasoning bytes on no-think nodes, no markers, no cap hits, mix within 1.3x), with the coordinator's veto window.
+- M7 **One-command launch**: derive -> register -> countersign -> mint -> flip -> chain in one script with the gates in line (today eight manual
+  steps); and auto-close rows at the seal.
+- M8 **Queue the next ready package behind the flying one** so the seal -> launch gap is seconds (the batch driver already supports queues;
+  the missing piece is registering the next cell while the current flies, which the serial-GPU rule permits since registration contacts nothing).
+- M9 **Hardware**: a second GPU (or a rented one for the carriers) would double throughput; an owner decision (312), outside this plan.
+
+**What is NOT the cause.** Not sample size inflation (n = 1,080 is the floor, not a choice), not large-scale confirmatory work (none is running),
+not an unlocked baseline (v3.0 is the delivering arm of every round).
