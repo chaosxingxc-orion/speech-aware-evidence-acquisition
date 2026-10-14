@@ -2751,3 +2751,23 @@ receipt's `authored` / `source` fields. The loop is ready for its next use on th
   `--pin-receipt`, close the row -> derive `--require-receipt`, re-write -> countersign generation + FIT (READ after the seal) -> mint -> flip ->
   chain (after NX-T R1 seals; serial GPU) -> read. The allowance's `budgets` are not code-enforced (Sonnet found no consumer); the registered
   plans carry the ceilings that are.
+
+### INCIDENT: Windows Update forced restart killed the NX-T R1 column (coordinator, 2026-10-14 15:55Z); decisions 309-311 proposed
+
+- **Cause (System event log 1074):** 15:29Z MoUsoCoreWorker "operating system: Service Pack (planned)", 15:33Z TrustedInstaller "operating
+  system: upgrade (planned)" -- Windows Update, not a manual close and not hardware. The host clock is Eastern time (UTC-4); the WSL distro and
+  every log stamp this programme writes are UTC.
+- **Loss:** the column attempt `attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-v1` (started 12:18:45Z, last contact 15:29Z)
+  died with the attempt record at state OPENED, 1,204 calls / 3,298 audio seconds spent (about 120 rows x 10 contacts, about 3 GPU-h); its
+  attempt directory holds only the session-attach receipt -- the trace is written at the seal, so there is NO predecessor trace and E10 resume
+  (mode A replay) has nothing to replay. The smoke (sealed 12:16Z) and its sign-off stand. master, the ledger and the packages are intact.
+- **Restoration:** VHD re-attached and mounted by fstab after a `wsl --shutdown` (the distro had started before the VHD was attached, so the
+  `nofail` entry was skipped); the stale `locks/flight.lock` parked at `/home/chao/flight.lock.stale-reboot-*` after verifying no driver,
+  flight or server process survived; Thinking session restarted 15:48Z (`serving_swap.sh think-budget-np4 --start-only`).
+- **309 (proposed): recovery of the column.** A (recommended): the cell's single root-diagnosed recovery re-registration (package rule): new
+  generation attempt id and new FIT run/attempt ids, root cause named as above, re-flown whole, ceilings unchanged (41.4 GPU-h), cumulative spend
+  recorded (predecessor 1,204 calls / 3,298 s). B: abandon NX-T R1 and go to R2 -- not recommended (R2's design depends on R1's answer).
+- **310 (proposed): stop Windows Update automatic restarts.** A: policy `NoAutoRebootWithLoggedOnUsers = 1` + active hours (18 h window) + pause
+  updates to month end (coordinator, needs the owner's admin authorisation); B: the owner pauses updates in Settings (5 weeks); C: accept the risk.
+- **311 (notified): startup order.** The coordinator changes SAEA-Mount-Data1 to trigger at startup and, after the attach, to run `mount -a` inside
+  the distro with retries, so the data root mounts whichever starts first; serving tasks remain manual.
