@@ -2702,3 +2702,12 @@ receipt's `authored` / `source` fields. The loop is ready for its next use on th
   If the owner prefers the test read before the node rounds, say so: the column can be held after the smoke (the sign-off marker is the gate).
 - Open engineering recorded: the DEV reader's decision-299 note string says "TRAIN Fold B" on a DEV read (text only, numbers correct);
   `flight_registration_check.py` does not inspect the thinking-variant group (package prerequisite 6).
+
+### NX-T R1 smoke signed off; the column flies (coordinator, 2026-10-14 12:20Z)
+
+- Smoke-4 sealed 12:16Z (40 contacts); `nxt_r1_read.sh smoke` (decode cost per arm and node, no score): every no-think node -- both-off
+  (Perception and Solver), perception-off Perception, solver-off Solver -- 0 reasoning characters, 0 think markers, 0 empty answers, 0 malformed
+  JSON, finish stop, 28-97 completion tokens (cap 1,024, 0 hits); think nodes 1,714-2,363 mean completion tokens, forced closes 1-2 of 4, 0 cap
+  hits; prerequisite 1 ("no-think on a thinking-only checkpoint is unmeasured") cleared at the form level. Throughput: both-on 98 s per row,
+  perception-off 57 s, solver-off 53 s, both-off 5.5 s; measured arm mix 3.32 rows per both-on row (registered 3.25); projected 24.5 GPU-h for
+  the column (ceiling 41.4, expected 31.8). Marker `/home/chao/nxt1-decode-signoff.marker` written 12:18:33Z; smoke rows closed.
