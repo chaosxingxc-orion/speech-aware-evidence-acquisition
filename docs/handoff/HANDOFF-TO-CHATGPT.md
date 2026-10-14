@@ -1,6 +1,20 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-14T12:52:48Z
+Last refreshed: 2026-10-14T17:16:22Z
+
+## Windows Update restart killed the NX-T R1 column (15:29Z); recovered: rec1 column RE-FLYING at 8f9d8e1ee (17:14Z) with per-row checkpoints; rulings 308-315; efficiency analysis (2026-10-14T17:16:22Z, Fable 5.1 root)
+
+Incident: Windows Update forced restart 15:29-15:33Z; the column attempt died at state OPENED with no trace on disk (TraceBuffer flushed only at the
+seal) -> re-flown whole under the cell's single recovery re-registration (309 A). Fixes merged: generic recovery lib `scripts/flights/lib/recovery.py`
++ NX-T R1 rec1 (221106e8d); per-row checkpoints + resume mode B (37bb85a2b: `<run>.rows.ckpt.jsonl`, `resume_from={attempt_id, checkpoint_sha256}`);
+Windows Update no-auto-restart policy + 35-day pause (310 A); SAEA-Mount-Data1 at startup with retries (311). Owner rulings: 308 A (successor-3
+allowance v2 signed + pinned: packets preparation id + Thinking ceilings), 312 no second GPU, 313 no twin in same-flight node columns + two
+candidates per round (from R2), 314 machine sign-off, 315 A void (the card is an RTX 5090 Laptop, 24,463 MiB: np6/np8 at 24k q8 KV do not load;
+geometry branch `sonnet/think-geometry` 597767cdd unmerged). Proposed: 316 (resume of a test read exempts only declared predecessors), 317 (q4_0 KV
+as a throughput lever, deferred). Efficiency analysis + nine measures: registry 16:20Z. Chain SAEA-Chain-NXT1 `arm-only` (`/home/chao/nxt1-chain.out`);
+after the seal: `nxt_r1_read.sh columns`, countersign the READ row, `nxt_r1_read.sh`; then successor-3 (packets window + test read).
+
+Superseded stamp: 2026-10-14T12:52:48Z
 
 ## NX-T R1 column FLYING at 37e177e3e (12:18Z; smoke: no-think nodes emit no reasoning; projected 24.5 GPU-h); successor-3 test-read package merged e048c6e1a, HELD behind decision 308 (allowance amendment: packets preparation id + Thinking budgets) (2026-10-14T12:52:48Z, Fable 5.1 root)
 

@@ -2884,3 +2884,18 @@ Owner (verbatim): 「决策312：不加，决策313,314,315：按照你的建议
 - **317 (proposed): q4_0 KV cache as a throughput lever.** np6 x 24,576 at q4_0 KV would fit (21,921 MiB) and could raise contacts/min by about
   50 %, but KV quantisation changes decoding (never flown here) and would be a base change needing its own Fold B read (about 20 GPU-h) before
   adoption. A: defer until after NX-T R1/R2 (recommended: R2's budget cut is the larger lever); B: run the q4_0 read right after NX-T R1.
+
+### NX-T R1 rec1 column RE-FLYING at flight commit 8f9d8e1ee (coordinator, 2026-10-14 17:20Z)
+
+- Sequence: writer `--append-recovery-ledger` at 283ab0045 (16:58:26Z; np4 geometry, 315 A void); the two rec1 rows countersigned 16:59:30Z
+  (266-E form); receipt re-minted with `--supersede` (sha 676df36f...; backup `root-admission-v1.json.superseded-20261014T165931Z-by-rec1.bak`);
+  flip attempts: (1) refused -- the default `smoke arm` kinds tried to re-pin the flown smoke (rows consumed); (2) with `NXT1_KINDS=arm`: pass 1
+  committed the pins (7b4c2e140) but the package's draft-ledger-rows still quoted the pre-pin plan shas, and the flight CLI check refused
+  "run ... is pre-registered more than once" (the first-attempt column row and the rec1 row share the run id); remedy per the 266-E precedent
+  (da13cc80b): master fast-forwarded to the pins commit, the first-attempt row folded (removed; the rec1 row supersedes it; the superseded
+  FIT-V1 row stays registered), the writer re-run at the flipped bytes (8f9d8e1ee); (3) flip converged, gate PASS, flight commit 8f9d8e1ee.
+- Chain SAEA-Chain-NXT1 `arm-only` started 17:14:36Z (smoke sealed + marker verified by the chain; attempt
+  `attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-rec1-v1`, FIT run `...-FIT-REC1-V1`); first flight with per-row
+  checkpoints (`<run>.rows.ckpt.jsonl`, resume mode B available if it dies again). Expected about 30 h (seal about 2026-10-15 23:00Z).
+- Lessons recorded: a rec1 flip excludes the flown smoke (`NXT1_KINDS=arm`); the writer must run again AFTER the re-pin so draft rows carry the
+  pinned shas (two flips, as in 266-E); the gate counts every row of a run id, so the first-attempt row is folded, never left beside the rec1 row.
