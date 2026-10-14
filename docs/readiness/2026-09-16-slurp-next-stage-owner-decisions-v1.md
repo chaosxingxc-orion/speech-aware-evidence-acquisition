@@ -2711,3 +2711,20 @@ receipt's `authored` / `source` fields. The loop is ready for its next use on th
   hits; prerequisite 1 ("no-think on a thinking-only checkpoint is unmeasured") cleared at the form level. Throughput: both-on 98 s per row,
   perception-off 57 s, solver-off 53 s, both-off 5.5 s; measured arm mix 3.32 rows per both-on row (registered 3.25); projected 24.5 GPU-h for
   the column (ceiling 41.4, expected 31.8). Marker `/home/chao/nxt1-decode-signoff.marker` written 12:18:33Z; smoke rows closed.
+
+### Decision 308 (proposed): amend the successor-3 test allowance for the sample's Thinking packets pass and the Thinking ceilings (coordinator, 2026-10-14 12:45Z)
+
+- **Finding (Sonnet, successor-3 build):** the Thinking packets for the 3,010-row test sample are an encoder contact over `slurp:test` rows. Successor 1's
+  packets pass cleared the test-split runtime guard because the 2026-09-27 allowance listed its run id under `preparation_run_ids` (fragment
+  `configs/experiment/slurp-test-sample-3010-preprocess.json` pins that allowance's path and sha256); successor 2 reused those packets by pin and
+  needed none. The signed successor-3 receipt (`docs/receipts/owner/2026-10-13-slurp-test-sample-allowance-successor-3.json`, ruling 301 A)
+  permits only `...-SUCCESSOR3-THINKING-SYSTEM-V1` and `-FIT-V1`; its `core.packets` clause states the packets pass but no preparation id, and its
+  `budgets` block is successor 2's (6,020 calls, 4.6 GPU-h, 16,413 audio s) while the Thinking cell's ceilings from measured P3.1 throughput are
+  35.5 GPU-h (`ceil_0.1(3010 / 1.84 / 60 x 1.3)`), 6,020 contacts, 32,826 audio seconds (two listens per row). The guard is not weakened.
+- **Options.** **A (recommended):** the owner signs a successor-3 amendment (v2 receipt, superseding by sha) that adds
+  `preparation_run_ids = ["SAEA-SLURP-TEST-SAMPLE-3010-THINKING-PACKETS-GPU-V1"]` (encoder contact only, no answers, promoted under its own
+  countersigned exposure row in a GPU swap window, one attempt) and sets the budgets to the Thinking ceilings; the packets fragment pins the v2
+  receipt's sha; everything else unchanged. **B:** fly the test read on the Instruct packets (NOT valid: the Thinking mmproj audio tower differs,
+  decision 266-era finding "Thinking needs its own packets"). **C:** defer the test read until after the node rounds (then the amended allowance
+  is signed later, and the lock form may change).
+- Until signed, the package carries a DRAFT v2 receipt with a zero pin and the chain refuses to start; the test read is queued after NX-T R1 anyway.
