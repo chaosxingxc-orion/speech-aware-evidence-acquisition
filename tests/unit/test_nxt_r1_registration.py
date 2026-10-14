@@ -596,7 +596,7 @@ def test_the_geometry_table_agrees_with_the_serving_lib_row_for_every_target_the
             assert row["session"] == hint["session"] and row["model_fragment"] == hint["model_fragment"]
         else:
             assert hint["provisional"] is True
-        assert hint["slots"] * hint["slot_tokens"] in (98304, 122880, 131072)
+        assert hint["slots"] * hint["slot_tokens"] in (98304, 147456, 196608)   # 4, 6, 8 slots x 24,576 (the slot never shrinks: max Solver prompt 14,641)
 
 
 def test_geometry_resolution_is_data_driven_and_refuses_what_is_not_there(tmp_path):
@@ -606,7 +606,7 @@ def test_geometry_resolution_is_data_driven_and_refuses_what_is_not_there(tmp_pa
     assert g["fragment_present"] is True and g["provisional"] is False and "serving_lib.sh geometry row" in g["source"]
     root2 = _fake_repo(tmp_path / "b", lib_row=False, fragment=None)
     hinted = fam.resolve_geometry("think-budget-np8", root2)
-    assert hinted["provisional"] is True and hinted["fragment_present"] is False and (hinted["slots"], hinted["slot_tokens"]) == (8, 16384)
+    assert hinted["provisional"] is True and hinted["fragment_present"] is False and (hinted["slots"], hinted["slot_tokens"]) == (8, 24576)
     with pytest.raises(ValueError, match="unknown serving geometry"):
         fam.resolve_geometry("think-budget-np9", root2)
     with pytest.raises(ValueError, match="not present"):
