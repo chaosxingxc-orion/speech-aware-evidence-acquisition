@@ -52,7 +52,7 @@
   },
   "blockers": [],
   "composed_config_hashes": {
-    "arm": "6bbe2c7e4390f1f93cbe20f5ddfb2e72fec46ca1a00a7374af9727fc1365bd88",
+    "arm": "53b63012095a62cab03d806080c47dec00bd24bc095278171a0ec581306a7bb3",
     "smoke": "854a2ccc40c3b53460cdd0b10425a4d23c419f3d5d232d3a9d38840b7f3e864f"
   },
   "context_fit": {
@@ -140,7 +140,7 @@
       "baseline_fragment": "slurp-native-stage3-nxt-r1-thinking-policy-fold-b-baseline-v1",
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-nxt-r1-thinking-policy-fold-b-v1",
-      "composed_config_hash": "6bbe2c7e4390f1f93cbe20f5ddfb2e72fec46ca1a00a7374af9727fc1365bd88",
+      "composed_config_hash": "53b63012095a62cab03d806080c47dec00bd24bc095278171a0ec581306a7bb3",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
       "execution_plan": {
         "execution_profile": "bounded-discovery-probe",
@@ -173,7 +173,7 @@
       "key": "arm",
       "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
       "program": "phase-native-module-v1-c10",
-      "protocol_hash": "d14d120a69b3f6de53cfddd016e456f5cecb63481aa1394e68e68cdec3424dc7",
+      "protocol_hash": "d166ce618f9249f826c6346cca3c6102128bfe02945147a2e80dfbbcb6308a7a",
       "roster_receipt": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1",
