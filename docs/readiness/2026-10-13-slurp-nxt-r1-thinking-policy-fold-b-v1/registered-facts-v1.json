@@ -235,7 +235,7 @@
     "reader": "scripts/analysis/slurp_nxt_thinking_policy_column_read.py",
     "twin": "both-on-twin"
   },
-  "registered_at_utc": "2026-10-13T19:08:50.000000+00:00",
+  "registered_at_utc": "2026-10-14T11:52:20Z",
   "registration_basis": "owner rulings 301-307 (2026-10-13), coordinator approval of the NX-T R1 design (rulings 1-5); docs/superpowers/specs/2026-10-12-thinking-core-engineering-base-design.md. DRAFT: nothing here authorises a flip or a flight.",
   "roster": {
     "arm": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
@@ -281,7 +281,7 @@
     }
   },
   "status": "DRAFT-HELD",
-  "study_commit_at_registration": "e1b6bdba33b99d970bdc5e68437997fd236f8dfb",
+  "study_commit_at_registration": "8132badd8",
   "thinking_arms": {
     "both-off": {
       "perception": {

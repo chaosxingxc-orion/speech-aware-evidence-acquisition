@@ -47,7 +47,7 @@
   },
   "one_factor": "The per-node thinking decoding of the non-delivering arms (enable_thinking false at the named node). The delivering arm is the 268-B lock form (budget 3072 + reserve 1024 = cap 4096); the system, the knowledge supply, the sealed query vectors and the roster are the 268-B lock's.",
   "plan_kind": "fit",
-  "preparation_base_commit": "e1b6bdba33b99d970bdc5e68437997fd236f8dfb",
+  "preparation_base_commit": "8132badd8",
   "prepared_phase_supply": {
     "note": "the flip mints this cell's own first-phase supply under its own run id (item E16)",
     "relpath": "prepared/SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1/phase-supply-v1.json",
@@ -55,10 +55,10 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "890e226a860b5c19bf6ef1548f2030d9f6727e1db7a2c93787a9a44924c68b3d"
+    "sha256": "114656e950e87525c52cf648952691105310775e56ea72c39274dae54f0e052a"
   },
   "purpose": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-FIT-V1: request envelopes only; reads nothing.",
-  "registered_at_utc": "2026-10-13T19:08:50.000000+00:00",
+  "registered_at_utc": "2026-10-14T11:52:20Z",
   "schema": "saea-registered-fit-plan-v1",
   "status": "DRAFT-HELD-REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_COUNTERSIGN_AND_READINESS_FLIP",
   "thinking_arms": {

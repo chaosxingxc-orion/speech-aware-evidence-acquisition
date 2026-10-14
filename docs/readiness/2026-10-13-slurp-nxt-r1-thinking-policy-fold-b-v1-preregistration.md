@@ -1,6 +1,6 @@
 # NX-T R1: the per-node thinking-policy column, preregistration (DRAFT / HELD)
 
-Registered 2026-10-13 at study commit `e1b6bdba33b99d970bdc5e68437997fd236f8dfb` by script. Development numbers only.
+Registered 2026-10-14 at study commit `8132badd8` by script. Development numbers only.
 
 Runs: `SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1` / `SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-FIT-V1`; `SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-SMOKE-4-V1` / `SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-SMOKE-4-FIT-V1`; read `SAEA-SLURP-NXT-R1-THINKING-POLICY-FOLD-B-READ-V1`.
 

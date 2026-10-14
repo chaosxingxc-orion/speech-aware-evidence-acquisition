@@ -2665,3 +2665,23 @@ receipt's `authored` / `source` fields. The loop is ready for its next use on th
   (smoke -> sign-off marker `/home/chao/nxt1-decode-signoff.marker` -> column). Open: `enable_thinking: false` on the Thinking checkpoint
   is unmeasured (the smoke settles it); `flight_registration_check.py` does not yet inspect the thinking-variant group; a pre-existing
   i1 regression test failure (ACE wrap receipt `authored` / `source` fields) is on master and unrelated.
+
+### P3.1 READ: the Thinking system replicates on DEV-2000-ADDED -- NOMINATED; SLURP lock candidate v3.0 (coordinator, 2026-10-14 11:50Z)
+
+- **Flight:** chain SAEA-Chain-TSYSD finished 11:43Z (driver exit 0): lock `SAEA-SLURP-STAGE3-THINKING-SYSTEM-DEV2000-ADDED-LOCK-V1` sealed 02:35Z
+  (2,000 contacts, summed latency 35.07 h) and twin `...-AA-V1` sealed 11:42Z (2,000 contacts, 35.62 h), both at flight commit 37b0ed0aa; aa rows
+  closed and the READ row countersigned 11:44Z; read `SAEA-SLURP-SYSTEM-THINKING-CORE-DEV2000-ADDED-READ-V1` (0 contacts) written 11:45Z; serving
+  recycled in place to `think-budget-np4` (same target `--restart`: NX-T R1 is next and the 12-h bound had passed) instead of the swap back.
+- **Read (n = 1,000, cluster bootstrap 10,000 draws, seed 20261011; development numbers, never a test claim):** levels SLU-F1 / intent %: lock
+  74.69 / 84.5; twin 74.08 / 86.1; Instruct system (NX R5 composed, lock v2.2) 67.18 / 82.0; bare Instruct 38.09 / 61.7. d_system (lock minus
+  Instruct system) SLU **+7.52 [+5.46, +9.62]**, intent **+2.50 [+1.00, +4.07]**; vs bare SLU +36.60 [+33.28, +39.86], intent +22.80 [+19.84, +25.97].
+  Twin offset (aa minus lock) SLU -0.61 [-1.88, +0.69]; intent +1.60 [+0.60, +2.67] (21 saves / 5 harms: the in-flight intent variability is
+  resolved above zero on this roster; it bounds the intent attribution, not the SLU verdict). Replication of Fold B: +7.52 vs +7.15 (share 1.05).
+  Completion 2,000/2,000 on the lock, 0 cap hits, 0 reasoning leaks or think markers in delivered content; forced closes Perception 174 / Solver 457;
+  per-scenario natural +7.52 / equal-scenario +8.85 SLU (intent +2.50 / +0.54); datetime (9), recommendation (6) and social (4) unresolved.
+- **Verdict NOMINATED** (SLU CI95 lower bound 5.46 above the twin offset 0.61; intent guard holds); the 2.5 pp cross-flight bar is cleared by the lower
+  bound; decision-299 conditions 3/3 on this roster (REBUILD-BASE-ON-THINKING). Consequence (package rule): the Thinking system is the **SLURP lock
+  candidate v3.0** (Fold B + DEV replicated: 268-B +7.15 [+5.08, +9.26], P3.1 +7.52 [+5.46, +9.62]); the test read under allowance successor-3 (301 A)
+  is now unlocked (lock arm only; its Thinking packets for the 3,010-row sample need their own countersigned packets row and a GPU swap window).
+- **Next (307 order):** NX-T R1 (per-node thinking policy, ruling 304) launches now on the Thinking base; the successor-3 test read is built in
+  parallel and flies after NX-T R1 in the serial queue (303 A). Results note: Opus, `docs/results/2026-10-14-slurp-p31-thinking-system-dev2000-added-read.md`.
