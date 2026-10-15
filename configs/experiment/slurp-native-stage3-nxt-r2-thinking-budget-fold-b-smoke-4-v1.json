@@ -1,0 +1,107 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-nxt-r2-thinking-budget-fold-b-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-nxt-r2-thinking-budget-fold-b-smoke-4-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
+      "readiness": {
+        "reason": "Four-row form smoke of the reasoning-budget column: it proves that the phase-native-module-v1-c6 module program with 3 arms loads on the Thinking session, that each arm's Perception and Solver requests carry their own reasoning budget and reserve at the 4,096 cap, that the forced close fires earlier at a lower budget, that the live phase fit and the seal work, and what a contact costs per arm and per node (completion tokens, finish reasons, forced closes, seconds) against the registered cost model. Registered before contact on 2026-10-15 by script (decision 58) from the 268-B Thinking lock cell and the module compiler (owner rulings 304/307 (2026-10-13), 313 A and 318 A (2026-10-14), coordinator approval of the NX-T R2 design). HELD: root countersigns the DRAFT rows, mints the admission receipt (scripts/flights/nx/nxt_r2_mint_receipt.py), swaps the serving geometry to the Thinking session (scripts/flights/batch/serving_swap.sh think-budget-np4) and flips the cells with scripts/flights/batch/flip_package_ext4.sh through scripts/flights/nx/nxt_r2_flip.sh, which also mints each cell's own first-phase supply under its own run id (item E16); --allow-output-change must never be passed. Nothing here authorises a flight, a readiness flip or an admission entry.",
+        "requirements": [
+          {
+            "expected_decision_id": "slurp-nxt-r2-thinking-budget-fold-b-admission-v1",
+            "kind": "decision",
+            "reason": "Decision slurp-nxt-r2-thinking-budget-fold-b-admission-v1 pinned by scripts/flights/repin_cell.py.",
+            "relpath": "coordination/slurp-nxt-r2-thinking-budget-fold-b-v1/root-admission-v1.json",
+            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+          },
+          {
+            "kind": "preparation",
+            "reason": "The Fold B exemplar-intent AGREEMENT table this cell's boundary channel ranks with (w_agree 1.0), built model-free by scripts/build_slurp_intent_exemplar_agreement.py (DEV parameters, the DEV/Fold A builder) from the committed FILLER BASE cell's pins -- zero model, server, encoder, embedder, scorer, network and GPU contacts. Measured: 1,080 rows, every row 20 votes, 0 self-excluded exemplars, 0 rows without a vote, 60 facets reachable; bytes identical to the filler table (docs/readiness/2026-09-28-slurp-fold-b-phase2-inputs-v1/README.md; ledger row SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-B-V1).",
+            "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-B-V1/agreement.jsonl",
+            "sha256": "06990a86d20469c668ac4231990b49e5926d4771c9af8fbb13ae634b3ec21911"
+          },
+          {
+            "kind": "preparation",
+            "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under its own run id with core.flight.cli prepare-supply at the flip from the sealed TRAIN Fold B speech-query segment vectors, the centroid key file SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1 and the Fold B agreement table (item E16). --allow-output-change must never be passed.",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-SMOKE-4-V1/phase-supply-v1.json",
+            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-SMOKE-4-V1"
+    }
+  ],
+  "core_read_design": {
+    "arms": {
+      "budget-1536": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-SMOKE-4-V1",
+      "budget-2048": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-SMOKE-4-V1",
+      "budget-3072": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-SMOKE-4-V1"
+    },
+    "chain": "swap to the Thinking session -> smoke -> coordinator sign-off -> the column flight -> swap back to the Instruct session",
+    "reading": "official SLU-F1 and intent paired per row: each of budget-1536, budget-2048 minus the delivering budget-3072 arm, judged against the declared A/A offset 1.15 pp (no twin), beside the per-arm per-node reasoning, cap-hit, empty, forced-close, finish-reason and seconds-per-contact tables and the throughput table",
+    "this_cell": "four-row form smoke of the reasoning-budget column"
+  },
+  "date": "2026-10-15",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.5,
+    "planned_model_calls": 48,
+    "planned_speech_audio_seconds": 123,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-SMOKE-4-V1",
+  "failure_policy": "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A failed smoke stops the cell and the column flight does not open. The smoke is re-flown whole at most once under one root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 96,
+    "generation_calls_cap": 48,
+    "gpu_hours_fit_inclusive": 0.5,
+    "native_task_contract_calls_cap": 48,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 123
+  },
+  "fragment_kind": "saea-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-smoke-4-v1",
+  "generation_budget": {
+    "cap": 48,
+    "definition": "The review-off module graph (perception 1, solver 1; Reviewer and Planner never visited) under program phase-native-module-v1-c6 with the 3-arm reasoning-budget column at the Perception node: 4 x 6 = 24 is the exact program maximum (2 + 2 (K - 1), K = 3); the plan ceiling adds 6 answer-only fallback contacts per row (one per budgeted-thinking contact of the arms: the delivering arm's 2 plus one per candidate node that still thinks, core.reasoning_knobs): 48 = 4 x 12. The live phase fit makes 4 x 6 x 4 = 96 tokenizer endpoint calls under its own run id SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-SMOKE-4-FIT-V1. The GPU-hour ceiling is a BOUND (rows x 2.46 full-row equivalents / 1.84 rows per minute / 60 x 1.3, ceil 0.1), never a target. The budget is RUN-CUMULATIVE across every attempt of this run id.",
+    "target": 48
+  },
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+    "decision_population": "TRAIN Fold B (SLURP-STAGE3-FILLER-FOLD-B-C01-SMOKE-4-V1): 4 rows of docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-smoke-4-v1.json; four of its rows, structural form proof only, no score and no read.",
+    "roster_receipt": "docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-smoke-4-v1.json",
+    "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "ids": [
+        "slurp:train:000010:audio-1502199193",
+        "slurp:train:000029:audio-1488538279",
+        "slurp:train:000092:audio-1488560082",
+        "slurp:train:000097:audio-1498564512"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Four-row structural form smoke of NX-T R2: that phase-native-module-v1-c6 (ceiling 6) with the 3-arm reasoning-budget column loads on the Thinking session (serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1), that each arm's Perception and Solver requests carry exactly their declared reasoning budget and answer reserve at the unchanged 4,096-token cap, that a lower budget forces the close earlier, that no delivered content carries a think marker, that the live phase fit passes at the 4,096-token cap, that the v5 arm receipt seals and that the episode completes, and what a contact costs per arm and per node (completion tokens, finish reasons, forced closes, seconds) against the registered cost model. Scored by no one and read by no one: four rows are never evidence of benefit or harm.",
+  "service_session": "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
+  "split_id": "SLURP-EVO-FOLD-B-V2",
+  "stage3_algorithm": {
+    "id": "none",
+    "note": "This cell carries NO training-free RL operator and says so explicitly: it is a same-flight node column over the per-node reasoning budget (NX-T R2) -- 2 candidate budget arms, no twin, read as columns against the delivering budget-3072 arm (the 268-B lock form) -- with no rollout pool, no per-sample credit, no update operator and no evolving store.",
+    "operators_used": []
+  }
+}

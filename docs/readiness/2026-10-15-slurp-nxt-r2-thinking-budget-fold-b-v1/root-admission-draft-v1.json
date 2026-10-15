@@ -1,0 +1,82 @@
+{
+  "_draft_note": "A DRAFT for the coordinator to mint on the data root with scripts/flights/nx/nxt_r2_mint_receipt.py. It authorises nothing while its status is not 'decided'.",
+  "antecedents": {
+    "analysis_recipe": {
+      "path": "docs/readiness/2026-10-15-slurp-nxt-r2-thinking-budget-fold-b-v1/analysis-recipe-v1.json",
+      "sha256": "599578c4540294485c74cfe4819bf0b939e10fe2e0f772cf437aa182c92ce701"
+    },
+    "protocol": {
+      "path": "docs/readiness/2026-10-15-slurp-nxt-r2-thinking-budget-fold-b-v1/protocol-registered-v1.json",
+      "sha256": "0491636dea112b7f893b25dd0699ee197b50f5e335293fba088ab231a94c952a"
+    },
+    "registered_facts": {
+      "path": "docs/readiness/2026-10-15-slurp-nxt-r2-thinking-budget-fold-b-v1/registered-facts-v1.json",
+      "sha256": "a60ece20f176c260d0f676cb8c439f2d751c1206d230226bd60911c83d1504ed"
+    },
+    "registration_base_commit": "11ffc84fa"
+  },
+  "authorization_basis": "owner rulings 304/307 (2026-10-13), 313 A and 318 A (2026-10-14), coordinator approval of the NX-T R2 design; docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md; docs/superpowers/specs/2026-10-12-thinking-core-engineering-base-design.md.",
+  "budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 25920,
+    "generation_calls_cap": 12960,
+    "gpu_hours_fit_inclusive": 31.3,
+    "native_task_contract_calls_cap": 12960,
+    "official_complete_scoring_jobs": 1,
+    "paid_api_calls": 0,
+    "plan_budget_is_run_cumulative": true,
+    "repeated_speech_audio_seconds_cap": 37858,
+    "smoke": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 96,
+      "generation_calls_cap": 48,
+      "gpu_hours_fit_inclusive": 0.5,
+      "native_task_contract_calls_cap": 48,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 123
+    }
+  },
+  "claim_boundary": "No benefit, system-level, superiority, generalisation, held-out, confirmatory or paper-scale claim.",
+  "decision": "Fly the per-node reasoning-budget column on the Thinking core on TRAIN Fold B: four-row smoke, then the 3-arm column flight (no twin).",
+  "decision_id": "slurp-nxt-r2-thinking-budget-fold-b-admission-v1",
+  "eligible_attempt_ids": [
+    "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-smoke-4-generation-v1",
+    "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-smoke-4-fit-v1",
+    "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-v1",
+    "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-fit-v1"
+  ],
+  "eligible_run_ids": [
+    "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-SMOKE-4-V1",
+    "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-SMOKE-4-FIT-V1",
+    "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1",
+    "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-FIT-V1"
+  ],
+  "not_authorized": [
+    "any flight before the cells are flipped and the receipt is minted",
+    "starting or touching any serving session outside the registered swap",
+    "any ASR, transcript, encoder or paid-API contact",
+    "--allow-output-change on the re-pin tool",
+    "any change beyond the registered per-node thinking policies",
+    "Fold A, DEV or test-split contact"
+  ],
+  "owner": "root",
+  "population": {
+    "count": 1080,
+    "fold_a_contact_authorized": false,
+    "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
+    "split_role": "discovery",
+    "test_contact_authorized": false
+  },
+  "recorded_at_utc": null,
+  "schema": "saea-campaign-decision-v1",
+  "service": {
+    "expected_session_id": "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
+    "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
+    "no_child_start_stop": true
+  },
+  "status": "DRAFT-NOT-MINTED"
+}
