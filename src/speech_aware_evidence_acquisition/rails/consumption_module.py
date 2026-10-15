@@ -177,6 +177,9 @@ _THINKING_COLUMN_KEYS = frozenset({"column_id", "kind", "node", "thinking_policy
 #: The block-level frame every thinking column set shares: ``twin`` adds the request-identical A/A arm the carrier's hook names;
 #: ``max_supplied_items`` bounds the evidence every arm renders; ``fit_estimate`` is the measured fail-closed fit estimate.
 _THINKING_FRAME_KEYS = frozenset({"max_supplied_items", "twin", "fit_estimate"})
+#: NX-T R2 (2026-10-15): the frame may OPTIONALLY name the delivering arm itself (``delivering_arm_id``), overriding the carrier hook's default id, so a
+#: budget round can call its delivering arm ``budget-3072``. Absent, the compiled block is byte-identical to NX-T R1's.
+_THINKING_FRAME_OPTIONAL_KEYS = frozenset({"delivering_arm_id"})
 #: Loop engineering item E-S1 (2026-10-11): the node-SUPPLY column. It IS one
 #: non-delivering arm of the Solver's ``supply_variants`` block (the E42
 #: mechanism): the arm named ``column_id``, resolving its own supply -- knob-tail
@@ -822,10 +825,17 @@ def _parse_thinking_frame(raw: object, *, has_thinking_columns: bool) -> str | N
         return None
     if not has_thinking_columns:
         raise ConsumptionModuleConfigError("consumption_module.thinking_frame is declared but no thinking column is")
-    if not isinstance(raw, Mapping) or set(raw) != _THINKING_FRAME_KEYS:
+    if (
+        not isinstance(raw, Mapping)
+        or not _THINKING_FRAME_KEYS <= set(raw)
+        or set(raw) - _THINKING_FRAME_KEYS - _THINKING_FRAME_OPTIONAL_KEYS
+    ):
         raise ConsumptionModuleConfigError(
-            f"consumption_module.thinking_frame keys must be exactly {sorted(_THINKING_FRAME_KEYS)}"
+            f"consumption_module.thinking_frame keys must be exactly {sorted(_THINKING_FRAME_KEYS)} "
+            f"plus optionally {sorted(_THINKING_FRAME_OPTIONAL_KEYS)}"
         )
+    if "delivering_arm_id" in raw and (not isinstance(raw["delivering_arm_id"], str) or not raw["delivering_arm_id"].strip()):
+        raise ConsumptionModuleConfigError("consumption_module.thinking_frame.delivering_arm_id must be a non-empty string")
     bound = raw["max_supplied_items"]
     if isinstance(bound, bool) or not isinstance(bound, int) or bound < 1:
         raise ConsumptionModuleConfigError("consumption_module.thinking_frame.max_supplied_items must be a positive integer")
@@ -1852,14 +1862,15 @@ def _compile_thinking_columns(
             f"thinking columns name node(s) {sorted(nodes)}, but profile {hooks.profile!r} admits thinking variants only at "
             f"{frame['node']!r}"
         )
+    delivering_id = tf.get("delivering_arm_id", frame["delivering_arm_id"])
     rows: list[dict[str, object]] = [
         {"arm_id": c.column_id, "thinking_policy": c.thinking_policy} for c in block.thinking_columns
     ]
     if tf["twin"]:
         if frame.get("twin_arm_id") is None:
             raise ConsumptionModuleConfigError(f"profile {hooks.profile!r} names no twin arm id for thinking columns")
-        rows.append({"arm_id": frame["twin_arm_id"], "replicate_of": frame["delivering_arm_id"]})
-    rows.append({"arm_id": frame["delivering_arm_id"], "deliver": True})
+        rows.append({"arm_id": frame["twin_arm_id"], "replicate_of": delivering_id})
+    rows.append({"arm_id": delivering_id, "deliver": True})
     thinking_block = {
         "node": frame["node"], "arms": rows, "max_supplied_items": tf["max_supplied_items"],
         "fit_estimate": dict(tf["fit_estimate"]),

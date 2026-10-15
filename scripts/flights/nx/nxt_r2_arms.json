@@ -1,0 +1,10 @@
+{
+  "_note": "The NX-T R2 arm table (data-driven). Edit this file and re-run nxt_r2_derive_cells.py to change the round; nothing else is typed anywhere. Every candidate arm sets the reasoning BUDGET (or turns thinking OFF) of its own Perception and Solver contacts; a node left at delivering_budget_tokens keeps the locked form (budget 3,072). The completion cap stays at completion_cap for every arm, so a budget b carries answer_reserve_tokens = completion_cap - b. At most two candidate arms (owner decision 313 A) and no twin. R1's answer decides the arm table: a one-node scan is e.g. {perception: 1536, solver: 3072}, a node OFF is \"off\". The delivering arm (the 268-B lock form, budget 3,072 on both nodes) is added last by the compiler and is named budget-3072.",
+  "arms": [
+    {"arm_id": "budget-1536", "perception": 1536, "solver": 1536},
+    {"arm_id": "budget-2048", "perception": 2048, "solver": 2048}
+  ],
+  "completion_cap": 4096,
+  "delivering_budget_tokens": 3072,
+  "schema": "saea-nxt-r2-arm-table-v1"
+}

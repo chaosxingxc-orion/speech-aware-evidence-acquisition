@@ -1,0 +1,382 @@
+{
+ "_note": "Numbers only (token counts, latencies, a forced-close flag) reduced from the sealed NX-T R1 four-row smoke trace by scripts/analysis/slurp_nxt_thinking_policy_column_read.py (trace_contacts); no text. The cost model of nxt_r2_cost.py is fitted on exactly these contacts.",
+ "contacts": [
+  {
+   "arm": "both-off",
+   "completion_tokens": 34,
+   "forced_close": false,
+   "mode": "no-think",
+   "node": "perception",
+   "prompt_tokens": 3559,
+   "seconds": 0.869
+  },
+  {
+   "arm": "both-off",
+   "completion_tokens": 95,
+   "forced_close": false,
+   "mode": "no-think",
+   "node": "perception",
+   "prompt_tokens": 3638,
+   "seconds": 2.398
+  },
+  {
+   "arm": "both-off",
+   "completion_tokens": 97,
+   "forced_close": false,
+   "mode": "no-think",
+   "node": "perception",
+   "prompt_tokens": 3630,
+   "seconds": 4.633
+  },
+  {
+   "arm": "both-off",
+   "completion_tokens": 89,
+   "forced_close": false,
+   "mode": "no-think",
+   "node": "perception",
+   "prompt_tokens": 3624,
+   "seconds": 4.317
+  },
+  {
+   "arm": "both-off",
+   "completion_tokens": 23,
+   "forced_close": false,
+   "mode": "no-think",
+   "node": "solver",
+   "prompt_tokens": 8464,
+   "seconds": 0.738
+  },
+  {
+   "arm": "both-off",
+   "completion_tokens": 37,
+   "forced_close": false,
+   "mode": "no-think",
+   "node": "solver",
+   "prompt_tokens": 9562,
+   "seconds": 3.098
+  },
+  {
+   "arm": "both-off",
+   "completion_tokens": 36,
+   "forced_close": false,
+   "mode": "no-think",
+   "node": "solver",
+   "prompt_tokens": 7025,
+   "seconds": 1.909
+  },
+  {
+   "arm": "both-off",
+   "completion_tokens": 14,
+   "forced_close": false,
+   "mode": "no-think",
+   "node": "solver",
+   "prompt_tokens": 13809,
+   "seconds": 4.224
+  },
+  {
+   "arm": "both-on",
+   "completion_tokens": 1139,
+   "forced_close": false,
+   "mode": "think",
+   "node": "perception",
+   "prompt_tokens": 3555,
+   "seconds": 27.275
+  },
+  {
+   "arm": "both-on",
+   "completion_tokens": 1431,
+   "forced_close": false,
+   "mode": "think",
+   "node": "perception",
+   "prompt_tokens": 3634,
+   "seconds": 36.688
+  },
+  {
+   "arm": "both-on",
+   "completion_tokens": 823,
+   "forced_close": false,
+   "mode": "think",
+   "node": "solver",
+   "prompt_tokens": 8457,
+   "seconds": 27.497
+  },
+  {
+   "arm": "both-on",
+   "completion_tokens": 3041,
+   "forced_close": false,
+   "mode": "think",
+   "node": "perception",
+   "prompt_tokens": 3620,
+   "seconds": 65.163
+  },
+  {
+   "arm": "both-on",
+   "completion_tokens": 3198,
+   "forced_close": true,
+   "mode": "think",
+   "node": "perception",
+   "prompt_tokens": 3626,
+   "seconds": 73.907
+  },
+  {
+   "arm": "both-on",
+   "completion_tokens": 3131,
+   "forced_close": true,
+   "mode": "think",
+   "node": "solver",
+   "prompt_tokens": 8632,
+   "seconds": 93.053
+  },
+  {
+   "arm": "both-on",
+   "completion_tokens": 2122,
+   "forced_close": false,
+   "mode": "think",
+   "node": "solver",
+   "prompt_tokens": 11741,
+   "seconds": 39.004
+  },
+  {
+   "arm": "both-on",
+   "completion_tokens": 2074,
+   "forced_close": false,
+   "mode": "think",
+   "node": "solver",
+   "prompt_tokens": 7026,
+   "seconds": 30.932
+  },
+  {
+   "arm": "both-on-twin",
+   "completion_tokens": 993,
+   "forced_close": false,
+   "mode": "think",
+   "node": "perception",
+   "prompt_tokens": 3555,
+   "seconds": 23.257
+  },
+  {
+   "arm": "both-on-twin",
+   "completion_tokens": 2169,
+   "forced_close": false,
+   "mode": "think",
+   "node": "perception",
+   "prompt_tokens": 3634,
+   "seconds": 50.569
+  },
+  {
+   "arm": "both-on-twin",
+   "completion_tokens": 3132,
+   "forced_close": true,
+   "mode": "think",
+   "node": "perception",
+   "prompt_tokens": 3620,
+   "seconds": 88.859
+  },
+  {
+   "arm": "both-on-twin",
+   "completion_tokens": 3159,
+   "forced_close": true,
+   "mode": "think",
+   "node": "perception",
+   "prompt_tokens": 3626,
+   "seconds": 89.477
+  },
+  {
+   "arm": "both-on-twin",
+   "completion_tokens": 1183,
+   "forced_close": false,
+   "mode": "think",
+   "node": "solver",
+   "prompt_tokens": 8457,
+   "seconds": 33.534
+  },
+  {
+   "arm": "both-on-twin",
+   "completion_tokens": 3131,
+   "forced_close": true,
+   "mode": "think",
+   "node": "solver",
+   "prompt_tokens": 8632,
+   "seconds": 69.383
+  },
+  {
+   "arm": "both-on-twin",
+   "completion_tokens": 2952,
+   "forced_close": false,
+   "mode": "think",
+   "node": "solver",
+   "prompt_tokens": 7026,
+   "seconds": 69.996
+  },
+  {
+   "arm": "both-on-twin",
+   "completion_tokens": 1226,
+   "forced_close": false,
+   "mode": "think",
+   "node": "solver",
+   "prompt_tokens": 11741,
+   "seconds": 25.184
+  },
+  {
+   "arm": "perception-off",
+   "completion_tokens": 97,
+   "forced_close": false,
+   "mode": "no-think",
+   "node": "perception",
+   "prompt_tokens": 3630,
+   "seconds": 7.835
+  },
+  {
+   "arm": "perception-off",
+   "completion_tokens": 96,
+   "forced_close": false,
+   "mode": "no-think",
+   "node": "perception",
+   "prompt_tokens": 3638,
+   "seconds": 7.837
+  },
+  {
+   "arm": "perception-off",
+   "completion_tokens": 34,
+   "forced_close": false,
+   "mode": "no-think",
+   "node": "perception",
+   "prompt_tokens": 3559,
+   "seconds": 6.396
+  },
+  {
+   "arm": "perception-off",
+   "completion_tokens": 88,
+   "forced_close": false,
+   "mode": "no-think",
+   "node": "perception",
+   "prompt_tokens": 3624,
+   "seconds": 7.432
+  },
+  {
+   "arm": "perception-off",
+   "completion_tokens": 899,
+   "forced_close": false,
+   "mode": "think",
+   "node": "solver",
+   "prompt_tokens": 8460,
+   "seconds": 24.918
+  },
+  {
+   "arm": "perception-off",
+   "completion_tokens": 757,
+   "forced_close": false,
+   "mode": "think",
+   "node": "solver",
+   "prompt_tokens": 9559,
+   "seconds": 24.02
+  },
+  {
+   "arm": "perception-off",
+   "completion_tokens": 3121,
+   "forced_close": true,
+   "mode": "think",
+   "node": "solver",
+   "prompt_tokens": 13804,
+   "seconds": 92.085
+  },
+  {
+   "arm": "perception-off",
+   "completion_tokens": 2079,
+   "forced_close": false,
+   "mode": "think",
+   "node": "solver",
+   "prompt_tokens": 7021,
+   "seconds": 58.417
+  },
+  {
+   "arm": "solver-off",
+   "completion_tokens": 798,
+   "forced_close": false,
+   "mode": "think",
+   "node": "perception",
+   "prompt_tokens": 3555,
+   "seconds": 17.452
+  },
+  {
+   "arm": "solver-off",
+   "completion_tokens": 3192,
+   "forced_close": true,
+   "mode": "think",
+   "node": "perception",
+   "prompt_tokens": 3620,
+   "seconds": 73.355
+  },
+  {
+   "arm": "solver-off",
+   "completion_tokens": 3192,
+   "forced_close": true,
+   "mode": "think",
+   "node": "perception",
+   "prompt_tokens": 3626,
+   "seconds": 74.041
+  },
+  {
+   "arm": "solver-off",
+   "completion_tokens": 1726,
+   "forced_close": false,
+   "mode": "think",
+   "node": "perception",
+   "prompt_tokens": 3634,
+   "seconds": 38.906
+  },
+  {
+   "arm": "solver-off",
+   "completion_tokens": 23,
+   "forced_close": false,
+   "mode": "no-think",
+   "node": "solver",
+   "prompt_tokens": 8462,
+   "seconds": 0.749
+  },
+  {
+   "arm": "solver-off",
+   "completion_tokens": 37,
+   "forced_close": false,
+   "mode": "no-think",
+   "node": "solver",
+   "prompt_tokens": 5905,
+   "seconds": 1.614
+  },
+  {
+   "arm": "solver-off",
+   "completion_tokens": 35,
+   "forced_close": false,
+   "mode": "no-think",
+   "node": "solver",
+   "prompt_tokens": 7024,
+   "seconds": 1.921
+  },
+  {
+   "arm": "solver-off",
+   "completion_tokens": 25,
+   "forced_close": false,
+   "mode": "no-think",
+   "node": "solver",
+   "prompt_tokens": 12430,
+   "seconds": 3.722
+  }
+ ],
+ "r1_measured_seconds_per_row": {
+  "both-off": 5.546,
+  "both-on": 98.38,
+  "both-on-twin": 112.564,
+  "perception-off": 57.235,
+  "solver-off": 52.94
+ },
+ "schema": "saea-nxt-r2-cost-inputs-v1",
+ "source": {
+  "decode_cost_table": "analysis/SAEA-SLURP-NXT-R1-THINKING-POLICY-FOLD-B-READ-V1/smoke-decode-cost.json",
+  "r1_budget_tokens": 3072,
+  "run_id": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-SMOKE-4-V1",
+  "sealed_outputs_sha256": "25348a4f6bdd849fba9e9136b90b8855397cedcc15798ab7e874fea37a7db0c3",
+  "sealed_trace_sha256": "456d67e4d5f8961c44691bbac9d46381ea76343b5c88c534a38f5c22cbc8a734",
+  "slots": 4,
+  "smoke_rows": 4
+ }
+}

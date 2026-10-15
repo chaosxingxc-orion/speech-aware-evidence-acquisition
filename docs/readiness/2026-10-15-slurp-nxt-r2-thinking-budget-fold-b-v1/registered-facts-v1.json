@@ -1,0 +1,470 @@
+{
+  "_note": "Every model-free fact this DRAFT registration rests on, and the CANONICAL stage3_measurement blocks scripts/checks/stage3_effect_floor_check.py and scripts/checks/flight_registration_check.py resolve (keyed by run id).",
+  "accounting": {
+    "arm_fit_endpoint_calls_cap": 25920,
+    "arm_generation_calls": 12960,
+    "arm_speech_audio_seconds_cap": 37858,
+    "arms": [
+      "budget-1536",
+      "budget-2048",
+      "budget-3072"
+    ],
+    "contacts_per_row": 6,
+    "cost_estimate": {
+      "arm_mix_rows": 2.46,
+      "arm_table": [
+        {
+          "arm": "budget-1536",
+          "cost_in_delivering_rows": 0.66,
+          "linear_reference_cost": 0.4929,
+          "perception": 1536,
+          "role": "candidate",
+          "solver": 1536,
+          "thinking_policy": {
+            "perception": {
+              "answer_reserve_tokens": 2560,
+              "reasoning_budget_tokens": 1536
+            },
+            "solver": {
+              "answer_reserve_tokens": 2560,
+              "reasoning_budget_tokens": 1536
+            }
+          }
+        },
+        {
+          "arm": "budget-2048",
+          "cost_in_delivering_rows": 0.8,
+          "linear_reference_cost": 0.6619,
+          "perception": 2048,
+          "role": "candidate",
+          "solver": 2048,
+          "thinking_policy": {
+            "perception": {
+              "answer_reserve_tokens": 2048,
+              "reasoning_budget_tokens": 2048
+            },
+            "solver": {
+              "answer_reserve_tokens": 2048,
+              "reasoning_budget_tokens": 2048
+            }
+          }
+        },
+        {
+          "arm": "budget-3072",
+          "cost_in_delivering_rows": 1.0,
+          "linear_reference_cost": null,
+          "perception": 3072,
+          "role": "delivering",
+          "solver": 3072,
+          "thinking_policy": null
+        }
+      ],
+      "column_flight": {
+        "contacts": 6480,
+        "expected_gpu_hours": 24.07,
+        "plan_ceiling_calls": 12960,
+        "planned_ceiling_gpu_hours": 31.3,
+        "run_cumulative_plan_calls": 12960,
+        "run_cumulative_speech_audio_seconds": 37858
+      },
+      "cost_model": {
+        "form": "seconds(b) = a_node + c * (min(R, b) + A + m * [R > b]); no-think contact = the node's measured no-think mean seconds",
+        "inputs": "scripts/flights/nx/nxt_r2_cost_inputs.json (40 per-contact records of the NX-T R1 smoke: token counts, seconds, forced flag; no text)",
+        "limits": "four smoke rows, 12 thinking contacts per node; np4 batching jitter is inside the residual; defined for budgets up to the R1 budget 3,072",
+        "module": "scripts/flights/nx/nxt_r2_cost.py",
+        "nodes": {
+          "perception": {
+            "answer_tokens": 78.75,
+            "forced_close_message_tokens": 23.85,
+            "forced_contacts": 5,
+            "intercept_seconds": -1.9005,
+            "no_think_seconds": 5.2146,
+            "think_contacts": 12,
+            "think_mean_seconds": 54.9124,
+            "think_mean_tokens": 2264.1667
+          },
+          "solver": {
+            "answer_tokens": 28.75,
+            "forced_close_message_tokens": 26.9167,
+            "forced_contacts": 3,
+            "intercept_seconds": -0.1328,
+            "no_think_seconds": 2.2469,
+            "think_contacts": 12,
+            "think_mean_seconds": 49.0019,
+            "think_mean_tokens": 1958.1667
+          }
+        },
+        "seconds_per_token": 0.025092
+      },
+      "fallback_note": "The answer-only fallback adds at most one contact per budgeted-thinking contact: 6 per row (the delivering arm's 2 plus one per candidate node that still thinks); planned_model_calls is rows x (6 + 6) = 12960 (program maximum 6480). The runner requires only rows x (6 + 2). The FIT cap stays structural (rows x program contacts x endpoints = 25920).",
+      "formula": "expected = rows x arm mix / 1.84 rows per minute / 60 with the arm mix 2.46 delivering-row equivalents per row (budget-1536 0.66 + budget-2048 0.8 + budget-3072 1.0); ceiling = ceil_0.1(expected x 1.3); each candidate cost is the clipped-reasoning model's predicted seconds per row relative to the delivering arm, rounded UP to 0.01",
+      "inputs": {
+        "linear_reference_cost": {
+          "budget-1536": 0.4929,
+          "budget-2048": 0.6619
+        },
+        "margin": 1.3,
+        "r1_measured_seconds_per_row": {
+          "both-off": 5.546,
+          "both-on": 98.38,
+          "both-on-twin": 112.564,
+          "perception-off": 57.235,
+          "solver-off": 52.94
+        },
+        "row_cost_in_delivering_rows": {
+          "budget-1536": 0.66,
+          "budget-2048": 0.8,
+          "budget-3072": 1.0
+        },
+        "rows_per_minute_full": 1.84
+      },
+      "projected_lock_flight_gpu_hours": {
+        "budget-1536": 6.46,
+        "budget-2048": 7.83,
+        "budget-3072": 9.78
+      },
+      "reference_268b": "one 268-B arm pass: 1,080 rows, 2,160 contacts, 9.78 GPU-h at 1.84 rows/min (spent about 9.4 against the 8.4 ceiling: the lesson of the measured-throughput rule)",
+      "registered_total_gpu_hours": 31.8,
+      "smoke": {
+        "contacts": 24,
+        "planned_ceiling_gpu_hours": 0.5
+      }
+    },
+    "lock": "v2.2",
+    "program": "phase-native-module-v1-c6",
+    "rows": 1080,
+    "smoke_generation_calls": 48,
+    "smoke_speech_audio_seconds_cap": 123
+  },
+  "blockers": [],
+  "composed_config_hashes": {
+    "arm": "1dba165d8fbdab672778fbe7982c44a84829134b189833bb3a58b98008635627",
+    "smoke": "e3d19392b48ff9a9118843c234fc0a4f7ff3c5c62ecb65c79f46415f0c7b1e80"
+  },
+  "context_fit": {
+    "completion_cap": 4096,
+    "control_prompt_limit_tokens": 17406,
+    "fit_estimate": {
+      "base_prompt_tokens": 2000,
+      "completion_ceiling": 4096,
+      "slot_tokens": 24576,
+      "tokens_per_supplied_item": 235
+    },
+    "max_supplied_items": 55,
+    "prompt_limit_tokens": 17406,
+    "reserve_tokens": 3072,
+    "slot_tokens": 24576,
+    "slots": 4,
+    "solver_prompt_fits_measured_max": true,
+    "solver_prompt_tokens_max_measured": 14641
+  },
+  "findings": [
+    {
+      "finding": "NX-T R1 (which nodes need thinking at all) is still flying when this package is built, so the arm table is a DEFAULT: both nodes at 1,536 and both nodes at 2,048. R1's answer reshapes it: a node that reads NOT-NEEDED-AT-THE-FLOOR needs no budget scan, a node that reads NEEDS-THINKING is where the budget scan matters, and a one-node scan (e.g. Perception at 1,536 with the Solver at 3,072, or a node OFF) halves the round's question.",
+      "id": "r1-answer-decides-the-arm-table",
+      "remedy": "the coordinator edits scripts/flights/nx/nxt_r2_arms.json after reading R1, re-runs nxt_r2_derive_cells.py and nxt_r2_write_registration.py; the derive proves only the thinking_variants block, the program id and the live-fit ids moved; everything else (ceiling, ids, texts, tests) follows the data."
+    },
+    {
+      "finding": "Owner decision 313 A: no twin arm. The in-flight A/A offset on this core was measured twice (268-B SLU +1.15 / intent -0.09; P3.1 SLU -0.61 / intent +1.6), so the read judges every arm against the DECLARED offset |o| = 1.15 pp SLU (the larger of the two measured offsets) and the paired floor 0.7 pp; both are fixed here, before contact. A single-flight paired contrast cannot separate a real budget effect from np4 batching jitter below |o|: such an arm reads UNRESOLVED or CHEAPER-AT-NO-RESOLVED-LOSS, never a gain.",
+      "id": "no-twin-the-declared-offset-is-the-null",
+      "remedy": "none; the stage3_effect_floor_check design is same-flight-node-column with twin false (it accepts it)."
+    },
+    {
+      "finding": "Independent chains, no note sharing (coordinator ruling 2): the evidence, the instruction template and the QueryState are identical in every arm, but a non-delivering arm's Solver prompt carries THAT arm's Perception note, which a shorter Perception reasoning may write differently. A both-nodes arm therefore measures the budget of both nodes together with the downstream effect of the Perception note on the Solver; a one-node scan separates the two.",
+      "id": "solver-prompt-differs-by-the-arms-own-note",
+      "remedy": "none; stated so the attribution is not over-read."
+    },
+    {
+      "finding": "The per-arm costs and the GPU-hour ceiling come from nxt_r2_cost.py, fitted on the 40 per-contact records of the NX-T R1 four-row smoke (12 thinking contacts per node). The model is the clipped-reasoning one (cost of a contact = intercept + slope x (min(natural reasoning, budget) + answer + forced-close message)); costs are rounded UP to 0.01 and the ceiling carries the registered 1.3 margin. The linear-in-budget guess is reported beside it as a LOWER reference (it under-states the cost of a lower budget).",
+      "id": "cost-model-is-fitted-on-four-smoke-rows",
+      "remedy": "the R2 smoke measures the real mix; the reader's smoke stage compares it with the registered one and the coordinator signs off only when it is within 1.3x (decision 314 A condition)."
+    },
+    {
+      "finding": "Ruling 303 A: one experiment in flight. NX-T R1 occupies the Thinking session; this package is DRAFT / HELD until it has sealed and been read. The session is the 268-B think-budget-np4 session (budget 3072, cap 4096, same model fragment): no per-arm session, the per-request fields carry the arm.",
+      "id": "serial-gpu-and-the-resident-session",
+      "remedy": "the coordinator flips the cells only after the R1 column flight has sealed."
+    },
+    {
+      "finding": "As in the 268-B cells the model-free preflight counts the payload at 4 bytes per token (a placeholder) and would refuse the Solver render at the 4,096 cap; the cells defer to the registered exact per-contact context-fit gate (preflight_budget_mode defer-to-native-contact-fit), which runs on every arm's REAL request. A lower budget never lengthens a prompt: the cap stays 4,096 for every arm.",
+      "id": "preflight-defers-to-the-exact-gate",
+      "remedy": "none."
+    },
+    {
+      "finding": "reasoning_budget_tokens and answer_reserve_tokens were already legal keys of a thinking_policy (receipt schema v5 unchanged). The one harness addition is the OPTIONAL thinking_frame.delivering_arm_id of the consumption module (rails/consumption_module.py), so the delivering arm is named budget-3072 instead of the carrier hook's both-on. Absent, the compiled block is byte-identical to NX-T R1's (unit-tested). consumption_module.py is not among the modules the prepared-artifact identity hashes (runtime, kb_policy, knowledge_provider, phase_supply, knowledge_stores), so merging it re-pins nothing by itself.",
+      "id": "harness-addition-is-one-optional-frame-key",
+      "remedy": "merge the harness commit before the flip (the flip re-pins at the flight commit anyway)."
+    },
+    {
+      "finding": "scripts/checks/flight_registration_check.py's node-column findings (aa-arm-missing, variant-cost-mismatch, template-summary-mismatch) read only the Solver's template_variants block and are a no-op for a Perception-node group; the declaration is nevertheless complete (variant_cost, template_variants summary with twin false) and stage3_effect_floor_check validates its shape.",
+      "id": "flight-registration-check-does-not-yet-read-the-thinking-block",
+      "remedy": "widen NODE_COLUMN_PATH when the checker is next touched (not part of this package)."
+    }
+  ],
+  "geometry": {
+    "allowed_experiment_leaves": [
+      "service_session",
+      "cells.0.model_fragment"
+    ],
+    "allowed_leaves": [
+      "server_args",
+      "geometry_basis",
+      "profile_slot_count"
+    ],
+    "control_model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
+    "control_session": "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
+    "decoding_knobs_never_move": {
+      "completion_cap": 4096,
+      "reasoning_budget_tokens": 3072,
+      "reasoning_context_policy": "drop-reasoning-v1"
+    },
+    "is_control": true,
+    "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
+    "moved_leaves": [],
+    "ok": true,
+    "provisional": false,
+    "resolution": "scripts/flights/batch/serving_lib.sh geometry row",
+    "session": "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
+    "slot_tokens": 24576,
+    "slots": 4,
+    "stray_leaves": [],
+    "target": "think-budget-np4"
+  },
+  "identity": {
+    "arm": {
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-nxt-r2-thinking-budget-fold-b-baseline-v1",
+      "carrier_lock_key": "slurp",
+      "cell": "slurp-native-stage3-nxt-r2-thinking-budget-fold-b-v1",
+      "composed_config_hash": "1dba165d8fbdab672778fbe7982c44a84829134b189833bb3a58b98008635627",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "execution_plan": {
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 31.3,
+        "planned_model_calls": 12960,
+        "planned_speech_audio_seconds": 37858,
+        "split_role": "discovery"
+      },
+      "execution_profile": "bounded-discovery-probe",
+      "experiment": "slurp-native-stage3-nxt-r2-thinking-budget-fold-b-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 25920,
+        "generation_calls_cap": 12960,
+        "gpu_hours_fit_inclusive": 31.3,
+        "native_task_contract_calls_cap": 12960,
+        "official_complete_scoring_jobs": 1,
+        "repeated_speech_audio_seconds_cap": 37858
+      },
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-fit-v1",
+        "contact_cap": 25920,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-FIT-V1"
+      },
+      "fit_attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-FIT-V1",
+      "key": "arm",
+      "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
+      "program": "phase-native-module-v1-c6",
+      "protocol_hash": "8ea13bbbaa5cf21a60d694c8460726900218c264888b69710b6e64d2873b7976",
+      "roster_receipt": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1",
+      "session": "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
+      "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
+    },
+    "smoke": {
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-nxt-r2-thinking-budget-fold-b-smoke-4-baseline-v1",
+      "carrier_lock_key": "slurp",
+      "cell": "slurp-native-stage3-nxt-r2-thinking-budget-fold-b-smoke-4-v1",
+      "composed_config_hash": "e3d19392b48ff9a9118843c234fc0a4f7ff3c5c62ecb65c79f46415f0c7b1e80",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "execution_plan": {
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 0.5,
+        "planned_model_calls": 48,
+        "planned_speech_audio_seconds": 123,
+        "split_role": "discovery"
+      },
+      "execution_profile": "bounded-discovery-probe",
+      "experiment": "slurp-native-stage3-nxt-r2-thinking-budget-fold-b-smoke-4-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 96,
+        "generation_calls_cap": 48,
+        "gpu_hours_fit_inclusive": 0.5,
+        "native_task_contract_calls_cap": 48,
+        "official_complete_scoring_jobs": 0,
+        "repeated_speech_audio_seconds_cap": 123
+      },
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-smoke-4-fit-v1",
+        "contact_cap": 96,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-SMOKE-4-FIT-V1"
+      },
+      "fit_attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-smoke-4-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-SMOKE-4-FIT-V1",
+      "key": "smoke",
+      "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
+      "program": "phase-native-module-v1-c6",
+      "protocol_hash": "8c1416cd68dab1b715fc14f57e0a501ec7d88024d7e325cf1edb878cd0d8cb85",
+      "roster_receipt": "docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-smoke-4-v1.json",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-SMOKE-4-V1",
+      "session": "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
+      "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32"
+    }
+  },
+  "no_think_node": {
+    "answer_reserve_tokens": 1024,
+    "budget_field": "absent (no thinking_budget_tokens)",
+    "chat_template_kwargs": {
+      "enable_thinking": false
+    },
+    "enable_thinking": false,
+    "max_tokens": 1024
+  },
+  "pins": {
+    "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
+    "serving_session": "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
+    "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6/EVO-FOLD-B-V2-promotion.json",
+    "speech_packet_promotion_receipt_sha256": "ef409ef458be0dc2e21bc6a736abc498b0ef71e01a6b0c590ece54ce0cc54f61",
+    "speech_packet_root": "/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6",
+    "swap_target": "think-budget-np4"
+  },
+  "prohibitions": [
+    "No test-split, DEV or Fold A contact (TRAIN Fold B only).",
+    "No supply arm, no template column, no tool schema on any role; no Reviewer or Planner visit; max_revisions 0.",
+    "The system is the 268-B Thinking lock: the knowledge supply, the module graph, the post-processing and the roster are not changed. The per-node reasoning budget of the non-delivering arms is the ONLY varied factor.",
+    "The completion cap (4,096), the delivering arm's budget (3,072) and drop-reasoning-v1 never move; a candidate budget states its answer reserve (cap - budget).",
+    "No arm may set any knob other than enable_thinking / reasoning_budget_tokens / answer_reserve_tokens (rails.supply_variants.parse_perception_thinking_variants refuses the rest by name).",
+    "No twin arm and at most two candidate arms (owner decision 313 A).",
+    "No reasoning text is ever delivered, scored or carried to another node (reasoning_context_policy drop-reasoning-v1); a delivered reasoning marker stops the flight.",
+    "No benefit claim and no admission: claims_benefit is false; the read attributes a reasoning-budget cost to a node and reports the saving.",
+    "No flight before the coordinator countersigns the DRAFT rows, mints the decision receipt, the harness commit is on master, NX-T R1 has sealed and been read, and the cells are flipped.",
+    "No session is started by this registration. No paper-scale profile. No system-level claim."
+  ],
+  "read_rule": {
+    "declared_offset_slu_pp": 1.15,
+    "delivering": "budget-3072",
+    "floors_pp": {
+      "intent": 0.65,
+      "slu": 1.49
+    },
+    "paired_floor_pp": 0.7,
+    "reader": "scripts/analysis/slurp_nxt_thinking_budget_column_read.py",
+    "twin": null,
+    "word_order": [
+      "GAIN",
+      "NEEDS-FULL-BUDGET",
+      "CHEAPER-AT-NO-RESOLVED-LOSS",
+      "UNRESOLVED"
+    ],
+    "words": {
+      "CHEAPER-AT-NO-RESOLVED-LOSS": "SLU CI95 lower bound >= -1.49 pp and intent CI95 lower bound >= -0.65 pp (decision 190 floors): any loss is inside the design's own resolution, so the cheaper budget may replace the locked one",
+      "GAIN": "SLU CI95 lower bound above +|o| (the cheaper budget RAISES the score beyond the declared A/A width)",
+      "NEEDS-FULL-BUDGET": "SLU CI95 upper bound below -|o| (the cheaper budget loses more than the declared A/A width)",
+      "UNRESOLVED": "none of the above (the interval is too wide to call the budget cheaper at no loss, and the loss is not beyond |o|)"
+    }
+  },
+  "registered_at_utc": "2026-10-15T14:46:49.000000+00:00",
+  "registration_basis": "owner rulings 304/307 (2026-10-13), 313 A and 318 A (2026-10-14), coordinator approval of the NX-T R2 design; docs/superpowers/specs/2026-10-12-thinking-core-engineering-base-design.md. DRAFT: nothing here authorises a flip or a flight.",
+  "roster": {
+    "arm": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+    "roster_id": "SLURP-EVO-FOLD-B-V2",
+    "smoke": "docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-smoke-4-v1.json",
+    "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
+  },
+  "rows": 1080,
+  "schema": "saea-registered-facts-v1",
+  "stage3_measurement": {
+    "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-SMOKE-4-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "form-proof",
+      "note": "Four Fold B rows prove FORM only: the phase-native-module-v1-c6 module program with 3 arms loads on the Thinking session, each arm's requests carry their own reasoning budget and reserve at the unchanged cap, the forced close fires earlier at a lower budget, the live phase fit passes and the v5 receipt seals. Scored by no one; four rows claim nothing under instrument rule 5.",
+      "primary_metric": "none (structural form, per-arm per-node decode cost and the forced-close behaviour only)",
+      "read_roster": "SLURP-EVO-FOLD-B-V2",
+      "rows": 4,
+      "tuning_roster": "none"
+    },
+    "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1": {
+      "claim": "nominated",
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "same-flight-node-column",
+      "note": "A per-node cost attribution, not a benefit claim: the question is how much reasoning each node needs, so the expected effect of a cheaper budget is 0.0 pp SLU-F1 (no resolvable loss) and the deliverable is the saving (the throughput table). NO twin flies (owner decision 313 A): the null is the DECLARED same-core A/A offset |o| = 1.15 pp SLU (the larger of the two measured offsets, 268-B +1.15 and P3.1 -0.61) with the paired floor 0.7 pp; the design resolves a per-arm contrast of 1.49 pp SLU / 0.65 pp intent at n = 1,080 (decision 190 node-column floors), which are also the no-resolved-loss margins.",
+      "primary_metric": "official SLURP pooled SLU-F1 (micro; scorer slurp-slu-official-train, the pinned official evaluate.py), natural-mixture weighting, with intent accuracy (scenario_action) beside it",
+      "primary_metric_key": "slu",
+      "read_roster": "SLURP-EVO-FOLD-B-V2",
+      "rows": 1080,
+      "template_variants": {
+        "candidate_arms": 2,
+        "node": "perception",
+        "twin": false
+      },
+      "tuning_roster": "none",
+      "variant_cost": {
+        "extra_audio_seconds": 12619.19,
+        "extra_contacts_per_row": 4
+      },
+      "variant_kind": "thinking-budget"
+    }
+  },
+  "status": "DRAFT-HELD",
+  "study_commit_at_registration": "11ffc84fa",
+  "thinking_arms": {
+    "budget-1536": {
+      "perception": {
+        "answer_reserve_tokens": 2560,
+        "reasoning_budget_tokens": 1536
+      },
+      "solver": {
+        "answer_reserve_tokens": 2560,
+        "reasoning_budget_tokens": 1536
+      }
+    },
+    "budget-2048": {
+      "perception": {
+        "answer_reserve_tokens": 2048,
+        "reasoning_budget_tokens": 2048
+      },
+      "solver": {
+        "answer_reserve_tokens": 2048,
+        "reasoning_budget_tokens": 2048
+      }
+    },
+    "budget-3072": null
+  },
+  "thinking_knobs": {
+    "answer_fallback": {
+      "enable_thinking": false,
+      "id": "saea-thinking-answer-fallback-v1",
+      "max_tokens": 1024,
+      "mode": "answer-only re-ask",
+      "per_node": 1
+    },
+    "answer_reserve_tokens": 1024,
+    "budget_message": "Considering the limited time by the user, I have to give the solution based on the thinking directly now.",
+    "completion_cap": 4096,
+    "decoding": {
+      "seed": 20260913,
+      "temperature": 0
+    },
+    "node_modes": {
+      "perception": "think",
+      "solver": "think"
+    },
+    "reasoning_context_policy": "drop-reasoning-v1",
+    "reasoning_format": "deepseek",
+    "thinking_budget_tokens": 3072
+  }
+}
