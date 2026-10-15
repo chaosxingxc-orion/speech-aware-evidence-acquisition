@@ -2899,3 +2899,18 @@ Owner (verbatim): 「决策312：不加，决策313,314,315：按照你的建议
   checkpoints (`<run>.rows.ckpt.jsonl`, resume mode B available if it dies again). Expected about 30 h (seal about 2026-10-15 23:00Z).
 - Lessons recorded: a rec1 flip excludes the flown smoke (`NXT1_KINDS=arm`); the writer must run again AFTER the re-pin so draft rows carry the
   pinned shas (two flips, as in 266-E); the gate counts every row of a run id, so the first-attempt row is folded, never left beside the rec1 row.
+
+### Owner rulings 316-318 (owner, 2026-10-15 about 14:10Z; recorded by the coordinator)
+
+Owner (verbatim): 「决策316：A，决策317：如果识别到本机不可都行，不要因为特殊的量化方案而改变基线配置，我们后期去寻找更优的GPU服务器解决这个问题，决策318：A」
+English: "316: A. 317: if the local machine cannot do it, fine -- do not change the baseline configuration for a special quantisation scheme; we will
+look for a better GPU server later to solve this. 318: A."
+
+- **316 A (RULED):** a resumed test-sample read is admitted under the narrow reading: the one-attempt budget exempts only the predecessor attempts a
+  resume declaration names (never a FINALIZED one); the read reports kept / flown row counts. The checkpoint + resume mode B code merged at
+  37bb85a2b stands as is.
+- **317 (RULED): no KV-quantisation change.** The baseline keeps q8_0 KV; the geometry lever stays closed on this 24 GB card; a better GPU server
+  is a later owner-side decision (the geometry branch `sonnet/think-geometry` 597767cdd stays unmerged as a reference).
+- **318 A (RULED):** NX-T R2 (per-node reasoning-budget column: delivering 3,072, candidates 2,048 and 1,536, no twin, Fold B 1,080) is built now
+  model-free (Sonnet, worktree `sonnet-nxt-r2-budget`) with a data-driven arm table, and is registered after R1's read decides which node(s) the
+  scan covers. 319 (notified): M6/M7/M8 launch automation in build (Sonnet, worktree `sonnet-launch-automation`).
