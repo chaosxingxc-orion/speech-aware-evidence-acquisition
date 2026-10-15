@@ -223,6 +223,12 @@ class PredecessorContact:
     audio_seconds: float | None = None
     prompt_tokens: int | None = None
     completion_tokens: int | None = None
+    #: NX-T R1 seal fix (2026-10-15): the three decoding fields a thinking-policy arm moves (``thinking_budget_tokens``,
+    #: ``chat_template_kwargs``, ``max_tokens``) as the recorded REQUEST carried them, and the recorded wire response's
+    #: ``finish_reason`` -- the custody the offline seal replay needs to run the bundle's thinking-policy wire check (v5 receipts)
+    #: and the absent-Solver-column check over a predecessor trace. ``None`` when the trace records neither.
+    decoding_view: Mapping[str, object] | None = None
+    finish_reason: str | None = None
 
     @property
     def answered(self) -> bool:
@@ -632,6 +638,10 @@ def _presentation_blocks(request_payload: Mapping[str, object]) -> tuple[tuple[s
     return tuple(found)
 
 
+#: The decoding fields ``core.bundle.outputs._THINKING_WIRE_KEYS`` compares per node (restated: this module never imports the bundle).
+_THINKING_DECODING_KEYS = ("thinking_budget_tokens", "chat_template_kwargs", "max_tokens")
+
+
 def _is_perception_branch_solver_fanout(
     receipt: Mapping[str, object], solver_receipt: Mapping[str, object],
 ) -> bool:
@@ -743,6 +753,7 @@ def _scan_trace(
     prompt_tokens: dict[str, int] = {}
     completion_tokens: dict[str, int] = {}
     tool_calls: dict[str, int | None] = {}
+    finish_reasons: dict[str, str] = {}
     roles: dict[str, str] = {}
     episodes: dict[str, Mapping[str, object]] = {}
     order: list[str] = []
@@ -806,6 +817,10 @@ def _scan_trace(
                         schema.get("name") if isinstance(schema, Mapping) else None
                     ),
                     "presentation_blocks": _presentation_blocks(inner),
+                    "decoding_view": (
+                        {key: decoding.get(key) for key in _THINKING_DECODING_KEYS}
+                        if isinstance(decoding, Mapping) else None
+                    ),
                 }
                 if sample_id not in per_sample:
                     per_sample[sample_id] = []
@@ -823,6 +838,9 @@ def _scan_trace(
                 )
             elif channel == "MODEL_WIRE_RESPONSE" and record_id.endswith("/wire-response"):
                 tool_calls[record_id[: -len("/wire-response")]] = _native_tool_calls(payload)
+                finish = payload.get("finish_reason")
+                if isinstance(finish, str) and finish:
+                    finish_reasons[record_id[: -len("/wire-response")]] = finish
             elif channel == "COST" and record_id.endswith("/cost"):
                 request_id = record_id[: -len("/cost")]
                 seconds = payload.get("latency_seconds")
@@ -877,6 +895,8 @@ def _scan_trace(
                         if roles.get(request_id) == RELISTEN_ROLE_ID else None
                     ),
                     presentation_blocks=meta.get("presentation_blocks", ()),
+                    decoding_view=meta.get("decoding_view"),
+                    finish_reason=finish_reasons.get(request_id),
                 )
             )
         contacts[sample_id] = items

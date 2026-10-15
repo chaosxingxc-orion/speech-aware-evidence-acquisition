@@ -429,6 +429,51 @@ def test_the_sealed_outputs_carry_the_absent_column_and_the_bundle_verifier_acce
         harness.close()
 
 
+def test_a_stopped_attempt_with_an_absent_column_replays_whole_and_the_replay_check_sees_the_wire(tmp_path, monkeypatch):
+    """Seal-only/resume mode A over the recorded trace: the capped row is KEPT whole (its five Solver contacts, the failed one included, are the
+    row's own), the scan carries each request's thinking decoding fields and each wire response's finish_reason, and the bundle's Perception check
+    (I7v, the v5 wire check and the absent-column check) passes over replay-shaped records exactly as the offline replay tool builds them."""
+
+    from speech_aware_evidence_acquisition.core.bundle.outputs import _verify_perception_branch_trace_binding
+    from speech_aware_evidence_acquisition.core.flight.resume import read_predecessor_attempt
+    from test_perception_branch_degenerate_lists import _write_trace
+
+    _group_, harness = _arm(tmp_path / "armed", monkeypatch)
+    try:
+        summary = harness.run(snapshot=_intent_snapshot(), decoding_params=dict(THINK_DECODING))
+        live = {r.sample_id: r for r in summary.results}
+        path = _write_trace(harness, tmp_path / "aborted")
+        scan = read_predecessor_attempt(
+            run_id=harness.plan.run_id, attempt_id="attempt-aborted", attempt_dir=path.parent, program_id=harness.program.program_id,
+        )
+        assert scan.incomplete == {} and sorted(scan.complete) == ["s1", "s2", "s3", "s4"]
+        replayed = scan.complete["s2"].native_episode_receipt["perception_branches"]
+        assert json.dumps(replayed, sort_keys=True) == json.dumps(json.loads(json.dumps(live["s2"].native_episode_receipt["perception_branches"])), sort_keys=True)
+        assert [b["branch_id"] for b in replayed["branches"] if b.get("solver_absent")] == ["both-off"]
+        capped = [c for c in scan.contacts["s2"] if c.finish_reason == "length"]
+        assert len(capped) == 1 and capped[0].decoding_view == {
+            "thinking_budget_tokens": None, "chat_template_kwargs": {"enable_thinking": False}, "max_tokens": 1024,
+        }
+        assert all(c.finish_reason == "stop" for sid in ("s1", "s3", "s4") for c in scan.contacts[sid])
+        for sid in ("s1", "s2"):
+            records = {}
+            for contact in scan.contacts[sid]:
+                records[f"{contact.request_id}/request"] = {
+                    "payload_sha256": contact.request_sha256,
+                    "payload": {"sample_id": contact.sample_id, **({} if contact.decoding_view is None else {"decoding_params": dict(contact.decoding_view)})},
+                }
+                records[f"{contact.request_id}/response"] = {
+                    "text": contact.text, "response_sha256": contact.response_sha256, "response_text_sha256": contact.response_text_sha256,
+                }
+                if contact.finish_reason is not None:
+                    records[f"{contact.request_id}/wire-response"] = {"finish_reason": contact.finish_reason}
+            _verify_perception_branch_trace_binding(
+                {"sample_id": sid, "native_episode_receipt": scan.complete[sid].native_episode_receipt}, records,
+            )
+    finally:
+        harness.close()
+
+
 # ---------------------------------------------------------------------------
 # 4. The column renderer
 # ---------------------------------------------------------------------------
