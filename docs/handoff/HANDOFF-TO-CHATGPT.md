@@ -1,6 +1,16 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-15T16:11:34Z
+Last refreshed: 2026-10-15T23:32:13Z
+
+## NX-T R1 rec1 column STOPPED at row 1,031/1,080 (both-off arm sealed no Solver column; 1,030 rows checkpointed; decision 320 seal-only proposed); successor-3 test read FLYING at 73fd885f8 (2026-10-15T23:32:13Z, Fable 5.1 root)
+
+R1: `RailsRunnerError: perception branch 'both-off' sealed no level-2 Solver column` after 10,298 contacts; harness defect (a non-delivering arm's
+absence must be recorded, not fatal) -- fix + root cause + seal-only package in build (`sonnet/nxt1-sealonly`); package rule: one recovery only,
+so the exit is seal-only at n = 1,030 (320 A) pending the owner. Successor-3: packets window 23:11-23:14Z (3,010 rows, receipt 686a2ba5...),
+rows countersigned, receipt minted, flip 73fd885f8, chain SAEA-Chain-MS3 (`/home/chao/ms3-chain.out`) 23:30Z, ceiling 35.5 GPU-h, expected ~27 h;
+ONE attempt ever; resume only under 316 A. R2 package merged (299d22093), registered after R1's read. Launch automation merged (f7685e9cd).
+
+Superseded stamp: 2026-10-15T16:11:34Z
 
 ## Rulings 316-318; launch automation (M6/M7/M8) and the NX-T R2 budget package merged; rec1 column at 800+ rows, seal about 23:15Z (2026-10-15T16:11:34Z, Fable 5.1 root)
 

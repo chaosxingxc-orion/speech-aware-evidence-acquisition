@@ -2953,3 +2953,19 @@ look for a better GPU server later to solve this. 318: A."
   resume (keep 1,030, fly 50 after the fix; about 1.5 GPU-h) -- an explicit owner exception to the package rule. C: close without a read (loses
   about 30 GPU-h of evidence). The GPU is idle meanwhile: successor-3 (test read, authorised by 301 A / 308 A, gate P3.1 NOMINATED met) is the
   next ready GPU work and can fly while the seal-only paperwork proceeds (CPU only).
+
+### Successor-3 test read LAUNCHED at flight commit 73fd885f8 (coordinator, 2026-10-15 23:35Z)
+
+- After the NX-T R1 stop the GPU went to the next ready package within an hour: the dead chain's `batch-STOP` and `locks/flight.lock` parked with
+  dated names (`/home/chao/batch-STOP.nxt1-rec1-20261015T2233Z`, `/home/chao/flight.lock.stale-nxt1-rec1-stop-*`; no driver / flight / lease
+  process alive); successor-3 registered at 727d96336 (22:37Z; four DRAFT rows); the packets row countersigned 22:54Z; `direct_fb_packets_gpu.sh
+  --check --stage test-sample-3010` PASS; GPU window 23:11-23:14Z encoded and promoted the 3,010 sample rows into the Thinking packet root
+  (receipt `TEST-SAMPLE-3010-promotion.json`, sha 686a2ba5...; Thinking session restarted and ready; the packets row stays registered like the
+  DEV one -- encoder passes leave no run manifest for the closure gate); cells re-derived `--require-receipt`; generation + FIT rows
+  countersigned 23:18Z (the READ / paired-analysis row stays a draft); receipt minted; committed 0e50fa84e; ext4 flip converged 23:28Z (gate
+  PASS, one standing advisory `tuning-roster-unverified`), master 73fd885f8; chain task SAEA-Chain-MS3 (`/home/chao/saea-queue/chain_ms3.sh`,
+  log `/home/chao/ms3-chain.out`) started 23:30Z: preflip 0 refusals, preconditions hold, one cell step, NO smoke on the sample (one attempt, ever).
+- Terms: run `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-THINKING-SYSTEM-V1` (lock arm only; 3,010 rows x 2 contacts; ceiling 35.5 GPU-h,
+  expected about 27 h), comparator the sealed successor-2 run, declared null = the DEV twin offset (SLU 0.6144 / intent 1.6 pp), no in-chain
+  replicate (stated), aggregate-only, claims_benefit false, words NEUTRAL / HARM / UNRESOLVED (successor 2's). Resume under 316 A if it dies.
+- NX-T R1 seal-only (320 A, pending the owner) is prepared in parallel by Sonnet (worktree `sonnet-nxt1-sealonly`: root cause, runner fix, seal-only package).
