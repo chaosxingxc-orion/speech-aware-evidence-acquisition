@@ -173,7 +173,14 @@ def main(argv=None) -> int:
     parser.add_argument("--contact-cap", type=int)
     parser.add_argument("--workers", type=int, default=1)
     parser.add_argument("--phase")
+    parser.add_argument(
+        "--read-only", action="store_true",
+        help="check only (M8, 2026-10-15): suppress the one data-root write preflight makes (the resume declaration); "
+             "the check takes no lock and writes no attempt record in any case",
+    )
     args = parser.parse_args(argv)
+    if args.read_only and args.mode != "check":
+        parser.error("--read-only applies to check mode only")
     if bool(args.experiment) == bool(args.campaign_plan):
         parser.error("select either an experiment or a committed campaign plan")
     if args.campaign_plan is not None and (args.mode not in {"campaign", "node-panel", "node-panel-worker"} or args.cell):
@@ -285,11 +292,16 @@ def main(argv=None) -> int:
             # E16: report, never refuse -- a check exists to PRINT the verdict.
             # Every launch path keeps the enforcing default, so a stale
             # prepared artifact refuses before an attempt can be opened.
+            if args.read_only:
+                # Instance-level override: the declaration is the only data-root write preflight makes for a
+                # resume cell (runtime._write_resume_declaration); nothing else is touched by a check.
+                runtime._write_resume_declaration = lambda plan: None
             preflight = runtime.preflight(enforce_prepared_artifacts=False)
             result = {
                 "preflight": preflight,
                 "scientific_readiness": {"state": state.state, "reason": state.reason},
                 "generation_authorized": False,
+                **({"read_only": True} if args.read_only else {}),
             }
             blockers = prepared_artifact_blockers(preflight)
             if blockers:
