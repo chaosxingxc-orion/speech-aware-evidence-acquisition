@@ -4635,6 +4635,68 @@ async def _invoke_native_role_episode(
             perception_branch_solver_render_by_branch[branch.branch_id] = rendered
         return record
 
+    def read_perception_branch_solver_absent(branch_index, error):
+        """LEVEL 2, NX-T R1 seal fix (2026-10-15): one NON-delivering branch's
+        Solver contact that ended on a finite completion.
+
+        ``read_perception_branch_solver_record``'s twin for the failure path.
+        The contact was composed, sent and metered like any other (its
+        request/response records are traced and it counts against the
+        contact ceiling), so the SAME custody is read off the interrupted
+        role's execution receipt and the SAME pending row is consumed -- the
+        branch simply has no authoritative answer. The record carries
+        ``solver_absent`` and ``absent_reason`` (the code path:
+        ``finite-completion:<finish_reason>``) and is folded into the sealed
+        ``perception_branches`` receipt by the same final assembly. Only the
+        runner's fan-out calls this, and only for a branch that does not
+        deliver; the delivering branch's finite completion keeps its
+        fail-closed path.
+        """
+
+        receipt = getattr(error, "execution_receipt", None)
+        final = receipt.get("final_contact") if isinstance(receipt, Mapping) else None
+        contact_id = final.get("agent_contact_id") if isinstance(final, Mapping) else None
+        pending_row = perception_branch_solver_pending.pop(contact_id, None)
+        if pending_row is None:
+            raise RailsRunnerError(
+                "a perception-branch Solver contact that ended on a finite completion "
+                "sealed no recorded branch of its own"
+            )
+        branch = perception_branch_group.branch_at(branch_index)
+        if pending_row["branch_id"] != branch.branch_id:
+            raise RailsRunnerError(
+                "a perception-branch Solver contact that ended on a finite completion "
+                "sealed another branch's pending record"
+            )
+        if branch.deliver:
+            raise RailsRunnerError(
+                "the delivering perception branch's finite completion cannot be recorded "
+                "as an absent Solver column"
+            )
+        request_sha256 = final.get("request_sha256") if isinstance(final, Mapping) else None
+        response_text_sha256 = (
+            final.get("response_text_sha256") if isinstance(final, Mapping) else None
+        )
+        if not isinstance(request_sha256, str) or not isinstance(response_text_sha256, str):
+            raise RailsRunnerError(
+                "a perception-branch Solver contact that ended on a finite completion "
+                "has no request/response digest"
+            )
+        record = {
+            "branch_id": branch.branch_id,
+            "solver_contact_id": contact_id,
+            "solver_request_sha256": request_sha256,
+            "solver_response_text_sha256": response_text_sha256,
+            "candidate_supply_value_ids": list(pending_row["candidate_supply_value_ids"]),
+            "solver_absent": True,
+            "absent_reason": f"finite-completion:{getattr(error, 'finish_reason', None)}",
+        }
+        perception_branch_solver_records[branch.branch_id] = record
+        rendered = perception_branch_solver_render.get(contact_id)
+        if rendered is not None:
+            perception_branch_solver_render_by_branch[branch.branch_id] = rendered
+        return record
+
     def cleaning_binding_provider(request):
         """E8b: hand the cleaning contact its own prepared speech binding.
 
@@ -5678,6 +5740,10 @@ async def _invoke_native_role_episode(
                     inner=solver_node, group=perception_branch_group,
                     branch_record=read_perception_branch_solver_record,
                     delivery_allowed=role_delivery_allowed,
+                    # NX-T R1 seal fix: a NON-delivering branch's finite
+                    # completion is recorded as an absent column instead of
+                    # ending the row (and the flight).
+                    branch_absent=read_perception_branch_solver_absent,
                 )
             elif role.perception_branches is not None:
                 # Same-flight instrument, PHASE 2 (merge set C): the
@@ -6483,6 +6549,8 @@ async def _invoke_native_role_episode(
                         ),
                         template_group=perception_template_mode,
                         thinking_group=perception_thinking_mode,
+                        solver_absent=bool(solver_row.get("solver_absent", False)),
+                        absent_reason=solver_row.get("absent_reason"),
                     ))
                 branches_block["branches"] = sealed_branches
                 if perception_template_mode and [

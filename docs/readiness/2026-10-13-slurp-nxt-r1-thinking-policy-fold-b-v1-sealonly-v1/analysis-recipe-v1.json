@@ -1,0 +1,65 @@
+{
+  "arms": [
+    "perception-off",
+    "solver-off",
+    "both-off",
+    "both-on-twin",
+    "both-on"
+  ],
+  "authority": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md (owner rulings 301-307 (2026-10-13), coordinator approval of the NX-T R1 design (rulings 1-5)); docs/superpowers/specs/2026-10-12-thinking-core-engineering-base-design.md; docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+  "cell_kind": "SAME-FLIGHT NODE COLUMN over the per-node thinking policy -- five arms paired per row against the delivering both-on arm; claim ceiling nominated",
+  "claim_boundary": "No benefit, system-level, superiority, generalisation, held-out, confirmatory or paper-scale claim.",
+  "contacts": {
+    "asr": 0,
+    "encoder": 0,
+    "model": 0,
+    "scorer": "CPU official scorer jobs over derived copies only",
+    "server": 0,
+    "tokenizer": 0
+  },
+  "delivering": "both-on",
+  "execution_profile": "model-free-check (the read); bounded-discovery-probe (the flights themselves)",
+  "external_references": {
+    "instruct_system_slu": 64.45,
+    "thinking_system_slu": 71.61,
+    "twin_offset_268b_intent_pp": -0.09,
+    "twin_offset_268b_slu_pp": 1.15
+  },
+  "measurement_design": "same-flight-node-column",
+  "read_run_id": "SAEA-SLURP-NXT-R1-THINKING-POLICY-FOLD-B-READ-V1",
+  "recipe_id": "slurp-nxt-r1-thinking-policy-fold-b-sealonly-read-v1",
+  "registered_at_utc": "2026-10-15T23:30:00.000000+00:00",
+  "roster": {
+    "relpath": "docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1-sealonly-v1/complete-rows-v1.json",
+    "roster_id": "SLURP-EVO-FOLD-B-V2-NXT1-COMPLETE-1029",
+    "rows": 1029,
+    "split_identity_hash": "59b04947ab53819b59c8d1d70253196607c7bdb90514782183ab5198fc071a02"
+  },
+  "run_ids": {
+    "arm": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1",
+    "fit": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-FIT-REC1-V1",
+    "read": "SAEA-SLURP-NXT-R1-THINKING-POLICY-FOLD-B-READ-V1",
+    "smoke": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-SMOKE-4-V1",
+    "smoke_fit": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-SMOKE-4-FIT-V1",
+    "arm_attempt": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-rec1-sealonly-v1"
+  },
+  "schema": "saea-stage3-rollout-analysis-recipe-v1",
+  "stages": {
+    "1_columns": "bash scripts/flights/nx/nxt_r1_read.sh sealonly-columns: stage3_rollout_score --mode perception-branches over the seal-only attempt with --roster docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1-sealonly-v1/complete-rows-v1.json",
+    "2_read": "bash scripts/flights/nx/nxt_r1_read.sh sealonly-read: refuses unless the READ row is root countersigned (its seal-only clause included)"
+  },
+  "twin": "both-on-twin",
+  "verdict_words": [
+    "NEEDS-THINKING",
+    "NO-RESOLVED-LOSS",
+    "GAIN",
+    "NOT-NEEDED-AT-THE-FLOOR"
+  ],
+  "what_is_not_here": "No margins block and no admission: nothing is locked here.",
+  "parent_recipe": {
+    "relpath": "docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/analysis-recipe-v1.json",
+    "sha256": "1c67d683a5bc344a72250cd8585087c61c19d68ebc4d1cf0d398651faea2d6f9",
+    "rule": "unchanged except the sealed attempt id, the roster (the complete rows) and the reading rule below"
+  },
+  "recovery_reading_rule": "The five arm columns are read from the seal-only attempt attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-rec1-sealonly-v1's sealed manifest: all 1,029 rows kept from attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-rec1-v1 under I7r custody, 0 flown. The manifest's predecessor_attempt block must name trace 3238cd8aedb50c8a142b15e321070ffc7cf2cd055088fdcb0aee83d8a0895835; refuse otherwise. The paired contrasts run at n = 1,029 (the complete rows; utterance-cluster bootstrap, 10,000 draws, seed 20261013, unchanged). The READ reports, beside the table and by COUNT only: the failing row (1: a both-off Solver delivery failure, never scored, not in n), the 50 never-started rows, and the absent Solver columns per arm (a column whose Solver contact ended on a finite completion is that arm's delivery failure: scored as the canonical empty answer, zero for that row's arm, counted in `absent_rows`). The delivering arm's column is never absent. Node words and floors are the parent's (floors set at n = 1,080 are quoted, not rescaled; the reader prints the CI)."
+}

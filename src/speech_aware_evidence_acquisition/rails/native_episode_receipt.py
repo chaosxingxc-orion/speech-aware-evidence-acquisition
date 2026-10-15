@@ -1948,6 +1948,12 @@ _PERCEPTION_BRANCH_LEVEL2_FIELDS = _PERCEPTION_BRANCH_RECORD_FIELDS | {
     "solver_contact_id", "solver_request_sha256", "solver_response_text_sha256",
     "candidate_supply_value_ids",
 }
+#: NX-T R1 seal fix (2026-10-15): a NON-delivering level-2 branch whose Solver contact ended on a finite completion (``length`` or
+#: ``content_filter``) has no authoritative Solver answer. Its row records that as two optional fields, present TOGETHER or not at all,
+#: so every receipt sealed before this change (neither key) verifies unchanged and the receipt schema string is not bumped: the
+#: contact itself was made and metered, and the four level-2 custody fields still name it.
+PERCEPTION_BRANCH_ABSENT_FIELDS = frozenset({"solver_absent", "absent_reason"})
+PERCEPTION_BRANCH_ABSENT_REASONS = frozenset({"finite-completion:length", "finite-completion:content_filter"})
 #: Schema v2 adds exactly one field per branch row (the pre-collapse count).
 _PERCEPTION_BRANCH_V2_EXTRA_FIELDS = frozenset({"candidate_intent_ids_raw_count"})
 #: Schema v3 adds exactly one more field per branch row (the key-source axis).
@@ -2120,8 +2126,24 @@ def validate_perception_branch_receipt(
     delivering_request_sha256: str | None = None
     twin_seen = False
     for index, row in enumerate(rows):
-        if not isinstance(row, Mapping) or set(row) != expected_fields:
+        if not isinstance(row, Mapping) or set(row) not in (
+            expected_fields, expected_fields | PERCEPTION_BRANCH_ABSENT_FIELDS,
+        ):
             _raise(error_type, "perception branch record has an invalid shape")
+        if "solver_absent" in row:
+            # NX-T R1 seal fix: an absent Solver column exists only at level 2, only on a NON-delivering branch (the delivering
+            # arm keeps its fail-closed custody), and always names the code path that ended it.
+            if level != 2:
+                _raise(error_type, "perception branch solver_absent exists only at level 2")
+            if row["solver_absent"] is not True:
+                _raise(error_type, "perception branch solver_absent must be true when present")
+            if row["absent_reason"] not in PERCEPTION_BRANCH_ABSENT_REASONS:
+                _raise(
+                    error_type,
+                    f"perception branch absent_reason must be one of {sorted(PERCEPTION_BRANCH_ABSENT_REASONS)}",
+                )
+            if row["branch_id"] == delivered_branch_id:
+                _raise(error_type, "the delivering perception branch (A) cannot have an absent Solver column")
         if row["branch_index"] != index:
             _raise(error_type, "perception branches must be ordered by ascending branch_index")
         if row["branch_id"] != declared[index]:
@@ -2418,6 +2440,8 @@ __all__ = [
     "SUPPLY_VARIANT_RECEIPT_SCHEMA_V4",
     "SUPPLY_VARIANT_RECEIPT_SCHEMA_V5",
     "supply_variant_arm_release_swaps",
+    "PERCEPTION_BRANCH_ABSENT_FIELDS",
+    "PERCEPTION_BRANCH_ABSENT_REASONS",
     "PERCEPTION_BRANCH_RECEIPT_SCHEMA",
     "PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4",
     "PERCEPTION_BRANCH_RECEIPT_SCHEMA_V5",

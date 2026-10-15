@@ -234,7 +234,8 @@ def test_the_effect_floor_gate_resolves_the_declaration(tmp_path):
     assert out.returncode == 0, out.stderr[-500:]
     report = json.loads(out.stdout[out.stdout.find("{"):])
     mine = [c for c in report["in_scope_cells"] if "nxt-r1-thinking-policy" in c["cell_id"]]
-    assert {c["cell_id"] for c in mine} == {fam.CELLS[k]["cell"] for k in fam.ALL_KEYS}
+    # the seal-only completion (package -sealonly-v1) is a third in-scope cell of the same family
+    assert {c["cell_id"] for c in mine} == {fam.CELLS[k]["cell"] for k in fam.ALL_KEYS} | {fam.sealonly_spec()["cell"]}
     assert not [f for f in report["findings"] if "nxt-r1-thinking-policy" in json.dumps(f)]
     declared = {c["cell_id"]: c["declaration"] for c in mine}
     assert declared[fam.CELLS["arm"]["cell"]]["problems"] == [] and declared[fam.CELLS["arm"]["cell"]]["measurement_design"] == "same-flight-node-column"

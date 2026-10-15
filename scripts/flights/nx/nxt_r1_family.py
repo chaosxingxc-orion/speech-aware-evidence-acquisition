@@ -450,4 +450,41 @@ FIT_ESTIMATE = {"base_prompt_tokens": 2000, "completion_ceiling": tsf.THINK_MAX_
 MAX_SUPPLIED_ITEMS = tf.DELIVERING_MAX_SUPPLIED_ITEMS      # 55: the lock's own supply bound; every arm renders the delivering arm's evidence
 
 
+# ---- the SEAL-ONLY completion of the stopped column (2026-10-15) ----------------------------------------------------------------------
+#: The rec1 column attempt stopped after 1,029 complete rows: row 1,030 (admission index 1,014) ended on a non-delivering ``both-off`` Solver contact that hit
+#: its 1,024-token no-think cap, the harness raised ``RailsRunnerError: perception branch 'both-off' sealed no level-2 Solver column`` and the other 50 rows were
+#: never started. The completion is a SEAL-ONLY registration of the 1,029 complete rows under the SAME run id (the precedent: P-SV-1 ``scripts/flights/psv/``):
+#: a new attempt id, ``resume_from`` the stopped attempt by trace sha256 (mode A: the harness fix changes ``rails/runner.py``, which a mode-B checkpoint resume
+#: refuses by its code-identity pin), the roster fixed to the complete rows (a strict subset of the Fold B roster, its own dataset fragment and split identity),
+#: zero model contacts. Package ``docs/readiness/<date>-<package>-sealonly-v1/``; derived by ``nxt_r1_sealonly_derive_cell.py``.
+SEALONLY_PKG_NAME = f"{PKG_NAME}-sealonly-v1"
+SEALONLY_PACKAGE = f"docs/readiness/{DATE}-{SEALONLY_PKG_NAME}"
+SEALONLY_PREREG = f"{SEALONLY_PACKAGE}-preregistration.md"
+SEALONLY_DECISION_ID = "slurp-nxt-r1-thinking-policy-fold-b-sealonly-admission-v1"
+SEALONLY_DECISION_RELPATH = f"coordination/{PKG_NAME}/root-admission-sealonly-v1.json"       # beside the column's own receipt
+SEALONLY_PROOF_RUN_ID = "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-SEALONLY-REPLAY-PROOF-V1"
+SEALONLY_COMPLETE_ROWS = f"{SEALONLY_PACKAGE}/complete-rows-v1.json"                           # roster-receipt shaped: items[].sample_id / stratum / utterance_id
+SEALONLY_ANALYSIS_DIR = "sealonly"                                                              # under ``analysis/<READ_RUN_ID>/``
+SEALONLY_FLIGHT_COMMIT_FILE = "/home/chao/nxt1seal-flight-commit.txt"
+
+
+def sealonly_spec() -> dict:
+    """The seal-only completion's identities, derived from the arm cell's rec1 identities (never typed twice)."""
+
+    arm = CELLS["arm"]
+    stem = f"slurp-native-stage3-{SLUG}"
+    return {
+        "package": SEALONLY_PACKAGE, "preregistration": SEALONLY_PREREG,
+        "experiment": f"{stem}-v1-sealonly", "cell": f"{stem}-v1-sealonly", "baseline": f"{stem}-baseline-v1-sealonly",
+        "parent_cell": arm["cell"], "parent_baseline": arm["baseline"],
+        "run": arm["run"], "fit_run": arm["fit_run"],
+        "predecessor_attempt": arm["attempt"],
+        "attempt": arm["attempt"].replace("-rec1-v1", "-rec1-sealonly-v1"),
+        "fit_attempt": arm["fit_attempt"].replace("-rec1-v1", "-rec1-sealonly-v1"),
+        "decision_id": SEALONLY_DECISION_ID, "decision_relpath": SEALONLY_DECISION_RELPATH, "proof_run": SEALONLY_PROOF_RUN_ID,
+        "read_run": READ_RUN_ID, "complete_rows": SEALONLY_COMPLETE_ROWS, "analysis_dir": SEALONLY_ANALYSIS_DIR,
+        "session": arm["session"], "model": arm["model"],
+    }
+
+
 __all__ = [name for name in globals() if not name.startswith("_")]

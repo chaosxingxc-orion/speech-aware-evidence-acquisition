@@ -201,6 +201,39 @@ def flag_counts(flags: Mapping[str, Mapping]) -> dict:
             "reasoning_leak": sum(1 for f in flags.values() if f["leak"])}
 
 
+def absent_solver_columns(outputs_rows: Sequence[Mapping], arms: Sequence[str]) -> dict:
+    """NX-T R1 seal fix (2026-10-15): per arm, the rows whose level-2 Solver column is ABSENT (a NON-delivering branch whose Solver contact ended on a
+    finite completion; receipt keys ``solver_absent`` / ``absent_reason``). Ids, counts and reason codes only. Such a row is that arm's DELIVERY FAILURE:
+    the column renderer scores it as the canonical empty answer (zero in every paired contrast), and a reader reports the count beside its table."""
+
+    ids: dict[str, list[str]] = {arm: [] for arm in arms}
+    reasons: dict[str, int] = {}
+    for row in outputs_rows:
+        branches = (((row.get("native_episode_receipt") or {}).get("perception_branches") or {}).get("branches")) or []
+        for branch in branches:
+            if branch.get("solver_absent"):
+                ids.setdefault(str(branch.get("branch_id")), []).append(str(row["sample_id"]))
+                reason = str(branch.get("absent_reason"))
+                reasons[reason] = reasons.get(reason, 0) + 1
+    by_arm = {arm: len(sorted(found)) for arm, found in ids.items()}
+    return {"by_arm": by_arm, "sample_ids_by_arm": {arm: sorted(found) for arm, found in ids.items()}, "total": sum(by_arm.values()),
+            "rows": len({sid for found in ids.values() for sid in found}), "reasons": dict(sorted(reasons.items()))}
+
+
+def require_absent_scored_zero(arm_scores: Mapping[str, Mapping[str, Mapping[str, float]]], absent: Mapping, intent_field: str = INTENT_FIELD) -> None:
+    """Refuse a read in which an absent Solver column carries a non-zero score: it must have been rendered as the canonical empty answer."""
+
+    for arm, sample_ids in (absent.get("sample_ids_by_arm") or {}).items():
+        rows = arm_scores.get(arm) or {}
+        for sample_id in sample_ids:
+            row = rows.get(sample_id)
+            if row is None:
+                raise ReadError(f"{arm}: the absent Solver column of a row has no score row")
+            bad = sorted(key for key, value in row.items() if (key.endswith("_tp") or key == intent_field) and value != 0)
+            if bad:
+                raise ReadError(f"{arm}: an absent Solver column is not scored as the canonical empty answer ({bad})")
+
+
 def smoke_stage(costs: Sequence[Mapping], flags: Mapping[str, Mapping], cap: int = THINKING_CAP, rows: int = 1080,
                 receipts: Sequence[Mapping] = ()) -> dict:
     return {"schema": SCHEMA_SMOKE, "status": "DECODE-COST (no score, no read)", "answer_length": answer_length_table(costs, cap), "cost": cost_table(costs, rows),

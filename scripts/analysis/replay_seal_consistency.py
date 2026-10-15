@@ -227,13 +227,20 @@ def _check_attempt(
             for contact in scan.contacts[sample_id]:
                 records[f"{contact.request_id}/request"] = {
                     "payload_sha256": contact.request_sha256,
-                    "payload": {"sample_id": contact.sample_id},
+                    "payload": {
+                        "sample_id": contact.sample_id,
+                        # NX-T R1 seal fix (2026-10-15): the v5 (thinking-policy) wire check reads each request's
+                        # decoding fields, and an absent Solver column is held against its recorded finish_reason.
+                        **({} if contact.decoding_view is None else {"decoding_params": dict(contact.decoding_view)}),
+                    },
                 }
                 records[f"{contact.request_id}/response"] = {
                     "text": contact.text,
                     "response_sha256": contact.response_sha256,
                     "response_text_sha256": contact.response_text_sha256,
                 }
+                if contact.finish_reason is not None:
+                    records[f"{contact.request_id}/wire-response"] = {"finish_reason": contact.finish_reason}
             try:
                 bundle._verify_perception_branch_trace_binding(row, records)
             except Exception as error:  # noqa: BLE001

@@ -1,0 +1,246 @@
+{
+  "arm_order": [
+    "perception-off",
+    "solver-off",
+    "both-off",
+    "both-on-twin",
+    "both-on"
+  ],
+  "cell": "slurp-native-stage3-nxt-r1-thinking-policy-fold-b-v1-sealonly",
+  "composed_config_hash": "348b03a8e278ea7377b2b3ee4008f48147a0bea1a20485518669d9f6a130a615",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-rec1-sealonly-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 41.4,
+    "planned_model_calls": 18484,
+    "planned_speech_audio_seconds": 53776,
+    "protocol_hash": "7b28b8571fa554fda36ae50f80a362650245a9d9dfbf3d0c495d3765aff3f571",
+    "run_id": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "59b04947ab53819b59c8d1d70253196607c7bdb90514782183ab5198fc071a02",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "core.flight.cli seal-only on the seal-only cell (--experiment slurp-native-stage3-nxt-r1-thinking-policy-fold-b-v1-sealonly --cell slurp-native-stage3-nxt-r1-thinking-policy-fold-b-v1-sealonly), through the batch driver as a kind=seal-only step (scripts/flights/nx/batch_chain_nxt_r1_sealonly.sh): preflight's gates (the resume prelaunch replay gate included), then zero-work preprocess / serve / run_phases (no packet promotion, no server, no slot, no lease), the seal of the 1,029-row manifest and the one official finalize job. No smoke, no campaign plan.",
+  "expected_session_id": "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
+  "experiment": "slurp-native-stage3-nxt-r1-thinking-policy-fold-b-v1-sealonly",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 43200,
+    "generation_calls_cap": 18484,
+    "gpu_hours_fit_inclusive": 41.4,
+    "native_task_contract_calls_cap": 18484,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 53776
+  },
+  "no_think_node": {
+    "answer_reserve_tokens": 1024,
+    "budget_field": "absent (no thinking_budget_tokens)",
+    "chat_template_kwargs": {
+      "enable_thinking": false
+    },
+    "enable_thinking": false,
+    "max_tokens": 1024
+  },
+  "one_factor": "The per-node thinking decoding of the non-delivering arms (enable_thinking false at the named node). The delivering arm is the 268-B lock form (budget 3072 + reserve 1024 = cap 4096); the system, the knowledge supply, the sealed query vectors and the roster are the 268-B lock's.",
+  "plan_kind": "generation",
+  "preparation_base_commit": "9f3add5a4",
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1/phase-supply-v2.json",
+    "sha256": "0c2fe45ea9ad5aab09ee794835c3f67e6647b7f34bd5837610284680852ad34c",
+    "note": "INHERITED pin of the 1,080-row parent; the flip rebuilds it for the narrowed roster under the same run id with --allow-output-change (roster narrowing). The seal-only path never reads it."
+  },
+  "prepared_phase_supply_annotations": {
+    "note": "the flip mints this cell's own first-phase supply under its own run id (item E16)"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1-sealonly-v1/protocol-registered-v1.json",
+    "sha256": "9a6dc58146745d92ba1b52b11c6f7006a711a736eb4640765285431fed77849e"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1: thinking-policy column flight (five arms in one flight) of NX-T R1.",
+  "recovery": {
+    "amendment": "RECOVERY 2026-10-14 (the cell's single one; owner decision 309 A, coordinator brief, Fable 5.1). The generation budget is run-cumulative across the attempts of the run id (core/model/adapter.py; every attempt state counts, an OPENED one included), so the rec1 plan carries the original plan plus the failed attempt's recorded spend (1,204 calls, 3298.26 speech-seconds, read from the attempt record into docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/predecessor-snapshot-arm-rec1-v1.json). The FIT cap is structural and unchanged (rows x program contacts x endpoints per contact). The FIT run id and the FIT attempt id both take the rec1 marker because the cell is re-flown whole and a (run_id, attempt_id) pair is a one-time key; the generation run id is unchanged. The registered GPU-hour ceiling does not change.",
+    "base_commit": "283ab0045",
+    "fit_cap_rule": "The FIT cap is structural: rows x program contacts x endpoints per contact.",
+    "predecessor_attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-v1",
+    "predecessor_fit_attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-fit-v1",
+    "predecessor_fit_run_id": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-FIT-V1",
+    "predecessor_state": "OPENED at flight commit 37e177e3e from 2026-10-14T12:18:45Z, killed by a host restart at 15:29Z; 1,204 calls / 3298.26 speech-seconds realised per its attempt record (reserved 17,280 / 50,477); no trace was written (the run directory holds only the session-attach receipt); preserved unread.",
+    "predecessors": [
+      {
+        "attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-v1",
+        "contacts_spent": 1204,
+        "speech_seconds_spent": 3298.2618750000015,
+        "state": "OPENED"
+      }
+    ],
+    "reason": "The predecessor attempt was killed by a Windows Update forced restart of the host (System event log 1074: 15:29Z MoUsoCoreWorker \"operating system: Service Pack (planned)\", 15:33Z TrustedInstaller \"operating system: upgrade (planned)\"). The trace sink buffers until the seal, so the attempt left no trace and the E10 mode-A resume has nothing to replay; the column flight is re-flown WHOLE under the rec1 ids. The smoke cell sealed at 2026-10-14T12:16Z, was signed off at 12:18:33Z and is NOT re-flown.",
+    "recovered_at": "2026-10-14",
+    "recovery_index": 1,
+    "registered_at_utc": "2026-10-14T16:58:26Z",
+    "root_cause": "infrastructure, not the cell: a Windows Update forced restart (System event log 1074) killed the host session; no defect in the cell, the runtime or any registered knob",
+    "rule": "A second failure closes the cell; the fix is proven on a four-row dry run."
+  },
+  "recovery_budget": {
+    "cumulative_plan": {
+      "planned_model_calls": 18484,
+      "planned_speech_audio_seconds": 53776
+    },
+    "failed_attempt_spend": {
+      "attempt_ids": [
+        "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-v1"
+      ],
+      "model_calls": 1204,
+      "speech_audio_seconds": 3298.2618750000015
+    },
+    "original_plan": {
+      "planned_model_calls": 17280,
+      "planned_speech_audio_seconds": 50477
+    },
+    "rule": "The adapter budget is run-cumulative across the attempts of a run id; the FIT cap is structural and never scaled."
+  },
+  "registered_at_utc": "2026-10-15T23:30:00.000000+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "scoring": "Per-arm official column scoring after a successful seal; no partial score.",
+  "status": "REGISTERED_BEFORE_CONTACT_SEAL_ONLY_PENDING_OWNER_DECISION_320",
+  "thinking_arms": {
+    "both-off": {
+      "thinking_policy": {
+        "perception": {
+          "enable_thinking": false
+        },
+        "solver": {
+          "enable_thinking": false
+        }
+      }
+    },
+    "both-on": {
+      "role": "delivering",
+      "thinking_policy": null
+    },
+    "both-on-twin": {
+      "role": "twin",
+      "thinking_policy": null
+    },
+    "perception-off": {
+      "thinking_policy": {
+        "perception": {
+          "enable_thinking": false
+        }
+      }
+    },
+    "solver-off": {
+      "thinking_policy": {
+        "solver": {
+          "enable_thinking": false
+        }
+      }
+    }
+  },
+  "thinking_knobs": {
+    "answer_fallback": {
+      "enable_thinking": false,
+      "id": "saea-thinking-answer-fallback-v1",
+      "max_tokens": 1024,
+      "mode": "answer-only re-ask",
+      "per_node": 1
+    },
+    "answer_reserve_tokens": 1024,
+    "budget_message": "Considering the limited time by the user, I have to give the solution based on the thinking directly now.",
+    "completion_cap": 4096,
+    "decoding": {
+      "seed": 20260913,
+      "temperature": 0
+    },
+    "node_modes": {
+      "perception": "think",
+      "solver": "think"
+    },
+    "reasoning_context_policy": "drop-reasoning-v1",
+    "reasoning_format": "deepseek",
+    "thinking_budget_tokens": 3072
+  },
+  "unused_budget_is_not_attempt_authority": true,
+  "source_tree": "studies/speech-aware-evidence-acquisition (single master writer; the harness fix and this registration merged from branch sonnet/nxt1-sealonly)",
+  "rows": 1029,
+  "roster": {
+    "roster_id": "SLURP-EVO-FOLD-B-V2-NXT1-COMPLETE-1029",
+    "relpath": "docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1-sealonly-v1/complete-rows-v1.json",
+    "rows": 1029,
+    "split_identity_hash": "59b04947ab53819b59c8d1d70253196607c7bdb90514782183ab5198fc071a02",
+    "subset_of": "SLURP-EVO-FOLD-B-V2",
+    "parent_rows": 1080
+  },
+  "resume_from": {
+    "attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-rec1-v1",
+    "trace_sha256": "3238cd8aedb50c8a142b15e321070ffc7cf2cd055088fdcb0aee83d8a0895835"
+  },
+  "resume_budget": {
+    "kept_rows": 1029,
+    "flown_rows": 0,
+    "kept_from": {
+      "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-rec1-v1": 1029
+    },
+    "seal_only": true,
+    "flown_worst_case_calls": 0,
+    "run_cumulative_actual_calls": 11502,
+    "run_cumulative_actual_breakdown_calls": {
+      "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-rec1-v1": 10298,
+      "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-v1": 1204
+    },
+    "run_cumulative_actual_audio_seconds_rec1": 30101.2,
+    "cap_calls": 18484,
+    "cap_audio_seconds": 53776,
+    "headroom_calls": 6982
+  },
+  "resume_replay_proof": {
+    "schema": "saea-resume-replay-proof-v1",
+    "tool": "scripts/analysis/replay_seal_consistency.py --experiment slurp-native-stage3-nxt-r1-thinking-policy-fold-b-v1 --run-id SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1 --predecessor attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-rec1-v1:3238cd8aedb50c8a142b15e321070ffc7cf2cd055088fdcb0aee83d8a0895835",
+    "gate": "scripts/checks/resume_prelaunch_gate_check.py (via scripts/flights/batch/resume_prelaunch_gate.sh) on this cell, re-run by the chain and by the driver's prelaunch on the flight commit",
+    "run_at_utc": "2026-10-15T23:20:00Z",
+    "predecessor_attempts": [
+      {
+        "attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-rec1-v1",
+        "trace_sha256": "3238cd8aedb50c8a142b15e321070ffc7cf2cd055088fdcb0aee83d8a0895835",
+        "samples_started": 1029,
+        "complete": 1029,
+        "incomplete": 0,
+        "rows_checked": 1029,
+        "rows_failing": 0,
+        "rows_with_perception_branches": 1029,
+        "rows_with_deliver_normaliser": 1029,
+        "perception_branch_note_parse_status": {
+          "both-off:duplicates-collapsed": 169,
+          "both-off:ok": 860,
+          "both-on-twin:duplicates-collapsed": 4,
+          "both-on-twin:ok": 1025,
+          "both-on:duplicates-collapsed": 4,
+          "both-on:ok": 1025,
+          "perception-off:duplicates-collapsed": 153,
+          "perception-off:ok": 876,
+          "solver-off:duplicates-collapsed": 8,
+          "solver-off:ok": 1021
+        }
+      }
+    ],
+    "rows_checked": 1029,
+    "rows_failing": 0,
+    "sealed_twice": 0,
+    "union_complete_rows": 1029,
+    "checker_sha256": "7391863cbd58f97346b87e536cd48c92b6e618943d0f9e22cffba8a5122d25b8",
+    "resume_py_sha256": "c7d9a64ab9830a0d6ad74d0f6d55491d8aa266d063d95d2ed3d717fc36972eff",
+    "code_commit": "9f3add5a4",
+    "model_contacts": 0,
+    "note": "Model-free and read-only over a scratch COPY of the stopped attempt's trace (sha256 verified identical to the data root's), assets read through symlinks to the data root: every complete row rendered through the real seal stage and re-checked against I7 / I7n / I7v (including the v5 thinking-policy wire check and the absent-column check, which the replay tool could not see before the 2026-10-15 fix) one row at a time; no row fails and no sample is sealed twice. The driver's prelaunch replay gate re-runs the same check at launch on the flight commit."
+  },
+  "seal_only_registration": {
+    "registered_at_utc": "2026-10-15T23:30:00.000000+00:00",
+    "source_tree": "studies/speech-aware-evidence-acquisition (single master writer; the harness fix and this registration merged from branch sonnet/nxt1-sealonly)",
+    "owner_basis": "owner decision 320 A (coordinator's proposal of 2026-10-15, PENDING the owner's answer): seal-only the complete rows of the stopped NX-T R1 column, read at the complete-row n, report the failing row and the never-started rows by count, close the cell",
+    "decision_receipt": "coordination/slurp-nxt-r1-thinking-policy-fold-b-v1/root-admission-sealonly-v1.json",
+    "decision_id": "slurp-nxt-r1-thinking-policy-fold-b-sealonly-admission-v1"
+  }
+}
