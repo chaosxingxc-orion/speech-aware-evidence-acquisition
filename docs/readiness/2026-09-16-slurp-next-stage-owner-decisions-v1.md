@@ -2935,3 +2935,21 @@ look for a better GPU server later to solve this. 318: A."
 - Open: `test_natural_source_compatibility::test_actual_reviewed_full_runtime_ast` and `test_consumption_module_step7::...current_lock` fail on
   master for pre-existing reasons (the runtime AST pin predates the checkpoint merge; the v2.3 tfrl-loop baselines) -- to be re-reviewed.
 - Column: 800 rows checkpointed at 15:25Z, 0.63 rows/min, seal about 23:15Z.
+
+### NX-T R1 rec1 column STOPPED at row 1,031 of 1,080 (2026-10-15 22:33Z): a non-delivering arm's missing Solver column aborted the flight; decision 320 proposed (coordinator, 22:50Z)
+
+- **What happened:** after 29.3 h and 10,298 contacts (1,030 rows complete, every one checkpointed and traced on disk: `rows.ckpt.jsonl` 768 MB,
+  `trace.jsonl` 668 MB), the runner raised `RailsRunnerError: perception branch 'both-off' sealed no level-2 Solver column`
+  (`rails/runner.py` ~line 6453: every branch row must pop a Solver record; the no-think `both-off` arm of one row produced none) and the
+  campaign exited 1; the driver wrote `batch-STOP` and the attempt record reads `failure_reason` accordingly (calls 10,298 / audio 30,101 s).
+  The serving session is intact. The delivering arm and the four other arms of that row are not the cause; a candidate arm failed to deliver,
+  which the harness treats as fatal for the whole flight. This is the E4 lesson again (a rare row class the 4-row smoke cannot exercise).
+- **Harness defect (to fix before R2):** a NON-delivering arm's absent level-2 column must be recorded per row (`solver_absent` + reason) and
+  counted by the reader as that arm's delivery failure, never abort the flight; the delivering arm keeps its fail-closed semantics.
+- **Package rule:** "at most ONE root-diagnosed recovery re-registration per run id; a second failure closes the cell" -- rec1 was that one.
+- **320 (proposed): how to close NX-T R1.** A (recommended): SEAL-ONLY the 1,030 completed rows (the decision-189 path used for COMP-1 and P-SV-1;
+  no new contacts; the 50 unflown rows and the failing row are reported, the failing row as a both-off delivery failure), read the column at
+  n = 1,030 (paired floor unchanged in practice), close the cell per its rule; fix the harness for R2. B: a second recovery by checkpoint
+  resume (keep 1,030, fly 50 after the fix; about 1.5 GPU-h) -- an explicit owner exception to the package rule. C: close without a read (loses
+  about 30 GPU-h of evidence). The GPU is idle meanwhile: successor-3 (test read, authorised by 301 A / 308 A, gate P3.1 NOMINATED met) is the
+  next ready GPU work and can fly while the seal-only paperwork proceeds (CPU only).
