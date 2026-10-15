@@ -2914,3 +2914,24 @@ look for a better GPU server later to solve this. 318: A."
 - **318 A (RULED):** NX-T R2 (per-node reasoning-budget column: delivering 3,072, candidates 2,048 and 1,536, no twin, Fold B 1,080) is built now
   model-free (Sonnet, worktree `sonnet-nxt-r2-budget`) with a data-driven arm table, and is registered after R1's read decides which node(s) the
   scan covers. 319 (notified): M6/M7/M8 launch automation in build (Sonnet, worktree `sonnet-launch-automation`).
+
+### Launch automation (M6/M7/M8) and the NX-T R2 package merged; column at 800+ rows (coordinator, 2026-10-15 16:15Z)
+
+- **Launch automation** merged f7685e9cd (spec path fix 00cbc7669): M6 `scripts/flights/batch/smoke_signoff.py` + `chain_lib.sh`
+  (`wait_or_machine_signoff` with the registered conditions file, a 20-minute veto window, `close_rows_after_seal`), M7
+  `scripts/flights/batch/package_launch.sh <spec> [--from <step>] [--until <step>] [--root-countersign] [--dry-run]` (derive -> write -> countersign
+  -> mint -> commit -> flip -> chain; fail-closed rules: clean master, no merge in progress, no driver/flight/lease process, the flip's gate block
+  parsed for PASS, flight-commit file == HEAD; the countersign only with the root flag), M8 verdict (`docs/superpowers/specs/2026-10-15-launch-automation-design.md`):
+  derive / write / countersign / mint / commit are safe in flight; the flip and the chain start are not (`batch_driver.sh:113` stops the queue on a
+  live `core.flight.cli`; `flip_in_ext4.sh:34`; the flight-commit file rewrite at `flip_in_ext4.sh:79`); `check --read-only` added. Tests 45/45
+  (one 9p-timing flake re-run alone: pass).
+- **NX-T R2 package** merged 299d22093 (`docs/readiness/2026-10-15-slurp-nxt-r2-thinking-budget-fold-b-v1/`, SHORT `nxt2`): per-node reasoning-
+  budget column, arms `budget-1536`, `budget-2048`, delivering `budget-3072` (the lock form, requests byte-identical), NO twin (313 A), data-driven
+  arm table `scripts/flights/nx/nxt_r2_arms.json`; harness: `reasoning_budget_tokens` was already a legal per-arm policy key (receipt v5 unchanged),
+  one optional `thinking_frame.delivering_arm_id` added to the consumption module; cost model fitted on the R1 smoke's 40 contacts (0.0251 s per
+  token; arm costs 0.66 / 0.80 / 1.00; mix 2.46; expected 24.1 GPU-h, ceiling 31.3); a lock flight projects 6.5 / 7.8 / 9.8 GPU-h at 1,536 /
+  2,048 / 3,072; words GAIN / NEEDS-FULL-BUDGET / CHEAPER-AT-NO-RESOLVED-LOSS / UNRESOLVED against |o| = 1.15 pp and the decision-190 floors;
+  the effect-floor gate accepts a twin-less same-flight node column. Registered after R1's read (318 A). Tests 95/95 on master.
+- Open: `test_natural_source_compatibility::test_actual_reviewed_full_runtime_ast` and `test_consumption_module_step7::...current_lock` fail on
+  master for pre-existing reasons (the runtime AST pin predates the checkpoint merge; the v2.3 tfrl-loop baselines) -- to be re-reviewed.
+- Column: 800 rows checkpointed at 15:25Z, 0.63 rows/min, seal about 23:15Z.

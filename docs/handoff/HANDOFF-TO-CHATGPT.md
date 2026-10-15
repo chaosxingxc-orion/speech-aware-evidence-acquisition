@@ -1,6 +1,16 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-14T17:16:22Z
+Last refreshed: 2026-10-15T16:11:34Z
+
+## Rulings 316-318; launch automation (M6/M7/M8) and the NX-T R2 budget package merged; rec1 column at 800+ rows, seal about 23:15Z (2026-10-15T16:11:34Z, Fable 5.1 root)
+
+316 A resume of a test read admitted narrowly; 317 no KV-quantisation change to the baseline (q8_0 KV stays; GPU server later); 318 A R2 built now.
+Merged: launch automation f7685e9cd (`package_launch.sh`, `smoke_signoff.py`, `chain_lib.sh`, `check --read-only`; M8: register in flight, flip after
+the seal) and NX-T R2 299d22093 (`docs/readiness/2026-10-15-slurp-nxt-r2-thinking-budget-fold-b-v1/`, arms 1536/2048/3072 no twin, ceiling 31.3 GPU-h,
+arm table `scripts/flights/nx/nxt_r2_arms.json` edited after R1's read). Next: R1 seal -> `nxt_r1_read.sh columns` -> countersign READ -> read -> note;
+then successor-3 (packets window + test read) and R2 via `package_launch.sh` with the machine sign-off.
+
+Superseded stamp: 2026-10-14T17:16:22Z
 
 ## Windows Update restart killed the NX-T R1 column (15:29Z); recovered: rec1 column RE-FLYING at 8f9d8e1ee (17:14Z) with per-row checkpoints; rulings 308-315; efficiency analysis (2026-10-14T17:16:22Z, Fable 5.1 root)
 
