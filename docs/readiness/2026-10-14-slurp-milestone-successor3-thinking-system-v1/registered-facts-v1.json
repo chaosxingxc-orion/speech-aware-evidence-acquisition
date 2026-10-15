@@ -14,7 +14,7 @@
     "smoke": "NOT REGISTERED: the allowance lists a test-sample smoke as not authorised; the form proof is the flown P3.1 DEV chain.",
     "status": "authorised (signed 2026-10-13, ruling 301 A)",
     "v2_draft": "docs/receipts/owner/2026-10-14-slurp-test-sample-allowance-successor-3-v2.json",
-    "v2_draft_sha256_at_registration": "4991ed040bff0d8a86f4999fe3196d91d435eaa0f1845771a090306b88de5509"
+    "v2_draft_sha256_at_registration": "efd20fb6cc47e142fe9015d918a17a783c43892a57fa3927ff2065e78621c318"
   },
   "authority_relpaths": [
     "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
@@ -449,7 +449,7 @@
     "No utterance text, gold label, transcript, model output or reasoning text is printed or persisted by any read; aggregates, counts and hashes only.",
     "The packets encoder pass is a final-report preparation: it runs only under a countersigned exposure row AND an authorised allowance that lists its run id (the v2 DRAFT, owner decision 308)."
   ],
-  "registered_at_utc": "2026-10-14T12:00:00+00:00",
+  "registered_at_utc": "2026-10-15T22:37:35Z",
   "rows": 3010,
   "sample_preparation_pins": {
     "note": "Reused BY PIN from successor 2's baseline; never rebuilt, never re-encoded. The cell's own first-phase supply is minted at the flip (item E16): 64 zeros until then.",
@@ -560,6 +560,6 @@
     }
   },
   "status": "REGISTERED_BEFORE_CONTACT_HELD_BLOCKED_ON_PACKETS_AND_V2_ALLOWANCE",
-  "study_commit_at_registration": "23ef41de8",
+  "study_commit_at_registration": "727d96336",
   "the_composition": "The locked system on the Thinking core on the signed test sample: COMP-1b's two components ON (agree-vote-seed, w_agree 1.0, recall k 60, with THIS roster's vote table SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1; centroid-boundary-key) on lock v2.2 (v4g at delivery) with the Reviewer loop OFF (Perception then Solver, 2 contacts per row), the locked Solver template, every node thinking at budget 3072 -- the P3.1 lock arm's bytes with only the roster moved."
 }

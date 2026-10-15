@@ -303,7 +303,7 @@
     "The packets encoder pass is a final-report preparation: it runs only under a countersigned exposure row AND an authorised allowance that lists its run id (the v2 DRAFT, owner decision 308)."
   ],
   "protocol_id": "slurp-milestone-successor3-thinking-system-protocol-v1",
-  "registered_at_utc": "2026-10-14T12:00:00+00:00",
+  "registered_at_utc": "2026-10-15T22:37:35Z",
   "schema": "saea-registered-protocol-v1",
   "stage3_measurement": {
     "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-THINKING-SYSTEM-V1": {
@@ -384,7 +384,7 @@
     }
   },
   "status": "REGISTERED_BEFORE_CONTACT_HELD_BLOCKED_ON_PACKETS_AND_V2_ALLOWANCE",
-  "study_commit_at_registration": "23ef41de8",
+  "study_commit_at_registration": "727d96336",
   "the_composition": "The locked system on the Thinking core on the signed test sample: COMP-1b's two components ON (agree-vote-seed, w_agree 1.0, recall k 60, with THIS roster's vote table SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1; centroid-boundary-key) on lock v2.2 (v4g at delivery) with the Reviewer loop OFF (Perception then Solver, 2 contacts per row), the locked Solver template, every node thinking at budget 3072 -- the P3.1 lock arm's bytes with only the roster moved.",
   "the_question": "Does the locked system on the Thinking core (SLURP lock candidate v3.0, NOMINATED on DEV-2000-ADDED), flown once on the signed test sample, keep the sealed successor-2 column's accuracy and by how much does it differ, with official SLU-F1 primary and intent the guard, against the declared DEV twin offset?",
   "verdict_words": [

@@ -8,11 +8,11 @@
     },
     "analysis_recipe": {
       "path": "docs/readiness/2026-10-14-slurp-milestone-successor3-thinking-system-v1/analysis-recipe-v1.json",
-      "sha256": "e479b5dc68c68392d31481d5e52827de4b163e7545f2d14f00104216b777cc88"
+      "sha256": "e0ba4529c28a9c9b9335204c8b131ebef7d4712eec79450c2f5ab66f4d7d6bb3"
     },
     "owner_decisions": {
       "path": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
-      "sha256": "f3ef9954e026ec0998b347d35b39a28957c18facc821033102bb87085607939f"
+      "sha256": "cdefea031b031758fcac707f5f4daf7770b939bcbe11e927ce56bf103f322a2b"
     },
     "packets_promotion_receipt": {
       "path": "/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6/TEST-SAMPLE-3010-promotion.json",
@@ -24,7 +24,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-10-14-slurp-milestone-successor3-thinking-system-v1/protocol-registered-v1.json",
-      "sha256": "c821ebd081708d464601b2cdd80053af2401ae66214ca8dd059b8cfab2ba82b3"
+      "sha256": "51be631ce51ea21e833f9a998cafc7f25aaba5aae7c47b544deb601a8d454670"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-10-14-slurp-milestone-successor3-thinking-system-v1/README.md",
@@ -32,9 +32,9 @@
     },
     "registered_facts": {
       "path": "docs/readiness/2026-10-14-slurp-milestone-successor3-thinking-system-v1/registered-facts-v1.json",
-      "sha256": "0dfc44b77aba355827ca99dac3023fed0ddd74515501db8ef44df1f0ab729c60"
+      "sha256": "cbb1846f0d8f10acfc1a6b4db371453250cfb2dc8c6f958d7540888f24cb0c54"
     },
-    "registration_base_commit": "23ef41de8"
+    "registration_base_commit": "727d96336"
   },
   "authorization_basis": "owner ruling 301 A (2026-10-13), decision 299 A, P3.1 read NOMINATED (2026-10-13); the owner's signature of the successor-3 allowance; the coordinator's conversational report of the P3.1 read.",
   "budget": {

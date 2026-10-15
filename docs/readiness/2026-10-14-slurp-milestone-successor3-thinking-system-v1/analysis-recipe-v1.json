@@ -41,7 +41,7 @@
   },
   "read_run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-PAIRED-ANALYSIS-V1",
   "recipe_id": "slurp-milestone-successor3-thinking-system-paired-analysis-v1",
-  "registered_at_utc": "2026-10-14T12:00:00+00:00",
+  "registered_at_utc": "2026-10-15T22:37:35Z",
   "resampling": {
     "bootstrap_draws": 10000,
     "metrics": [

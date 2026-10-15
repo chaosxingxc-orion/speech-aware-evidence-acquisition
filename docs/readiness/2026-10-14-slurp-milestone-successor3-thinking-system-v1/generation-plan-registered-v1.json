@@ -34,7 +34,7 @@
     "repeated_speech_audio_seconds_cap": 32826
   },
   "plan_kind": "generation",
-  "preparation_base_commit": "23ef41de8",
+  "preparation_base_commit": "727d96336",
   "prepared_phase_supply": {
     "note": "THIS CELL'S OWN artifact, minted model-free under its own run id at the flip (item E16); 64 zeros until then; --allow-output-change must never be passed.",
     "relpath": "prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-THINKING-SYSTEM-V1/phase-supply-v1.json",
@@ -42,11 +42,11 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-14-slurp-milestone-successor3-thinking-system-v1/protocol-registered-v1.json",
-    "sha256": "c821ebd081708d464601b2cdd80053af2401ae66214ca8dd059b8cfab2ba82b3"
+    "sha256": "51be631ce51ea21e833f9a998cafc7f25aaba5aae7c47b544deb601a8d454670"
   },
   "purpose": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-THINKING-SYSTEM-V1: Read the Thinking arm (SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-THINKING-SYSTEM-V1) against the SEALED successor-2 column (SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR2-COMPOSED-V1) on the same 3,010 rows, CROSS-FLIGHT (nothing is re-flown; no in-chain replicate by design). PRIMARY: official pooled SLU-F1 (slurp-slu-official-test), post-stratified natural mixture (equal-stratum beside it), paired per recording with a prompt-clustered bootstrap, 10,000 draws, seed 20261014. GUARD: intent accuracy (scenario_action exact), same contrast. DECLARED NULL: |o| = the DEV P3.1 twin offset (SLU 0.6144 pp / intent 1.6 pp), borrowed, not measured on the sample. HARM MARGIN 2.5 pp. Verdict words are successor 2's: NEUTRAL iff the CI95 lower bound of (Thinking minus successor 2) on SLU-F1 and on intent is at or above -2.5 pp and the read is not HARM; HARM iff the CI95 upper bound on SLU-F1 or on intent is below -|o| (a resolved loss beyond the declared offset, owner decision 25); UNRESOLVED iff the lower bound is under -2.5 pp while neither HARM nor NEUTRAL. NOMINATED is NOT a registered outcome (claims_benefit false): a point above the bar and a CI95 lower bound above |o| are REPORTED beside the word as 'gain reported, not claimed' and would need their own replicated read. Reported beside, CONTEXT ONLY: per-intent and per-scenario tables in the post-stratified natural-mixture and equal-stratum weightings (58 intents), the recording-channel split, the cost table, per-node cap-hit / empty / forced-close counts. The verdict word is the coordinator's (owner decision 139). A milestone development read (owner decisions 28, 151, 301), never a test claim.",
   "quality_read_gate": "No task-quality read before the manifest is complete and sealed with one successful complete official slurp-slu-official-test score and the READ row is root countersigned.",
-  "registered_at_utc": "2026-10-14T12:00:00+00:00",
+  "registered_at_utc": "2026-10-15T22:37:35Z",
   "schema": "saea-registered-generation-plan-v1",
   "status": "REGISTERED_BEFORE_CONTACT_HELD_BLOCKED_ON_PACKETS_AND_V2_ALLOWANCE",
   "unused_budget_is_not_attempt_authority": true

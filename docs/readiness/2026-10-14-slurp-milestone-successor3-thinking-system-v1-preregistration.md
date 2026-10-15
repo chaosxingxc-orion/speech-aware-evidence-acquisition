@@ -1,6 +1,6 @@
 # Successor 3: the Thinking system on the signed test sample, preregistration (DRAFT / HELD)
 
-Registered 2026-10-14 at study commit `23ef41de8` by script. Development numbers only.
+Registered 2026-10-15 at study commit `727d96336` by script. Development numbers only.
 
 Runs: `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-THINKING-SYSTEM-V1` / `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-THINKING-SYSTEM-FIT-V1`; packets `SAEA-SLURP-TEST-SAMPLE-3010-THINKING-PACKETS-GPU-V1`; read `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-PAIRED-ANALYSIS-V1`.
 
