@@ -101,6 +101,7 @@ from .native_episode_receipt import (
     PERCEPTION_BRANCH_RECEIPT_SCHEMA as _RECEIPT_PERCEPTION_BRANCH_RECEIPT_SCHEMA,
     PERCEPTION_BRANCH_KEY_SOURCE_FIELDS,
     PERCEPTION_BRANCH_NOTE_FIELD_SCHEMAS,
+    PERCEPTION_BRANCH_ABSENT_REASONS,
     PERCEPTION_BRANCH_RECEIPT_SCHEMA_V1,
     PERCEPTION_BRANCH_RECEIPT_SCHEMA_V2,
     PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4,
@@ -2601,8 +2602,15 @@ def perception_branch_record(
     candidate_intent_ids_raw_count: int | None = None,
     template_group: bool = False,
     thinking_group: bool = False,
+    solver_absent: bool = False,
+    absent_reason: str | None = None,
 ) -> dict[str, object]:
     """One branch's receipt row (design section 3, "Receipt").
+
+    ``solver_absent``/``absent_reason`` (NX-T R1 seal fix, 2026-10-15) mark a NON-delivering level-2 branch whose Solver contact
+    ended on a finite completion: the row still names that real, metered contact through the four level-2 fields, and gains the
+    two optional keys ``solver_absent`` (true) and ``absent_reason`` (the code path). A row that is not absent is byte-identical
+    to every row sealed before this change.
 
     ``thinking_group`` (NX-T R1) selects the v5 row shape: the v3 row plus ``thinking_policy`` -- ``None`` for A and the twin,
     the declared override map for every other branch.
@@ -2681,6 +2689,24 @@ def perception_branch_record(
         candidate_supply_value_ids,
     )
     has_level2 = any(field is not None for field in level2_fields)
+    if solver_absent:
+        if branch.deliver:
+            raise PerceptionBranchError(
+                f"perception branch {branch.branch_id!r} is the delivering branch (A) and cannot have an absent Solver column"
+            )
+        if absent_reason not in PERCEPTION_BRANCH_ABSENT_REASONS:
+            raise PerceptionBranchError(
+                f"perception branch {branch.branch_id!r} absent_reason must be one of "
+                f"{sorted(PERCEPTION_BRANCH_ABSENT_REASONS)}, got {absent_reason!r}"
+            )
+        if not has_level2:
+            raise PerceptionBranchError(
+                f"perception branch {branch.branch_id!r} has an absent Solver column and must still name its Solver contact"
+            )
+    elif absent_reason is not None:
+        raise PerceptionBranchError(
+            f"perception branch {branch.branch_id!r} carries an absent_reason but no solver_absent mark"
+        )
     if has_level2 and any(field is None for field in level2_fields):
         raise PerceptionBranchError(
             f"perception branch {branch.branch_id!r} must declare all four "
@@ -2795,6 +2821,9 @@ def perception_branch_record(
             solver_response_text_sha256, field="solver_response_text_sha256",
         )
         record["candidate_supply_value_ids"] = list(candidate_supply_value_ids)
+    if solver_absent:
+        record["solver_absent"] = True
+        record["absent_reason"] = absent_reason
     return record
 
 

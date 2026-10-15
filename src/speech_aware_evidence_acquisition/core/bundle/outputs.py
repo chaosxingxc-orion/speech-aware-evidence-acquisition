@@ -1229,10 +1229,55 @@ def _verify_perception_branch_trace_binding(
             "the delivering branch's note_sha256 must equal its own "
             "response_text_sha256 (its note IS its own response)"
         )
+    _verify_absent_solver_columns(branch_rows, visits, trace_records, refuse=refuse)
     if branches.get("schema") == PERCEPTION_BRANCH_RECEIPT_SCHEMA_V5:
         _verify_thinking_policy_wire(
             branch_rows, contacts, visits, trace_records, refuse=refuse,
         )
+
+
+def _verify_absent_solver_columns(branch_rows, visits, trace_records, *, refuse) -> None:
+    """NX-T R1 seal fix (2026-10-15): every ``solver_absent`` Solver column is a real, traced contact that ended on the finite
+    completion its ``absent_reason`` names.
+
+    The receipt's own say-so is not enough: the absent row's Solver contact must be one of the first Solver visit's contacts, carry the
+    request/response digests the row records, and its recorded wire response must carry exactly the ``finish_reason`` the reason
+    names (``finite-completion:length`` needs ``length``). The delivering branch can never be absent (the receipt validator refuses
+    it), so the delivering arm's custody is untouched by this check.
+    """
+
+    absent = [row for row in branch_rows if isinstance(row, Mapping) and row.get("solver_absent")]
+    if not absent:
+        return
+    solver_visits = [
+        visit for visit in visits if isinstance(visit, Mapping) and visit.get("stage") == "solver"
+    ]
+    execution = solver_visits[0].get("execution_receipt") if solver_visits else None
+    solver_contacts = execution.get("contacts") if isinstance(execution, Mapping) else None
+    if not isinstance(solver_contacts, Sequence) or isinstance(solver_contacts, (str, bytes)):
+        refuse("an absent Solver column has no Solver visit contacts to be bound to")
+    by_agent = {
+        contact.get("agent_contact_id"): contact
+        for contact in solver_contacts if isinstance(contact, Mapping)
+    }
+    for row in absent:
+        branch_id = row.get("branch_id")
+        contact = by_agent.get(row.get("solver_contact_id"))
+        if contact is None:
+            refuse(f"absent Solver column of branch {branch_id!r} names a contact the Solver visit did not make")
+        if (
+            contact.get("request_sha256") != row.get("solver_request_sha256")
+            or contact.get("response_text_sha256") != row.get("solver_response_text_sha256")
+        ):
+            refuse(f"absent Solver column of branch {branch_id!r} disagrees with its own contact")
+        request_id = contact.get("request_id")
+        wire = trace_records.get(f"{request_id}/wire-response") if isinstance(request_id, str) else None
+        expected = str(row.get("absent_reason", "")).partition(":")[2]
+        if not isinstance(wire, Mapping) or not expected or wire.get("finish_reason") != expected:
+            refuse(
+                f"absent Solver column of branch {branch_id!r} claims {row.get('absent_reason')!r} but its recorded wire "
+                "response carries another finish_reason (or none)"
+            )
 
 
 #: The decoding fields a thinking-policy arm moves (``core.reasoning_knobs``): compared, per node, to the arm's declared policy.

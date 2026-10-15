@@ -16,6 +16,7 @@
   "every_node_max": {"cap_hits": 0, "empty_content": 0, "no_json_object": 0, "finish_reason_length": 0},
   "arm_mix": {"max_ratio": 1.3, "measured_key": "arm_mix_measured_rows", "registered_key": "arm_mix_registered_rows"},
   "extras": [
-    {"id": "unattributed-contacts", "path": "unattributed_contacts", "op": "==", "value": 0}
+    {"id": "unattributed-contacts", "path": "unattributed_contacts", "op": "==", "value": 0},
+    {"id": "absent-columns", "path": "absent_columns", "op": "==", "value": 0}
   ]
 }

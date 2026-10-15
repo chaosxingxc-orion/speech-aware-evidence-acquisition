@@ -31,7 +31,7 @@ def good_table() -> dict:
     arms = {}
     for arm in ("both-off", "both-on", "both-on-twin", "perception-off", "solver-off"):
         arms[arm] = {n: node("no-think" if n in NO_THINK.get(arm, []) else "think") for n in ("perception", "solver")}
-    return {"schema": "saea-nxt-r1-thinking-policy-column-smoke-v1", "arms": arms, "unattributed_contacts": 0,
+    return {"schema": "saea-nxt-r1-thinking-policy-column-smoke-v1", "arms": arms, "unattributed_contacts": 0, "absent_columns": 0,
             "throughput": {"arm_mix_measured_rows": 3.32, "arm_mix_registered_rows": 3.25}}
 
 
@@ -86,6 +86,9 @@ def test_existing_marker_is_never_overwritten(env):
     ("missing arm", lambda t: t["arms"].pop("both-on-twin"), "arm-present/both-on-twin"),
     ("mode label disagrees with registration", lambda t: t["arms"]["both-on"]["solver"].update(mode="no-think"), "both-on/solver/mode-matches-registration"),
     ("unattributed contacts", lambda t: t.update(unattributed_contacts=3), "extra/unattributed-contacts/unattributed_contacts"),
+    ("an absent Solver column (a non-delivering arm's Solver contact ended on a finite completion)", lambda t: t.update(absent_columns=1),
+     "extra/absent-columns/absent_columns"),
+    ("a table that does not carry absent_columns at all", lambda t: t.pop("absent_columns"), "extra/absent-columns"),
     ("wrong table schema", lambda t: t.update(schema="other"), "table.schema"),
 ])
 def test_fail_writes_refused_not_marker(env, label, fn, failing_id):

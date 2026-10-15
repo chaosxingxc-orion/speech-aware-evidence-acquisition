@@ -606,7 +606,7 @@ def test_smoke_signoff_conditions_are_booleans_the_coordinator_can_veto():
     mapping = reader.arm_contact_map(_receipt_rows())
     good = reader.smoke_stage(reader.attribute(_synthetic_contacts(), mapping))
     assert good["signoff"]["all_ok"] is True and set(good["signoff"]["conditions"]) == {
-        "no_cap_hits_empty_or_malformed", "no_think_markers_in_content", "no_reasoning_bytes_on_a_no_think_node", "every_contact_attributed", "mix_within_tolerance"}
+        "no_cap_hits_empty_or_malformed", "no_think_markers_in_content", "no_reasoning_bytes_on_a_no_think_node", "every_contact_attributed", "no_absent_columns", "mix_within_tolerance"}
     assert good["unattributed_contacts"] == 0 and good["contacts"] == reader.CONTACTS_ZERO and good["signoff"]["mix_tolerance"] == 1.3
     capped = reader.smoke_stage(reader.attribute(_synthetic_contacts(cap_hit=True), mapping))
     assert capped["signoff"]["conditions"]["no_cap_hits_empty_or_malformed"] is False and capped["signoff"]["all_ok"] is False

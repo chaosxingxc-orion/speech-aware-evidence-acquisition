@@ -1565,6 +1565,10 @@ def render_perception_branch_columns(
     columns = {name: [] for name in names}
     row_meta = []
     malformed = {name: 0 for name in names}
+    #: NX-T R1 seal fix: Solver columns a NON-delivering branch has no authoritative answer for (its Solver contact ended on a
+    #: finite completion). Each is scored as the canonical empty answer -- zero for that row's arm in every paired contrast -- and
+    #: counted here so a reader reports it beside the table instead of folding it into a malformed count.
+    solver_absent_by_branch = {name: 0 for name in names}
     absent = 0
     revisions = 0
     at1_checked = 0
@@ -1641,6 +1645,19 @@ def render_perception_branch_columns(
                     != contact.get("response_text_sha256")
                     or response.get("response_text_sha256") != contact.get("response_text_sha256")):
                 raise Stage3ScoreError(f"{sid}: first Solver branch trace hash differs from custody")
+            if record.get("solver_absent"):
+                if name == group.delivering_branch.branch_id:
+                    raise Stage3ScoreError(f"{sid}: the delivering branch's Solver column cannot be absent")
+                solver_absent_by_branch[name] += 1
+                columns[name].append({"sample_id": sid, "text": EMPTY_ANSWER})
+                branch_meta.append({
+                    "branch_id": name, "contact_id": contact.get("agent_contact_id"),
+                    "request_sha256": contact.get("request_sha256"),
+                    "response_text_sha256": contact.get("response_text_sha256"),
+                    "parse_status": "absent", "fallback": "canonical_empty",
+                    "absent_reason": record.get("absent_reason"),
+                })
+                continue
             if normaliser_id is not None:
                 normalisation = DELIVERY_NORMALISERS.resolve(normaliser_id)(raw)
                 branch_text = normalisation.text
@@ -1696,6 +1713,7 @@ def render_perception_branch_columns(
         "schema": PERCEPTION_BRANCH_SOLVER_RENDER_SCHEMA, "stage": "render", "source": source,
         "rows": len(ids), "branch_order": list(names),
         "no_solver_visit_rows": absent, "malformed_first_visit_by_branch": malformed,
+        "solver_absent_by_branch": solver_absent_by_branch,
         "later_solver_visit_count": revisions,
         "meaning": "level-2 first Solver visit local branch outputs; not full-system returns",
         "branch_order_source": "declared perception branch group order (A last); runtime invokes "

@@ -117,7 +117,7 @@ def load_outputs_rows(path: Path) -> list[dict]:
             row = json.loads(line)
             branches = (((row.get("native_episode_receipt") or {}).get("perception_branches") or {}).get("branches")) or []
             rows.append({"sample_id": str(row["sample_id"]), "native_episode_receipt": {"perception_branches": {"branches": [
-                {k: b.get(k) for k in ("branch_id", "contact_id", "solver_contact_id", "thinking_policy")} for b in branches]}}})
+                {k: b.get(k) for k in ("branch_id", "contact_id", "solver_contact_id", "thinking_policy", "solver_absent", "absent_reason")} for b in branches]}}})
             row.clear()
     return rows
 
@@ -216,8 +216,9 @@ def throughput_table(tables: Mapping[str, Mapping], rows: int, *, slots: int = S
             "measured_gpu_hours_one_flight": sum(v["gpu_hours_per_pass"] for v in out.values())}
 
 
-def smoke_stage(by_arm: Mapping[str, Sequence[Mapping]], *, rows: int = fam.SMOKE_ROWS) -> dict:
+def smoke_stage(by_arm: Mapping[str, Sequence[Mapping]], *, rows: int = fam.SMOKE_ROWS, absent: Mapping | None = None) -> dict:
     tables = tables_by_arm(by_arm)
+    absent = absent if absent is not None else base.absent_solver_columns([], ARMS)
     no_think_leaks = {
         arm: {node: {"contacts_with_reasoning_chars": t["contacts_with_reasoning_chars"], "marker_in_content": t["marker_in_content"],
                      "empty_content": t["empty_content"], "finish_reasons": t["finish_reasons"]}
@@ -226,6 +227,7 @@ def smoke_stage(by_arm: Mapping[str, Sequence[Mapping]], *, rows: int = fam.SMOK
     return {"schema": SCHEMA_SMOKE, "status": "DECODE-COST PER ARM AND NODE (no score, no read)", "arms": tables,
             "no_think_nodes": {arm: v for arm, v in no_think_leaks.items() if v},
             "throughput": throughput_table(tables, projection_rows), "smoke_rows": rows,
+            "absent_columns": absent["total"], "absent_rows_by_arm": dict(absent["by_arm"]),
             "unattributed_contacts": len(by_arm.get("unattributed", [])), "contacts": CONTACTS_ZERO}
 
 
@@ -320,8 +322,16 @@ def per_scenario_table(arms: Mapping[str, Mapping[str, Mapping[str, float]]], id
 
 
 def read_stage(arms: Mapping[str, Mapping[str, Mapping[str, float]]], ids: Sequence[str], cluster_of: Callable[[str], str], scenario_of: Callable[[str], str],
-               by_arm: Mapping[str, Sequence[Mapping]], flags: Mapping[str, Mapping], *, seed: int = SEED, draws: int = DRAWS) -> dict:
+               by_arm: Mapping[str, Sequence[Mapping]], flags: Mapping[str, Mapping], *, seed: int = SEED, draws: int = DRAWS,
+               absent: Mapping | None = None) -> dict:
+    """The full read. ``absent`` (``base.absent_solver_columns``): a NON-delivering arm's absent Solver column is that arm's DELIVERY FAILURE -- scored as
+    the canonical empty answer (zero for that row's arm in the paired contrast, proved here) and COUNTED per arm in ``absent_rows`` beside the table."""
+
+    absent = absent if absent is not None else base.absent_solver_columns([], ARMS)
+    base.require_absent_scored_zero(arms, absent)
     contrast = paired_contrasts(arms, ids, cluster_of, seed=seed, draws=draws)
+    for arm, level in contrast["levels"].items():
+        level["absent_rows"] = int(absent["by_arm"].get(arm, 0))
     tables = tables_by_arm(by_arm)
     delivered = base.flag_counts(flags)
     markers = delivered["reasoning_leak"] + sum(t["marker_in_content"] for nodes in tables.values() for t in nodes.values())
@@ -338,6 +348,7 @@ def read_stage(arms: Mapping[str, Mapping[str, Mapping[str, float]]], ids: Seque
                                               for node, t in nodes.items()} for arm, nodes in tables.items()},
         "throughput": throughput_table(tables, fam.ROWS), "delivered_content": delivered, "reasoning_marker_total": markers,
         "unattributed_contacts": len(by_arm.get("unattributed", [])),
+        "absent_columns": absent["total"], "absent_rows_by_arm": dict(absent["by_arm"]), "absent_reasons": dict(absent["reasons"]),
         "scorer_parse_failures": {arm: sum(1 for row in rows.values() if row.get("parsed", 1.0) == 0.0) for arm, rows in sorted(arms.items())},
         "contacts": CONTACTS_ZERO,
     }
@@ -356,16 +367,17 @@ def render_markdown(result: Mapping) -> str:
         lines.append("")
     c = result.get("contrast")
     if c:
-        lines += ["| arm | SLU-F1 | intent | SLU d vs both-on (pp) | CI95 | intent d (pp) | CI95 | intent saves / harms |", "| --- | ---: | ---: | ---: | --- | ---: | --- | --- |"]
+        lines += ["| arm | SLU-F1 | intent | SLU d vs both-on (pp) | CI95 | intent d (pp) | CI95 | intent saves / harms | absent rows |", "| --- | ---: | ---: | ---: | --- | ---: | --- | --- | ---: |"]
         for arm, lv in c["levels"].items():
             v = c["versus_delivering"].get(arm)
             if v is None:
-                lines.append(f"| {arm} (delivering) | {lv['slu_f1_pct']:.2f} | {lv['intent_pct']:.2f} | | | | | |")
+                lines.append(f"| {arm} (delivering) | {lv['slu_f1_pct']:.2f} | {lv['intent_pct']:.2f} | | | | | | {lv.get('absent_rows', 0)} |")
             else:
                 s, i, t = v["slu_f1"], v["intent"], v["intent_saves_harms_ties_vs_delivering"]
                 lines.append(f"| {arm} | {lv['slu_f1_pct']:.2f} | {lv['intent_pct']:.2f} | {s['point_pp']:+.2f} | [{s['ci95_lo_pp']:+.2f}, {s['ci95_hi_pp']:+.2f}] | "
-                             f"{i['point_pp']:+.2f} | [{i['ci95_lo_pp']:+.2f}, {i['ci95_hi_pp']:+.2f}] | {t['saves']} / {t['harms']} |")
-        lines.append("")
+                             f"{i['point_pp']:+.2f} | [{i['ci95_lo_pp']:+.2f}, {i['ci95_hi_pp']:+.2f}] | {t['saves']} / {t['harms']} | {lv.get('absent_rows', 0)} |")
+        lines += ["", "An absent row is that arm's delivery failure (its Solver contact ended on a finite completion): scored as the canonical empty answer, zero for that row's arm, "
+                  "and counted in the last column. The delivering arm's own column is never absent.", ""]
     for arm, nodes in sorted((result.get("arms_nodes") or {}).items()):
         lines += [f"Nodes of `{arm}`:", "", "| node | mode | contacts | cap | cap hits | length | empty | no JSON | forced | reasoning chars>0 | markers | tokens p50 / p99 | s per contact |",
                   "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- | ---: |"]
@@ -417,8 +429,9 @@ def main(argv: Sequence[str] | None = None) -> int:
             for name in ("trace", "outputs"):
                 if not paths[name].exists():
                     raise ReadError(f"missing sealed file {paths[name]}")
-            by_arm = attribute(trace_contacts(paths["trace"]), arm_contact_map(load_outputs_rows(paths["outputs"])))
-            result = smoke_stage(by_arm)
+            outputs_rows = load_outputs_rows(paths["outputs"])
+            by_arm = attribute(trace_contacts(paths["trace"]), arm_contact_map(outputs_rows))
+            result = smoke_stage(by_arm, absent=base.absent_solver_columns(outputs_rows, ARMS))
             result["sealed_hashes"] = {n: base.sha256_file(paths[n]) for n in ("trace", "outputs")}
             out = root / "smoke-decode-cost.json"
         else:
@@ -434,9 +447,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             for arm, rows in arms.items():
                 if set(rows) != set(ids):
                     raise ReadError(f"{arm}: the per-sample id set is not the frozen Fold B roster's")
-            by_arm = attribute(trace_contacts(paths["trace"]), arm_contact_map(load_outputs_rows(paths["outputs"])))
+            outputs_rows = load_outputs_rows(paths["outputs"])
+            by_arm = attribute(trace_contacts(paths["trace"]), arm_contact_map(outputs_rows))
             flags = base.load_output_flags(paths["outputs"])
-            result = read_stage(arms, ids, cluster_of, scenario_of, by_arm, flags, seed=args.seed, draws=args.draws)
+            result = read_stage(arms, ids, cluster_of, scenario_of, by_arm, flags, seed=args.seed, draws=args.draws,
+                                absent=base.absent_solver_columns(outputs_rows, ARMS))
             result["sealed_hashes"] = {n: base.sha256_file(paths[n]) for n in ("trace", "outputs", "manifest")}
             out = root / "read.json"
     except ReadError as error:

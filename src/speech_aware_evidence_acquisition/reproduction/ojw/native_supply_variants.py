@@ -42,7 +42,9 @@ from openjiuwen.core.graph.executable import Input, Output
 from openjiuwen.core.session.node import Session
 from openjiuwen.core.workflow import WorkflowComponent
 
-from .native_roles import NativeRoleNode, NativeRoleNodeSpec
+from .native_roles import (
+    FrozenCoreRoleFiniteCompletionError, NativeRoleNode, NativeRoleNodeSpec,
+)
 
 
 class SupplyVariantNodeError(ValueError):
@@ -507,9 +509,19 @@ async def run_perception_branch_solver_arms(
     group,
     branch_record: Callable[[int, Mapping[str, Any]], Mapping[str, object]],
     delivery_allowed: Callable[[str, str], bool] = _default_delivery_allowed,
+    branch_absent: Callable[[int, BaseException], Mapping[str, object]] | None = None,
 ) -> dict[str, object]:
     """Run K Solver contacts, one per declared Perception branch, A last
     (LEVEL 2, design section 3, "Level 2").
+
+    ``branch_absent`` (NX-T R1 seal fix, 2026-10-15). A NON-delivering branch's Solver contact may end on a finite completion
+    (``finish_reason`` ``length`` / ``content_filter``): the contact was made and metered, but it carries no authoritative answer.
+    Before this seam that one exception left the whole fan-out, so the delivering branch (A, invoked LAST) never ran and the row
+    -- and a 1,030-row flight -- was lost to a non-delivering arm's decode failure. With ``branch_absent`` supplied, such a failure
+    on a branch that does NOT deliver is recorded (``branch_absent(branch_index, error)`` returns that branch's absent record and
+    the failed contact joins the visit's contact list) and the fan-out CONTINUES. A failure on the delivering branch is never
+    absorbed: it propagates exactly as before, so the delivering arm keeps its fail-closed finite-completion semantics. Any other
+    exception, and a finite failure when ``branch_absent`` is ``None``, propagates unchanged.
 
     Same-flight instrument, PHASE 2 (merge set C, item 1). Structurally
     :func:`run_supply_variant_arms`'s twin -- reusing the SAME "K sequential
@@ -571,7 +583,35 @@ async def run_perception_branch_solver_arms(
     delivered: Mapping[str, Any] | None = None
 
     for branch_index, branch in enumerate(branches):
-        result = await invoke_branch(branch_index)
+        try:
+            result = await invoke_branch(branch_index)
+        except FrozenCoreRoleFiniteCompletionError as error:
+            if branch.deliver or branch_absent is None:
+                raise
+            interrupted = getattr(error, "execution_receipt", None)
+            failed_contacts = interrupted.get("contacts") if isinstance(interrupted, Mapping) else None
+            if (
+                not isinstance(failed_contacts, Sequence)
+                or isinstance(failed_contacts, (str, bytes))
+                or not failed_contacts
+                or not all(isinstance(contact, Mapping) for contact in failed_contacts)
+            ):
+                raise SupplyVariantNodeError(
+                    f"perception branch {branch.branch_id!r} Solver contact ended on a finite completion "
+                    "without its execution receipt"
+                ) from error
+            try:
+                absent_row = branch_absent(branch_index, error)
+            except PerceptionBranchError as record_error:
+                raise SupplyVariantNodeError(
+                    f"perception branch {branch.branch_id!r} absent Solver record is invalid: {record_error}"
+                ) from record_error
+            if not isinstance(absent_row, Mapping) or absent_row.get("branch_id") != branch.branch_id:
+                raise SupplyVariantNodeError(
+                    f"perception branch {branch.branch_id!r} absent Solver record names another branch"
+                )
+            contacts.extend(dict(contact) for contact in failed_contacts)
+            continue
         if (
             not isinstance(result, Mapping)
             or result.get("result_type") != "answer"
@@ -673,6 +713,7 @@ class PerceptionBranchSolverRoleNode(WorkflowComponent):
         group,
         branch_record: Callable[[int, Mapping[str, Any]], Mapping[str, object]],
         delivery_allowed: Callable[[str, str], bool] = _default_delivery_allowed,
+        branch_absent: Callable[[int, BaseException], Mapping[str, object]] | None = None,
     ) -> None:
         super().__init__()
         if not isinstance(inner, NativeRoleNode) or inner.spec.role_kind != "solver":
@@ -680,6 +721,8 @@ class PerceptionBranchSolverRoleNode(WorkflowComponent):
                 "a perception-branch Solver visit requires an inner Solver "
                 "NativeRoleNode"
             )
+        if branch_absent is not None and not callable(branch_absent):
+            raise SupplyVariantNodeError("branch_absent must be callable")
         if not callable(branch_record):
             raise SupplyVariantNodeError("branch_record must be callable")
         if not callable(delivery_allowed):
@@ -688,6 +731,7 @@ class PerceptionBranchSolverRoleNode(WorkflowComponent):
         self._group = group
         self._branch_record = branch_record
         self._delivery_allowed = delivery_allowed
+        self._branch_absent = branch_absent
         # Forced "first" (design section 3): counts REAL visits of this node
         # (not contacts), exactly as ``SupplyVariantRoleNode`` does under
         # ``arm_visits: "first"``, but with no config knob -- only visit 0
@@ -721,6 +765,7 @@ class PerceptionBranchSolverRoleNode(WorkflowComponent):
             group=self._group,
             branch_record=self._branch_record,
             delivery_allowed=self._delivery_allowed,
+            branch_absent=self._branch_absent,
         )
 
     async def close(self) -> None:
