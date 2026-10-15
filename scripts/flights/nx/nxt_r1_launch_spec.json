@@ -31,7 +31,7 @@
     },
     "chain": {
       "task": "SAEA-Chain-NXT1",
-      "wrapper": "/home/chao/saea-queue/nxt1-chain.sh",
+      "wrapper": "/home/chao/saea-queue/chain_nxt1.sh",
       "flight_commit_file": "/home/chao/nxt1-flight-commit.txt"
     },
     "read": {"cmd": "bash scripts/flights/nx/nxt_r1_read.sh smoke"}
