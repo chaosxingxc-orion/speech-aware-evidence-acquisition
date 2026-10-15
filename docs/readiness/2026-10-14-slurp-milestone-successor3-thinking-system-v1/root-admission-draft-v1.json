@@ -24,7 +24,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-10-14-slurp-milestone-successor3-thinking-system-v1/protocol-registered-v1.json",
-      "sha256": "6f291271bedd03f9d2ce84b1db4e6be93e991ee703c5b9ec79395ce4997b31a9"
+      "sha256": "c8bf0340cd9ba5d27d3bf44e3c420e06e38c0401ad3c585a7f95a65dbe19914d"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-10-14-slurp-milestone-successor3-thinking-system-v1/README.md",
@@ -86,8 +86,8 @@
   "recorded_at_utc": null,
   "registered_hashes": {
     "composed": {
-      "composed_config": "817869ec21f4247b53274a53d0174d0920f6963c6230683898ea35b3965bda2b",
-      "protocol": "15d279760d44d55632ccd3859fb6c6de8c1bf33e9b38553265281f7ce0c7eb32"
+      "composed_config": "0ea12bf5da50094f443c8a564e0cce65c30de961bc95fe8f712a41a13d1b26c3",
+      "protocol": "bb0655076a573c80ffada3dac455372846eb6d4d09560992c03b34b026f1ced0"
     },
     "note": "repin_cell.py recomputes them at the flip"
   },

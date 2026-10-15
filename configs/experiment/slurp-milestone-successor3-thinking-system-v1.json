@@ -20,7 +20,7 @@
             "kind": "decision",
             "reason": "Decision slurp-milestone-successor3-admission-v1 pinned by scripts/flights/repin_cell.py.",
             "relpath": "coordination/slurp-milestone-successor3-thinking-system-v1/root-admission-v1.json",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+            "sha256": "7bd0b6c90b4380ba4706eaf70dc2338c01b5bd65cad4fadecf09161e01e06dfa"
           },
           {
             "kind": "preparation",
@@ -44,10 +44,10 @@
             "kind": "preparation",
             "reason": "This cell's OWN prepared first-phase Perception supply, minted model-free under its own run id with core.flight.cli prepare-supply at the flip from the sample's segment vectors, the centroid key file SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1 and this roster's agreement table (item E16). PENDING until the flip: 64 zeros. The review-off graph and the lock-v2.2 normaliser never touch the first-phase supply, so its selection output is expected to equal successor 2's supply selection output (same vectors, key file and table); the flip's re-derivation checks this and a different digest means the knowledge channel moved -- stop and report. --allow-output-change must never be passed.",
             "relpath": "prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-THINKING-SYSTEM-V1/phase-supply-v1.json",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+            "sha256": "8c04c6efa1964cd42bbd1adc1b4fb82ae624ce6e983921e112bf49a8dd1d8cef"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-THINKING-SYSTEM-V1"
     }
