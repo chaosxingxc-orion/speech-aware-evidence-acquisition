@@ -58,7 +58,7 @@
       "attempt_id": "attempt-slurp-milestone-successor3-thinking-system-generation-v1",
       "baseline_fragment": "slurp-milestone-successor3-thinking-system-baseline-v1",
       "cell": "slurp-milestone-successor3-thinking-system-v1",
-      "composed_config_hash": "dd931dc79d0fb18cf05e2743d550834074377ca0839c849b1ab099e75ec51724",
+      "composed_config_hash": "817869ec21f4247b53274a53d0174d0920f6963c6230683898ea35b3965bda2b",
       "dataset_fragment": "slurp-speech-native-test-sample-3010",
       "experiment": "slurp-milestone-successor3-thinking-system-v1",
       "fit_attempt_id": "attempt-slurp-milestone-successor3-thinking-system-fit-v1",
@@ -69,9 +69,9 @@
         "sha256": "062f79e771376ea6da00121fda0e91e893c837f361c719c165faab3ebd9371df"
       },
       "packet_receipt": "/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6/TEST-SAMPLE-3010-promotion.json",
-      "packet_receipt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "packet_receipt_sha256": "686a2ba519a5a84c7d9136804d4d839e525b9dcfbf8807de71e89a5eb40b53e4",
       "program": "phase-native-module-v1-c2",
-      "protocol_hash": "3a469e3de6c49e18850d33dafe7a038b467c4470f4b256ed771d8a2ca618c6c4",
+      "protocol_hash": "15d279760d44d55632ccd3859fb6c6de8c1bf33e9b38553265281f7ce0c7eb32",
       "readiness_state": "held",
       "rows": 3010,
       "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-THINKING-SYSTEM-V1",
@@ -161,7 +161,7 @@
       "note": "the R5 DEV -> successor-2 mapping and the P3.1 DEV -> successor-3 mapping move the SAME roster- and role-bound leaves; each shared leaf equals successor 2's value except the exempt run-specific leaves (budgets, ids, allowance pin, decision_population) and the two packet-receipt leaves, which differ by design (successor 2 pins the Instruct sample receipt, successor 3 the Thinking sample receipt)",
       "thinking_receipt_leaves": {
         "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6/TEST-SAMPLE-3010-promotion.json",
-        "speech_packet_promotion_receipt_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+        "speech_packet_promotion_receipt_sha256": "686a2ba519a5a84c7d9136804d4d839e525b9dcfbf8807de71e89a5eb40b53e4"
       }
     },
     "r5_dev_to_s2_mapping": {

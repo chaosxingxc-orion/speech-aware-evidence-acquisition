@@ -16,7 +16,7 @@
     },
     "packets_promotion_receipt": {
       "path": "/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6/TEST-SAMPLE-3010-promotion.json",
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      "sha256": "686a2ba519a5a84c7d9136804d4d839e525b9dcfbf8807de71e89a5eb40b53e4"
     },
     "preregistration": {
       "path": "docs/readiness/2026-10-14-slurp-milestone-successor3-thinking-system-v1-preregistration.md",
@@ -24,7 +24,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-10-14-slurp-milestone-successor3-thinking-system-v1/protocol-registered-v1.json",
-      "sha256": "51be631ce51ea21e833f9a998cafc7f25aaba5aae7c47b544deb601a8d454670"
+      "sha256": "6f291271bedd03f9d2ce84b1db4e6be93e991ee703c5b9ec79395ce4997b31a9"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-10-14-slurp-milestone-successor3-thinking-system-v1/README.md",
@@ -32,7 +32,7 @@
     },
     "registered_facts": {
       "path": "docs/readiness/2026-10-14-slurp-milestone-successor3-thinking-system-v1/registered-facts-v1.json",
-      "sha256": "cbb1846f0d8f10acfc1a6b4db371453250cfb2dc8c6f958d7540888f24cb0c54"
+      "sha256": "ab2446f5d4e1e5bcd02a08071f53fca769fb516aab263d4eb24fe2891c0abb92"
     },
     "registration_base_commit": "727d96336"
   },
@@ -86,8 +86,8 @@
   "recorded_at_utc": null,
   "registered_hashes": {
     "composed": {
-      "composed_config": "dd931dc79d0fb18cf05e2743d550834074377ca0839c849b1ab099e75ec51724",
-      "protocol": "3a469e3de6c49e18850d33dafe7a038b467c4470f4b256ed771d8a2ca618c6c4"
+      "composed_config": "817869ec21f4247b53274a53d0174d0920f6963c6230683898ea35b3965bda2b",
+      "protocol": "15d279760d44d55632ccd3859fb6c6de8c1bf33e9b38553265281f7ce0c7eb32"
     },
     "note": "repin_cell.py recomputes them at the flip"
   },
