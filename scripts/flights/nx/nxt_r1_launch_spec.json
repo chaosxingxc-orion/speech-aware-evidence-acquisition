@@ -1,0 +1,39 @@
+{
+  "schema": "saea-package-launch-spec-v1",
+  "_note": "Worked example: the NX-T R1 first-attempt launch sequence as practised on 2026-10-14 (registry 'NX-T R1 LAUNCHED' 12:10Z). The cells are flown, so a real re-run refuses at the flip (a flown cell in the kinds list); a later package copies this file and changes the names. Rows are countersigned only with --root-countersign.",
+  "short": "nxt1",
+  "launch_id": "nxt1-first-attempt",
+  "package": "slurp-nxt-r1-thinking-policy-fold-b-v1",
+  "readiness_dir": "docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1",
+  "steps": {
+    "derive": {"cmd": "python -B scripts/flights/nx/nxt_r1_derive_cells.py"},
+    "write": {"cmd": "python -B scripts/flights/nx/nxt_r1_write_registration.py --study-commit {head} --append-ledger"},
+    "countersign": {
+      "texts": "{readiness_dir}/countersign-row-texts-v1.json",
+      "ledger": "docs/exposure-ledger.md",
+      "skip_substrings": ["-READ-"]
+    },
+    "mint": {
+      "cmd": "python -B scripts/flights/nx/nxt_r1_mint_receipt.py",
+      "done_if": {"file": "coordination/slurp-nxt-r1-thinking-policy-fold-b-v1/root-admission-v1.json", "contains": ["SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-FIT-V1"]}
+    },
+    "commit": {
+      "paths": ["configs", "docs/exposure-ledger.md", "{readiness_dir}", "{readiness_dir}-preregistration.md"],
+      "message": "register: NX-T R1 (the per-node thinking-policy column, TRAIN Fold B); rows countersigned; receipt minted"
+    },
+    "flip": {
+      "script": "scripts/flights/nx/nxt_r1_flip.sh",
+      "package": "docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1",
+      "cells": ["slurp-native-stage3-nxt-r1-thinking-policy-fold-b-smoke-4-v1", "slurp-native-stage3-nxt-r1-thinking-policy-fold-b-v1"],
+      "pins_commit_msg": "/home/chao/nxt1-pins-commit.txt",
+      "env": {"NXT1_KINDS": "smoke arm"},
+      "flight_commit_file": "/home/chao/nxt1-flight-commit.txt"
+    },
+    "chain": {
+      "task": "SAEA-Chain-NXT1",
+      "wrapper": "/home/chao/saea-queue/nxt1-chain.sh",
+      "flight_commit_file": "/home/chao/nxt1-flight-commit.txt"
+    },
+    "read": {"cmd": "bash scripts/flights/nx/nxt_r1_read.sh smoke"}
+  }
+}

@@ -527,6 +527,8 @@ def default_run_check(
         "--cell",
         cell_id,
     ]
+    if os.environ.get("SAEA_REPIN_CHECK_READONLY") == "1":
+        command.append("--read-only")  # M8: the check suppresses its one data-root write (resume declaration)
     env = dict(os.environ)
     env["PYTHONDONTWRITEBYTECODE"] = "1"
     env["PYTHONPATH"] = str(Path(repo_root) / "src")
