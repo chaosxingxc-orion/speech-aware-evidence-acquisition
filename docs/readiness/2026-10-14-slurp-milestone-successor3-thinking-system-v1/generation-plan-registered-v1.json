@@ -36,9 +36,11 @@
   "plan_kind": "generation",
   "preparation_base_commit": "727d96336",
   "prepared_phase_supply": {
-    "note": "THIS CELL'S OWN artifact, minted model-free under its own run id at the flip (item E16); 64 zeros until then; --allow-output-change must never be passed.",
     "relpath": "prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-THINKING-SYSTEM-V1/phase-supply-v1.json",
-    "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    "sha256": "8c04c6efa1964cd42bbd1adc1b4fb82ae624ce6e983921e112bf49a8dd1d8cef"
+  },
+  "prepared_phase_supply_annotations": {
+    "note": "THIS CELL'S OWN artifact, minted model-free under its own run id at the flip (item E16); 64 zeros until then; --allow-output-change must never be passed."
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-14-slurp-milestone-successor3-thinking-system-v1/protocol-registered-v1.json",
