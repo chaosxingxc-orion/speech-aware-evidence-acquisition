@@ -20,7 +20,8 @@ param(
   [switch]$Status,
   [switch]$Stop,
   [switch]$Start,
-  [int]$RepeatMinutes = 0
+  [int]$RepeatMinutes = 0,
+  [string]$WslUser = ''   # 2026-10-16: run the script as this distro user (e.g. root for /proc/sys writes); empty = the default user
 )
 function Register-SaeaTask([string]$TaskName, [string]$TaskScript, [bool]$Strict, [int]$Repeat) {
   $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -DontStopOnIdleEnd -ExecutionTimeLimit ([TimeSpan]::Zero) -MultipleInstances IgnoreNew -StartWhenAvailable -Hidden
@@ -31,7 +32,8 @@ function Register-SaeaTask([string]$TaskName, [string]$TaskScript, [bool]$Strict
   }
   # Hidden console (owner 2026-10-12: every task launch used to open a visible console window and leaked a conhost; the
   # watchdog alone spawned one every five minutes). wsl.exe inherits the hidden PowerShell console, so no window appears.
-  $action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument ("-NoProfile -NonInteractive -WindowStyle Hidden -Command `"& wsl.exe -d Ubuntu-24.04 bash " + $TaskScript + "`"")
+  $userArg = if ($script:WslUser -ne '') { " -u " + $script:WslUser } else { '' }
+  $action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument ("-NoProfile -NonInteractive -WindowStyle Hidden -Command `"& wsl.exe -d Ubuntu-24.04" + $userArg + " bash " + $TaskScript + "`"")
   if ($Strict) {
     Register-ScheduledTask -TaskName $TaskName -Action $action -Trigger $trigger -Settings $settings -Force -ErrorAction Stop | Out-Null
   } else {
@@ -49,7 +51,7 @@ if ($Stop) { Stop-ScheduledTask -TaskName $Name; "$Name stopped"; exit 0 }
 if ($Start) {
   $t = Get-ScheduledTask -TaskName $Name -ErrorAction SilentlyContinue
   $wanted = $null
-  if ($Script -ne '') { $wanted = "-d Ubuntu-24.04 bash " + $Script }
+  if ($Script -ne '') { $wanted = "-d Ubuntu-24.04" + $(if ($WslUser -ne '') { " -u " + $WslUser } else { '' }) + " bash " + $Script }
   $current = $null
   if ($null -ne $t) { $current = ($t.Actions | Select-Object -First 1).Arguments }
   if ($null -eq $t -or ($null -ne $wanted -and $current -ne $wanted)) {
