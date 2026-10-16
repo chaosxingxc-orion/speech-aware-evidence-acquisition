@@ -3006,3 +3006,14 @@ look for a better GPU server later to solve this. 318: A."
   task SAEA-WSL-DropCache (every 30 min, as root, via `saea_task.ps1 -WslUser root -RepeatMinutes 30`; the `-WslUser` option added b09dec0f8);
   log `/home/chao/wsl-drop-caches.log`. Candidate for a no-flight window: lower `.wslconfig` memory 44 -> 36 GB (needs `wsl --shutdown`).
 - Session note: the Claude session restarted twice today (the scratchpad helpers survived this time; background monitors are re-armed by hand).
+
+### Owner ruling 320 B (owner, 2026-10-16 about 23:25Z; recorded by the coordinator)
+
+Owner (verbatim): 「决策320：B」 English: "Decision 320: B" -- the B' option as proposed at 23:55Z on 2026-10-15: a resume that keeps the 1,029 complete
+rows of the stopped rec1 attempt and flies the 51 remaining rows (the failing row included) under the merged absent-arm fix; an EXPLICIT owner
+exception to the package rule "at most one root-diagnosed recovery re-registration per run id" (this is the second, rec2); mode A (trace
+replay, predecessor trace sha 3238cd8a...) because `rails/runner.py` moved; no `--allow-output-change`; the registered roster (1,080) and the
+read at n = 1,080 intact. Cost about 1.5 GPU-h after the successor-3 seal; the seal-only package (A') stays unused.
+- Execution: rec2 registration built model-free now (Sonnet; the recovery lib's second record, resume_from block, new generation attempt and
+  FIT-REC2 ids, cumulative caps += 10,298 calls / 30,101 s, the rec1 row folded into the rec2 row per the 266-E form), registered on master in
+  flight, flipped (`NXT1_KINDS=arm`) and flown (`arm-only`) once successor-3 seals; then `nxt_r1_read.sh columns` -> READ row -> read.
