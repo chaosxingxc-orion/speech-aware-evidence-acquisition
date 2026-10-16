@@ -2991,3 +2991,18 @@ look for a better GPU server later to solve this. 318: A."
   under the merged fix; about 1.5 GPU-h after successor-3 seals; mode A since `rails/runner.py` moved) -- one explicit exception to the
   package's one-recovery rule, no output-change flag, the registered roster and n = 1,080 intact, and the fix exercised on the very row that
   broke; **C** close without a read. Both A' and B' wait for the successor-3 seal (one driver, one GPU).
+
+### Host memory pressure stalled the successor-3 flight for 85 minutes; periodic WSL cache drop installed (coordinator, 2026-10-16 07:30Z)
+
+- **Owner question (06:45Z):** "memory use above 90 %, is something wrong?" Finding: no leak. Windows 63.4 GB; the WSL VM (cap 44 GB) had 27 GB of
+  CLEAN page cache (GGUF mmap, packets, traces, checkpoints) beside 5 GB of process memory; `autoMemoryReclaim=dropcache` reclaims only when the
+  VM idles, which a 27-hour flight never does; Windows compressed 10.4 GB of vmmem pages. The flight worker's RSS is flat (3,052 -> 3,063 MiB over
+  30 minutes); llama-server 1.2 GB (weights in VRAM).
+- **Effect:** the campaign log shows ZERO row completions from about 05:15Z to 06:40Z (buckets 01:10-02:40 local), no errors, decode speed normal
+  afterwards (about 40 tokens/s per slot): the VM was being paged/compressed by the host. About 180 rows (85 min) lost; successor-3 at 783/3,010
+  at 07:26Z, seal now about 2026-10-17 03:00Z.
+- **Action (reversible, no effect on the flight):** one manual `echo 1 > /proc/sys/vm/drop_caches` as root at 07:25Z (WSL cache 27 -> 2 GiB; Windows
+  free 33.0 -> 41.9 GB; vmmem working set 7.8 -> 5.8 GB); `scripts/flights/batch/wsl_drop_caches.sh` (ea873e4ae) registered as the repeating
+  task SAEA-WSL-DropCache (every 30 min, as root, via `saea_task.ps1 -WslUser root -RepeatMinutes 30`; the `-WslUser` option added b09dec0f8);
+  log `/home/chao/wsl-drop-caches.log`. Candidate for a no-flight window: lower `.wslconfig` memory 44 -> 36 GB (needs `wsl --shutdown`).
+- Session note: the Claude session restarted twice today (the scratchpad helpers survived this time; background monitors are re-armed by hand).
