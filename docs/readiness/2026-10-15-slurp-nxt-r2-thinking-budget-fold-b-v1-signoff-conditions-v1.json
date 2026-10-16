@@ -1,0 +1,45 @@
+{
+  "schema": "saea-smoke-signoff-conditions-v1",
+  "_note": "NX-T R2 machine sign-off conditions (owner ruling 314 A). Sits BESIDE the package directory (not in its registered hashes; the next package writer should emit its own copy inside the package). R2 has NO no-think node: every arm thinks at its budget; the smoke's job is to show that the budget arms close within the 4,096 cap, deliver JSON on every row, cost no more than 1.3x the registered mix, and leave no absent column.",
+  "package": "slurp-nxt-r2-thinking-budget-fold-b-v1",
+  "ruling": "owner ruling 314 A of 2026-10-14",
+  "table_schema": "saea-nxt-r2-thinking-budget-column-smoke-v1",
+  "table_relpath": "analysis/SAEA-SLURP-NXT-R2-THINKING-BUDGET-FOLD-B-READ-V1/smoke-decode-cost.json",
+  "expected_arms": [
+    "budget-1536",
+    "budget-2048",
+    "budget-3072"
+  ],
+  "min_contacts_per_node": 1,
+  "no_think_nodes": {},
+  "no_think_max": {
+    "contacts_with_reasoning_chars": 0,
+    "marker_in_content": 0,
+    "reasoning_chars_mean": 0
+  },
+  "every_node_max": {
+    "cap_hits": 0,
+    "empty_content": 0,
+    "no_json_object": 0,
+    "finish_reason_length": 0
+  },
+  "arm_mix": {
+    "max_ratio": 1.3,
+    "measured_key": "arm_mix_measured_rows",
+    "registered_key": "arm_mix_registered_rows"
+  },
+  "extras": [
+    {
+      "id": "unattributed-contacts",
+      "path": "unattributed_contacts",
+      "op": "==",
+      "value": 0
+    },
+    {
+      "id": "absent-columns",
+      "path": "absent_columns",
+      "op": "==",
+      "value": 0
+    }
+  ]
+}
