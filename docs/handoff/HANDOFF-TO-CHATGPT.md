@@ -1,6 +1,6 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-17T12:42:54Z
+Last refreshed: 2026-10-17T12:45:50Z
 
 
 
@@ -10,7 +10,7 @@ Last refreshed: 2026-10-17T12:42:54Z
 
 R2 attempt OPENED 12:40Z at 7ec52005b, seal ~2026-10-18 08:00Z, then `nxt_r2_read.sh columns` -> READ countersign -> read. R2b: register on master
 today (`package_launch.sh scripts/flights/nx/nxt_r2b_launch_spec.json --root-countersign --until commit`), then `queue_nxt2b_after_nxt2.sh` flips +
-chains it when `/home/chao/nxt2-chain.out` shows `CHAIN_NXT2_EXIT rc=0`. Then 324-B Fold A confirm (if the R2 replicate reads no loss). Registry 12:42Z.
+chains it when `/home/chao/nxt2-chain.out` shows `CHAIN_NXT2_EXIT rc=0`. Rulings 12:45Z: 325 A (one arm solver-6144 / cap 7,168), 326 A (then 324-B Fold A confirm, then the Solver template column; carriers after), 327 A (unattended R2 -> R2b hand-over authorised). Registry 12:45Z.
 
 Superseded stamp: 2026-10-17T12:38:22Z
 

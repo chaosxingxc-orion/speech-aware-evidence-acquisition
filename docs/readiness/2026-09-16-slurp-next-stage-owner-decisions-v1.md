@@ -3187,3 +3187,14 @@ read at n = 1,080 intact. Cost about 1.5 GPU-h after the successor-3 seal; the s
   registered on master today, flipped + chained by the queue hook `queue_nxt2b_after_nxt2.sh` the moment R2's chain exits rc 0 (~20 GPU-h);
   (3) after R2's read: the 324-B Fold A confirm column for Perception no-think (2 arms, ~5 GPU-h) if the R2 replicate reads no resolved loss, else
   the next node round (USE node: Solver instruction-template column, NX plan R1 of 2026-10-09). (1)+(2) alone cover ~39 GPU-h without a hand step.
+
+### Owner rulings 325-327 (2026-10-17 12:45Z; owner message translated from Chinese: "Decision 325: A; decision 326: follow your recommendation; decision 327: A")
+
+- **325 A:** NX-T R2b = ONE candidate arm `solver-6144` (Solver reasoning budget 6,144 / completion cap 7,168, answer reserve 1,024; Perception at
+  the lock form 3,072 / 4,096); delivering arm = the lock form; no twin; same roster (SLURP-EVO-FOLD-B-V2); new serving fragment at the unchanged
+  np4 x 24k geometry.
+- **326 A:** after R2b the queue continues with the 324-B Fold A confirm column for Perception no-think (2 arms, ~5 GPU-h; only if the R2
+  same-roster replicate reads no resolved loss), then the USE-node round (Solver instruction-template column, K <= 6 arms, TRAIN Fold B; NX plan
+  of 2026-10-09 R1). Carrier base runs (A2T / E21 / E22) stay behind the SLURP line (ruling 307).
+- **327 A:** unattended hand-over authorised: the queue hook flips and chains R2b the moment the R2 chain exits rc 0, without an owner read of R2
+  in between (R2b's design does not depend on R2's result). The hook refuses on any R2 exit other than 0.
