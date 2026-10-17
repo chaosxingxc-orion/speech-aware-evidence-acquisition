@@ -26,6 +26,7 @@ import argparse
 import json
 import os
 import re
+import shlex
 import shutil
 import subprocess
 import sys
@@ -246,8 +247,11 @@ class Launch:
         log = cfg.get("log") or f"/home/chao/{Path(cfg.get('package', self.spec['readiness_dir'])).name}-flip.out"
         cmd = (f'{wrapper} --flip "{cfg["script"]}" --package {cfg.get("package", self.spec["readiness_dir"])} --cells {cells} '
                f'--pins-commit-msg {cfg["pins_commit_msg"]} --log {log}')
+        # Each KEY=VALUE is ONE shell word (2026-10-17: `NXT2_KINDS=smoke arm` unquoted reached the wrapper as two
+        # words and the NX-T R2 flip was refused with "bad extra env 'arm'"; the nxt1 worked example never ran this step).
         for key, value in cfg.get("env", {}).items():
-            cmd += f" -- {key}={value}" if cmd.count(" -- ") == 0 else f" {key}={value}"
+            word = shlex.quote(f"{key}={value}")
+            cmd += f" -- {word}" if cmd.count(" -- ") == 0 else f" {word}"
         rc, out = self.run_cmd(cmd)
         if rc != 0:
             raise StepFailed(f"flip wrapper exited {rc}: {out.strip()[-300:]}")

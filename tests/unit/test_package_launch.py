@@ -28,6 +28,7 @@ FAKE_FLIP = r'''#!/bin/bash
 # fake flip_package_ext4.sh: args --flip S --package P --cells C --pins-commit-msg M --log L [-- K=V]
 while [ $# -gt 0 ]; do case "$1" in --log) LOG=$2; shift 2;; --cells) CELLS=$2; shift 2;; --) shift; break;; *) shift 2;; esac; done
 echo flip >> "$ORDER"
+if [ -n "${FLIP_EXTRA_OUT:-}" ]; then { echo "$#"; for a in "$@"; do echo "$a"; done; } > "$FLIP_EXTRA_OUT"; fi
 HEAD=$(git rev-parse HEAD)
 { echo "== gate"; IFS=, read -ra A <<< "$CELLS"; for c in "${A[@]}"; do echo "flight registration check: $FAKE_VERDICT (1 cell(s))"; done
   echo "flight commit file: $HEAD HEAD $HEAD"; echo "master verified at flight commit $HEAD"; echo "FLIP_CHAIN_DONE 2026-10-15T00:00:00Z"; } > "$LOG"
@@ -245,3 +246,14 @@ def test_countersign_refuses_a_row_that_is_neither_draft_nor_registered(fx):
     ledger.write_text(ledger.read_text(encoding="utf-8").replace("DRAFT at study commit", "SOMETHING at study commit"), encoding="utf-8")
     run("git", "commit", "-q", "-am", "odd", cwd=fx["repo"])
     assert launch(fx, "--root-countersign") == 1
+
+
+def test_a_flip_env_value_with_a_space_reaches_the_wrapper_as_one_word(fx, monkeypatch):
+    # 2026-10-17: `NXT2_KINDS=smoke arm` unquoted reached flip_package_ext4.sh as two words ("bad extra env 'arm'").
+    spec = json.loads(fx["spec"].read_text(encoding="utf-8"))
+    spec["steps"]["flip"]["env"] = {"NXT2_KINDS": "smoke arm", "TFRL_ONLY": "1"}
+    fx["spec"].write_text(json.dumps(spec), encoding="utf-8")
+    out = fx["aux"] / "flip-extra.txt"
+    monkeypatch.setenv("FLIP_EXTRA_OUT", str(out))
+    assert launch(fx, "--root-countersign", "--until", "flip") == 0
+    assert out.read_text(encoding="utf-8").splitlines() == ["2", "NXT2_KINDS=smoke arm", "TFRL_ONLY=1"]
