@@ -679,9 +679,12 @@ def dry_run_native_episode(
         from ..core.reasoning_knobs import resolve_node_decoding
 
         policy = thinking_policy_by_arm.get(arm_id) or {}
+        # The cell-level ``thinking_policy`` (decision 283 A; NX-T R2b states the lock form there because the serving fragment carries the geometry cap) is
+        # composed FIRST, exactly as the request composer does, then the arm's own policy on top; a cell without one is unchanged.
+        cell_policy = binding["values"].get("thinking_policy") or {}
         out: dict[str, dict[str, object]] = {}
         for kind in ("perception", "solver"):
-            resolved = resolve_node_decoding(thinking_base, policy, kind)
+            resolved = resolve_node_decoding(resolve_node_decoding(thinking_base, cell_policy, kind), policy, kind)
             out[kind] = {key: resolved.get(key) for key in ("thinking_budget_tokens", "chat_template_kwargs", "max_tokens")}
         return out
 

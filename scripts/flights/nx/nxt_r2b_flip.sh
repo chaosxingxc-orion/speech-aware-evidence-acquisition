@@ -6,8 +6,8 @@
 #     --cells slurp-native-stage3-nxt-r2b-solver-budget-fold-b-smoke-4-v1,slurp-native-stage3-nxt-r2b-solver-budget-fold-b-v1 \
 #     --pins-commit-msg /home/chao/nxt2b-pins-commit.txt
 # Root runs this ONLY after: 1. countersigning the five DRAFT rows with countersign-row-texts-v1.json; 2. minting the receipt with
-# scripts/flights/nx/nxt_r2b_mint_receipt.py; 3. no other experiment in flight (NX-T R1 has sealed and been read: ruling 303 A, serial GPU, and R1's answer has
-# decided nxt_r2b_arms.json); 4. the thinking-budget harness commit (the optional thinking_frame.delivering_arm_id) being on master. --allow-output-change must
+# scripts/flights/nx/nxt_r2b_mint_receipt.py; 3. no other experiment in flight (NX-T R2 has sealed: ruling 303 A, serial GPU; the queue hook waits for CHAIN_NXT2_EXIT rc=0 and
+# reads nxt_r2b_arms.json); 4. the raised-cap serving target (serving_lib.sh think-budget7168-np4) being on master (the swap itself is the chain.s). --allow-output-change must
 # never be passed.
 # NXT2B_KINDS selects the cells to flip. The default is "smoke arm". RECOVERY rec1 (nxt_r2b_family.RECOVERIES, once a recovery input is committed): the sealed smoke
 # is flipped no more (its rows are consumed), so export NXT2B_KINDS=arm for the rec1 flip (the NX-T R1 lesson, 2026-10-14). Flipping is not flying.
@@ -40,7 +40,7 @@ for KIND in smoke arm; do
 done
 for KIND in $KINDS; do
   printf '%s\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\n' \
-    "research: flip $LABEL ($KIND) to ready (owner rulings 304/307, 313 A, 318 A: the per-node reasoning-budget column on the Thinking core, TRAIN Fold B, claims_benefit false; re-pinned by scripts/flights/repin_cell.py, decision receipt slurp-nxt-r2b-solver-budget-fold-b-admission-v1)" \
+    "research: flip $LABEL ($KIND) to ready (owner rulings 323 and 325 A: the Solver reasoning-budget raise on the Thinking core, TRAIN Fold B, claims_benefit false; re-pinned by scripts/flights/repin_cell.py, decision receipt slurp-nxt-r2b-solver-budget-fold-b-admission-v1)" \
     > "/home/chao/$SHORT-$KIND-commit.txt"
 done
 CONVERGED=""

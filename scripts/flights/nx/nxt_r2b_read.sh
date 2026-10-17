@@ -25,5 +25,5 @@ fi
 if [ "$STAGE" = "read" ]; then
   read_require_countersigned docs/exposure-ledger.md SAEA-SLURP-NXT-R2B-SOLVER-BUDGET-FOLD-B-READ-V1 || exit 3
 fi
-$PY -B scripts/analysis/slurp_nxt_thinking_budget_column_read.py --stage "$STAGE" --data-root "$SPEECHRL_DATA_DIR" --repo-root "$MAIN" || exit 2
+$PY -B scripts/analysis/slurp_nxt_r2b_solver_budget_column_read.py --stage "$STAGE" --data-root "$SPEECHRL_DATA_DIR" --repo-root "$MAIN" || exit 2
 echo "NXT-R2B $STAGE done $(date -u +%T)"

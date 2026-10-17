@@ -1,0 +1,44 @@
+{
+  "_note": "NX-T R2b machine sign-off conditions (owner ruling 314 A), emitted by nxt_r2b_derive_cells.py from nxt_r2b_arms.json; regenerated whenever the arm table changes. The smoke's job is to show that every node closes within its own cap (no cap hit, no empty answer, no malformed JSON, no length finish), that the cost is no more than 1.3x the registered arm mix, and that no column is absent or unattributed. No node is no-think in this round.",
+  "arm_mix": {
+    "max_ratio": 1.3,
+    "measured_key": "arm_mix_measured_rows",
+    "registered_key": "arm_mix_registered_rows"
+  },
+  "every_node_max": {
+    "cap_hits": 0,
+    "empty_content": 0,
+    "finish_reason_length": 0,
+    "no_json_object": 0
+  },
+  "expected_arms": [
+    "budget-3072",
+    "solver-6144"
+  ],
+  "extras": [
+    {
+      "id": "unattributed-contacts",
+      "op": "==",
+      "path": "unattributed_contacts",
+      "value": 0
+    },
+    {
+      "id": "absent-columns",
+      "op": "==",
+      "path": "absent_columns",
+      "value": 0
+    }
+  ],
+  "min_contacts_per_node": 1,
+  "no_think_max": {
+    "contacts_with_reasoning_chars": 0,
+    "marker_in_content": 0,
+    "reasoning_chars_mean": 0
+  },
+  "no_think_nodes": {},
+  "package": "slurp-nxt-r2b-solver-budget-fold-b-v1",
+  "ruling": "owner ruling 314 A of 2026-10-14",
+  "schema": "saea-smoke-signoff-conditions-v1",
+  "table_relpath": "analysis/SAEA-SLURP-NXT-R2B-SOLVER-BUDGET-FOLD-B-READ-V1/smoke-decode-cost.json",
+  "table_schema": "saea-nxt-r2b-solver-budget-column-smoke-v1"
+}

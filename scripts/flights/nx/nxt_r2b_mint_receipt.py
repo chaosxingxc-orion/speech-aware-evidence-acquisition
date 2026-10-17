@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Mint the root-admission decision receipt of NX-T R2b (the per-node reasoning-budget column) on the data root from the package's draft.
+"""Mint the root-admission decision receipt of NX-T R2b (the Solver reasoning-budget raise) on the data root from the package's draft.
 
 Root's act, never an agent's. The 268-B minting logic (``thinking_system_mint_receipt.mint``) with the NX-T R2b family: copies
 ``docs/readiness/2026-10-17-slurp-nxt-r2b-solver-budget-fold-b-v1/root-admission-draft-v1.json`` to

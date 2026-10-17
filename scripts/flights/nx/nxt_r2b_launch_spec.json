@@ -1,6 +1,6 @@
 {
   "schema": "saea-package-launch-spec-v1",
-  "_note": "NX-T R2b launch spec for package_launch.sh (owner ruling 318 A). Register in flight with `--root-countersign --until commit`; flip + chain after the GPU is free (`--from flip`). Edit scripts/flights/nx/nxt_r2b_arms.json per R1's read BEFORE derive.",
+  "_note": "NX-T R2b launch spec for package_launch.sh (owner rulings 323 and 325 A, 327 A). The coordinator registers with `--root-countersign --until commit` while NX-T R2 flies; the queue hook scripts/flights/batch/queue/queue_nxt2b_after_nxt2.sh runs `--from flip --until chain` once R2 has exited rc=0. The write step passes --registered-at {utc} because a first registration has no registered-facts file to inherit a stamp from. The chain wrapper (scripts/flights/batch/queue/chain_nxt2b.sh, installed at /home/chao/saea-queue/chain_nxt2b.sh) swaps to the raised-cap session itself. The Windows tasks SAEA-Serving-THINKB7, SAEA-Monitor-THINKB7 and SAEA-Chain-NXT2B must be registered first.",
   "short": "nxt2b",
   "launch_id": "nxt2b-first-attempt",
   "package": "slurp-nxt-r2b-solver-budget-fold-b-v1",
@@ -10,7 +10,7 @@
       "cmd": "python -B scripts/flights/nx/nxt_r2b_derive_cells.py"
     },
     "write": {
-      "cmd": "python -B scripts/flights/nx/nxt_r2b_write_registration.py --study-commit {head} --append-ledger"
+      "cmd": "python -B scripts/flights/nx/nxt_r2b_write_registration.py --study-commit {head} --registered-at {utc} --append-ledger"
     },
     "countersign": {
       "texts": "{readiness_dir}/countersign-row-texts-v1.json",
@@ -35,7 +35,7 @@
         "{readiness_dir}",
         "{readiness_dir}-preregistration.md"
       ],
-      "message": "register: NX-T R2b (the per-node reasoning-budget column, TRAIN Fold B); rows countersigned; receipt minted"
+      "message": "register: NX-T R2b (the Solver reasoning-budget raise, TRAIN Fold B); rows countersigned; receipt minted"
     },
     "flip": {
       "script": "scripts/flights/nx/nxt_r2b_flip.sh",
@@ -49,11 +49,11 @@
         "NXT2B_KINDS": "smoke arm"
       },
       "flight_commit_file": "/home/chao/nxt2b-flight-commit.txt",
-      "pins_commit_text": "NX-T R2b: re-pin the per-node reasoning-budget column package (smoke-4, column) on the Thinking base at the registered study commit (rulings 313 A / 318 A; ext4 flip)\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\n"
+      "pins_commit_text": "NX-T R2b: re-pin the Solver reasoning-budget raise package (smoke-4, column) on the Thinking base at the registered study commit (rulings 323 / 325 A; ext4 flip)\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\n"
     },
     "chain": {
       "task": "SAEA-Chain-NXT2B",
-      "wrapper": "/home/chao/saea-queue/chain_nxt2.sh",
+      "wrapper": "/home/chao/saea-queue/chain_nxt2b.sh",
       "flight_commit_file": "/home/chao/nxt2b-flight-commit.txt"
     },
     "read": {

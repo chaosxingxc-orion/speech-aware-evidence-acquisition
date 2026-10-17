@@ -1,5 +1,5 @@
 #!/bin/bash
-# Per-cell environment for scripts/flights/batch/repin_cell_generic.sh, for NX-T R2b (the per-node reasoning-budget column). Model-free.
+# Per-cell environment for scripts/flights/batch/repin_cell_generic.sh, for NX-T R2b (the Solver reasoning-budget raise). Model-free.
 # The caller exports NXT2B_KIND (smoke | arm); repin_loop_generic.sh runs this script with no arguments on every pass.
 # No ALLOW_OUTPUT_CHANGE: --allow-output-change must never be passed. The re-pin mints each cell's own first-phase supply (item E16).
 MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}

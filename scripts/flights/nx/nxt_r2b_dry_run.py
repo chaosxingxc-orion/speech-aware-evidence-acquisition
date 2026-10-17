@@ -9,8 +9,9 @@ Solver) are canned, exactly as a fake frozen core would answer. It READS the dat
 What it proves, per row of the four-row Fold B prefix: the whole graph walks (perception -> solver -> delivery; no Reviewer or Planner visit), the Perception
 node carries the declared arms (``nxt_r2b_arms.json``) in declared order with the delivering ``budget-3072`` arm last and NO twin, every arm renders the node's
 LOCKED instruction (equal digests) over the SAME supplied evidence, each arm's per-node decoding is the one the arm table declares (``node_decoding``: the
-delivering arm carries the lock's budget 3,072 / cap 4,096 on both nodes, a budget-b node carries ``thinking_budget_tokens`` b with ``max_tokens`` still 4,096, a
-no-think node ``enable_thinking`` false and ``max_tokens`` 1,024 with no budget), and the program ceiling is the compiled one. Prints one ``NXT-R2B-DRYRUN-SUMMARY``
+delivering arm carries the lock's budget 3,072 / cap 4,096 on both nodes -- through the CELL-LEVEL thinking policy, since the serving fragment's own default is the 7,168
+geometry cap -- and a raised node carries ``thinking_budget_tokens`` b with ``max_tokens`` its OWN cap, 7,168 for the candidate Solver and 4,096 for its Perception), and the
+program ceiling is the compiled one. Prints one ``NXT-R2B-DRYRUN-SUMMARY``
 line (ids, counts and digests only -- never an instruction text, utterance or gold) and exits non-zero on any violation.
 
     PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python -B scripts/flights/nx/nxt_r2b_dry_run.py \\
@@ -29,17 +30,14 @@ sys.path.insert(0, str(HERE))
 
 import nxt_r2b_family as nf  # noqa: E402
 
-OFF = {"thinking_budget_tokens": None, "chat_template_kwargs": {"enable_thinking": False}, "max_tokens": nf.tsf.THINK_ANSWER_RESERVE_TOKENS}
-
-
-def _on(budget: int) -> dict:
-    return {"thinking_budget_tokens": budget, "chat_template_kwargs": {"enable_thinking": True}, "max_tokens": nf.COMPLETION_CAP}
+def _on(budget: int, cap: int) -> dict:
+    return {"thinking_budget_tokens": budget, "chat_template_kwargs": {"enable_thinking": True}, "max_tokens": cap}
 
 
 def expected_node_decoding(arm: str) -> dict:
-    """The decoding each node of ``arm`` must carry, from the arm table: OFF, or thinking at the node's budget with the cap unchanged."""
+    """The decoding each node of ``arm`` must carry, from the arm table: thinking at the node's budget with the node's OWN completion cap."""
 
-    return {node: (OFF if setting == nf.OFF else _on(int(setting))) for node, setting in zip(nf.NODES, nf.SETTINGS[arm])}
+    return {node: _on(int(setting["budget_tokens"]), int(setting["completion_cap"])) for node, setting in zip(nf.NODES, nf.SETTINGS[arm])}
 
 
 def main(argv=None) -> int:

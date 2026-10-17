@@ -1,28 +1,33 @@
 #!/bin/bash
-# Decisions 77 / NX-T R2b: fly the per-node reasoning-budget column (TRAIN Fold B) through the batch driver, one SEGMENT per resident session.
-# A driver run attaches to ONE session (BATCH_SESSION), so the read is one Thinking segment:
+# Decisions 77 / NX-T R2b: fly the Solver reasoning-budget raise column (TRAIN Fold B) through the batch driver, one SEGMENT per resident session.
+# A driver run attaches to ONE session (BATCH_SESSION), so the read is one raised-cap Thinking segment (swap target think-budget7168-np4: the np4 x 24,576
+# server geometry of NX-T R2 with the fragment's geometry cap 7,168; the smoke and the column flight run on the SAME session):
 #
 #   smoke   the four-row column smoke (an `engineering` driver step: it runs the registered smoke through the worker and the structural inspector and never
-#           starts a campaign or a scoring job). Session: the THINK-BUDGET session.
-#   arm     the budget column flight (one `cell` step, ONE session). REFUSES to start until the coordinator's sign-off marker exists (SIGNOFF_MARKER: a one-line
-#           file after the coordinator read the smoke's per-arm per-node table with `bash scripts/flights/nx/nxt_r2b_read.sh smoke` -- above all whether a lower
-#           budget forces the close earlier and no arm emits a think marker); it WAITS for the marker (NXT2B_SIGNOFF_WAIT_SECONDS, default 43200) and aborts on a
-#           batch-STOP.
-#   all     smoke, then the wait for the marker, then the column flight: the registered arc in ONE invocation (the default). REFUSES (exit 9) when the smoke attempt
+#           starts a campaign or a scoring job).
+#   arm     the column flight (one `cell` step, ONE session). Waits for the smoke's sign-off with chain_lib.sh `wait_or_machine_signoff` (see below).
+#   all     smoke, then the sign-off, then the column flight: the registered arc in ONE invocation (the default). REFUSES (exit 9) when the smoke attempt
 #           already exists on the data root: a (run_id, attempt_id) pair is a one-time key and the sealed smoke is never re-flown.
 #   arm-only  the RECOVERY entry (rec1, nxt_r2b_family.RECOVERIES): the column flight alone under the rec1 attempt ids. REQUIRES the smoke to be sealed (its run manifest
-#           reads COMPLETED, exit 9 otherwise) and the sign-off marker to exist already (exit 5 otherwise; it never waits). It SWAPS to the arm's chosen serving
-#           geometry first when that session is not resident (`serving_swap.sh <target>`, the target from nxt_r2b_family.ACTIVE_GEOMETRY: think-budget-np4 by default;
-#           the np6 / np8 geometries do not fit the 24 GB card at q8_0 KV). Hold the idle watchdog (/home/chao/saea-queue/watchdog.hold) first.
-#           `all` refuses (exit 9) when the arm's geometry is not the smoke's.
+#           reads COMPLETED, exit 9 otherwise) and the sign-off marker to exist already (exit 5 otherwise; it never waits).
 #
-# Registered order: swap to think-budget-np4 -> smoke -> sign-off -> the column flight -> swap back to slurp-np4. Both segments fly from ONE flight commit
+# SERVING. Unlike R2's `all`, every segment SWAPS to the raised-cap session first when it is not resident (`serving_swap.sh think-budget7168-np4`): R2b is launched by
+# the queue hook right after R2, whose think-budget-np4 session is still resident. Hold the idle watchdog (/home/chao/saea-queue/watchdog.hold) first. Like R2's chain, it
+# does not swap back; the coordinator's next step names the session it needs.
+#
+# SIGN-OFF (owner ruling 314 A, M6). `wait_or_machine_signoff "<reader>" <conditions> <marker> 20`: a coordinator marker that already exists is the sign-off; otherwise the reader
+# (`bash scripts/flights/nx/nxt_r2b_read.sh smoke`) writes the smoke decode-cost table and smoke_signoff.py decides PASS / FAIL against the conditions file THE DERIVE EMITTED
+# INSIDE THE PACKAGE (nxt_r2b_family.SIGNOFF_CONDITIONS; it follows the arm table). PASS: the machine writes /home/chao/nxt2b-decode-signoff.marker and a 20-minute VETO window
+# opens (delete the marker, or create /home/chao/batch-STOP). FAIL: <marker>.refused and the chain waits for a coordinator marker (NXT2B_SIGNOFF_WAIT_SECONDS, default 43200).
+# R2's chain waited for a HAND marker and idled the GPU for 1 h 43 min; this one never does.
+#
+# After a sealed segment the exposure-ledger rows of the flown run ids are closed with chain_lib.sh `close_rows_after_seal` (idempotent; a failure is logged, not fatal).
+#
+# Registered order: swap -> smoke -> machine sign-off (+ veto window) -> the column flight -> close the ledger rows. Both segments fly from ONE flight commit
 # (/home/chao/nxt2b-flight-commit.txt, written by the flip).
 #
 # PRECONDITIONS (the coordinator's; this script refuses on the first four): no flight, lease or driver process alive and the flight lock clear (serial GPU,
-# ruling 303 A: NX-T R1 has sealed); the THINK-BUDGET session is the RESIDENT one (a mismatch exits 6 and starts nothing); the other geometry's session
-# is not recorded resident; the cells are flipped (nxt_r2b_flip.sh). WHILE the Thinking session is resident the idle watchdog MUST be held
-# (/home/chao/saea-queue/watchdog.hold).
+# ruling 303 A: NX-T R2 has sealed); the Instruct session is not recorded resident; the cells are flipped (nxt_r2b_flip.sh).
 #   bash scripts/flights/nx/batch_chain_nxt_r2b.sh [smoke|arm|all|arm-only]
 SEGMENT=${1:-all}
 SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
@@ -34,19 +39,18 @@ DATA=$SAEA_DATA_ROOT
 SHORT=nxt2b
 LOG=/home/chao/batch-chain-$SHORT.out
 SIGNOFF_MARKER=/home/chao/nxt2b-decode-signoff.marker
+export SIGNOFF_WAIT_SECONDS=${NXT2B_SIGNOFF_WAIT_SECONDS:-43200}
+export SIGNOFF_PY=/home/chao/.venvs/speechrl/bin/python
 INSTRUCT_SESSION=serving-slurp-native-candidate-five-train-a-np4-v1
-# The Thinking serving geometry (owner decision 315 A): the arm's session and swap target come from the family (nxt_r2b_family.ACTIVE_GEOMETRY: the committed
-# geometry-selection-v1.json, the np4 x 24k control when absent); the smoke is sealed on, and always uses, the control. Never a literal here.
+# The Thinking serving geometry, the sign-off conditions and the run ids to close come from the family; never a literal here.
 eval "$(PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src /home/chao/.venvs/speechrl/bin/python -B -c \
-  "import sys; sys.path.insert(0, '$MAIN/scripts/flights/nx'); import nxt_r2b_family as f; print('THINK_SESSION=%s ARM_SWAP_TARGET=%s SMOKE_SESSION=%s SMOKE_SWAP_TARGET=%s' % (f.THINK_SESSION, f.THINK_SWAP_TARGET, f.CONTROL_SESSION, f.CONTROL_SWAP_TARGET))")" \
+  "import sys; sys.path.insert(0, '$MAIN/scripts/flights/nx'); import nxt_r2b_family as f; print('THINK_SESSION=%s SWAP_TARGET=%s SIGNOFF_CONDITIONS=%s SMOKE_CLOSE_IDS=\"%s\" ALL_CLOSE_IDS=\"%s\"' % (f.THINK_SESSION, f.THINK_SWAP_TARGET, f.SIGNOFF_CONDITIONS, ' '.join([f.CELLS['smoke']['run'], f.CELLS['smoke']['fit_run']]), ' '.join([f.CELLS['smoke']['run'], f.CELLS['smoke']['fit_run'], f.CELLS['arm']['run'], f.CELLS['arm']['fit_run']])))")" \
   || { echo "cannot read the serving geometry from the family"; exit 66; }
 COMMIT=$(cat /home/chao/$SHORT-flight-commit.txt) || exit 1
 OTHER=$INSTRUCT_SESSION
+. "$SP/chain_lib.sh"
 case "$SEGMENT" in
-  smoke) export BATCH_SESSION=$SMOKE_SESSION; SWAP_TARGET=$SMOKE_SWAP_TARGET ;;
-  arm|arm-only) export BATCH_SESSION=$THINK_SESSION; SWAP_TARGET=$ARM_SWAP_TARGET ;;
-  all) [ "$THINK_SESSION" = "$SMOKE_SESSION" ] || { echo "segment all refused: the arm geometry ($ARM_SWAP_TARGET) differs from the smoke's ($SMOKE_SWAP_TARGET); fly the segments separately" >> $LOG; echo "refusing: all needs one geometry"; exit 9; }
-       export BATCH_SESSION=$THINK_SESSION; SWAP_TARGET=$ARM_SWAP_TARGET ;;
+  smoke|arm|arm-only|all) export BATCH_SESSION=$THINK_SESSION ;;
   *) echo "usage: batch_chain_nxt_r2b.sh [smoke|arm|all|arm-only]"; exit 64 ;;
 esac
 
@@ -80,12 +84,12 @@ echo "chain start $(date -u +%FT%TZ) segment $SEGMENT commit $COMMIT session $BA
 if [ -n "$(pgrep -af 'core.flight.cli|batch_driver.sh|lease_cli' | grep -v pgrep)" ]; then echo "a batch is running; abort" >> $LOG; exit 7; fi
 [ -e "$DATA/locks/flight.lock" ] && { echo "flight.lock present; abort" >> $LOG; exit 7; }
 S=$DATA/serving/$BATCH_SESSION
-if [ "$SEGMENT" = arm-only ] && { [ ! -f "$S/session.json" ] || [ -f "$S/session-stop.json" ]; }; then
-  # the recovery entry swaps to the chosen geometry itself (serving_swap.sh <target> stops the other geometries and starts this one, strict readiness)
-  echo "arm-only: session $BATCH_SESSION is not resident; swapping to $SWAP_TARGET $(date -u +%FT%TZ)" >> $LOG
+if [ ! -f "$S/session.json" ] || [ -f "$S/session-stop.json" ]; then
+  # every segment swaps to the raised-cap session itself (serving_swap.sh <target> stops the other geometries and starts this one, strict readiness)
+  echo "session $BATCH_SESSION is not resident; swapping to $SWAP_TARGET $(date -u +%FT%TZ)" >> $LOG
   bash $SP/serving_swap.sh "$SWAP_TARGET" >> $LOG 2>&1 || { echo "serving_swap.sh $SWAP_TARGET failed; abort" >> $LOG; exit 6; }
 fi
-if [ ! -f "$S/session.json" ] || [ -f "$S/session-stop.json" ]; then echo "session $BATCH_SESSION is not resident (segment $SEGMENT); swap first (serving_swap.sh $SWAP_TARGET); abort" >> $LOG; exit 6; fi
+if [ ! -f "$S/session.json" ] || [ -f "$S/session-stop.json" ]; then echo "session $BATCH_SESSION is not resident after the swap (segment $SEGMENT); abort" >> $LOG; exit 6; fi
 O=$DATA/serving/$OTHER
 if [ -f "$O/session.json" ] && [ ! -f "$O/session-stop.json" ]; then echo "the other geometry's session $OTHER is still recorded resident; stop it first; abort" >> $LOG; exit 6; fi
 cd $MAIN || exit 1
@@ -134,21 +138,17 @@ PY
   return $RC
 }
 
-wait_signoff() {
-  local waited=0 limit=${NXT2B_SIGNOFF_WAIT_SECONDS:-43200}
-  while [ ! -s "$SIGNOFF_MARKER" ]; do
-    [ -e /home/chao/batch-STOP ] && { echo "batch-STOP present while waiting for the sign-off; abort" >> $LOG; return 8; }
-    [ $waited -ge $limit ] && { echo "no sign-off marker $SIGNOFF_MARKER after ${limit}s; abort (the column flight is not opened)" >> $LOG; return 5; }
-    [ $((waited % 600)) -eq 0 ] && echo "waiting for the sign-off marker $SIGNOFF_MARKER ($waited s) $(date -u +%FT%TZ)" >> $LOG
-    sleep 60; waited=$((waited + 60))
-  done
-  echo "sign-off marker present: $(head -c 200 "$SIGNOFF_MARKER" | tr '\n' ' ')" >> $LOG
-  return 0
+signoff() {  # the machine sign-off (or a coordinator marker) between the smoke and the column flight; 0 = the column flight may start
+  wait_or_machine_signoff "bash scripts/flights/nx/nxt_r2b_read.sh smoke" "$MAIN/$SIGNOFF_CONDITIONS" "$SIGNOFF_MARKER" 20
+}
+
+close_rows() {  # close_rows <run ids...> : the ledger rows of a sealed segment; a failure is logged, never fatal
+  CLOSE_ROWS_REPO=$MAIN CLOSE_ROWS_PY=/home/chao/.venvs/speechrl/bin/python close_rows_after_seal "$@" || chain_log "close_rows_after_seal failed (rc=$?); close the rows by hand: ledger_mark_consumed.py --apply"
 }
 
 case "$SEGMENT" in
-  smoke) run_driver smoke; exit $? ;;
-  arm) wait_signoff || exit $?; run_driver arm; exit $? ;;
-  arm-only) run_driver arm; exit $? ;;
-  all) run_driver smoke || exit $?; wait_signoff || exit $?; run_driver arm; exit $? ;;
+  smoke) run_driver smoke; RC=$?; [ $RC -eq 0 ] && close_rows $SMOKE_CLOSE_IDS; exit $RC ;;
+  arm) signoff || exit $?; run_driver arm; RC=$?; [ $RC -eq 0 ] && close_rows $ALL_CLOSE_IDS; exit $RC ;;
+  arm-only) run_driver arm; RC=$?; [ $RC -eq 0 ] && close_rows $ALL_CLOSE_IDS; exit $RC ;;
+  all) run_driver smoke || exit $?; signoff || exit $?; run_driver arm; RC=$?; [ $RC -eq 0 ] && close_rows $ALL_CLOSE_IDS; exit $RC ;;
 esac
