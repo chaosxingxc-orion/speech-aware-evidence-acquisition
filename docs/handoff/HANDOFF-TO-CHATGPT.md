@@ -1,6 +1,16 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-15T23:32:13Z
+Last refreshed: 2026-10-17T08:48:27Z
+
+## SUCCESSOR-3 TEST READ sealed 08:38Z: Thinking system vs v2.2 on the 3,010-row sample SLU +6.41 [+4.44, +8.46], intent +3.97 [+2.26, +5.45]; word NEUTRAL (no harm; gain reported, not claimed); NX-T R1 rec2 resume next (2026-10-17T08:48:27Z, Fable 5.1 root)
+
+Run SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-THINKING-SYSTEM-V1 at 73fd885f8 (3,010 rows, 6,020 contacts, COMPLETED, two host-sleep gaps;
+lid/power-button actions now 'do nothing' on AC). Read dir analysis/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-PAIRED-ANALYSIS-V1/
+(successor3-verdict.json). Three rosters now: Fold B +7.15, DEV +7.52, test +6.41 SLU over the Instruct-era system. Owner rulings 320 B (rec2
+resume: keep 1,029, fly 51; registered 09569de59/547f83c04, flip + chain `arm-only` after this seal), 316-318. Then R2 (`nxt_r2_arms.json` per R1's
+read; `package_launch.sh scripts/flights/nx/nxt_r2_launch_spec.json`). Registry 08:50Z.
+
+Superseded stamp: 2026-10-15T23:32:13Z
 
 ## NX-T R1 rec1 column STOPPED at row 1,031/1,080 (both-off arm sealed no Solver column; 1,030 rows checkpointed; decision 320 seal-only proposed); successor-3 test read FLYING at 73fd885f8 (2026-10-15T23:32:13Z, Fable 5.1 root)
 

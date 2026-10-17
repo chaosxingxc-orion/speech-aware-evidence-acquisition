@@ -3052,3 +3052,19 @@ read at n = 1,080 intact. Cost about 1.5 GPU-h after the successor-3 seal; the s
 - Risk to watch at the flip (Sonnet): `repin.py` ~1536 looks up a resume cell's parent by attempt id across `configs/experiment/`; the rec1
   attempt id no longer appears there. Next: after the successor-3 seal, `NXT1_KINDS=arm` flip (column only; never `--allow-output-change`),
   chain `arm-only` (it re-hashes the predecessor trace and refuses if the rec2 attempt exists), `nxt_r1_read.sh columns`, READ row, read.
+
+### SUCCESSOR-3 TEST READ: the Thinking system on the 3,010-row sample -- NEUTRAL (no harm), SLU +6.41 / intent +3.97 reported beside the word (coordinator, 2026-10-17 08:50Z)
+
+- Sealed 08:38Z at flight commit 73fd885f8 (run `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-THINKING-SYSTEM-V1`, 3,010 rows, 6,020 contacts,
+  COMPLETED, summed call latency 102.77 h; two host-sleep gaps inside the 33 h wall; checkpoint sha bdfed492...). Generation + FIT rows closed;
+  READ row countersigned 08:39:20Z; aggregate read 08:46Z (0 contacts), written to `analysis/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-PAIRED-ANALYSIS-V1/`.
+- **Read (vs the sealed successor-2 v2.2 system; prompt-cluster paired bootstrap, 10,000 draws, seed 20261014; post-stratified natural mixture):**
+  SLU-F1 66.65 -> 73.05 %, **+6.41 pp [+4.44, +8.46]**; intent 82.36 -> 86.33 %, **+3.97 pp [+2.26, +5.45]**; equal-stratum SLU +6.98 [+4.71, +9.38],
+  intent +5.26 [+3.36, +6.72]. Declared null = the DEV twin offset (SLU 0.61 / intent 1.6 pp); harm margin 2.5 pp. **Word: NEUTRAL** (the
+  registered words are HARM / NEUTRAL / UNRESOLVED; claims_benefit false; the gain is reported beside the word, not claimed; no in-chain
+  replicate on the sample -- the limitation is stated in the read). Development numbers; never a test claim (decisions 28, 151, 301).
+- **Meaning (stated, not claimed):** the Thinking system is now read on three rosters against the Instruct-era system -- TRAIN Fold B +7.15
+  [+5.08, +9.26], DEV +7.52 [+5.46, +9.62], test sample +6.41 [+4.44, +8.46] SLU; intent +2.31 / +2.50 / +3.97. The v3.0 candidate's
+  test-sample read is closed; the chain of sample reads on this roster: successor-1 PLAN -> COMP-1b (+5.80 intent) -> successor-2 v2.2
+  (+1.67 SLU) -> successor-3 Thinking v3.0 (+6.41 SLU / +3.97 intent). Results note: Opus (`docs/results/2026-10-17-slurp-successor3-thinking-system-test-sample-read.md`).
+- Next on the GPU (serial): NX-T R1 rec2 (320 B) flip + `arm-only` resume (51 rows) -> R1 read -> R2 arm table -> R2 via `package_launch.sh`.
