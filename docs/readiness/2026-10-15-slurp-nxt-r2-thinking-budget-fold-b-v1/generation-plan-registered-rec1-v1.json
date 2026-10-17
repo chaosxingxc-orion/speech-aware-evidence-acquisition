@@ -13,7 +13,7 @@
     "thinking_budget_tokens": "b (the arm's setting)"
   },
   "cell": "slurp-native-stage3-nxt-r2-thinking-budget-fold-b-v1",
-  "composed_config_hash": "7227bc996918da70afea648bb9af4f6ae0cf8bdaf818c53408764911af362fb8",
+  "composed_config_hash": "618a74d4f99820bb17b94d6812119bf1cdc27cc7a2912b22987aa6203c767374",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-rec1-v1",
     "carrier_lock_key": "slurp",
@@ -21,7 +21,7 @@
     "planned_gpu_hours": 31.3,
     "planned_model_calls": 11922,
     "planned_speech_audio_seconds": 34836,
-    "protocol_hash": "1b0a61bb35ccc39399b04df52e2b6e8de594b2f6fe3fb9dd9763dd92446141ca",
+    "protocol_hash": "f30958b8ade762b6cf9ccf090d90313d164d5f309547978c30b9a129d6e109ac",
     "run_id": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
@@ -56,15 +56,15 @@
   "plan_kind": "generation",
   "preparation_base_commit": "11ffc84fa",
   "prepared_phase_supply": {
-    "relpath": "prepared/SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1/phase-supply-v1.json",
-    "sha256": "290b1af6df8b44d8846a93b87f341553868f8a4d96d2d3136e5e235dc214fa75"
+    "relpath": "prepared/SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1/phase-supply-v2.json",
+    "sha256": "6c116e6a5a3630c548beaa1dd33f978e8cc8f29f42971b721ceae39fa92e7bb6"
   },
   "prepared_phase_supply_annotations": {
     "note": "the flip mints this cell's own first-phase supply under its own run id (item E16)"
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-15-slurp-nxt-r2-thinking-budget-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "d8a0e0977da3f733b937664a88f347aed0230aeee894285ea516e960b1d221ee"
+    "sha256": "fd00ce9546c036ec756eb0eb84fee6fdfdb8ee14b002e4b8de1bb69277a5471d"
   },
   "purpose": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1: reasoning-budget column flight (3 arms in one flight) of NX-T R2.",
   "recovery": {
