@@ -1,17 +1,21 @@
 {
   "schema": "saea-smoke-signoff-conditions-v1",
-  "_note": "NX-T R2 machine sign-off conditions (owner ruling 314 A). Sits BESIDE the package directory (not in its registered hashes; the next package writer should emit its own copy inside the package). R2 has NO no-think node: every arm thinks at its budget; the smoke's job is to show that the budget arms close within the 4,096 cap, deliver JSON on every row, cost no more than 1.3x the registered mix, and leave no absent column.",
+  "_note": "NX-T R2 machine sign-off conditions (owner ruling 314 A). Sits BESIDE the package directory (not in its registered hashes; the next package writer should emit its own copy inside the package). Arm table of 2026-10-17 (after R1's read): perception-off-solver-3072 (Perception no-think) and solver-2048; the delivering arm budget-3072. The no-think node is Perception of the first arm; the smoke's job is to show that the budget arms close within the 4,096 cap, deliver JSON on every row, cost no more than 1.3x the registered mix, and leave no absent column. Re-issued 2026-10-17 12:4xZ after the machine sign-off refused the stale default-table expectations (budget-1536/2048) while the chain idled 10:57-12:4xZ: the derive step must regenerate this file (follow-up).",
   "package": "slurp-nxt-r2-thinking-budget-fold-b-v1",
   "ruling": "owner ruling 314 A of 2026-10-14",
   "table_schema": "saea-nxt-r2-thinking-budget-column-smoke-v1",
   "table_relpath": "analysis/SAEA-SLURP-NXT-R2-THINKING-BUDGET-FOLD-B-READ-V1/smoke-decode-cost.json",
   "expected_arms": [
-    "budget-1536",
-    "budget-2048",
-    "budget-3072"
+    "budget-3072",
+    "perception-off-solver-3072",
+    "solver-2048"
   ],
   "min_contacts_per_node": 1,
-  "no_think_nodes": {},
+  "no_think_nodes": {
+    "perception-off-solver-3072": [
+      "perception"
+    ]
+  },
   "no_think_max": {
     "contacts_with_reasoning_chars": 0,
     "marker_in_content": 0,
