@@ -1,0 +1,91 @@
+{
+  "arm_settings": {
+    "budget-3072": {
+      "perception": {
+        "budget_tokens": 3072,
+        "completion_cap": 4096
+      },
+      "solver": {
+        "budget_tokens": 3072,
+        "completion_cap": 4096
+      }
+    },
+    "solver-6144": {
+      "perception": {
+        "budget_tokens": 3072,
+        "completion_cap": 4096
+      },
+      "solver": {
+        "budget_tokens": 6144,
+        "completion_cap": 7168
+      }
+    }
+  },
+  "arms": [
+    "solver-6144",
+    "budget-3072"
+  ],
+  "authority": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md (owner rulings 323 and 325 A (2026-10-17), 313 A (2026-10-14) and 304/307 (2026-10-13), coordinator approval of the NX-T R2b design); docs/superpowers/specs/2026-10-12-thinking-core-engineering-base-design.md; docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+  "cell_kind": "SAME-FLIGHT NODE COLUMN over the Solver reasoning budget and completion cap -- 2 arms (no twin) paired per row against the delivering budget-3072 arm; claim ceiling nominated",
+  "claim_boundary": "No benefit, system-level, superiority, generalisation, held-out, confirmatory or paper-scale claim.",
+  "contacts": {
+    "asr": 0,
+    "encoder": 0,
+    "model": 0,
+    "scorer": "CPU official scorer jobs over derived copies only",
+    "server": 0,
+    "tokenizer": 0
+  },
+  "declared_offset": {
+    "basis": "owner decision 313 A: the larger of the two measured same-core A/A offsets",
+    "paired_floor_pp": 0.7,
+    "slu_pp": 1.15
+  },
+  "delivering": "budget-3072",
+  "execution_profile": "model-free-check (the read); bounded-discovery-probe (the flights themselves)",
+  "external_references": {
+    "thinking_system_slu": 71.61,
+    "twin_offset_268b_intent_pp": -0.09,
+    "twin_offset_268b_slu_pp": 1.15,
+    "twin_offset_p31_intent_pp": 1.6,
+    "twin_offset_p31_slu_pp": -0.61
+  },
+  "measurement_design": "same-flight-node-column",
+  "read_run_id": "SAEA-SLURP-NXT-R2B-SOLVER-BUDGET-FOLD-B-READ-V1",
+  "recipe_id": "slurp-nxt-r2b-solver-budget-fold-b-read-v1",
+  "registered_at_utc": "2026-10-17T13:26:36.000000+00:00",
+  "roster": {
+    "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+    "roster_id": "SLURP-EVO-FOLD-B-V2",
+    "rows": 1080,
+    "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
+  },
+  "run_ids": {
+    "arm": "SAEA-SLURP-STAGE3-NXT-R2B-SOLVER-BUDGET-FOLD-B-V1",
+    "fit": "SAEA-SLURP-STAGE3-NXT-R2B-SOLVER-BUDGET-FOLD-B-FIT-V1",
+    "read": "SAEA-SLURP-NXT-R2B-SOLVER-BUDGET-FOLD-B-READ-V1",
+    "smoke": "SAEA-SLURP-STAGE3-NXT-R2B-SOLVER-BUDGET-FOLD-B-SMOKE-4-V1",
+    "smoke_fit": "SAEA-SLURP-STAGE3-NXT-R2B-SOLVER-BUDGET-FOLD-B-SMOKE-4-FIT-V1"
+  },
+  "schema": "saea-stage3-rollout-analysis-recipe-v1",
+  "stages": {
+    "1_columns": "bash scripts/flights/nx/nxt_r2b_read.sh columns  (stage3_rollout_score --mode perception-branches: one complete official scoring per arm; no number printed)",
+    "2_read": "python -B scripts/analysis/slurp_nxt_r2b_solver_budget_column_read.py --stage read --data-root $SPEECHRL_DATA_DIR (through scripts/flights/nx/nxt_r2b_read.sh)",
+    "smoke": "python -B scripts/analysis/slurp_nxt_r2b_solver_budget_column_read.py --stage smoke (per-arm per-node decode cost; no countersignature; the machine sign-off input for the column flight)"
+  },
+  "twin": null,
+  "verdict_words": [
+    "GAIN",
+    "HARM",
+    "NEEDS-NO-MORE-BUDGET",
+    "UNRESOLVED"
+  ],
+  "what_is_not_here": "No margins block and no admission: nothing is locked here.",
+  "word_mode": "raise",
+  "word_rules": {
+    "GAIN": "SLU CI95 lower bound above +|o| (the raised Solver budget RAISES the score beyond the declared A/A width)",
+    "HARM": "SLU CI95 upper bound below -|o| (the raised budget loses more than the declared A/A width)",
+    "NEEDS-NO-MORE-BUDGET": "SLU CI95 upper bound <= +1.49 pp and intent CI95 upper bound <= +0.65 pp (decision 190 floors): any gain is inside the design's own resolution, so the raise buys no resolved gain and the delivering budget is enough",
+    "UNRESOLVED": "none of the above (the interval is too wide to call the raise a gain, a harm or no resolved gain)"
+  }
+}

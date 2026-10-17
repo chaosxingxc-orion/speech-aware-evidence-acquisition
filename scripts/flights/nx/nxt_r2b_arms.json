@@ -1,0 +1,23 @@
+{
+  "_note": "The NX-T R2b arm table (data-driven; owner rulings 323 and 325 A of 2026-10-17: raise the Solver's reasoning budget and completion cap so Solver reasoning is no longer truncated; ONE candidate arm). Every node setting states its reasoning BUDGET and its own COMPLETION CAP. A node at the delivering setting (budget 3,072 / cap 4,096) keeps the locked form. A budget above the delivering one is accepted only with completion_cap >= budget + answer_reserve_floor_tokens (the answer reserve never shrinks below the lock's 1,024); a node at or below the delivering budget keeps the delivering cap 4,096. No node cap may exceed fragment_completion_cap, which is the largest cap of any arm node and names the serving fragment (...-budget3072-max<fragment_completion_cap>-v1). Exactly one candidate arm (owner ruling 325 A) and no twin. The delivering arm (the 268-B lock form on both nodes) is added last by the compiler and is named budget-3072.",
+  "answer_reserve_floor_tokens": 1024,
+  "arms": [
+    {
+      "arm_id": "solver-6144",
+      "perception": {
+        "budget_tokens": 3072,
+        "completion_cap": 4096
+      },
+      "solver": {
+        "budget_tokens": 6144,
+        "completion_cap": 7168
+      }
+    }
+  ],
+  "delivering": {
+    "budget_tokens": 3072,
+    "completion_cap": 4096
+  },
+  "fragment_completion_cap": 7168,
+  "schema": "saea-nxt-r2b-arm-table-v1"
+}

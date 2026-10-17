@@ -37,6 +37,7 @@ from __future__ import annotations
 
 import argparse
 import base64
+import importlib
 import json
 import os
 import re
@@ -52,11 +53,17 @@ for _path in (str(_REPO / "src"), str(_HERE), str(_REPO / "scripts" / "flights" 
     if _path not in sys.path:
         sys.path.insert(0, _path)
 
-import nxt_r2_family as fam  # noqa: E402
 import slurp_direct_fold_b_core_read as base  # noqa: E402
 import slurp_system_thinking_core_read as sysread  # noqa: E402
 
 from speech_aware_evidence_acquisition.analysis.paired import resampled_statistic  # noqa: E402
+
+#: The family this reader reads is a PARAMETER (default NX-T R2's, so R2's behaviour is unchanged). NX-T R2b loads a second copy of this module with
+#: ``NXT_COLUMN_READ_FAMILY=nxt_r2b_family`` (``slurp_nxt_r2b_solver_budget_column_read.py``). A family may optionally define ``NODE_BUDGETS`` (arm -> node ->
+#: budget), ``NODE_CAPS`` (arm -> node -> completion cap), ``WORD_MODE`` ("cheaper", the default, or "raise" for an arm whose budget is ABOVE the delivering one),
+#: ``SMOKE_SCHEMA``, ``READ_SCHEMA`` and ``READ_TITLE``.
+FAMILY_ENV = "NXT_COLUMN_READ_FAMILY"
+fam = importlib.import_module(os.environ.get(FAMILY_ENV) or "nxt_r2_family")
 
 
 def _authority_default() -> str:
@@ -71,10 +78,14 @@ def _data_root_env() -> str:
     return os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or _authority_default()
 
 
-SCHEMA_SMOKE = "saea-nxt-r2-thinking-budget-column-smoke-v1"
-SCHEMA_READ = "saea-nxt-r2-thinking-budget-column-read-v1"
+SCHEMA_SMOKE = getattr(fam, "SMOKE_SCHEMA", "saea-nxt-r2-thinking-budget-column-smoke-v1")
+SCHEMA_READ = getattr(fam, "READ_SCHEMA", "saea-nxt-r2-thinking-budget-column-read-v1")
+READ_TITLE = getattr(fam, "READ_TITLE", "NX-T R2 read -- the per-node reasoning-budget column")
+#: "cheaper" (NX-T R2: an arm BELOW the delivering budget) or "raise" (NX-T R2b: an arm ABOVE it; the words invert).
+WORD_MODE = getattr(fam, "WORD_MODE", "cheaper")
 #: The node words in the order the rules apply (the first that applies wins).
-NODE_WORDS = ("GAIN", "NEEDS-FULL-BUDGET", "CHEAPER-AT-NO-RESOLVED-LOSS", "UNRESOLVED")
+NODE_WORDS = (("GAIN", "HARM", "NEEDS-NO-MORE-BUDGET", "UNRESOLVED") if WORD_MODE == "raise"
+              else ("GAIN", "NEEDS-FULL-BUDGET", "CHEAPER-AT-NO-RESOLVED-LOSS", "UNRESOLVED"))
 SEED = 20261015
 DRAWS = base.DEFAULT_DRAWS
 INTENT_FIELD, SLU_GROUPS, SCORER = base.INTENT_FIELD, base.SLU_GROUPS, base.SCORER
@@ -84,7 +95,10 @@ ARMS = fam.ARM_ORDER
 DELIVERING, CANDIDATES = fam.DELIVERING, fam.CANDIDATE_ARMS
 NODES = fam.NODES
 #: arm -> node -> the node's reasoning budget in tokens (``None`` = thinking OFF at that node).
-BUDGET = {arm: {node: (None if setting == fam.OFF else int(setting)) for node, setting in zip(NODES, fam.SETTINGS[arm])} for arm in ARMS}
+BUDGET = (getattr(fam, "NODE_BUDGETS", None)
+          or {arm: {node: (None if setting == fam.OFF else int(setting)) for node, setting in zip(NODES, fam.SETTINGS[arm])} for arm in ARMS})
+#: arm -> node -> the node's own completion cap (a family without per-node caps: the cap never moves, see ``arm_node_table``).
+NODE_CAPS = getattr(fam, "NODE_CAPS", None)
 #: arm -> node -> True when the arm turns that node's thinking OFF.
 NO_THINK = {arm: {node: BUDGET[arm][node] is None for node in NODES} for arm in ARMS}
 THINK_CAP, NO_THINK_CAP = fam.COMPLETION_CAP, fam.tsf.THINK_ANSWER_RESERVE_TOKENS
@@ -178,6 +192,8 @@ def arm_node_table(contacts: Sequence[Mapping], arm: str, *, slots: int = SLOTS)
         n = len(items)
         no_think = bool(NO_THINK.get(arm, {}).get(node, False))
         cap = NO_THINK_CAP if no_think else THINK_CAP
+        if NODE_CAPS is not None and node in NODE_CAPS.get(arm, {}):
+            cap = int(NODE_CAPS[arm][node])                       # a family with a completion cap per node setting (NX-T R2b)
         tokens = [int(c["completion_tokens"]) for c in items]
         seconds = [float(c["latency_seconds"]) for c in items]
         wired = [c for c in items if c.get("empty_content") is not None]
@@ -313,6 +329,16 @@ def classify(slu: Mapping, intent: Mapping, *, offset: float = fam.DECLARED_OFFS
              floor_intent_pp: float = fam.FLOOR_INTENT_PP) -> str:
     """The preregistered word of one candidate arm from its SLU and intent contrasts (each with ``ci95_lo_pp`` / ``ci95_hi_pp``): the FIRST rule that applies."""
 
+    if WORD_MODE == "raise":
+        # An arm whose budget is ABOVE the delivering one (NX-T R2b): the R2 "cheaper" words invert. GAIN / HARM against the declared A/A offset, then "no resolved gain"
+        # (even the optimistic end of both intervals is inside the decision-190 floors: the raise buys nothing the design can resolve), else UNRESOLVED.
+        if slu["ci95_lo_pp"] > offset:
+            return "GAIN"
+        if slu["ci95_hi_pp"] < -offset:
+            return "HARM"
+        if slu["ci95_hi_pp"] <= floor_slu_pp and intent["ci95_hi_pp"] <= floor_intent_pp:
+            return "NEEDS-NO-MORE-BUDGET"
+        return "UNRESOLVED"
     if slu["ci95_lo_pp"] > offset:
         return "GAIN"
     if slu["ci95_hi_pp"] < -offset:
@@ -409,7 +435,7 @@ def read_stage(arms: Mapping[str, Mapping[str, Mapping[str, float]]], ids: Seque
 
 
 def render_markdown(result: Mapping) -> str:
-    lines = ["# NX-T R2 read -- the per-node reasoning-budget column", ""]
+    lines = [f"# {READ_TITLE}", ""]
     nw = result.get("node_words")
     if nw:
         ref = nw["external_reference_twin_offsets"]

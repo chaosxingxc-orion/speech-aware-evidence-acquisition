@@ -1,0 +1,138 @@
+{
+  "arm_order": [
+    "solver-6144",
+    "budget-3072"
+  ],
+  "budget_node": {
+    "answer_reserve_tokens": "cap - b (>= 1024)",
+    "chat_template_kwargs": {
+      "enable_thinking": true
+    },
+    "max_tokens": "the node's own completion_cap",
+    "thinking_budget_tokens": "b (the arm's setting)"
+  },
+  "cell": "slurp-native-stage3-nxt-r2b-solver-budget-fold-b-v1",
+  "cell_thinking_policy": {
+    "perception": {
+      "answer_reserve_tokens": 1024,
+      "reasoning_budget_tokens": 3072
+    },
+    "solver": {
+      "answer_reserve_tokens": 1024,
+      "reasoning_budget_tokens": 3072
+    }
+  },
+  "composed_config_hash": "5546b33d6b6170ba404e0dcae240040a015a0fcf7d4a4da177d6185f814ffb2e",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-nxt-r2b-solver-budget-fold-b-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 27.6,
+    "planned_model_calls": 8640,
+    "planned_speech_audio_seconds": 25239,
+    "protocol_hash": "566281cd30f8fbedd253934cd771a3b405c75c586549549a5ab7142cc62ccc16",
+    "run_id": "SAEA-SLURP-STAGE3-NXT-R2B-SOLVER-BUDGET-FOLD-B-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared core.flight.cli campaign over configs/campaign/slurp-native-stage3-nxt-r2b-solver-budget-fold-b-v1.json on the raised-cap Thinking session (serving-slurp-thinking-module-fold-b-np4-budget3072-max7168-v1); one official score per arm column (stage3_rollout_score --mode perception-branches) after the seal. Flown by scripts/flights/nx/batch_chain_nxt_r2b.sh.",
+  "expected_session_id": "serving-slurp-thinking-module-fold-b-np4-budget3072-max7168-v1",
+  "experiment": "slurp-native-stage3-nxt-r2b-solver-budget-fold-b-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 17280,
+    "generation_calls_cap": 8640,
+    "gpu_hours_fit_inclusive": 27.6,
+    "native_task_contract_calls_cap": 8640,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 25239
+  },
+  "no_think_node": null,
+  "no_twin": true,
+  "one_factor": "The Solver's reasoning budget and completion cap in the candidate arm (reasoning_budget_tokens b with answer_reserve_tokens cap - b at the Solver). The delivering arm is the 268-B lock form (budget 3072 + reserve 1024 = cap 4096) on both nodes; the system, the knowledge supply, the sealed query vectors and the roster are the 268-B lock's.",
+  "plan_kind": "generation",
+  "preparation_base_commit": "4a0e938e4",
+  "prepared_phase_supply": {
+    "note": "the flip mints this cell's own first-phase supply under its own run id (item E16)",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-NXT-R2B-SOLVER-BUDGET-FOLD-B-V1/phase-supply-v1.json",
+    "sha256": "MINTED_AT_THE_FLIP"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-10-17-slurp-nxt-r2b-solver-budget-fold-b-v1/protocol-registered-v1.json",
+    "sha256": "0d047b9c16d9685dbab35de31bd48aafaf08f5ab5ca9aa46dfa1f2a34f44b84f"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-NXT-R2B-SOLVER-BUDGET-FOLD-B-V1: Solver reasoning-budget raise column flight (2 arms in one flight) of NX-T R2b.",
+  "registered_at_utc": "2026-10-17T13:26:36.000000+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "scoring": "Per-arm official column scoring after a successful seal; no partial score.",
+  "serving": {
+    "geometry_cap": 7168,
+    "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max7168-v1",
+    "server_geometry": "-c 98304 -np 4 (unchanged)",
+    "session": "serving-slurp-thinking-module-fold-b-np4-budget3072-max7168-v1",
+    "swap_target": "think-budget7168-np4"
+  },
+  "status": "DRAFT-HELD-REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_COUNTERSIGN_AND_READINESS_FLIP",
+  "thinking_arms": {
+    "budget-3072": {
+      "role": "delivering",
+      "settings": {
+        "perception": {
+          "budget_tokens": 3072,
+          "completion_cap": 4096
+        },
+        "solver": {
+          "budget_tokens": 3072,
+          "completion_cap": 4096
+        }
+      },
+      "thinking_policy": null
+    },
+    "solver-6144": {
+      "settings": {
+        "perception": {
+          "budget_tokens": 3072,
+          "completion_cap": 4096
+        },
+        "solver": {
+          "budget_tokens": 6144,
+          "completion_cap": 7168
+        }
+      },
+      "thinking_policy": {
+        "solver": {
+          "answer_reserve_tokens": 1024,
+          "reasoning_budget_tokens": 6144
+        }
+      }
+    }
+  },
+  "thinking_knobs": {
+    "answer_fallback": {
+      "enable_thinking": false,
+      "id": "saea-thinking-answer-fallback-v1",
+      "max_tokens": 1024,
+      "mode": "answer-only re-ask",
+      "per_node": 1
+    },
+    "answer_reserve_tokens": 1024,
+    "budget_message": "Considering the limited time by the user, I have to give the solution based on the thinking directly now.",
+    "completion_cap": 4096,
+    "decoding": {
+      "seed": 20260913,
+      "temperature": 0
+    },
+    "node_modes": {
+      "perception": "think",
+      "solver": "think"
+    },
+    "reasoning_context_policy": "drop-reasoning-v1",
+    "reasoning_format": "deepseek",
+    "thinking_budget_tokens": 3072
+  },
+  "unused_budget_is_not_attempt_authority": true
+}

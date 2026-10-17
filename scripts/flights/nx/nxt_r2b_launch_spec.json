@@ -1,0 +1,63 @@
+{
+  "schema": "saea-package-launch-spec-v1",
+  "_note": "NX-T R2b launch spec for package_launch.sh (owner rulings 323 and 325 A, 327 A). The coordinator registers with `--root-countersign --until commit` while NX-T R2 flies; the queue hook scripts/flights/batch/queue/queue_nxt2b_after_nxt2.sh runs `--from flip --until chain` once R2 has exited rc=0. The write step passes --registered-at {utc} because a first registration has no registered-facts file to inherit a stamp from. The chain wrapper (scripts/flights/batch/queue/chain_nxt2b.sh, installed at /home/chao/saea-queue/chain_nxt2b.sh) swaps to the raised-cap session itself. The Windows tasks SAEA-Serving-THINKB7, SAEA-Monitor-THINKB7 and SAEA-Chain-NXT2B must be registered first.",
+  "short": "nxt2b",
+  "launch_id": "nxt2b-first-attempt",
+  "package": "slurp-nxt-r2b-solver-budget-fold-b-v1",
+  "readiness_dir": "docs/readiness/2026-10-17-slurp-nxt-r2b-solver-budget-fold-b-v1",
+  "steps": {
+    "derive": {
+      "cmd": "python -B scripts/flights/nx/nxt_r2b_derive_cells.py"
+    },
+    "write": {
+      "cmd": "python -B scripts/flights/nx/nxt_r2b_write_registration.py --study-commit {head} --registered-at {utc} --append-ledger"
+    },
+    "countersign": {
+      "texts": "{readiness_dir}/countersign-row-texts-v1.json",
+      "ledger": "docs/exposure-ledger.md",
+      "skip_substrings": [
+        "-READ-"
+      ]
+    },
+    "mint": {
+      "cmd": "python -B scripts/flights/nx/nxt_r2b_mint_receipt.py",
+      "done_if": {
+        "file": "coordination/slurp-nxt-r2b-solver-budget-fold-b-v1/root-admission-v1.json",
+        "contains": [
+          "SAEA-SLURP-STAGE3-NXT-R2B-SOLVER-BUDGET-FOLD-B-FIT-V1"
+        ]
+      }
+    },
+    "commit": {
+      "paths": [
+        "configs",
+        "docs/exposure-ledger.md",
+        "{readiness_dir}",
+        "{readiness_dir}-preregistration.md"
+      ],
+      "message": "register: NX-T R2b (the Solver reasoning-budget raise, TRAIN Fold B); rows countersigned; receipt minted"
+    },
+    "flip": {
+      "script": "scripts/flights/nx/nxt_r2b_flip.sh",
+      "package": "docs/readiness/2026-10-17-slurp-nxt-r2b-solver-budget-fold-b-v1",
+      "cells": [
+        "slurp-native-stage3-nxt-r2b-solver-budget-fold-b-smoke-4-v1",
+        "slurp-native-stage3-nxt-r2b-solver-budget-fold-b-v1"
+      ],
+      "pins_commit_msg": "/home/chao/nxt2b-pins-commit.txt",
+      "env": {
+        "NXT2B_KINDS": "smoke arm"
+      },
+      "flight_commit_file": "/home/chao/nxt2b-flight-commit.txt",
+      "pins_commit_text": "NX-T R2b: re-pin the Solver reasoning-budget raise package (smoke-4, column) on the Thinking base at the registered study commit (rulings 323 / 325 A; ext4 flip)\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\n"
+    },
+    "chain": {
+      "task": "SAEA-Chain-NXT2B",
+      "wrapper": "/home/chao/saea-queue/chain_nxt2b.sh",
+      "flight_commit_file": "/home/chao/nxt2b-flight-commit.txt"
+    },
+    "read": {
+      "cmd": "bash scripts/flights/nx/nxt_r2b_read.sh smoke"
+    }
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "arms": {
+    "budget-3072": "the delivering arm = the 268-B lock form (budget 3,072 / cap 4,096 on both nodes)",
+    "solver-6144": {
+      "solver": {
+        "answer_reserve_tokens": 1024,
+        "reasoning_budget_tokens": 6144
+      }
+    }
+  },
+  "blockers": [],
+  "cells": {
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-nxt-r2b-solver-budget-fold-b-generation-v1",
+      "cell": "slurp-native-stage3-nxt-r2b-solver-budget-fold-b-v1",
+      "composed_config_hash": "5546b33d6b6170ba404e0dcae240040a015a0fcf7d4a4da177d6185f814ffb2e",
+      "experiment": "slurp-native-stage3-nxt-r2b-solver-budget-fold-b-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-nxt-r2b-solver-budget-fold-b-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-NXT-R2B-SOLVER-BUDGET-FOLD-B-FIT-V1",
+      "protocol_hash": "566281cd30f8fbedd253934cd771a3b405c75c586549549a5ab7142cc62ccc16",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-NXT-R2B-SOLVER-BUDGET-FOLD-B-V1",
+      "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
+    },
+    "smoke": {
+      "attempt_id": "attempt-slurp-native-stage3-nxt-r2b-solver-budget-fold-b-smoke-4-generation-v1",
+      "cell": "slurp-native-stage3-nxt-r2b-solver-budget-fold-b-smoke-4-v1",
+      "composed_config_hash": "3c5efd704c2bd4946b977e32f441046929d288920716b621a3d3a4b8beb8130c",
+      "experiment": "slurp-native-stage3-nxt-r2b-solver-budget-fold-b-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-nxt-r2b-solver-budget-fold-b-smoke-4-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-NXT-R2B-SOLVER-BUDGET-FOLD-B-SMOKE-4-FIT-V1",
+      "protocol_hash": "5c18d02c6b458c4674db163318c2080cd28f782023ccd7a64734a94087ca039e",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-NXT-R2B-SOLVER-BUDGET-FOLD-B-SMOKE-4-V1",
+      "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32"
+    }
+  },
+  "decision_rule_fixed_here": "The node words and their thresholds are fixed in scripts/analysis/slurp_nxt_thinking_budget_column_read.py (raise mode) and in this package's README: GAIN, HARM, NEEDS-NO-MORE-BUDGET, UNRESOLVED against the declared A/A offset and the decision-190 node-column floors (no twin flies).",
+  "failure_policy": "Stop and preserve on the first failure; at most one root-diagnosed recovery re-registration per run id; run-cumulative budgets.",
+  "findings": [
+    {
+      "finding": "NX-T R1 read the Solver NEEDS-THINKING and measured, on its both-on arm, 19 of 51 Solver contacts closed by the 3072-token budget (completion p90 3128): the Solver's reasoning is truncated. Owner rulings 323 and 325 A raise the Solver's budget and cap in ONE candidate arm so the reasoning can finish. The question is whether the finished reasoning moves the score; it is not assumed to.",
+      "id": "solver-reasoning-is-truncated-at-the-delivering-budget",
+      "remedy": "none; the read reports the forced-close share per budget beside the contrast."
+    },
+    {
+      "finding": "Owner decision 313 A: no twin arm. The in-flight A/A offset on this core was measured twice (268-B SLU +1.15 / intent -0.09; P3.1 SLU -0.61 / intent +1.6), so the read judges the arm against the DECLARED offset |o| = 1.15 pp SLU (the larger of the two measured offsets) and the paired floor 0.7 pp; both are fixed here, before contact. A single-flight paired contrast cannot separate a real budget effect from np4 batching jitter below |o|: such an arm reads UNRESOLVED or NEEDS-NO-MORE-BUDGET, never a gain.",
+      "id": "no-twin-the-declared-offset-is-the-null",
+      "remedy": "none; the stage3_effect_floor_check design is same-flight-node-column with twin false (it accepts it)."
+    },
+    {
+      "finding": "The live slot is 24,576 tokens; the operational reserve is 3,072 and the special reserve 2. At the 7,168-token geometry cap the prompt limit of EVERY contact of the cell is 14,334 tokens (the fit gate's ceiling is the fragment's cap, not a node's). The registered FIT_ESTIMATE form (base 2,000 + 235 per supplied item) at the lock's bound of 55 items is 14,925 tokens, ABOVE that limit, so the thinking_variants parser would refuse the block; the bound is the largest count the estimate admits, 52 (14,220 tokens). The bound only parameterises that estimate and a runtime refusal of a branch that supplies more items than it; the sealed Fold B flights supplied at most 8 items on 5,400 branch rows, and their Solver prompt maximum (13,918 tokens over 5,400 Solver contacts; the 268-B lock arm 13,465 over 1,080) is 416 tokens under the limit. The Instruct-lock maximum of fit-measure-v1 (14,641 tokens) would NOT fit; it is not a Thinking-system prompt. The context-fit policy is compact-or-abstain.",
+      "id": "fit-bound-52-not-55-at-the-raised-cap",
+      "remedy": "none needed on the observed data (the derive refuses if the estimate, the observed prompt maximum or the observed supplied count stops fitting); a later roster with a longer Solver prompt would compact or abstain at the gate, not stop the flight."
+    },
+    {
+      "finding": "The serving fragment's own defaults carry the geometry cap (budget 3072, reserve 4096, max_tokens 7168); they are NOT the delivering form. The baseline therefore carries a CELL-LEVEL thinking_policy that states the lock form (budget 3,072 + reserve 1,024 = cap 4,096) on both nodes, and the candidate arm's policy overrides only its Solver. The delivering arm's wire form is the 268-B lock's (unit-tested).",
+      "id": "cell-level-thinking-policy-states-the-lock-form",
+      "remedy": "none."
+    },
+    {
+      "finding": "A raised cap is a new serving fragment and session id (q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max7168-v1, serving-slurp-thinking-module-fold-b-np4-budget3072-max7168-v1, swap target think-budget7168-np4); the resident session encodes max4096. max_tokens is a request parameter: the server arguments (-c 98304 -np 4: four 24,576-token slots), the runtime receipt (receipts/runtime-q4km-thinking-mmproj-free.json) and the np4 geometry row are the resident Thinking session's, unchanged (the derive proves that only three fragment leaves differ). The swap target names two Windows scheduled tasks, SAEA-Serving-THINKB7 and SAEA-Monitor-THINKB7, which the coordinator registers (saea_task.ps1 pattern) before the first swap, as for SAEA-Serving-THINKB.",
+      "id": "new-session-same-geometry",
+      "remedy": "register the two tasks and SAEA-Chain-NXT2B; the entry scripts are scripts/flights/direct/serving_task_entry_think_budget7168.sh and serving_monitor_start_think_budget7168.sh."
+    },
+    {
+      "finding": "The cost of the candidate arm scales the Solver's measured contact seconds (R1 both-on: 62.21 s) by the budget ratio 6144/3072; only the contacts that hit the forced close (19 of 51) can grow, so the model over-states the expected cost. The registered ceiling carries the 1.3 margin on top.",
+      "id": "cost-is-a-conservative-envelope",
+      "remedy": "the smoke measures the real mix; the machine sign-off refuses unless it is within 1.3x of the registered one."
+    },
+    {
+      "finding": "Ruling 303 A: one experiment in flight. NX-T R2 occupies the Thinking session; this package is DRAFT / HELD until R2 has sealed (the queue hook scripts/flights/batch/queue/queue_nxt2b_after_nxt2.sh waits for CHAIN_NXT2_EXIT rc=0, then flips and starts the chain; owner ruling 327 A). The chain swaps to the raised-cap session itself.",
+      "id": "serial-gpu-and-the-resident-session",
+      "remedy": "the coordinator registers (derive .. commit) while R2 flies; the hook does flip .. chain."
+    },
+    {
+      "finding": "As in the 268-B cells the model-free preflight counts the payload at 4 bytes per token (a placeholder) and would refuse the Solver render at the cap; the cells defer to the registered exact per-contact context-fit gate (preflight_budget_mode defer-to-native-contact-fit), which runs on every arm's REAL request.",
+      "id": "preflight-defers-to-the-exact-gate",
+      "remedy": "none."
+    },
+    {
+      "finding": "scripts/checks/flight_registration_check.py's node-column findings (aa-arm-missing, variant-cost-mismatch, template-summary-mismatch) read only the Solver's template_variants block and are a no-op for a Perception-node group; the declaration is nevertheless complete (variant_cost, template_variants summary with twin false) and stage3_effect_floor_check validates its shape.",
+      "id": "flight-registration-check-does-not-yet-read-the-thinking-block",
+      "remedy": "widen NODE_COLUMN_PATH when the checker is next touched (not part of this package)."
+    },
+    {
+      "finding": "The chain waits for the smoke's sign-off with chain_lib.sh wait_or_machine_signoff (reader nxt_r2b_read.sh smoke, the conditions file the derive emits INSIDE this package, marker /home/chao/nxt2b-decode-signoff.marker, veto window 20 minutes). A refused machine sign-off falls back to waiting for a coordinator marker (12 h).",
+      "id": "machine-signoff-with-a-veto-window",
+      "remedy": "the coordinator may veto by deleting the marker or creating /home/chao/batch-STOP during the window."
+    }
+  ],
+  "one_factor": "the Solver's reasoning budget and completion cap in the candidate arm; the system is the 268-B Thinking lock on TRAIN Fold B",
+  "prohibitions": [
+    "No test-split, DEV or Fold A contact (TRAIN Fold B only).",
+    "No supply arm, no template column, no tool schema on any role; no Reviewer or Planner visit; max_revisions 0.",
+    "The system is the 268-B Thinking lock: the knowledge supply, the module graph, the post-processing and the roster are not changed. The Solver's reasoning budget and completion cap in the candidate arm are the ONLY varied factor.",
+    "The delivering arm's form (budget 3072, reserve 1024, cap 4096), the Perception node of every arm and drop-reasoning-v1 never move; a raised node states its answer reserve (cap - budget >= 1024).",
+    "No arm may set any knob other than enable_thinking / reasoning_budget_tokens / answer_reserve_tokens (rails.supply_variants.parse_perception_thinking_variants refuses the rest by name).",
+    "No twin arm and exactly one candidate arm (owner decision 313 A and ruling 325 A).",
+    "No reasoning text is ever delivered, scored or carried to another node (reasoning_context_policy drop-reasoning-v1); a delivered reasoning marker stops the flight.",
+    "No benefit claim and no admission: claims_benefit is false; the read attributes the effect of untruncated Solver reasoning to the Solver and reports its cost.",
+    "No flight before the coordinator countersigns the DRAFT rows, mints the decision receipt, the harness commit is on master, NX-T R2 has sealed, the raised-cap serving session's Windows tasks are registered and the cells are flipped.",
+    "No session is started by this registration. No paper-scale profile. No system-level claim."
+  ],
+  "protocol_id": "slurp-nxt-r2b-solver-budget-fold-b-protocol-v1",
+  "registered_at_utc": "2026-10-17T13:26:36.000000+00:00",
+  "schema": "saea-registered-protocol-v1",
+  "status": "DRAFT-HELD-REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_COUNTERSIGN_AND_READINESS_FLIP",
+  "study_commit_at_registration": "24b1730ad8138574006fd10108bc6fdb00573273",
+  "the_question": "Does raising the Solver's reasoning budget and completion cap, so that its reasoning is no longer truncated, move the score of the locked Thinking system (owner rulings 323 and 325 A)? The candidate arm is read PAIRED per row against the delivering budget-3072 arm on the same 1,080 Fold B rows in one flight, against the declared A/A offset (no twin)."
+}
