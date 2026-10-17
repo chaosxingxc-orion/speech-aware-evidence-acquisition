@@ -13,7 +13,7 @@
     "thinking_budget_tokens": "b (the arm's setting)"
   },
   "cell": "slurp-native-stage3-nxt-r2-thinking-budget-fold-b-smoke-4-v1",
-  "composed_config_hash": "8a3304a384461ef13346e73d8936a8286066f0deee5310f02576e499d89af641",
+  "composed_config_hash": "cebf39701eaff345f0926c95c4b4c39e29ea33080957dc3005de82ffe6542803",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-smoke-4-fit-v1",
     "carrier_lock_key": "slurp",
@@ -21,7 +21,7 @@
     "planned_gpu_hours": 0.5,
     "planned_model_calls": 96,
     "planned_speech_audio_seconds": 112,
-    "protocol_hash": "88ba2da65468c0d88a3b2a39a367690cd5ab0b900994a61cf86793d4e13f5bac",
+    "protocol_hash": "297206c0d52003536510acdb0bda119ebc161a705c848c93c9dd657f1d2f8d9d",
     "run_id": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-SMOKE-4-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32",
@@ -62,7 +62,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-15-slurp-nxt-r2-thinking-budget-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "fe5e60b2d5fd50abff2ea16b47ee6a0f9788b0f5db71f164d71d992bf2b0589f"
+    "sha256": "ca725521534e5d59f7218a66df61125d0f060e505d7848bdbc0cc23c8a6493de"
   },
   "purpose": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-SMOKE-4-FIT-V1: request envelopes only; reads nothing.",
   "registered_at_utc": "2026-10-15T14:46:49.000000+00:00",
