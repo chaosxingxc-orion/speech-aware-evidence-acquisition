@@ -22,7 +22,7 @@
       "reasoning_budget_tokens": 3072
     }
   },
-  "composed_config_hash": "3c5efd704c2bd4946b977e32f441046929d288920716b621a3d3a4b8beb8130c",
+  "composed_config_hash": "278388dd732541ce7793d1bb0793c42b6e4b85975752b4bb526866f2db1bd51c",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-nxt-r2b-solver-budget-fold-b-smoke-4-generation-v1",
     "carrier_lock_key": "slurp",
@@ -30,7 +30,7 @@
     "planned_gpu_hours": 0.5,
     "planned_model_calls": 32,
     "planned_speech_audio_seconds": 82,
-    "protocol_hash": "5c18d02c6b458c4674db163318c2080cd28f782023ccd7a64734a94087ca039e",
+    "protocol_hash": "4b31943e01108ce2f4e3a53cd33fb0bdd373bb7b1efd1dfd768ca61322460b33",
     "run_id": "SAEA-SLURP-STAGE3-NXT-R2B-SOLVER-BUDGET-FOLD-B-SMOKE-4-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32",
@@ -63,7 +63,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-17-slurp-nxt-r2b-solver-budget-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "5ae26976b23a9dd7d4e436519a99d8e57c7663bf03aa2953e9bb80af76d9ff8a"
+    "sha256": "baba7b360e48059a7d59487c25e778a0b5a9f15b1b57d2bf88d069d87b5d92aa"
   },
   "purpose": "SAEA-SLURP-STAGE3-NXT-R2B-SOLVER-BUDGET-FOLD-B-SMOKE-4-V1: four-row form smoke of the Solver reasoning-budget raise of NX-T R2b.",
   "registered_at_utc": "2026-10-17T13:47:05Z",

@@ -7,7 +7,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-10-17-slurp-nxt-r2b-solver-budget-fold-b-v1/protocol-registered-v1.json",
-      "sha256": "5ae26976b23a9dd7d4e436519a99d8e57c7663bf03aa2953e9bb80af76d9ff8a"
+      "sha256": "baba7b360e48059a7d59487c25e778a0b5a9f15b1b57d2bf88d069d87b5d92aa"
     },
     "registered_facts": {
       "path": "docs/readiness/2026-10-17-slurp-nxt-r2b-solver-budget-fold-b-v1/registered-facts-v1.json",
