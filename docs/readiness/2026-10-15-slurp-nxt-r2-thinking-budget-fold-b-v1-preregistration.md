@@ -1,6 +1,6 @@
 # NX-T R2: the per-node reasoning-budget column, preregistration (DRAFT / HELD)
 
-Registered 2026-10-15 at study commit `11ffc84fa` by script. Development numbers only.
+Registered 2026-10-15 at study commit `6f387e5bf71f1d11921fb5e7c4e8c7d3e5bf2d24` by script. Development numbers only.
 
 Runs: `SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1` / `SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-FIT-V1`; `SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-SMOKE-4-V1` / `SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-SMOKE-4-FIT-V1`; read `SAEA-SLURP-NXT-R2-THINKING-BUDGET-FOLD-B-READ-V1`.
 

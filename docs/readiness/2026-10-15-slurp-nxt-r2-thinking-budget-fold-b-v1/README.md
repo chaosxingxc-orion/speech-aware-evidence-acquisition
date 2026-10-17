@@ -12,8 +12,8 @@ NX-T R1 asks which nodes of the locked Thinking system need thinking at all. NX-
 
 | arm | Perception | Solver | role | cost in delivering rows | linear reference |
 | --- | --- | --- | --- | ---: | ---: |
-| `budget-1536` | thinking, budget 1536 / reserve 2560 / cap 4096 | thinking, budget 1536 / reserve 2560 / cap 4096 | candidate | 0.66 | 0.4929 |
-| `budget-2048` | thinking, budget 2048 / reserve 2048 / cap 4096 | thinking, budget 2048 / reserve 2048 / cap 4096 | candidate | 0.8 | 0.6619 |
+| `perception-off-solver-3072` | enable_thinking false (max_tokens 1024) | thinking, budget 3072 / reserve 1024 / cap 4096 | candidate | 0.53 | 0.5217 |
+| `solver-2048` | thinking, budget 3072 / reserve 1024 / cap 4096 | thinking, budget 2048 / reserve 2048 / cap 4096 | candidate | 0.93 | 0.8425 |
 | `budget-3072` | thinking, budget 3072 / reserve 1024 / cap 4096 | thinking, budget 3072 / reserve 1024 / cap 4096 | delivering (= the 268-B lock form) | 1.0 | 1.0 |
 
 The arm kind is `roles.perception.thinking_variants` (rails.supply_variants.parse_perception_thinking_variants; receipt `saea-perception-branch-arms-v5`, UNCHANGED; the consumption module's `thinking` column kind compiles it): a level-2 Perception branch group whose non-delivering arms carry a `thinking_policy` ({perception | solver: enable_thinking | reasoning_budget_tokens | answer_reserve_tokens}) and nothing else. A budget arm states `reasoning_budget_tokens` b and `answer_reserve_tokens` 4096 - b, so the cap stays 4096. The delivering arm declares no policy, so its requests are the 268-B lock's, byte for byte (unit-tested). Harness addition: the OPTIONAL `thinking_frame.delivering_arm_id` of the consumption module names the delivering arm `budget-3072`; absent, the compiled block is NX-T R1's byte for byte.
@@ -33,17 +33,17 @@ The arm kind is `roles.perception.thinking_variants` (rails.supply_variants.pars
 
 | cell | role | rows | program contacts | plan calls | run id | FIT run id | attempt id |
 | --- | --- | ---: | ---: | ---: | --- | --- | --- |
-| `slurp-native-stage3-nxt-r2-thinking-budget-fold-b-smoke-4-v1` | four-row form smoke of the reasoning-budget column | 4 | 24 | 48 | `SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-SMOKE-4-V1` | `SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-SMOKE-4-FIT-V1` | `attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-smoke-4-generation-v1` |
-| `slurp-native-stage3-nxt-r2-thinking-budget-fold-b-v1` | reasoning-budget column flight (3 arms in one flight) | 1080 | 6,480 | 12,960 | `SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1` | `SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-FIT-V1` | `attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-v1` |
+| `slurp-native-stage3-nxt-r2-thinking-budget-fold-b-smoke-4-v1` | four-row form smoke of the reasoning-budget column | 4 | 24 | 44 | `SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-SMOKE-4-V1` | `SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-SMOKE-4-FIT-V1` | `attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-smoke-4-generation-v1` |
+| `slurp-native-stage3-nxt-r2-thinking-budget-fold-b-v1` | reasoning-budget column flight (3 arms in one flight) | 1080 | 6,480 | 11,880 | `SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1` | `SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-FIT-V1` | `attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-v1` |
 
 The system is the 268-B Thinking lock cell, derived by `nxt_r2_derive_cells.py` with exactly one addition (the Perception `thinking_variants` block, compiled by the module compiler): lock `v2.2`, program `phase-native-module-v1-c6` (6 = 2 + 2 (3 - 1) contacts per row), the Thinking model fragment `q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1`, session `serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1` (swap target `think-budget-np4`), the Thinking packets and their promotion receipt (`/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6/EVO-FOLD-B-V2-promotion.json`), the fold-excluded knowledge supply and the roster `docs/receipts/rosters/slurp-evo-fold-b-v2.json` (1,080 rows); the smoke is the loop's own four Fold B rows (`docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-smoke-4-v1.json`). `preflight_budget_mode` is `defer-to-native-contact-fit`; the finite-completion policy is `deliver-latest-or-abstain` and the ReAct-exhaustion policy `continue-without-answer`. The derive proves the leaves that moved against the 268-B parent (`moved_by_rule`): the `thinking_variants` block and its declaration, the program id (the ceiling is its suffix), the live-fit ids and cap, the cell's own supply pin and the cell text; nothing else.
 
 ## GPU ceiling (from measured throughput)
 
-expected = rows x arm mix / 1.84 rows per minute / 60 with the arm mix 2.46 delivering-row equivalents per row (budget-1536 0.66 + budget-2048 0.8 + budget-3072 1.0); ceiling = ceil_0.1(expected x 1.3); each candidate cost is the clipped-reasoning model's predicted seconds per row relative to the delivering arm, rounded UP to 0.01.
+expected = rows x arm mix / 1.84 rows per minute / 60 with the arm mix 2.46 delivering-row equivalents per row (perception-off-solver-3072 0.53 + solver-2048 0.93 + budget-3072 1.0); ceiling = ceil_0.1(expected x 1.3); each candidate cost is the clipped-reasoning model's predicted seconds per row relative to the delivering arm, rounded UP to 0.01.
 
 * Cost model: `scripts/flights/nx/nxt_r2_cost.py`, fitted on scripts/flights/nx/nxt_r2_cost_inputs.json (40 per-contact records of the NX-T R1 smoke: token counts, seconds, forced flag; no text). Form: seconds(b) = a_node + c * (min(R, b) + A + m * [R > b]); no-think contact = the node's measured no-think mean seconds. Limits: four smoke rows, 12 thinking contacts per node; np4 batching jitter is inside the residual; defined for budgets up to the R1 budget 3,072.
-* Arm mix 2.46 delivering-row equivalents per row; 1,080 rows: expected 24.07 GPU-h, registered ceiling 31.3 GPU-h (6,480 program contacts, plan ceiling 12,960 calls including at most 6 fallback re-asks per row).
+* Arm mix 2.46 delivering-row equivalents per row; 1,080 rows: expected 24.07 GPU-h, registered ceiling 31.3 GPU-h (6,480 program contacts, plan ceiling 11,880 calls including at most 5 fallback re-asks per row).
 * Smoke: 24 program contacts, ceiling 0.5 GPU-h. Registered total 31.8 GPU-h.
 * one 268-B arm pass: 1,080 rows, 2,160 contacts, 9.78 GPU-h at 1.84 rows/min (spent about 9.4 against the 8.4 ceiling: the lesson of the measured-throughput rule).
 
@@ -51,8 +51,8 @@ Projected GPU-h of a 1,080-row LOCK flight that ran one arm's setting on both no
 
 | arm | projected GPU-h per 1,080-row lock flight |
 | --- | ---: |
-| `budget-1536` | 6.46 |
-| `budget-2048` | 7.83 |
+| `perception-off-solver-3072` | 5.18 |
+| `solver-2048` | 9.1 |
 | `budget-3072` | 9.78 |
 
 ## Prerequisites the coordinator must clear BEFORE the countersign

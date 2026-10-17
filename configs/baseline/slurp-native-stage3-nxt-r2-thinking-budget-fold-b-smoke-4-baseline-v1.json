@@ -146,29 +146,20 @@
     "consumption_module": {
       "columns": [
         {
-          "column_id": "budget-1536",
+          "column_id": "perception-off-solver-3072",
           "kind": "thinking",
           "node": "perception",
           "thinking_policy": {
             "perception": {
-              "answer_reserve_tokens": 2560,
-              "reasoning_budget_tokens": 1536
-            },
-            "solver": {
-              "answer_reserve_tokens": 2560,
-              "reasoning_budget_tokens": 1536
+              "enable_thinking": false
             }
           }
         },
         {
-          "column_id": "budget-2048",
+          "column_id": "solver-2048",
           "kind": "thinking",
           "node": "perception",
           "thinking_policy": {
-            "perception": {
-              "answer_reserve_tokens": 2048,
-              "reasoning_budget_tokens": 2048
-            },
             "solver": {
               "answer_reserve_tokens": 2048,
               "reasoning_budget_tokens": 2048
@@ -291,25 +282,16 @@
         "thinking_variants": {
           "arms": [
             {
-              "arm_id": "budget-1536",
+              "arm_id": "perception-off-solver-3072",
               "thinking_policy": {
                 "perception": {
-                  "answer_reserve_tokens": 2560,
-                  "reasoning_budget_tokens": 1536
-                },
-                "solver": {
-                  "answer_reserve_tokens": 2560,
-                  "reasoning_budget_tokens": 1536
+                  "enable_thinking": false
                 }
               }
             },
             {
-              "arm_id": "budget-2048",
+              "arm_id": "solver-2048",
               "thinking_policy": {
-                "perception": {
-                  "answer_reserve_tokens": 2048,
-                  "reasoning_budget_tokens": 2048
-                },
                 "solver": {
                   "answer_reserve_tokens": 2048,
                   "reasoning_budget_tokens": 2048
@@ -471,5 +453,5 @@
   "task_instruction_template": "probes/slurp_native_role_context_v3.txt",
   "task_instruction_template_active": true,
   "what_the_train_exemplars_store_is": "SLURP v2 base program module M1 / cell B1 (docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md section 3-4; A2 decision docs/results/2026-09-17-slurp-a2-exemplar-headroom-audit-v1.md): the top-20 TRAIN construction-pool exemplars (excluding every utterance with a recording in TRAIN Fold A, Fold B or DEV-1000; 9,354-facet pool) recalled by cosine against this row's OWN sealed TRAIN Fold B speech vector, ranked by saea-rank-wcos-prior-agree-v1 (identity on cosine: w_cos=1, w_prior=0, w_agree=0) and passed through saea-fuse-supplyfilter-v1 with m=c=top_l=20 -- twenty in, twenty out on every row, the same 'no coverage reshaping' discipline cell KU-S3 established. Each value renders as '<utterance> | <scenario>_<action> | type=filler; ...' (KB view annotated-exemplars, scripts/build_knowledge_snapshot.py). The decision is delivered to the SOLVER phase (the program's LAST phase) through the E6 acquire transition -- NOT the bootstrap seam intent-boundaries uses, because solver is not the first phase -- as typed content blocks (evidence_id/source_uri/knowledge_role='value', store-prefixed 'train-exemplars::...'); the Solver's instruction bytes are byte-identical to the unmodified anchor's. The composed acquire transition also carries the slot-contracts store's own candidate_supply.solver decision on the same wave; both compose into one PhaseSupply via rails.knowledge_stores._compose_supplies. Phase-2 re-target (P-SV-1/P-SV-2): only the query file moves (TRAIN Fold A -> TRAIN Fold B, the pin the filler family uses); the store, its release and its snapshot are byte-identical.",
-  "what_this_is": "Four-row form smoke of the reasoning-budget column: it proves that the phase-native-module-v1-c6 module program with 3 arms loads on the Thinking session, that each arm's Perception and Solver requests carry their own reasoning budget and reserve at the 4,096 cap, that the forced close fires earlier at a lower budget, that the live phase fit and the seal work, and what a contact costs per arm and per node (completion tokens, finish reasons, forced closes, seconds) against the registered cost model. Cell NXT-R2 (owner rulings 304/307, 313 A, 318 A: how much reasoning does each node need?): the 268-B Thinking system -- the locked SLURP system (lock v2.2 + v4g, review-off module graph, program phase-native-module-v1-c2 as the base) on the Thinking core -- with a same-flight COLUMN over the PER-NODE REASONING BUDGET. The Perception role carries roles.perception.thinking_variants: arms budget-1536 (perception reasoning budget 1536 (answer reserve 2560, cap 4096), solver reasoning budget 1536 (answer reserve 2560, cap 4096)); budget-2048 (perception reasoning budget 2048 (answer reserve 2048, cap 4096), solver reasoning budget 2048 (answer reserve 2048, cap 4096)); and budget-3072 (the delivering arm = the 268-B lock form, budget 3072 + reserve 1024 = cap 4096, reasoning_context_policy drop-reasoning-v1; its requests are the lock's byte for byte). There is NO twin arm (owner decision 313 A). Every arm renders the delivering arm's evidence, template and QueryState; the arms differ only in the reasoning budget of their own Perception and Solver contacts, and an arm's Solver prompt differs by that arm's OWN Perception note (independent chains, no note sharing). Program phase-native-module-v1-c6: 2 + 2 (3 - 1) = 6 contacts per row. Every policy block is the module compiler's output."
+  "what_this_is": "Four-row form smoke of the reasoning-budget column: it proves that the phase-native-module-v1-c6 module program with 3 arms loads on the Thinking session, that each arm's Perception and Solver requests carry their own reasoning budget and reserve at the 4,096 cap, that the forced close fires earlier at a lower budget, that the live phase fit and the seal work, and what a contact costs per arm and per node (completion tokens, finish reasons, forced closes, seconds) against the registered cost model. Cell NXT-R2 (owner rulings 304/307, 313 A, 318 A: how much reasoning does each node need?): the 268-B Thinking system -- the locked SLURP system (lock v2.2 + v4g, review-off module graph, program phase-native-module-v1-c2 as the base) on the Thinking core -- with a same-flight COLUMN over the PER-NODE REASONING BUDGET. The Perception role carries roles.perception.thinking_variants: arms perception-off-solver-3072 (perception enable_thinking false, solver thinking at the locked budget 3072); solver-2048 (perception thinking at the locked budget 3072, solver reasoning budget 2048 (answer reserve 2048, cap 4096)); and budget-3072 (the delivering arm = the 268-B lock form, budget 3072 + reserve 1024 = cap 4096, reasoning_context_policy drop-reasoning-v1; its requests are the lock's byte for byte). There is NO twin arm (owner decision 313 A). Every arm renders the delivering arm's evidence, template and QueryState; the arms differ only in the reasoning budget of their own Perception and Solver contacts, and an arm's Solver prompt differs by that arm's OWN Perception note (independent chains, no note sharing). Program phase-native-module-v1-c6: 2 + 2 (3 - 1) = 6 contacts per row. Every policy block is the module compiler's output."
 }

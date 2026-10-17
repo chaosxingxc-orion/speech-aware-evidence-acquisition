@@ -2,11 +2,11 @@
   "_note": "Every model-free fact this DRAFT registration rests on, and the CANONICAL stage3_measurement blocks scripts/checks/stage3_effect_floor_check.py and scripts/checks/flight_registration_check.py resolve (keyed by run id).",
   "accounting": {
     "arm_fit_endpoint_calls_cap": 25920,
-    "arm_generation_calls": 12960,
-    "arm_speech_audio_seconds_cap": 37858,
+    "arm_generation_calls": 11880,
+    "arm_speech_audio_seconds_cap": 34703,
     "arms": [
-      "budget-1536",
-      "budget-2048",
+      "perception-off-solver-3072",
+      "solver-2048",
       "budget-3072"
     ],
     "contacts_per_row": 6,
@@ -14,35 +14,26 @@
       "arm_mix_rows": 2.46,
       "arm_table": [
         {
-          "arm": "budget-1536",
-          "cost_in_delivering_rows": 0.66,
-          "linear_reference_cost": 0.4929,
-          "perception": 1536,
+          "arm": "perception-off-solver-3072",
+          "cost_in_delivering_rows": 0.53,
+          "linear_reference_cost": 0.5217,
+          "perception": "off",
           "role": "candidate",
-          "solver": 1536,
+          "solver": 3072,
           "thinking_policy": {
             "perception": {
-              "answer_reserve_tokens": 2560,
-              "reasoning_budget_tokens": 1536
-            },
-            "solver": {
-              "answer_reserve_tokens": 2560,
-              "reasoning_budget_tokens": 1536
+              "enable_thinking": false
             }
           }
         },
         {
-          "arm": "budget-2048",
-          "cost_in_delivering_rows": 0.8,
-          "linear_reference_cost": 0.6619,
-          "perception": 2048,
+          "arm": "solver-2048",
+          "cost_in_delivering_rows": 0.93,
+          "linear_reference_cost": 0.8425,
+          "perception": 3072,
           "role": "candidate",
           "solver": 2048,
           "thinking_policy": {
-            "perception": {
-              "answer_reserve_tokens": 2048,
-              "reasoning_budget_tokens": 2048
-            },
             "solver": {
               "answer_reserve_tokens": 2048,
               "reasoning_budget_tokens": 2048
@@ -62,10 +53,10 @@
       "column_flight": {
         "contacts": 6480,
         "expected_gpu_hours": 24.07,
-        "plan_ceiling_calls": 12960,
+        "plan_ceiling_calls": 11880,
         "planned_ceiling_gpu_hours": 31.3,
-        "run_cumulative_plan_calls": 12960,
-        "run_cumulative_speech_audio_seconds": 37858
+        "run_cumulative_plan_calls": 11880,
+        "run_cumulative_speech_audio_seconds": 34703
       },
       "cost_model": {
         "form": "seconds(b) = a_node + c * (min(R, b) + A + m * [R > b]); no-think contact = the node's measured no-think mean seconds",
@@ -96,12 +87,12 @@
         },
         "seconds_per_token": 0.025092
       },
-      "fallback_note": "The answer-only fallback adds at most one contact per budgeted-thinking contact: 6 per row (the delivering arm's 2 plus one per candidate node that still thinks); planned_model_calls is rows x (6 + 6) = 12960 (program maximum 6480). The runner requires only rows x (6 + 2). The FIT cap stays structural (rows x program contacts x endpoints = 25920).",
-      "formula": "expected = rows x arm mix / 1.84 rows per minute / 60 with the arm mix 2.46 delivering-row equivalents per row (budget-1536 0.66 + budget-2048 0.8 + budget-3072 1.0); ceiling = ceil_0.1(expected x 1.3); each candidate cost is the clipped-reasoning model's predicted seconds per row relative to the delivering arm, rounded UP to 0.01",
+      "fallback_note": "The answer-only fallback adds at most one contact per budgeted-thinking contact: 5 per row (the delivering arm's 2 plus one per candidate node that still thinks); planned_model_calls is rows x (6 + 5) = 11880 (program maximum 6480). The runner requires only rows x (6 + 2). The FIT cap stays structural (rows x program contacts x endpoints = 25920).",
+      "formula": "expected = rows x arm mix / 1.84 rows per minute / 60 with the arm mix 2.46 delivering-row equivalents per row (perception-off-solver-3072 0.53 + solver-2048 0.93 + budget-3072 1.0); ceiling = ceil_0.1(expected x 1.3); each candidate cost is the clipped-reasoning model's predicted seconds per row relative to the delivering arm, rounded UP to 0.01",
       "inputs": {
         "linear_reference_cost": {
-          "budget-1536": 0.4929,
-          "budget-2048": 0.6619
+          "perception-off-solver-3072": 0.5217,
+          "solver-2048": 0.8425
         },
         "margin": 1.3,
         "r1_measured_seconds_per_row": {
@@ -112,16 +103,16 @@
           "solver-off": 52.94
         },
         "row_cost_in_delivering_rows": {
-          "budget-1536": 0.66,
-          "budget-2048": 0.8,
-          "budget-3072": 1.0
+          "budget-3072": 1.0,
+          "perception-off-solver-3072": 0.53,
+          "solver-2048": 0.93
         },
         "rows_per_minute_full": 1.84
       },
       "projected_lock_flight_gpu_hours": {
-        "budget-1536": 6.46,
-        "budget-2048": 7.83,
-        "budget-3072": 9.78
+        "budget-3072": 9.78,
+        "perception-off-solver-3072": 5.18,
+        "solver-2048": 9.1
       },
       "reference_268b": "one 268-B arm pass: 1,080 rows, 2,160 contacts, 9.78 GPU-h at 1.84 rows/min (spent about 9.4 against the 8.4 ceiling: the lesson of the measured-throughput rule)",
       "registered_total_gpu_hours": 31.8,
@@ -133,13 +124,13 @@
     "lock": "v2.2",
     "program": "phase-native-module-v1-c6",
     "rows": 1080,
-    "smoke_generation_calls": 48,
-    "smoke_speech_audio_seconds_cap": 123
+    "smoke_generation_calls": 44,
+    "smoke_speech_audio_seconds_cap": 112
   },
   "blockers": [],
   "composed_config_hashes": {
-    "arm": "1dba165d8fbdab672778fbe7982c44a84829134b189833bb3a58b98008635627",
-    "smoke": "e3d19392b48ff9a9118843c234fc0a4f7ff3c5c62ecb65c79f46415f0c7b1e80"
+    "arm": "46843d8024542dca6064316e0114e0124592395408b0af920a903891b98ff5c2",
+    "smoke": "8a3304a384461ef13346e73d8936a8286066f0deee5310f02576e499d89af641"
   },
   "context_fit": {
     "completion_cap": 4096,
@@ -236,13 +227,13 @@
       "baseline_fragment": "slurp-native-stage3-nxt-r2-thinking-budget-fold-b-baseline-v1",
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-nxt-r2-thinking-budget-fold-b-v1",
-      "composed_config_hash": "1dba165d8fbdab672778fbe7982c44a84829134b189833bb3a58b98008635627",
+      "composed_config_hash": "46843d8024542dca6064316e0114e0124592395408b0af920a903891b98ff5c2",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
       "execution_plan": {
         "execution_profile": "bounded-discovery-probe",
         "planned_gpu_hours": 31.3,
-        "planned_model_calls": 12960,
-        "planned_speech_audio_seconds": 37858,
+        "planned_model_calls": 11880,
+        "planned_speech_audio_seconds": 34703,
         "split_role": "discovery"
       },
       "execution_profile": "bounded-discovery-probe",
@@ -252,11 +243,11 @@
         "ceilings_are_not_targets": true,
         "encoder_calls": 0,
         "fit_endpoint_calls_cap": 25920,
-        "generation_calls_cap": 12960,
+        "generation_calls_cap": 11880,
         "gpu_hours_fit_inclusive": 31.3,
-        "native_task_contract_calls_cap": 12960,
+        "native_task_contract_calls_cap": 11880,
         "official_complete_scoring_jobs": 1,
-        "repeated_speech_audio_seconds_cap": 37858
+        "repeated_speech_audio_seconds_cap": 34703
       },
       "fit": {
         "attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-fit-v1",
@@ -269,7 +260,7 @@
       "key": "arm",
       "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
       "program": "phase-native-module-v1-c6",
-      "protocol_hash": "8ea13bbbaa5cf21a60d694c8460726900218c264888b69710b6e64d2873b7976",
+      "protocol_hash": "56f836564f81d84b98fca210f9fd93b9426168e9b3a7f366d0a3dcd218cbfd4e",
       "roster_receipt": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1",
@@ -282,13 +273,13 @@
       "baseline_fragment": "slurp-native-stage3-nxt-r2-thinking-budget-fold-b-smoke-4-baseline-v1",
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-nxt-r2-thinking-budget-fold-b-smoke-4-v1",
-      "composed_config_hash": "e3d19392b48ff9a9118843c234fc0a4f7ff3c5c62ecb65c79f46415f0c7b1e80",
+      "composed_config_hash": "8a3304a384461ef13346e73d8936a8286066f0deee5310f02576e499d89af641",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
       "execution_plan": {
         "execution_profile": "bounded-discovery-probe",
         "planned_gpu_hours": 0.5,
-        "planned_model_calls": 48,
-        "planned_speech_audio_seconds": 123,
+        "planned_model_calls": 44,
+        "planned_speech_audio_seconds": 112,
         "split_role": "discovery"
       },
       "execution_profile": "bounded-discovery-probe",
@@ -298,11 +289,11 @@
         "ceilings_are_not_targets": true,
         "encoder_calls": 0,
         "fit_endpoint_calls_cap": 96,
-        "generation_calls_cap": 48,
+        "generation_calls_cap": 44,
         "gpu_hours_fit_inclusive": 0.5,
-        "native_task_contract_calls_cap": 48,
+        "native_task_contract_calls_cap": 44,
         "official_complete_scoring_jobs": 0,
-        "repeated_speech_audio_seconds_cap": 123
+        "repeated_speech_audio_seconds_cap": 112
       },
       "fit": {
         "attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-smoke-4-fit-v1",
@@ -315,7 +306,7 @@
       "key": "smoke",
       "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
       "program": "phase-native-module-v1-c6",
-      "protocol_hash": "8c1416cd68dab1b715fc14f57e0a501ec7d88024d7e325cf1edb878cd0d8cb85",
+      "protocol_hash": "88ba2da65468c0d88a3b2a39a367690cd5ab0b900994a61cf86793d4e13f5bac",
       "roster_receipt": "docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-smoke-4-v1.json",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-SMOKE-4-V1",
@@ -420,29 +411,20 @@
     }
   },
   "status": "DRAFT-HELD",
-  "study_commit_at_registration": "11ffc84fa",
+  "study_commit_at_registration": "6f387e5bf71f1d11921fb5e7c4e8c7d3e5bf2d24",
   "thinking_arms": {
-    "budget-1536": {
+    "budget-3072": null,
+    "perception-off-solver-3072": {
       "perception": {
-        "answer_reserve_tokens": 2560,
-        "reasoning_budget_tokens": 1536
-      },
-      "solver": {
-        "answer_reserve_tokens": 2560,
-        "reasoning_budget_tokens": 1536
+        "enable_thinking": false
       }
     },
-    "budget-2048": {
-      "perception": {
-        "answer_reserve_tokens": 2048,
-        "reasoning_budget_tokens": 2048
-      },
+    "solver-2048": {
       "solver": {
         "answer_reserve_tokens": 2048,
         "reasoning_budget_tokens": 2048
       }
-    },
-    "budget-3072": null
+    }
   },
   "thinking_knobs": {
     "answer_fallback": {

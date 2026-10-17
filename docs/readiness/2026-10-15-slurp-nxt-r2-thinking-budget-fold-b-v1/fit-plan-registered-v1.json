@@ -1,7 +1,7 @@
 {
   "arm_order": [
-    "budget-1536",
-    "budget-2048",
+    "perception-off-solver-3072",
+    "solver-2048",
     "budget-3072"
   ],
   "budget_node": {
@@ -13,15 +13,15 @@
     "thinking_budget_tokens": "b (the arm's setting)"
   },
   "cell": "slurp-native-stage3-nxt-r2-thinking-budget-fold-b-v1",
-  "composed_config_hash": "1dba165d8fbdab672778fbe7982c44a84829134b189833bb3a58b98008635627",
+  "composed_config_hash": "46843d8024542dca6064316e0114e0124592395408b0af920a903891b98ff5c2",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-fit-v1",
     "carrier_lock_key": "slurp",
     "execution_profile": "bounded-discovery-probe",
     "planned_gpu_hours": 31.3,
     "planned_model_calls": 25920,
-    "planned_speech_audio_seconds": 37858,
-    "protocol_hash": "8ea13bbbaa5cf21a60d694c8460726900218c264888b69710b6e64d2873b7976",
+    "planned_speech_audio_seconds": 34703,
+    "protocol_hash": "56f836564f81d84b98fca210f9fd93b9426168e9b3a7f366d0a3dcd218cbfd4e",
     "run_id": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
@@ -36,11 +36,11 @@
     "ceilings_are_not_targets": true,
     "encoder_calls": 0,
     "fit_endpoint_calls_cap": 25920,
-    "generation_calls_cap": 12960,
+    "generation_calls_cap": 11880,
     "gpu_hours_fit_inclusive": 31.3,
-    "native_task_contract_calls_cap": 12960,
+    "native_task_contract_calls_cap": 11880,
     "official_complete_scoring_jobs": 1,
-    "repeated_speech_audio_seconds_cap": 37858
+    "repeated_speech_audio_seconds_cap": 34703
   },
   "no_think_node": {
     "answer_reserve_tokens": 1024,
@@ -62,45 +62,13 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-15-slurp-nxt-r2-thinking-budget-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "0491636dea112b7f893b25dd0699ee197b50f5e335293fba088ab231a94c952a"
+    "sha256": "fe5e60b2d5fd50abff2ea16b47ee6a0f9788b0f5db71f164d71d992bf2b0589f"
   },
   "purpose": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-FIT-V1: request envelopes only; reads nothing.",
   "registered_at_utc": "2026-10-15T14:46:49.000000+00:00",
   "schema": "saea-registered-fit-plan-v1",
   "status": "DRAFT-HELD-REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_COUNTERSIGN_AND_READINESS_FLIP",
   "thinking_arms": {
-    "budget-1536": {
-      "settings": {
-        "perception": 1536,
-        "solver": 1536
-      },
-      "thinking_policy": {
-        "perception": {
-          "answer_reserve_tokens": 2560,
-          "reasoning_budget_tokens": 1536
-        },
-        "solver": {
-          "answer_reserve_tokens": 2560,
-          "reasoning_budget_tokens": 1536
-        }
-      }
-    },
-    "budget-2048": {
-      "settings": {
-        "perception": 2048,
-        "solver": 2048
-      },
-      "thinking_policy": {
-        "perception": {
-          "answer_reserve_tokens": 2048,
-          "reasoning_budget_tokens": 2048
-        },
-        "solver": {
-          "answer_reserve_tokens": 2048,
-          "reasoning_budget_tokens": 2048
-        }
-      }
-    },
     "budget-3072": {
       "role": "delivering",
       "settings": {
@@ -108,6 +76,29 @@
         "solver": 3072
       },
       "thinking_policy": null
+    },
+    "perception-off-solver-3072": {
+      "settings": {
+        "perception": "off",
+        "solver": 3072
+      },
+      "thinking_policy": {
+        "perception": {
+          "enable_thinking": false
+        }
+      }
+    },
+    "solver-2048": {
+      "settings": {
+        "perception": 3072,
+        "solver": 2048
+      },
+      "thinking_policy": {
+        "solver": {
+          "answer_reserve_tokens": 2048,
+          "reasoning_budget_tokens": 2048
+        }
+      }
     }
   },
   "thinking_knobs": {

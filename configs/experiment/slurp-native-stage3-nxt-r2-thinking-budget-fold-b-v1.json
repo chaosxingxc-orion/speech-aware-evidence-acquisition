@@ -42,20 +42,20 @@
   ],
   "core_read_design": {
     "arms": {
-      "budget-1536": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1",
-      "budget-2048": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1",
-      "budget-3072": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1"
+      "budget-3072": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1",
+      "perception-off-solver-3072": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1",
+      "solver-2048": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1"
     },
     "chain": "swap to the Thinking session -> smoke -> coordinator sign-off -> the column flight -> swap back to the Instruct session",
-    "reading": "official SLU-F1 and intent paired per row: each of budget-1536, budget-2048 minus the delivering budget-3072 arm, judged against the declared A/A offset 1.15 pp (no twin), beside the per-arm per-node reasoning, cap-hit, empty, forced-close, finish-reason and seconds-per-contact tables and the throughput table",
+    "reading": "official SLU-F1 and intent paired per row: each of perception-off-solver-3072, solver-2048 minus the delivering budget-3072 arm, judged against the declared A/A offset 1.15 pp (no twin), beside the per-arm per-node reasoning, cap-hit, empty, forced-close, finish-reason and seconds-per-contact tables and the throughput table",
     "this_cell": "reasoning-budget column flight (3 arms in one flight)"
   },
   "date": "2026-10-15",
   "execution_plan": {
     "execution_profile": "bounded-discovery-probe",
     "planned_gpu_hours": 31.3,
-    "planned_model_calls": 12960,
-    "planned_speech_audio_seconds": 37858,
+    "planned_model_calls": 11880,
+    "planned_speech_audio_seconds": 34703,
     "split_role": "discovery"
   },
   "execution_profile": "bounded-discovery-probe",
@@ -66,17 +66,17 @@
     "ceilings_are_not_targets": true,
     "encoder_calls": 0,
     "fit_endpoint_calls_cap": 25920,
-    "generation_calls_cap": 12960,
+    "generation_calls_cap": 11880,
     "gpu_hours_fit_inclusive": 31.3,
-    "native_task_contract_calls_cap": 12960,
+    "native_task_contract_calls_cap": 11880,
     "official_complete_scoring_jobs": 1,
-    "repeated_speech_audio_seconds_cap": 37858
+    "repeated_speech_audio_seconds_cap": 34703
   },
   "fragment_kind": "saea-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-v1",
   "generation_budget": {
-    "cap": 12960,
-    "definition": "The review-off module graph (perception 1, solver 1; Reviewer and Planner never visited) under program phase-native-module-v1-c6 with the 3-arm reasoning-budget column at the Perception node: 1,080 x 6 = 6,480 is the exact program maximum (2 + 2 (K - 1), K = 3); the plan ceiling adds 6 answer-only fallback contacts per row (one per budgeted-thinking contact of the arms: the delivering arm's 2 plus one per candidate node that still thinks, core.reasoning_knobs): 12,960 = 1,080 x 12. The live phase fit makes 1080 x 6 x 4 = 25,920 tokenizer endpoint calls under its own run id SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-FIT-V1. The GPU-hour ceiling is a BOUND (rows x 2.46 full-row equivalents / 1.84 rows per minute / 60 x 1.3, ceil 0.1), never a target. The budget is RUN-CUMULATIVE across every attempt of this run id.",
-    "target": 12960
+    "cap": 11880,
+    "definition": "The review-off module graph (perception 1, solver 1; Reviewer and Planner never visited) under program phase-native-module-v1-c6 with the 3-arm reasoning-budget column at the Perception node: 1,080 x 6 = 6,480 is the exact program maximum (2 + 2 (K - 1), K = 3); the plan ceiling adds 5 answer-only fallback contacts per row (one per budgeted-thinking contact of the arms: the delivering arm's 2 plus one per candidate node that still thinks, core.reasoning_knobs): 11,880 = 1,080 x 11. The live phase fit makes 1080 x 6 x 4 = 25,920 tokenizer endpoint calls under its own run id SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-FIT-V1. The GPU-hour ceiling is a BOUND (rows x 2.46 full-row equivalents / 1.84 rows per minute / 60 x 1.3, ceil 0.1), never a target. The budget is RUN-CUMULATIVE across every attempt of this run id.",
+    "target": 11880
   },
   "population": {
     "count": 1080,
@@ -1173,7 +1173,7 @@
     }
   ],
   "preserve_wire_responses": true,
-  "purpose": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1: how much reasoning does each node of the locked Thinking system need (owner rulings 304/307, 313 A, 318 A)? One flight, 3 arms over TRAIN Fold B 1,080: the delivering budget-3072 arm (the 268-B lock form) and the candidate budget arms budget-1536, budget-2048. Each candidate arm is read PAIRED per row against budget-3072 (official SLU-F1 primary, intent secondary; utterance-cluster bootstrap CI95) against the DECLARED A/A offset |o| = 1.15 pp (no twin flies), beside the per-node reasoning statistics, the forced-close / cap-hit / empty-completion table and the throughput table (the projected GPU-h of a 1,080-row lock flight at each budget is the efficiency deliverable). claims_benefit is false: a per-node attribution and a saving, not an admission; development numbers only (owner decisions 28 and 86); never a test claim. Nothing here authorises a flight, a readiness flip or an admission entry.",
+  "purpose": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1: how much reasoning does each node of the locked Thinking system need (owner rulings 304/307, 313 A, 318 A)? One flight, 3 arms over TRAIN Fold B 1,080: the delivering budget-3072 arm (the 268-B lock form) and the candidate budget arms perception-off-solver-3072, solver-2048. Each candidate arm is read PAIRED per row against budget-3072 (official SLU-F1 primary, intent secondary; utterance-cluster bootstrap CI95) against the DECLARED A/A offset |o| = 1.15 pp (no twin flies), beside the per-node reasoning statistics, the forced-close / cap-hit / empty-completion table and the throughput table (the projected GPU-h of a 1,080-row lock flight at each budget is the efficiency deliverable). claims_benefit is false: a per-node attribution and a saving, not an admission; development numbers only (owner decisions 28 and 86); never a test claim. Nothing here authorises a flight, a readiness flip or an admission entry.",
   "service_session": "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
   "split_id": "SLURP-EVO-FOLD-B-V2",
   "stage3_algorithm": {

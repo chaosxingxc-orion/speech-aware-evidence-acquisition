@@ -1,21 +1,21 @@
 {
   "arm_settings": {
-    "budget-1536": {
-      "perception": 1536,
-      "solver": 1536
-    },
-    "budget-2048": {
-      "perception": 2048,
-      "solver": 2048
-    },
     "budget-3072": {
       "perception": 3072,
       "solver": 3072
+    },
+    "perception-off-solver-3072": {
+      "perception": "off",
+      "solver": 3072
+    },
+    "solver-2048": {
+      "perception": 3072,
+      "solver": 2048
     }
   },
   "arms": [
-    "budget-1536",
-    "budget-2048",
+    "perception-off-solver-3072",
+    "solver-2048",
     "budget-3072"
   ],
   "authority": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md (owner rulings 304/307 (2026-10-13), 313 A and 318 A (2026-10-14), coordinator approval of the NX-T R2 design); docs/superpowers/specs/2026-10-12-thinking-core-engineering-base-design.md; docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
