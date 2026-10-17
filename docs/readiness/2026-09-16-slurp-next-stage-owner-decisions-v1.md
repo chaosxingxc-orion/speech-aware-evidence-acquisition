@@ -3017,3 +3017,16 @@ read at n = 1,080 intact. Cost about 1.5 GPU-h after the successor-3 seal; the s
 - Execution: rec2 registration built model-free now (Sonnet; the recovery lib's second record, resume_from block, new generation attempt and
   FIT-REC2 ids, cumulative caps += 10,298 calls / 30,101 s, the rec1 row folded into the rec2 row per the 266-E form), registered on master in
   flight, flipped (`NXT1_KINDS=arm`) and flown (`arm-only`) once successor-3 seals; then `nxt_r1_read.sh columns` -> READ row -> read.
+
+### CORRECTION: the two successor-3 stalls were host SLEEP, not memory pressure (coordinator, 2026-10-17 04:55Z)
+
+- Windows Power-Troubleshooter events: sleep 2026-10-16 05:14:20Z -> wake 06:47:45Z (wake source: power button) and sleep 2026-10-16 23:34:13Z ->
+  wake 2026-10-17 04:44:25Z (power button). The first matches the "85-minute stall" recorded at 07:30Z on 2026-10-16 (that section attributed
+  it to Windows memory compression; the compression was real but the stall was the sleep); the second cost 5 h 10 min of the test read
+  (checkpoint 2,538 -> 2,587 across the night; rows and log agree: 2,586 checkpointed vs 2,585 workflow ends at 04:47Z, so no durability
+  defect). The owner confirmed in conversation: 「服务器休眠了，后面继续吧」 ("the server went to sleep; carry on").
+- AC standby and hibernate timeouts were already 0 (never); the sleeps were therefore triggered by an action, most likely the lid. Change made:
+  lid-close action on AC set to "do nothing" (`powercfg /setacvalueindex SCHEME_CURRENT SUB_BUTTONS LIDACTION 0`); monitor timeout on AC 0.
+  The periodic WSL cache drop stays (it still protects the host from the page-cache growth). GPU after the wake: 1,430 MHz, 93 W against a
+  97 W software power cap (a laptop limit; decode 26-30 tokens/s per slot vs about 40 earlier in the flight -- observation only).
+- Flight: successor-3 at 2,587 / 3,010 at 04:48Z, resumed at speed; seal now about 08:00Z 2026-10-17.
