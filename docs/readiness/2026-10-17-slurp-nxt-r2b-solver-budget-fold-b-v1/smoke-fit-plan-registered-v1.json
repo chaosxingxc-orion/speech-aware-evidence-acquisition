@@ -119,10 +119,10 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-17-slurp-nxt-r2b-solver-budget-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "0d047b9c16d9685dbab35de31bd48aafaf08f5ab5ca9aa46dfa1f2a34f44b84f"
+    "sha256": "5ae26976b23a9dd7d4e436519a99d8e57c7663bf03aa2953e9bb80af76d9ff8a"
   },
   "purpose": "SAEA-SLURP-STAGE3-NXT-R2B-SOLVER-BUDGET-FOLD-B-SMOKE-4-FIT-V1: request envelopes only; reads nothing.",
-  "registered_at_utc": "2026-10-17T13:26:36.000000+00:00",
+  "registered_at_utc": "2026-10-17T13:47:05Z",
   "schema": "saea-registered-fit-plan-v1",
   "serving": {
     "geometry_cap": 7168,

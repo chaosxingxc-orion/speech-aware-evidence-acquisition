@@ -397,7 +397,7 @@
       "UNRESOLVED": "none of the above (the interval is too wide to call the raise a gain, a harm or no resolved gain)"
     }
   },
-  "registered_at_utc": "2026-10-17T13:26:36.000000+00:00",
+  "registered_at_utc": "2026-10-17T13:47:05Z",
   "registration_basis": "owner rulings 323 and 325 A (2026-10-17), 313 A (2026-10-14) and 304/307 (2026-10-13), coordinator approval of the NX-T R2b design; docs/superpowers/specs/2026-10-12-thinking-core-engineering-base-design.md. DRAFT: nothing here authorises a flip or a flight.",
   "roster": {
     "arm": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
@@ -442,7 +442,7 @@
     }
   },
   "status": "DRAFT-HELD",
-  "study_commit_at_registration": "24b1730ad8138574006fd10108bc6fdb00573273",
+  "study_commit_at_registration": "c878ec3d1f647b5b2c83f6eb9e1e7c85d798e764",
   "thinking_arms": {
     "budget-3072": null,
     "solver-6144": {
