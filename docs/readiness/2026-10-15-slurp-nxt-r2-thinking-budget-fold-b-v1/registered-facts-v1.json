@@ -2,8 +2,8 @@
   "_note": "Every model-free fact this DRAFT registration rests on, and the CANONICAL stage3_measurement blocks scripts/checks/stage3_effect_floor_check.py and scripts/checks/flight_registration_check.py resolve (keyed by run id).",
   "accounting": {
     "arm_fit_endpoint_calls_cap": 25920,
-    "arm_generation_calls": 11880,
-    "arm_speech_audio_seconds_cap": 34703,
+    "arm_generation_calls": 11922,
+    "arm_speech_audio_seconds_cap": 34836,
     "arms": [
       "perception-off-solver-3072",
       "solver-2048",
@@ -55,8 +55,8 @@
         "expected_gpu_hours": 24.07,
         "plan_ceiling_calls": 11880,
         "planned_ceiling_gpu_hours": 31.3,
-        "run_cumulative_plan_calls": 11880,
-        "run_cumulative_speech_audio_seconds": 34703
+        "run_cumulative_plan_calls": 11922,
+        "run_cumulative_speech_audio_seconds": 34836
       },
       "cost_model": {
         "form": "seconds(b) = a_node + c * (min(R, b) + A + m * [R > b]); no-think contact = the node's measured no-think mean seconds",
@@ -129,7 +129,7 @@
   },
   "blockers": [],
   "composed_config_hashes": {
-    "arm": "23bac934a47347149382930bce00e893df2789e73fe67bfebeb42bf93f55c1f0",
+    "arm": "7227bc996918da70afea648bb9af4f6ae0cf8bdaf818c53408764911af362fb8",
     "smoke": "cebf39701eaff345f0926c95c4b4c39e29ea33080957dc3005de82ffe6542803"
   },
   "context_fit": {
@@ -223,17 +223,17 @@
   "identity": {
     "arm": {
       "arm": "speech-feature-query-native-tools",
-      "attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-v1",
+      "attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-rec1-v1",
       "baseline_fragment": "slurp-native-stage3-nxt-r2-thinking-budget-fold-b-baseline-v1",
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-nxt-r2-thinking-budget-fold-b-v1",
-      "composed_config_hash": "23bac934a47347149382930bce00e893df2789e73fe67bfebeb42bf93f55c1f0",
+      "composed_config_hash": "7227bc996918da70afea648bb9af4f6ae0cf8bdaf818c53408764911af362fb8",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
       "execution_plan": {
         "execution_profile": "bounded-discovery-probe",
         "planned_gpu_hours": 31.3,
-        "planned_model_calls": 11880,
-        "planned_speech_audio_seconds": 34703,
+        "planned_model_calls": 11922,
+        "planned_speech_audio_seconds": 34836,
         "split_role": "discovery"
       },
       "execution_profile": "bounded-discovery-probe",
@@ -243,24 +243,24 @@
         "ceilings_are_not_targets": true,
         "encoder_calls": 0,
         "fit_endpoint_calls_cap": 25920,
-        "generation_calls_cap": 11880,
+        "generation_calls_cap": 11922,
         "gpu_hours_fit_inclusive": 31.3,
-        "native_task_contract_calls_cap": 11880,
+        "native_task_contract_calls_cap": 11922,
         "official_complete_scoring_jobs": 1,
-        "repeated_speech_audio_seconds_cap": 34703
+        "repeated_speech_audio_seconds_cap": 34836
       },
       "fit": {
-        "attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-fit-v1",
+        "attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-fit-rec1-v1",
         "contact_cap": 25920,
         "max_speech_packets": 1,
-        "run_id": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-FIT-V1"
+        "run_id": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-FIT-REC1-V1"
       },
-      "fit_attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-fit-v1",
-      "fit_run_id": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-FIT-V1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-fit-rec1-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-FIT-REC1-V1",
       "key": "arm",
       "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
       "program": "phase-native-module-v1-c6",
-      "protocol_hash": "707b0a92ad0d09ed7acccfc6334dbe1d1d6fedd3c63290e9cba43c7a8e941a95",
+      "protocol_hash": "1b0a61bb35ccc39399b04df52e2b6e8de594b2f6fe3fb9dd9763dd92446141ca",
       "roster_receipt": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1",
@@ -331,6 +331,12 @@
     "speech_packet_root": "/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6",
     "swap_target": "think-budget-np4"
   },
+  "predecessor_snapshots": {
+    "arm": {
+      "path": "docs/readiness/2026-10-15-slurp-nxt-r2-thinking-budget-fold-b-v1/predecessor-snapshot-arm-rec1-v1.json",
+      "sha256": "bae3ff41e44294cea2b8ac417f37f63343eb3b7404a86173029a00daad57b7fb"
+    }
+  },
   "prohibitions": [
     "No test-split, DEV or Fold A contact (TRAIN Fold B only).",
     "No supply arm, no template column, no tool schema on any role; no Reviewer or Planner visit; max_revisions 0.",
@@ -364,6 +370,51 @@
       "GAIN": "SLU CI95 lower bound above +|o| (the cheaper budget RAISES the score beyond the declared A/A width)",
       "NEEDS-FULL-BUDGET": "SLU CI95 upper bound below -|o| (the cheaper budget loses more than the declared A/A width)",
       "UNRESOLVED": "none of the above (the interval is too wide to call the budget cheaper at no loss, and the loss is not beyond |o|)"
+    }
+  },
+  "recovery": {
+    "arm": {
+      "amendment": "RECOVERY 2026-10-17T13:00:09Z (the cell's single one; coordinator decision under owner rulings 318 A / 327 A and the owner's 2026-10-17 directive to keep the GPU queue running; the smoke stays sealed and signed off; the chain segment is arm-only). The generation budget is run-cumulative across the attempts of the run id (core/model/adapter.py; every attempt state counts, an OPENED one included), so the rec1 plan carries the original plan plus the failed attempt's recorded spend (42 calls, 132.099 speech-seconds, read from the attempt record into docs/readiness/2026-10-15-slurp-nxt-r2-thinking-budget-fold-b-v1/predecessor-snapshot-arm-rec1-v1.json). The FIT cap is structural and unchanged (rows x program contacts x endpoints per contact). The FIT run id and the FIT attempt id both take the rec1 marker because the cell is re-flown whole and a (run_id, attempt_id) pair is a one-time key; the generation run id is unchanged. The registered GPU-hour ceiling does not change.",
+      "base_commit": "3b08bbd533a35d9726dd9be8019a98164fbacaff",
+      "fit_cap_rule": "The FIT cap is structural: rows x program contacts x endpoints per contact.",
+      "predecessor_attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-v1",
+      "predecessor_fit_attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-fit-v1",
+      "predecessor_fit_run_id": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-FIT-V1",
+      "predecessor_state": "OPENED; 42 calls / 132.10 speech-seconds realised per its attempt record (reserved 11,880 / 34,703); preserved unread.",
+      "predecessors": [
+        {
+          "attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-v1",
+          "contacts_spent": 42,
+          "speech_seconds_spent": 132.09900000000005,
+          "state": "OPENED"
+        }
+      ],
+      "reason": "The owner rebooted the laptop at about 2026-10-17 12:52Z while the column attempt was open (opened 12:40:36Z; 42 calls / 6 checkpointed rows realised); the batch driver, the flight and the resident llama-server died with the host, the attempt record stays OPENED and the data-root state (checkpoint, session-attach receipt) is intact and preserved unread.",
+      "recovered_at": "2026-10-17T13:00:09Z",
+      "recovery_index": 1,
+      "registered_at_utc": "2026-10-17T13:00:09Z",
+      "root_cause": "Host restart (owner action), not a harness or serving defect: no error in the chain, driver or campaign logs before the cut; the stale flight.lock was parked after confirming no live process.",
+      "rule": "A second failure closes the cell; the fix is proven on a four-row dry run."
+    }
+  },
+  "recovery_budget": {
+    "arm": {
+      "cumulative_plan": {
+        "planned_model_calls": 11922,
+        "planned_speech_audio_seconds": 34836
+      },
+      "failed_attempt_spend": {
+        "attempt_ids": [
+          "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-v1"
+        ],
+        "model_calls": 42,
+        "speech_audio_seconds": 132.09900000000005
+      },
+      "original_plan": {
+        "planned_model_calls": 11880,
+        "planned_speech_audio_seconds": 34703
+      },
+      "rule": "The adapter budget is run-cumulative across the attempts of a run id; the FIT cap is structural and never scaled."
     }
   },
   "registered_at_utc": "2026-10-15T14:46:49.000000+00:00",
@@ -411,7 +462,7 @@
     }
   },
   "status": "DRAFT-HELD",
-  "study_commit_at_registration": "6f387e5bf71f1d11921fb5e7c4e8c7d3e5bf2d24",
+  "study_commit_at_registration": "3b08bbd533a35d9726dd9be8019a98164fbacaff",
   "thinking_arms": {
     "budget-3072": null,
     "perception-off-solver-3072": {

@@ -1,0 +1,9 @@
+{
+  "recovered_at": "2026-10-17T13:00:09Z",
+  "ledger_title": "NX-T R2 recovery rec1 (host reboot)",
+  "agent": "Fable 5.1 (coordinator)",
+  "reason": "The owner rebooted the laptop at about 2026-10-17 12:52Z while the column attempt was open (opened 12:40:36Z; 42 calls / 6 checkpointed rows realised); the batch driver, the flight and the resident llama-server died with the host, the attempt record stays OPENED and the data-root state (checkpoint, session-attach receipt) is intact and preserved unread.",
+  "root_cause": "Host restart (owner action), not a harness or serving defect: no error in the chain, driver or campaign logs before the cut; the stale flight.lock was parked after confirming no live process.",
+  "fix": "None required in code. The cell is re-flown WHOLE under the rec1 ids (the registered single-recovery form of this package: a (run_id, attempt_id) pair is a one-time key); the six checkpointed rows are not resumed because the package registers the whole re-fly form and the saving would be about ten minutes.",
+  "decision": "coordinator decision under owner rulings 318 A / 327 A and the owner's 2026-10-17 directive to keep the GPU queue running; the smoke stays sealed and signed off; the chain segment is arm-only"
+}

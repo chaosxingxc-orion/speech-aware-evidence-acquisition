@@ -1,0 +1,20 @@
+{
+  "actual_audio_seconds": 132.09900000000005,
+  "actual_calls": 42,
+  "attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-v1",
+  "attempt_record_relpath": "attempts/SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1/attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-v1.json",
+  "attempt_record_sha256": "6913523d046c57a55b581fcdde5951bc031683a195c248d3ab64c04d369ecb36",
+  "fit": {
+    "attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-fit-v1",
+    "attempt_record_present": false,
+    "prepared_dir_present": true,
+    "prepared_request_fit_envelopes": 42,
+    "run_id": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-FIT-V1"
+  },
+  "reserved_audio_seconds": 34703.0,
+  "reserved_calls": 11880,
+  "run_id": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1",
+  "schema": "saea-recovery-predecessor-snapshot-v1",
+  "snapshotted_at_utc": "2026-10-17T13:00:09.254424+00:00",
+  "state": "OPENED"
+}

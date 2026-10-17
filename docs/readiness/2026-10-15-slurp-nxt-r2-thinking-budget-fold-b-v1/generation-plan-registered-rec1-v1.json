@@ -13,15 +13,15 @@
     "thinking_budget_tokens": "b (the arm's setting)"
   },
   "cell": "slurp-native-stage3-nxt-r2-thinking-budget-fold-b-v1",
-  "composed_config_hash": "23bac934a47347149382930bce00e893df2789e73fe67bfebeb42bf93f55c1f0",
+  "composed_config_hash": "7227bc996918da70afea648bb9af4f6ae0cf8bdaf818c53408764911af362fb8",
   "execution_plan": {
-    "attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-v1",
+    "attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-rec1-v1",
     "carrier_lock_key": "slurp",
     "execution_profile": "bounded-discovery-probe",
     "planned_gpu_hours": 31.3,
-    "planned_model_calls": 11880,
-    "planned_speech_audio_seconds": 34703,
-    "protocol_hash": "707b0a92ad0d09ed7acccfc6334dbe1d1d6fedd3c63290e9cba43c7a8e941a95",
+    "planned_model_calls": 11922,
+    "planned_speech_audio_seconds": 34836,
+    "protocol_hash": "1b0a61bb35ccc39399b04df52e2b6e8de594b2f6fe3fb9dd9763dd92446141ca",
     "run_id": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
@@ -36,11 +36,11 @@
     "ceilings_are_not_targets": true,
     "encoder_calls": 0,
     "fit_endpoint_calls_cap": 25920,
-    "generation_calls_cap": 11880,
+    "generation_calls_cap": 11922,
     "gpu_hours_fit_inclusive": 31.3,
-    "native_task_contract_calls_cap": 11880,
+    "native_task_contract_calls_cap": 11922,
     "official_complete_scoring_jobs": 1,
-    "repeated_speech_audio_seconds_cap": 34703
+    "repeated_speech_audio_seconds_cap": 34836
   },
   "no_think_node": {
     "answer_reserve_tokens": 1024,
@@ -64,9 +64,50 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-15-slurp-nxt-r2-thinking-budget-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "e9628618adc0059b6116e14c645af106ddffd6cf528b51ab0b463401671985ab"
+    "sha256": "d8a0e0977da3f733b937664a88f347aed0230aeee894285ea516e960b1d221ee"
   },
   "purpose": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1: reasoning-budget column flight (3 arms in one flight) of NX-T R2.",
+  "recovery": {
+    "amendment": "RECOVERY 2026-10-17T13:00:09Z (the cell's single one; coordinator decision under owner rulings 318 A / 327 A and the owner's 2026-10-17 directive to keep the GPU queue running; the smoke stays sealed and signed off; the chain segment is arm-only). The generation budget is run-cumulative across the attempts of the run id (core/model/adapter.py; every attempt state counts, an OPENED one included), so the rec1 plan carries the original plan plus the failed attempt's recorded spend (42 calls, 132.099 speech-seconds, read from the attempt record into docs/readiness/2026-10-15-slurp-nxt-r2-thinking-budget-fold-b-v1/predecessor-snapshot-arm-rec1-v1.json). The FIT cap is structural and unchanged (rows x program contacts x endpoints per contact). The FIT run id and the FIT attempt id both take the rec1 marker because the cell is re-flown whole and a (run_id, attempt_id) pair is a one-time key; the generation run id is unchanged. The registered GPU-hour ceiling does not change.",
+    "base_commit": "3b08bbd533a35d9726dd9be8019a98164fbacaff",
+    "fit_cap_rule": "The FIT cap is structural: rows x program contacts x endpoints per contact.",
+    "predecessor_attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-v1",
+    "predecessor_fit_attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-fit-v1",
+    "predecessor_fit_run_id": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-FIT-V1",
+    "predecessor_state": "OPENED; 42 calls / 132.10 speech-seconds realised per its attempt record (reserved 11,880 / 34,703); preserved unread.",
+    "predecessors": [
+      {
+        "attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-v1",
+        "contacts_spent": 42,
+        "speech_seconds_spent": 132.09900000000005,
+        "state": "OPENED"
+      }
+    ],
+    "reason": "The owner rebooted the laptop at about 2026-10-17 12:52Z while the column attempt was open (opened 12:40:36Z; 42 calls / 6 checkpointed rows realised); the batch driver, the flight and the resident llama-server died with the host, the attempt record stays OPENED and the data-root state (checkpoint, session-attach receipt) is intact and preserved unread.",
+    "recovered_at": "2026-10-17T13:00:09Z",
+    "recovery_index": 1,
+    "registered_at_utc": "2026-10-17T13:00:09Z",
+    "root_cause": "Host restart (owner action), not a harness or serving defect: no error in the chain, driver or campaign logs before the cut; the stale flight.lock was parked after confirming no live process.",
+    "rule": "A second failure closes the cell; the fix is proven on a four-row dry run."
+  },
+  "recovery_budget": {
+    "cumulative_plan": {
+      "planned_model_calls": 11922,
+      "planned_speech_audio_seconds": 34836
+    },
+    "failed_attempt_spend": {
+      "attempt_ids": [
+        "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-v1"
+      ],
+      "model_calls": 42,
+      "speech_audio_seconds": 132.09900000000005
+    },
+    "original_plan": {
+      "planned_model_calls": 11880,
+      "planned_speech_audio_seconds": 34703
+    },
+    "rule": "The adapter budget is run-cumulative across the attempts of a run id; the FIT cap is structural and never scaled."
+  },
   "registered_at_utc": "2026-10-15T14:46:49.000000+00:00",
   "schema": "saea-registered-generation-plan-v1",
   "scoring": "Per-arm official column scoring after a successful seal; no partial score.",
