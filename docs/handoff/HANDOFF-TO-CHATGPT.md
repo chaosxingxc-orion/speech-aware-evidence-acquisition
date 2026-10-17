@@ -1,7 +1,18 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-17T09:11:25Z
+Last refreshed: 2026-10-17T10:37:09Z
 
+
+
+## NX-T R1 READ 10:37Z: Perception no-think -0.19 SLU [-1.69, +1.29] NO-RESOLVED-LOSS at 55 % of the row cost; Solver no-think -7.11 [-8.97, -5.25] NEEDS-THINKING; R2 arms = perception-off replicate + solver-2048 (2026-10-17T10:37:09Z, Fable 5.1 root)
+
+rec2 sealed 10:23:53Z (510 contacts), rows closed, READ countersigned, read 10:34Z (`analysis/SAEA-SLURP-NXT-R1-THINKING-POLICY-FOLD-B-READ-V1/read.json`).
+Twin -0.12 / 0.00; both-off -9.18 / -3.70. Solver forced-closes 37 % at budget 3,072. Scorer fix for resume reads (kept rows resolve in the predecessor
+trace only; request ids repeat across attempts) 7df5c1cec. R2 arm table edited (`nxt_r2_arms.json`): {off, 3072} and {3072, 2048}; launching via
+`package_launch.sh scripts/flights/nx/nxt_r2_launch_spec.json`. Owner items 323 (Solver budget above 3,072 later) and 324 (Fold A confirm before adopting
+Perception no-think). Registry 10:37Z.
+
+Superseded stamp: 2026-10-17T09:11:25Z
 
 ## NX-T R1 rec2 (320 B) FLYING since 09:05Z at e4092610b (51 rows, ~1.5 GPU-h); successor-3 results note merged 96a4509bd (2026-10-17T09:11:25Z, Fable 5.1 root)
 

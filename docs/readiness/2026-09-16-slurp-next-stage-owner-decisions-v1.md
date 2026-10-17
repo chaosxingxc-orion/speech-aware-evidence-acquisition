@@ -3091,3 +3091,41 @@ read at n = 1,080 intact. Cost about 1.5 GPU-h after the successor-3 seal; the s
 - Coordinator lapse recorded: two WSL probes in this window were issued as inline `wsl bash -c '...; ...'` strings; the outer WSL shell split them at
   `;` and `$A` expanded empty (one `ls` listed the repo root, one listed `/`). Standing rule re-affirmed: every WSL probe goes through a scratchpad
   script file (memory `wsl-invocation-quoting`).
+
+### NX-T R1 READ: Perception thinking NOT NEEDED at the floor, Solver thinking NEEDED; R2 arm table decided (coordinator, 2026-10-17 10:37Z)
+
+- rec2 sealed 10:23:53Z (510 contacts = the expected 51 rows x 10, 4.83 h summed latency, checkpoint 5954ac40c703, COMPLETED at e4092610b);
+  generation + FIT-REC2 rows closed; READ row countersigned 10:25:09Z; official per-arm column scoring 10:33Z; preregistered read 10:34Z
+  (`analysis/SAEA-SLURP-NXT-R1-THINKING-POLICY-FOLD-B-READ-V1/read.json`, schema saea-nxt-r1-thinking-policy-column-read-v1; 1,080 rows = 1,029
+  kept + 51 flown; 0 scorer parse failures; 0 reasoning leaks; 1 absent column = the solver-off arm's one finite completion, recorded not fatal).
+- One refusal on the way (fixed, 7df5c1cec + test 4bba43420): the column scorer resolved a KEPT row's Solver branch contacts in the rec2 trace
+  first, and request ids repeat across attempts (`flight-0026` in both), so row 000006 tripped the custody-hash check. Kept rows now resolve in
+  their predecessor's trace only; flown rows in the bundle's own.
+- **Read (same-flight node column, paired utterance-cluster bootstrap 10,000 draws; delivering = both-on 72.35 SLU / 85.74 intent):**
+
+  | arm | SLU-F1 % | SLU delta pp [CI95] | intent % | intent delta pp [CI95] | s/row | word |
+  | --- | ---: | ---: | ---: | ---: | ---: | --- |
+  | both-on (delivering) | 72.35 | -- | 85.74 | -- | 110.0 | -- |
+  | both-on-twin | 72.23 | -0.12 [-1.44, +1.24] | 85.74 | 0.00 [-0.93, +0.93] | 112.5 | A/A |
+  | perception-off | 72.16 | **-0.19 [-1.69, +1.29]** | 85.28 | -0.46 [-1.76, +0.83] | 60.7 | **NO-RESOLVED-LOSS** |
+  | solver-off | 65.24 | **-7.11 [-8.97, -5.25]** | 83.80 | -1.94 [-3.33, -0.56] | 51.3 | **NEEDS-THINKING** |
+  | both-off | 63.16 | -9.18 [-11.24, -7.14] | 82.04 | -3.70 [-5.37, -2.04] | 6.4 | NEEDS-THINKING |
+
+  Equal-scenario weighting agrees (perception-off -0.32, solver-off -8.25, both-off -10.67 pp SLU). Extra word NOT-NEEDED-AT-THE-FLOOR (Perception).
+  Decode: Solver at budget 3,072 FORCED-CLOSES 19/51 both-on, 20/51 twin, 16/51 perception-off (p90 completion = the budget); Perception forced
+  closes 1-2/51. The no-think Solver answers in 26 tokens / 3.6 s; the thinking Solver 1,920 tokens / 62 s. Development numbers (decision 28).
+- **Meaning (stated, not claimed):** the Thinking system's gain over the Instruct system lives at the SOLVER (slot extraction): removing Solver
+  reasoning costs 7.1 pp SLU; removing Perception reasoning costs nothing the design resolves and halves the row cost (60.7 vs 110 s/row; a
+  1,080-row lock flight 4.55 vs 8.25 GPU-h). Solver reasoning is capacity-bound at 3,072 (37 % forced closes).
+- **R2 arm table (coordinator decision under the registered rule "R1's answer decides the arm table"; two candidates, no twin, 313 A):**
+  `perception-off-solver-3072` = {perception: off, solver: 3072} (the same-roster REPLICATE of R1's cheapest no-loss form, the owner's
+  "replicate on the same roster before drawing a fresh one"; if it reads CHEAPER-AT-NO-RESOLVED-LOSS it is the adoption candidate for the lock) and
+  `solver-2048` = {perception: 3072, solver: 2048} (the one-node budget scan on the node that NEEDS thinking; cheaper direction only -- the family
+  clips budgets to [min, 3072]). The default 1536/2048 both-node arms are dropped: a both-node cut confounds the two nodes and 1,536 at the Solver
+  is already answered by the forced-close table.
+- **Owner items (not blocking R2):** 323 -- a budget ABOVE 3,072 at the Solver (e.g. 3,584 with answer reserve 512) is outside R2's registered range
+  but is the direction the forced-close table points to; recommend a one-arm R2b after R2 reads (A) or fold into the next node round (B).
+  324 -- adopt Perception no-think into the v3.0 lock candidate after the R2 replicate reads no loss (A), or require a Fold A confirm first (B;
+  recommended B: one 2-arm column, ~5 GPU-h, the lock rule of C0.6).
+- Next: `package_launch.sh scripts/flights/nx/nxt_r2_launch_spec.json --root-countersign --until commit` (derive from the new table, register,
+  countersign, mint, commit), then `--from flip` (flip + chain SAEA-Chain-NXT2 + smoke sign-off). Opus writes the R1 results note.
