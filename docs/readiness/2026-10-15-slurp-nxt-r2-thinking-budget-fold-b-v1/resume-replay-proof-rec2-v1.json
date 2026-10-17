@@ -1,0 +1,34 @@
+{
+  "checker_sha256": "7391863cbd58f97346b87e536cd48c92b6e618943d0f9e22cffba8a5122d25b8",
+  "code_commit": "b147641b2",
+  "gate": "scripts/checks/resume_prelaunch_gate_check.py (via scripts/flights/batch/resume_prelaunch_gate.sh) on this cell, re-run by the driver's prelaunch on the flight commit",
+  "model_contacts": 0,
+  "note": "Model-free and read-only over a scratch COPY of the stopped rec1 attempt directory (the trace sha256 verified identical to the data root's), every other data root entry linked read-only: every kept row rendered through the real seal stage and re-checked against I7 / I7n / I7v (the v5 thinking-policy wire check included) one row at a time; no row fails and no sample is sealed twice. The replay ran at the branch base commit; the driver's prelaunch gate re-runs the same check at launch on the flight commit.",
+  "predecessor_attempts": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-rec1-v1",
+      "complete": 26,
+      "incomplete": 4,
+      "perception_branch_note_parse_status": {
+        "budget-3072:ok": 26,
+        "perception-off-solver-3072:ok": 26,
+        "solver-2048:duplicates-collapsed": 2,
+        "solver-2048:ok": 24
+      },
+      "rows_checked": 26,
+      "rows_failing": 0,
+      "rows_with_deliver_normaliser": 26,
+      "rows_with_perception_branches": 26,
+      "samples_started": 30,
+      "trace_sha256": "add8fb93cd4096787e5ae559c3374ec77edff4f9145499ecf986c4c458473813"
+    }
+  ],
+  "resume_py_sha256": "c7d9a64ab9830a0d6ad74d0f6d55491d8aa266d063d95d2ed3d717fc36972eff",
+  "rows_checked": 26,
+  "rows_failing": 0,
+  "run_at_utc": "2026-10-17T15:05:00Z",
+  "schema": "saea-resume-replay-proof-v1",
+  "sealed_twice": 0,
+  "tool": "scripts/analysis/replay_seal_consistency.py --experiment slurp-native-stage3-nxt-r2-thinking-budget-fold-b-v1 --run-id SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1 --predecessor attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-rec1-v1:add8fb93cd4096787e5ae559c3374ec77edff4f9145499ecf986c4c458473813",
+  "union_complete_rows": 26
+}
