@@ -15,6 +15,11 @@
 #           geometry first when that session is not resident (`serving_swap.sh <target>`, the target from nxt_r2_family.ACTIVE_GEOMETRY: think-budget-np4 by default;
 #           the np6 / np8 geometries do not fit the 24 GB card at q8_0 KV). Hold the idle watchdog (/home/chao/saea-queue/watchdog.hold) first.
 #           `all` refuses (exit 9) when the arm's geometry is not the smoke's.
+#           RECOVERY rec2 (owner ruling 328): when the arm cell declares resume_from (a resume of the stopped rec1 attempt: trace pin = mode A, row-checkpoint pin = mode B,
+#           as nxt_r2_family.RECOVERIES records it) arm-only first verifies that the pinned file on the data root still hashes to the declared sha256 and that the rec2 attempt
+#           RECORD does not exist yet (the run directory may hold only the matching preflight resume-declaration.json; exit 6 otherwise); the driver then runs the resume
+#           prelaunch gate itself (resume_gate_run in scripts/flights/batch/resume_gate_lib.sh, sourced by batch_driver.sh) before the campaign opens. The step flies only the
+#           rows the predecessor did not complete.
 #
 # Registered order: swap to think-budget-np4 -> smoke -> sign-off -> the column flight -> swap back to slurp-np4. Both segments fly from ONE flight commit
 # (/home/chao/nxt2-flight-commit.txt, written by the flip).
@@ -76,6 +81,55 @@ case "$SEGMENT" in
     [ "$SMOKE_STATE" = sealed ] || { echo "segment arm-only refused: the smoke is not sealed (state $SMOKE_STATE)" >> $LOG; echo "refusing: smoke state $SMOKE_STATE"; exit 9; }
     [ -s "$SIGNOFF_MARKER" ] || { echo "segment arm-only refused: no sign-off marker $SIGNOFF_MARKER" >> $LOG; echo "refusing: no sign-off marker"; exit 5; } ;;
 esac
+if [ "$SEGMENT" = arm-only ]; then
+  PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src NXT2_MAIN=$MAIN NXT2_DATA=$DATA /home/chao/.venvs/speechrl/bin/python -B - >> $LOG 2>&1 <<'PY' || { echo "arm-only refused: the resume precondition failed; abort" >> $LOG; echo "refusing: resume precondition"; exit 6; }
+import hashlib
+import json
+import os
+import sys
+from pathlib import Path
+
+sys.path.insert(0, os.environ["NXT2_MAIN"] + "/scripts/flights/nx")
+import nxt_r2_family as fam  # noqa: E402
+
+data, spec = Path(os.environ["NXT2_DATA"]), fam.CELLS["arm"]
+cell = json.loads((Path(os.environ["NXT2_MAIN"]) / "configs/experiment" / (spec["cell"] + ".json")).read_text(encoding="utf-8"))["cells"][0]
+resume = cell.get("resume_from")
+if resume is None:
+    print("the arm cell declares no resume_from: an ordinary re-flown arm; nothing to check")
+    raise SystemExit(0)
+assert resume == fam.RECOVERIES["arm"]["resume_from"], "resume_from is not the family's registered rec2 declaration"
+# the pin is the trace sha256 (mode A) or the row-checkpoint sha256 (mode B); the registered declaration decides which file is hashed
+if set(resume) == {"attempt_id", "trace_sha256"}:
+    mode, pin, suffix = "trace", resume["trace_sha256"], ".trace.jsonl"
+elif set(resume) == {"attempt_id", "checkpoint_sha256"}:
+    mode, pin, suffix = "checkpoint", resume["checkpoint_sha256"], ".rows.ckpt.jsonl"
+else:
+    raise AssertionError("resume_from is not a registered mode-A or mode-B declaration")
+pinned = data / "runs" / spec["run"] / resume["attempt_id"] / (spec["run"] + suffix)
+digest = hashlib.sha256()
+with pinned.open("rb") as handle:
+    for block in iter(lambda: handle.read(1 << 20), b""):
+        digest.update(block)
+assert digest.hexdigest() == pin, "the predecessor " + mode + " pin moved"
+# "Not yet opened" is the attempt RECORD (attempts/<run>/<attempt>.json: the one-time key the runtime itself refuses on), never the
+# run directory alone: preflight-class steps run at flip time (the re-pin / registration passes) write <run dir>/resume-declaration.json
+# (runtime._write_resume_declaration, owner decision 309) before any gate touch, so the rec2 run directory legitimately exists holding
+# exactly that declaration. Tolerate exactly that: the declaration must name this attempt, this run and the registered predecessor + pin,
+# and nothing else may sit in the directory (an outputs/trace/manifest file = flown).
+assert not (data / "attempts" / spec["run"] / (spec["attempt"] + ".json")).exists(), "the rec2 attempt record already exists on the data root"
+run_dir = data / "runs" / spec["run"] / spec["attempt"]
+if run_dir.exists():
+    extra = sorted(p.name for p in run_dir.iterdir() if p.name != "resume-declaration.json")
+    assert not extra, "the rec2 run directory holds more than the preflight declaration: %s" % extra[:5]
+    decl = json.loads((run_dir / "resume-declaration.json").read_text(encoding="utf-8"))
+    expect = {"schema": "saea-resume-declaration-v1", "run_id": spec["run"], "attempt_id": spec["attempt"],
+              "predecessors": [{"attempt_id": resume["attempt_id"], "mode": mode, "pin_sha256": pin}]}
+    assert decl == expect, "the preflight resume declaration in the rec2 run directory does not match the registered resume_from"
+    print("rec2 run directory holds only the matching preflight resume declaration (tolerated)")
+print("resume precondition OK: predecessor", mode, "pin", pin[:12], "unchanged; attempt", spec["attempt"], "not yet opened")
+PY
+fi
 echo "chain start $(date -u +%FT%TZ) segment $SEGMENT commit $COMMIT session $BATCH_SESSION" >> $LOG
 if [ -n "$(pgrep -af 'core.flight.cli|batch_driver.sh|lease_cli' | grep -v pgrep)" ]; then echo "a batch is running; abort" >> $LOG; exit 7; fi
 [ -e "$DATA/locks/flight.lock" ] && { echo "flight.lock present; abort" >> $LOG; exit 7; }

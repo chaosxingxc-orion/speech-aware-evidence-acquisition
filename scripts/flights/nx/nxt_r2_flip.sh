@@ -11,6 +11,8 @@
 # never be passed.
 # NXT2_KINDS selects the cells to flip. The default is "smoke arm". RECOVERY rec1 (nxt_r2_family.RECOVERIES, once a recovery input is committed): the sealed smoke
 # is flipped no more (its rows are consumed), so export NXT2_KINDS=arm for the rec1 flip (the NX-T R1 lesson, 2026-10-14). Flipping is not flying.
+# RECOVERY rec2 (owner ruling 328, 2026-10-17): the resume (mode B or A, see the rec2 recovery input) of the stopped rec1 attempt flips the ARM cell only (NXT2_KINDS=arm; the sealed smoke is not
+# touched); the arm cell now declares resume_from, so the re-pin chain treats it as a resume cell. --allow-output-change is still never passed.
 MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 # Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70

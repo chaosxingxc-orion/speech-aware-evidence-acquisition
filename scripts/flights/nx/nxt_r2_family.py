@@ -318,16 +318,30 @@ def lock_flight_gpu_hours(arm: str, rows: int = ROWS) -> float:
     return rows / arm_row_equivalent_rows_per_minute(arm) / 60.0
 
 
-# ---- the single recovery (rec1) of a cell --------------------------------------------------------------------------------------------
-#: A (run_id, attempt_id) pair is a one-time key, so a cell whose attempt stopped is re-flown WHOLE under the ``-rec1`` attempt ids (generation AND the live
-#: phase fit) with a plan that carries the original plan plus the failed attempt's realised spend (run-cumulative). Generic mechanism:
-#: ``scripts/flights/lib/recovery.py``. ``RECOVERIES`` is EMPTY on the first registration; the rec1 path is data-driven: the coordinator commits
-#: ``<package>/predecessor-snapshot-arm-rec1-v1.json`` (``recovery.py snapshot``) and ``<package>/recovery-input-arm-v1.json`` (the diagnosis text, below) and the
-#: family builds ``RECOVERIES["arm"]`` from them. The failed attempt's spend is the snapshot's, never typed here.
+# ---- the recoveries of a cell ----------------------------------------------------------------------------------------------------------
+#: A (run_id, attempt_id) pair is a one-time key, so a cell whose attempt stopped is re-registered under the ``-recN`` attempt ids (generation AND the live
+#: phase fit) with a plan that carries the original plan plus every earlier attempt's realised spend (run-cumulative). Generic mechanism:
+#: ``scripts/flights/lib/recovery.py``. ``RECOVERIES`` is EMPTY on the first registration; every recovery is data-driven: the coordinator commits a predecessor
+#: snapshot (``recovery.py snapshot``) and a diagnosis input per recovery and the family builds ``RECOVERY_HISTORY["arm"]`` from them. A predecessor's spend is the
+#: snapshot's, never typed here.
+#:
+#: * ``rec1`` (coordinator decision under owner rulings 318 A / 327 A, 2026-10-17): the column flight re-flown WHOLE after a host reboot killed the first attempt.
+#:   Files: ``predecessor-snapshot-arm-rec1-v1.json`` (the FIRST attempt) and ``recovery-input-arm-v1.json``.
+#: * ``rec2`` (owner ruling 328, 2026-10-17): the rec1 attempt was ABORTED by a serving-task incident; rec2 is a RESUME of it (the default recovery form: a stopped
+#:   attempt is resumed, never re-flown whole, whenever a checkpoint or trace exists), under an explicit owner exception to the one-recovery rule. Files:
+#:   ``predecessor-snapshot-arm-rec2-v1.json`` (the rec1 attempt, with its trace and checkpoint pins and both replay classifications; written by
+#:   ``nxt_r2_rec2_snapshot.py``) and ``recovery-input-arm-rec2-v1.json`` (the diagnosis plus ``owner_exception`` and the COMPUTED ``resume_mode``;
+#:   ``nxt_r2_rec2_mode.py``).
+#:
+#: ``RECOVERY_HISTORY[key]`` lists the records in order; ``RECOVERIES[key]`` is the LATEST one, the state the ids, plans and caps follow.
 REC = rcv.REC
-PREDECESSOR_SNAPSHOT = {"arm": f"{PACKAGE}/predecessor-snapshot-arm-rec1-v1.json"}
-RECOVERY_INPUT = {"arm": f"{PACKAGE}/recovery-input-arm-v1.json"}
+PREDECESSOR_SNAPSHOT = {"arm": f"{PACKAGE}/predecessor-snapshot-arm-rec1-v1.json"}      # the rec1 record's snapshot (the first attempt)
+RECOVERY_INPUT = {"arm": f"{PACKAGE}/recovery-input-arm-v1.json"}                       # the rec1 record's diagnosis
+PREDECESSOR_SNAPSHOTS = {"arm": [PREDECESSOR_SNAPSHOT["arm"], f"{PACKAGE}/predecessor-snapshot-arm-rec2-v1.json"]}
+RECOVERY_INPUTS = {"arm": [RECOVERY_INPUT["arm"], f"{PACKAGE}/recovery-input-arm-rec2-v1.json"]}
 RECOVERY_INPUT_KEYS = ("recovered_at", "ledger_title", "agent", "reason", "root_cause", "fix", "decision")
+RECOVERY_INPUT_KEYS_REC2 = RECOVERY_INPUT_KEYS + ("owner_exception", "resume_mode", "resume_mode_basis")
+RESUME_MODES = {"checkpoint": "B", "trace": "A"}                                        # resume mode -> the owner-decision-309 letter
 
 
 def build_arm_recovery(inputs: dict, snap: dict) -> dict:
@@ -371,18 +385,150 @@ def build_arm_recovery(inputs: dict, snap: dict) -> dict:
     }
 
 
-def _load_recoveries(root: Path = REPO_ROOT) -> dict[str, dict]:
-    out: dict[str, dict] = {}
-    for key, rel in RECOVERY_INPUT.items():
-        path = Path(root) / rel
-        if path.is_file():
-            out[key] = build_arm_recovery(json.loads(path.read_text(encoding="utf-8")), rcv.load_snapshot(Path(root) / PREDECESSOR_SNAPSHOT[key]))
+def resume_declaration(mode: str, stopped: dict) -> dict:
+    """The ``resume_from`` object of the stopped attempt in ``mode`` (``checkpoint``: mode B, ``trace``: mode A); the pins come from the snapshot's data-root reads."""
+
+    pins = stopped["trace"]
+    if mode == "checkpoint":
+        return {"attempt_id": stopped["attempt_id"], "checkpoint_sha256": pins["checkpoint_sha256"]}
+    if mode == "trace":
+        return {"attempt_id": stopped["attempt_id"], "trace_sha256": pins["trace_sha256"]}
+    raise ValueError(f"resume_mode must be 'checkpoint' or 'trace', got {mode!r}")
+
+
+def build_arm_rec2(inputs: dict, first: dict, stopped: dict) -> dict:
+    """The arm cell's rec2 recovery record (owner ruling 328): a RESUME of the stopped rec1 attempt. ``first`` = the first attempt's snapshot, ``stopped`` = the rec1
+    attempt's snapshot (trace and checkpoint pins, both replay classifications, the code-identity comparison); ``inputs`` = the committed diagnosis and the
+    computed ``resume_mode``."""
+
+    missing = [k for k in RECOVERY_INPUT_KEYS_REC2 if not inputs.get(k)]
+    if missing:
+        raise ValueError(f"the rec2 recovery input misses {missing}")
+    mode = inputs["resume_mode"]
+    letter = RESUME_MODES.get(mode)
+    if letter is None:
+        raise ValueError(f"resume_mode must be one of {sorted(RESUME_MODES)}, got {mode!r}")
+    if mode == "checkpoint" and (stopped.get("mode_inputs") or {}).get("implementation_differing_modules") != []:
+        raise ValueError("mode B (checkpoint) is refused: the snapshot does not show a byte-identical runtime / runner / row_checkpoint")
+    resume = stopped["resume"][mode]
+    counts = dict(resume["counts"])
+    kept, flown = counts["kept"], counts["flown"]
+    if kept + flown != counts["roster"]:
+        raise ValueError(f"the rec2 resume counts do not add up: {counts}")
+    if stopped["resume"]["trace"]["kept_sample_ids_sha256"] != stopped["resume"]["checkpoint"]["kept_sample_ids_sha256"] and mode == "checkpoint":
+        raise ValueError("the trace and the checkpoint disagree on the kept rows; the mode choice must be re-examined")
+    fit, trace = stopped.get("fit") or {}, stopped["trace"]
+    predecessors = [rcv.predecessor_from_snapshot(first), rcv.predecessor_from_snapshot(stopped)]
+    calls, audio = sum(p["contacts_spent"] for p in predecessors), sum(p["speech_seconds_spent"] for p in predecessors)
+    contacts = flown * CONTACTS_PER_ROW
+    gpu = expected_gpu_hours(flown)
+    exception = inputs["owner_exception"]
+    exception_cap = exception[:1].upper() + exception[1:]
+    snaps = " and ".join(PREDECESSOR_SNAPSHOTS["arm"])
+    pin_name, pin_sha = ("checkpoint", trace["checkpoint_sha256"]) if mode == "checkpoint" else ("trace", trace["trace_sha256"])
+    pin_bytes = trace["checkpoint_bytes"] if mode == "checkpoint" else trace["trace_bytes"]
+    if mode == "checkpoint":
+        why_mode = (f"MODE {letter} (row checkpoint): {inputs['resume_mode_basis']} `resume_from` names the rec1 attempt and the sha256 of its row checkpoint, "
+                    f"{pin_sha} ({pin_bytes:,} bytes), read from the data root into {PREDECESSOR_SNAPSHOTS['arm'][1]}.")
+        phrase = f"resumed in mode B (row checkpoint) from `{stopped['attempt_id']}`: the {kept:,} complete rows are kept and the {flown:,} remaining rows are flown"
+    else:
+        why_mode = (f"MODE {letter} (trace replay), not mode B: {inputs['resume_mode_basis']} `resume_from` names the rec1 attempt and the sha256 of its trace, "
+                    f"{pin_sha} ({pin_bytes:,} bytes), read from the data root into {PREDECESSOR_SNAPSHOTS['arm'][1]}.")
+        phrase = f"resumed in mode A (trace replay) from `{stopped['attempt_id']}`: the {kept:,} complete rows are kept and the {flown:,} remaining rows are flown"
+    return {
+        "recovery_index": 2,
+        "recovered_at": inputs["recovered_at"],
+        "ledger_title": inputs["ledger_title"],
+        "agent": inputs["agent"],
+        "registered_at_utc": None,
+        "base_commit": None,
+        "worktree": None,
+        "branch": None,
+        "owner_exception": exception,
+        "predecessor_attempt_id": stopped["attempt_id"],
+        "predecessor_fit_run_id": fit["run_id"],
+        "predecessor_fit_attempt_id": fit["attempt_id"],
+        "fit_predecessor_phrase": (f"{'its attempt record is present, ' if fit.get('attempt_record_present') else 'no attempt record was opened for it, '}its prepared "
+                                   f"directory holds {fit.get('prepared_request_fit_envelopes', 0):,} request-fit envelopes preserved unread on the data root"),
+        "predecessor_state": (f"{stopped['state']} (its attempt record); {stopped['actual_calls']:,} calls / {stopped['actual_audio_seconds']:.2f} "
+                              f"speech-seconds realised per its attempt record (reserved {stopped['reserved_calls']:,} / {stopped['reserved_audio_seconds']:,.0f}); "
+                              f"{kept:,} complete rows in its row checkpoint (sha256 {trace['checkpoint_sha256'][:8]}...) and its trace (sha256 "
+                              f"{trace['trace_sha256'][:8]}...); {counts['partial']} partial row(s) in the trace were never completed; preserved unread."),
+        "predecessors": predecessors,
+        "reason": (f"{inputs['reason']} {exception_cap} grants an EXPLICIT exception to the package rule of one recovery re-registration per run id and rules that "
+                   f"a stopped attempt is RESUMED, never re-flown whole, whenever a checkpoint or trace exists: this rec2 keeps the {kept:,} complete rows of the stopped "
+                   f"rec1 attempt by a mode-{letter} resume and flies the {flown:,} remaining rows."),
+        "root_cause": inputs["root_cause"],
+        "amendment": (
+            f"RECOVERY {inputs['recovered_at']} (rec2; {exception}, {inputs['decision']}). {why_mode} The attempt keeps the {kept:,} complete rows (each is proven by "
+            f"the offline replay recorded as a block of the generation plan) and flies the {flown:,} remaining rows: {flown:,} x {CONTACTS_PER_ROW} = {contacts:,} "
+            f"program contacts and nothing else. The generation budget is run-cumulative across the attempts of the run id (core/model/adapter.py): the registered "
+            f"plan plus both earlier attempts' recorded spend ({calls:,} calls, {audio:g} speech-seconds, read from the attempt records into {snaps}). The FIT cap is "
+            "structural and unchanged. The FIT run id and the FIT attempt id take the rec2 marker because a (run_id, attempt_id) pair is a one-time key; the "
+            f"generation run id is unchanged. The registered GPU-hour ceiling ({planned_gpu_hours(ROWS)} GPU-h) stands; the resume is expected to spend about "
+            f"{gpu:.1f} GPU-h ({flown:,} rows x {ARM_MIX_ROWS} full-row equivalents / {ROWS_PER_MINUTE_FULL} rows per minute). `--allow-output-change` is never "
+            f"passed: the rebuilt supply, the roster ({ROWS:,} rows) and the read (n = {ROWS:,}) are the registered ones."),
+        "fix": inputs["fix"],
+        "unchanged": (f"Unchanged: the smoke cell `slurp-native-stage3-{SLUG}-smoke-4-v1` (sealed, not re-flown) and every registered knob, arm, policy, roster ({ROWS:,} rows), "
+                      f"prompt, geometry, cap, the program {PROGRAM} and the {planned_gpu_hours(ROWS)} GPU-hour ceiling of the arm cell."),
+        "extra_note": (f"Resume accounting: kept {kept:,} rows (from `{stopped['attempt_id']}`, kept-row id hash {resume['kept_sample_ids_sha256']}); flown {flown:,} rows "
+                       f"({counts['partial']} partial, {counts['unstarted']:,} never started), {contacts:,} program contacts. The read reports kept / flown counts "
+                       f"beside the arm columns. {exception_cap} covers this one re-registration only."),
+        "rule": "A third recovery is not covered by the owner exception; a second failure of rec2 closes the cell, and the fix is proven on a four-row dry run.",
+        "fit_cap_rule": "The FIT cap is structural: rows x program contacts x endpoints per contact.",
+        "resume_mode": f"resume-mode-{letter}-keep-{kept}-fly-{flown}",
+        "resume_from": resume_declaration(mode, stopped),
+        "resume_counts": counts,
+        "flown_phrase": phrase,
+    }
+
+
+def _load_history(root: Path = REPO_ROOT) -> dict[str, list[dict]]:
+    """Each recovered cell's records in order: rec1 from its two files, rec2 from its two files once they are committed."""
+
+    out: dict[str, list[dict]] = {}
+    for key, inputs in RECOVERY_INPUTS.items():
+        path = Path(root) / inputs[0]
+        if not path.is_file():
+            continue
+        snaps = [Path(root) / rel for rel in PREDECESSOR_SNAPSHOTS[key]]
+        first = rcv.load_snapshot(snaps[0])
+        history = [build_arm_recovery(json.loads(path.read_text(encoding="utf-8")), first)]
+        second = Path(root) / inputs[1]
+        if second.is_file() and snaps[1].is_file():
+            history.append(build_arm_rec2(json.loads(second.read_text(encoding="utf-8")), first, rcv.load_snapshot(snaps[1])))
+        out[key] = history
     return out
 
 
-RECOVERIES: dict[str, dict] = _load_recoveries()
-for _rec in RECOVERIES.values():
-    rcv.validate_recovery(_rec)
+def _load_recoveries(root: Path = REPO_ROOT) -> dict[str, dict]:
+    """The LATEST record of each recovered cell (the state the ids, plans and caps follow)."""
+
+    return {key: records[-1] for key, records in _load_history(root).items()}
+
+
+RECOVERY_HISTORY: dict[str, list[dict]] = _load_history()
+RECOVERIES: dict[str, dict] = {key: records[-1] for key, records in RECOVERY_HISTORY.items()}
+for _records in RECOVERY_HISTORY.values():
+    for _position, _rec in enumerate(_records, 1):
+        rcv.validate_recovery(_rec)
+        if _rec["recovery_index"] != _position:
+            raise ValueError("the recovery history is out of order")
+
+
+def recovery_index(key: str) -> int:
+    """0 for a cell on its first attempt, else the index of its latest recovery."""
+
+    rec = RECOVERIES.get(key)
+    return int(rec["recovery_index"]) if rec else 0
+
+
+def history_caps(key: str, index: int, caps: dict) -> dict:
+    """The run-cumulative caps AS OF recovery ``index`` (the original plan plus the spend of the attempts that recovery names); used to print an earlier
+    recovery section of the README with its own cumulative numbers."""
+
+    calls, audio = rcv.cumulative_budget({key: RECOVERY_HISTORY[key][index - 1]}, key, original_generation_calls(key), audio_cap(CELLS[key]["roster"]))
+    return {**caps, "generation_calls_cap": calls, "repeated_speech_audio_seconds_cap": audio}
 
 
 def recovery(key: str) -> dict | None:
@@ -433,24 +579,26 @@ ALL_KEYS = ("smoke", "arm")
 
 
 def eligible_run_ids() -> list[str]:
-    """The decision receipt's eligible run ids: each cell's generation run id then its first-registration FIT run id, in chain order, then the rec1 FIT run
-    id of each recovered cell (the minted receipt of the first registration lists exactly the first four; the rec1 receipt appends the new FIT run id)."""
+    """The decision receipt's eligible run ids: each cell's generation run id then its first-registration FIT run id, in chain order, then the FIT run id of every
+    recovery, oldest first (each receipt's list is a strict prefix of the next: the first registration lists exactly the first four, rec1 appends its FIT run id, rec2
+    appends its own)."""
 
     out: list[str] = []
     for key in ALL_KEYS:
-        rec = recovery(key)
-        out += [CELLS[key]["run"], rec["predecessor_fit_run_id"] if rec else CELLS[key]["fit_run"]]
-    out += [CELLS[key]["fit_run"] for key in ALL_KEYS if recovery(key)]
+        history = RECOVERY_HISTORY.get(key, [])
+        out += [CELLS[key]["run"], history[0]["predecessor_fit_run_id"] if history else CELLS[key]["fit_run"]]
+    for key in ALL_KEYS:
+        history = RECOVERY_HISTORY.get(key, [])
+        out += [rec["predecessor_fit_run_id"] for rec in history[1:]] + ([CELLS[key]["fit_run"]] if history else [])
     return out
 
 
 def eligible_attempt_ids() -> list[str]:
-    """Each cell's attempt ids, in chain order; a recovered cell lists its first-attempt ids (superseded, spent) then its rec1 ids."""
+    """Each cell's attempt ids, in chain order; a recovered cell lists the ids of every earlier attempt (superseded, spent) then its latest ids."""
 
     out: list[str] = []
     for key in ALL_KEYS:
-        rec = recovery(key)
-        if rec:
+        for rec in RECOVERY_HISTORY.get(key, []):
             out += [rec["predecessor_attempt_id"], rec["predecessor_fit_attempt_id"]]
         out += [CELLS[key]["attempt"], CELLS[key]["fit_attempt"]]
     return out
@@ -467,15 +615,15 @@ def package_file(name: str) -> str:
 
 
 def plan_file_name(key: str, plan_kind: str) -> str:
-    """Package file name of a cell's registered plan; a recovered cell's plans carry the ``-rec1`` marker."""
+    """Package file name of a cell's registered plan; a recovered cell's plans carry its latest ``-recN`` marker."""
 
-    return rcv.plan_file_name(CELLS[key]["prefix"], plan_kind, key in RECOVERIES)
+    return rcv.plan_file_name(CELLS[key]["prefix"], plan_kind, recovery_index(key))
 
 
 def superseded_plan_file_names(key: str) -> list[str]:
     """First-attempt plan names a recovery supersedes (removed from the package; the failed attempt stays on the data root)."""
 
-    return rcv.superseded_plan_file_names(CELLS[key]["prefix"], key in RECOVERIES)
+    return rcv.superseded_plan_file_names(CELLS[key]["prefix"], recovery_index(key))
 
 
 def roster_doc(kind: str) -> dict:

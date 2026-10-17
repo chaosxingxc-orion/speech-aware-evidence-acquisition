@@ -7,7 +7,7 @@
         "worker",
         "campaign"
       ],
-      "attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-rec1-v1",
+      "attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-rec2-v1",
       "baseline_fragment": "slurp-native-stage3-nxt-r2-thinking-budget-fold-b-baseline-v1",
       "cell_id": "slurp-native-stage3-nxt-r2-thinking-budget-fold-b-v1",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
@@ -37,6 +37,10 @@
         ],
         "state": "ready"
       },
+      "resume_from": {
+        "attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-rec1-v1",
+        "trace_sha256": "add8fb93cd4096787e5ae559c3374ec77edff4f9145499ecf986c4c458473813"
+      },
       "run_id": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1"
     }
   ],
@@ -54,29 +58,29 @@
   "execution_plan": {
     "execution_profile": "bounded-discovery-probe",
     "planned_gpu_hours": 31.3,
-    "planned_model_calls": 11922,
-    "planned_speech_audio_seconds": 34836,
+    "planned_model_calls": 12094,
+    "planned_speech_audio_seconds": 35317,
     "split_role": "discovery"
   },
   "execution_profile": "bounded-discovery-probe",
   "experiment_id": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1",
-  "failure_policy": "Stop and preserve on the first failure. No automatic restart, replay, row filtering, roster, role-graph, prompt, knowledge, geometry or cap change. AT MOST ONE root-diagnosed recovery re-registration per run id (a new generation attempt id AND a new native_contact_fit run and attempt id); a second failure closes the cell and the fix is proven on a four-row dry run. A response whose delivered content carries a reasoning marker is a failure of the read, not of a row: it stops the flight (reasoning_content_guard). A partial manifest is never scored and never read.",
+  "failure_policy": "Stop and preserve on the first failure. No automatic restart, replay, row filtering, roster, role-graph, prompt, knowledge, geometry or cap change. AT MOST ONE root-diagnosed recovery re-registration per run id (a new generation attempt id AND a new native_contact_fit run and attempt id); a second failure closes the cell and the fix is proven on a four-row dry run. A response whose delivered content carries a reasoning marker is a failure of the read, not of a row: it stops the flight (reasoning_content_guard). A partial manifest is never scored and never read. EXPLICIT OWNER EXCEPTION (owner ruling 328 of 2026-10-17): this cell carries a SECOND recovery re-registration (rec2); the exception covers that one re-registration only, and a failure of it closes the cell.",
   "family_budget": {
     "asr_calls": 0,
     "ceilings_are_not_targets": true,
     "encoder_calls": 0,
     "fit_endpoint_calls_cap": 25920,
-    "generation_calls_cap": 11922,
+    "generation_calls_cap": 12094,
     "gpu_hours_fit_inclusive": 31.3,
-    "native_task_contract_calls_cap": 11922,
+    "native_task_contract_calls_cap": 12094,
     "official_complete_scoring_jobs": 1,
-    "repeated_speech_audio_seconds_cap": 34836
+    "repeated_speech_audio_seconds_cap": 35317
   },
   "fragment_kind": "saea-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-v1",
   "generation_budget": {
-    "cap": 11922,
-    "definition": "The review-off module graph (perception 1, solver 1; Reviewer and Planner never visited) under program phase-native-module-v1-c6 with the 3-arm reasoning-budget column at the Perception node: 1,080 x 6 = 6,480 is the exact program maximum (2 + 2 (K - 1), K = 3); the plan ceiling adds 5 answer-only fallback contacts per row (one per budgeted-thinking contact of the arms: the delivering arm's 2 plus one per candidate node that still thinks, core.reasoning_knobs): 11,880 = 1,080 x 11. The live phase fit makes 1080 x 6 x 4 = 25,920 tokenizer endpoint calls under its own run id SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-FIT-REC1-V1. The GPU-hour ceiling is a BOUND (rows x 2.46 full-row equivalents / 1.84 rows per minute / 60 x 1.3, ceil 0.1), never a target. The budget is RUN-CUMULATIVE across every attempt of this run id. Recovery rec1 (the cell's single one; a second failure closes the cell): the failed predecessor attempt attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-v1 spent 42 contacts and 132.099 speech-seconds, so the run-cumulative budget is the original plan plus that spend: 11,922 calls, 34,836 speech-seconds.",
-    "target": 11922
+    "cap": 12094,
+    "definition": "The review-off module graph (perception 1, solver 1; Reviewer and Planner never visited) under program phase-native-module-v1-c6 with the 3-arm reasoning-budget column at the Perception node: 1,080 x 6 = 6,480 is the exact program maximum (2 + 2 (K - 1), K = 3); the plan ceiling adds 5 answer-only fallback contacts per row (one per budgeted-thinking contact of the arms: the delivering arm's 2 plus one per candidate node that still thinks, core.reasoning_knobs): 11,880 = 1,080 x 11. The live phase fit makes 1080 x 6 x 4 = 25,920 tokenizer endpoint calls under its own run id SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-FIT-REC2-V1. The GPU-hour ceiling is a BOUND (rows x 2.46 full-row equivalents / 1.84 rows per minute / 60 x 1.3, ceil 0.1), never a target. The budget is RUN-CUMULATIVE across every attempt of this run id. Recovery rec2 (owner ruling 328 of 2026-10-17, an explicit exception to the one-recovery rule; a second failure closes the cell): the earlier attempts (attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-v1, attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-rec1-v1) spent 214 contacts and 613.647 speech-seconds in total, so the run-cumulative budget is the original plan plus that spend: 12,094 calls, 35,317 speech-seconds. THIS ATTEMPT is a mode-A resume: it keeps 26 complete rows from the stopped attempt and flies only the remaining 1054 rows, 1054 x 6 = 6,324 program contacts and nothing else; the cumulative ceiling is a bound, not a target, and the registered GPU-hour ceiling (31.3 GPU-h) stands (expected about 23.5 GPU-h).",
+    "target": 12094
   },
   "population": {
     "count": 1080,

@@ -1,0 +1,214 @@
+{
+  "arm_order": [
+    "perception-off-solver-3072",
+    "solver-2048",
+    "budget-3072"
+  ],
+  "budget_node": {
+    "answer_reserve_tokens": "cap - b",
+    "chat_template_kwargs": {
+      "enable_thinking": true
+    },
+    "max_tokens": 4096,
+    "thinking_budget_tokens": "b (the arm's setting)"
+  },
+  "cell": "slurp-native-stage3-nxt-r2-thinking-budget-fold-b-v1",
+  "composed_config_hash": "8f5ab47caf2cea8801fab0068cf9efb9ff8e64f186154088ca512963e0d00ac4",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-rec2-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 31.3,
+    "planned_model_calls": 12094,
+    "planned_speech_audio_seconds": 35317,
+    "protocol_hash": "36edb46545a44f65b2a71d738502396cc80f5aa1ac42c92bdf74c7e2ea52cc9b",
+    "run_id": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared core.flight.cli campaign over configs/campaign/slurp-native-stage3-nxt-r2-thinking-budget-fold-b-v1.json on the resident Thinking session (serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1); one official score per arm column (stage3_rollout_score --mode perception-branches) after the seal. Flown by scripts/flights/nx/batch_chain_nxt_r2.sh.",
+  "expected_session_id": "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
+  "experiment": "slurp-native-stage3-nxt-r2-thinking-budget-fold-b-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 25920,
+    "generation_calls_cap": 12094,
+    "gpu_hours_fit_inclusive": 31.3,
+    "native_task_contract_calls_cap": 12094,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 35317
+  },
+  "no_think_node": {
+    "answer_reserve_tokens": 1024,
+    "budget_field": "absent (no thinking_budget_tokens)",
+    "chat_template_kwargs": {
+      "enable_thinking": false
+    },
+    "enable_thinking": false,
+    "max_tokens": 1024
+  },
+  "no_twin": true,
+  "one_factor": "The per-node reasoning budget of the non-delivering arms (reasoning_budget_tokens b with answer_reserve_tokens cap - b at the named node). The delivering arm is the 268-B lock form (budget 3072 + reserve 1024 = cap 4096); the system, the knowledge supply, the sealed query vectors and the roster are the 268-B lock's.",
+  "plan_kind": "generation",
+  "preparation_base_commit": "11ffc84fa",
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1/phase-supply-v2.json",
+    "sha256": "6c116e6a5a3630c548beaa1dd33f978e8cc8f29f42971b721ceae39fa92e7bb6"
+  },
+  "prepared_phase_supply_annotations": {
+    "note": "the flip mints this cell's own first-phase supply under its own run id (item E16)"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-10-15-slurp-nxt-r2-thinking-budget-fold-b-v1/protocol-registered-v1.json",
+    "sha256": "6a2fc2192c6c627206eb3dafc1b7b99ecaa26b5cd93fea570ca6bb45afdd4957"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1: reasoning-budget column flight (3 arms in one flight) of NX-T R2.",
+  "recovery": {
+    "amendment": "RECOVERY 2026-10-17 (rec2; owner ruling 328 of 2026-10-17, owner ruling 328 of 2026-10-17 (the owner's message, translated from Chinese: just resume from the checkpoint)). MODE A (trace replay), not mode B: the runtime, runner and row_checkpoint modules are byte-identical between the rec1 flight commit 9790c071f and this registration, but the launch-time checkpoint reader refuses the rec1 checkpoint for the rec2 attempt: row checkpoint $SPEECHRL_DATA_DIR/runs/SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1/attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-rec1-v1/SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1.rows.ckpt.jsonl was written for protocol_hash 'f30958b8ade762b6cf9ccf090d90313d164d5f309547978c30b9a129d6e109ac', not '87c8551b7674ad9c9dd89970366263a9589b9536bd9cb44a133c4ae04e7fdb9c'; a resume applies only when the code, config and split are unchanged. The protocol hash covers the whole experiment fragment, including the cell's attempt id, so a new attempt id of the same cell can never present the header's protocol hash (f30958b8ade7... against the rec2 87c8551b7674...). The trace pin has no such binding and its complete-row set equals the checkpoint's (same kept-row id hash). `resume_from` names the rec1 attempt and the sha256 of its trace, add8fb93cd4096787e5ae559c3374ec77edff4f9145499ecf986c4c458473813 (10,810,021 bytes), read from the data root into docs/readiness/2026-10-15-slurp-nxt-r2-thinking-budget-fold-b-v1/predecessor-snapshot-arm-rec2-v1.json. The attempt keeps the 26 complete rows (each is proven by the offline replay recorded as a block of the generation plan) and flies the 1,054 remaining rows: 1,054 x 6 = 6,324 program contacts and nothing else. The generation budget is run-cumulative across the attempts of the run id (core/model/adapter.py): the registered plan plus both earlier attempts' recorded spend (214 calls, 613.647 speech-seconds, read from the attempt records into docs/readiness/2026-10-15-slurp-nxt-r2-thinking-budget-fold-b-v1/predecessor-snapshot-arm-rec1-v1.json and docs/readiness/2026-10-15-slurp-nxt-r2-thinking-budget-fold-b-v1/predecessor-snapshot-arm-rec2-v1.json). The FIT cap is structural and unchanged. The FIT run id and the FIT attempt id take the rec2 marker because a (run_id, attempt_id) pair is a one-time key; the generation run id is unchanged. The registered GPU-hour ceiling (31.3 GPU-h) stands; the resume is expected to spend about 23.5 GPU-h (1,054 rows x 2.46 full-row equivalents / 1.84 rows per minute). `--allow-output-change` is never passed: the rebuilt supply, the roster (1,080 rows) and the read (n = 1,080) are the registered ones.",
+    "base_commit": "b147641b2",
+    "fit_cap_rule": "The FIT cap is structural: rows x program contacts x endpoints per contact.",
+    "owner_exception": "owner ruling 328 of 2026-10-17",
+    "predecessor_attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-rec1-v1",
+    "predecessor_fit_attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-fit-rec1-v1",
+    "predecessor_fit_run_id": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-FIT-REC1-V1",
+    "predecessor_state": "ABORTED (its attempt record); 172 calls / 481.55 speech-seconds realised per its attempt record (reserved 11,922 / 34,836); 26 complete rows in its row checkpoint (sha256 fe96736b...) and its trace (sha256 add8fb93...); 4 partial row(s) in the trace were never completed; preserved unread.",
+    "predecessors": [
+      {
+        "attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-v1",
+        "contacts_spent": 42,
+        "speech_seconds_spent": 132.09900000000005,
+        "state": "OPENED"
+      },
+      {
+        "attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-rec1-v1",
+        "contacts_spent": 172,
+        "speech_seconds_spent": 481.5479999999994,
+        "state": "ABORTED"
+      }
+    ],
+    "reason": "The rec1 column attempt was ABORTED on 2026-10-17 at about 13:42Z by a coordinator action, not by the cell: registering the serving task SAEA-Serving-THINKB7 for the next flight started a second server, the serving entry's start-up reaper killed the resident THINKB server under the open flight, the driver saw \"Remote end closed connection\" on a Solver contact and aborted the attempt at 172 calls / 481.5 speech-seconds with its complete rows checkpointed and its trace present. Owner ruling 328 of 2026-10-17 grants an EXPLICIT exception to the package rule of one recovery re-registration per run id and rules that a stopped attempt is RESUMED, never re-flown whole, whenever a checkpoint or trace exists: this rec2 keeps the 26 complete rows of the stopped rec1 attempt by a mode-A resume and flies the 1,054 remaining rows.",
+    "recovered_at": "2026-10-17",
+    "recovery_index": 2,
+    "registered_at_utc": "2026-10-17T15:00:00Z",
+    "resume_counts": {
+      "flown": 1054,
+      "kept": 26,
+      "partial": 4,
+      "roster": 1080,
+      "unstarted": 1050
+    },
+    "resume_from": {
+      "attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-rec1-v1",
+      "trace_sha256": "add8fb93cd4096787e5ae559c3374ec77edff4f9145499ecf986c4c458473813"
+    },
+    "resume_mode": "resume-mode-A-keep-26-fly-1054",
+    "root_cause": "A coordinator error, not a harness, serving-geometry or owner action: the serving-task registration helper registers AND starts a task and the serving entry script's unscoped start-up reaper killed the resident server of the open flight; the harness behaved as designed (a lost server aborts the attempt)",
+    "rule": "A third recovery is not covered by the owner exception; a second failure of rec2 closes the cell, and the fix is proven on a four-row dry run."
+  },
+  "recovery_budget": {
+    "cumulative_plan": {
+      "planned_model_calls": 12094,
+      "planned_speech_audio_seconds": 35317
+    },
+    "failed_attempt_spend": {
+      "attempt_ids": [
+        "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-v1",
+        "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-rec1-v1"
+      ],
+      "model_calls": 214,
+      "speech_audio_seconds": 613.6469999999995
+    },
+    "original_plan": {
+      "planned_model_calls": 11880,
+      "planned_speech_audio_seconds": 34703
+    },
+    "rule": "The adapter budget is run-cumulative across the attempts of a run id; the FIT cap is structural and never scaled."
+  },
+  "registered_at_utc": "2026-10-15T14:46:49.000000+00:00",
+  "resume_budget": {
+    "cap_audio_seconds": 35317,
+    "cap_calls": 12094,
+    "contacts_per_row": 6,
+    "earlier_attempts_actual_audio_seconds": 613.6,
+    "earlier_attempts_actual_calls": 214,
+    "flown_rows": 1054,
+    "flown_worst_case_program_contacts": 6324,
+    "gpu_hours_ceiling": 31.3,
+    "gpu_hours_expected": 23.49,
+    "headroom_calls": 5556,
+    "kept_rows": 26,
+    "mode": "trace",
+    "note": "This attempt flies 1054 rows x 6 program contacts = 6324 contacts and nothing else; the cumulative cap is a bound, not a target; the registered GPU-hour ceiling stands.",
+    "partial_rows": 4,
+    "run_cumulative_worst_case_calls": 6538,
+    "unstarted_rows": 1050
+  },
+  "resume_from": {
+    "attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-rec1-v1",
+    "trace_sha256": "add8fb93cd4096787e5ae559c3374ec77edff4f9145499ecf986c4c458473813"
+  },
+  "schema": "saea-registered-generation-plan-v1",
+  "scoring": "Per-arm official column scoring after a successful seal; no partial score.",
+  "status": "DRAFT-HELD-REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_COUNTERSIGN_AND_READINESS_FLIP",
+  "thinking_arms": {
+    "budget-3072": {
+      "role": "delivering",
+      "settings": {
+        "perception": 3072,
+        "solver": 3072
+      },
+      "thinking_policy": null
+    },
+    "perception-off-solver-3072": {
+      "settings": {
+        "perception": "off",
+        "solver": 3072
+      },
+      "thinking_policy": {
+        "perception": {
+          "enable_thinking": false
+        }
+      }
+    },
+    "solver-2048": {
+      "settings": {
+        "perception": 3072,
+        "solver": 2048
+      },
+      "thinking_policy": {
+        "solver": {
+          "answer_reserve_tokens": 2048,
+          "reasoning_budget_tokens": 2048
+        }
+      }
+    }
+  },
+  "thinking_knobs": {
+    "answer_fallback": {
+      "enable_thinking": false,
+      "id": "saea-thinking-answer-fallback-v1",
+      "max_tokens": 1024,
+      "mode": "answer-only re-ask",
+      "per_node": 1
+    },
+    "answer_reserve_tokens": 1024,
+    "budget_message": "Considering the limited time by the user, I have to give the solution based on the thinking directly now.",
+    "completion_cap": 4096,
+    "decoding": {
+      "seed": 20260913,
+      "temperature": 0
+    },
+    "node_modes": {
+      "perception": "think",
+      "solver": "think"
+    },
+    "reasoning_context_policy": "drop-reasoning-v1",
+    "reasoning_format": "deepseek",
+    "thinking_budget_tokens": 3072
+  },
+  "unused_budget_is_not_attempt_authority": true
+}

@@ -12,6 +12,12 @@ ONE package ``docs/readiness/2026-10-15-slurp-nxt-r2-thinking-budget-fold-b-v1/`
         [--root DIR] [--append-ledger] [--no-derive]
         [--recovery-registered-at <UTC>] [--recovery-base-commit <sha>] [--append-recovery-ledger]
 
+RECOVERY rec2 (owner ruling 328, 2026-10-17): the SECOND recovery of the run id, under an explicit owner exception to the one-recovery rule, is a RESUME of the
+stopped rec1 attempt (mode B, its row checkpoint, or mode A, its trace; the mode is computed by ``nxt_r2_rec2_mode.py`` into the committed rec2 recovery input):
+``resume_from`` (the pin read from the data root into the committed rec2 snapshot) keeps the complete rows and flies the rest. The same flags drive it; the
+generation plan then carries ``resume_from``, ``resume_budget`` and (when ``resume-replay-proof-rec2-v1.json`` is committed) the ``resume_replay_proof`` block.
+``--append-recovery-ledger`` appends the rec2 generation row and the FIT-REC2 row; the coordinator folds the rec1 row.
+
 The arm set is DATA (``nxt_r2_arms.json``): change it, re-run the derive and then this writer; every number in the package follows (program id, contacts, plan
 ceilings, per-arm costs, the GPU-hour ceiling, the texts).
 
@@ -247,11 +253,44 @@ def existing_plan(root: Path, pkg: str, key: str) -> dict | None:
     """The cell's committed generation plan (rec1 name first, then the first-attempt name), or ``None`` on a first registration."""
 
     spec = fam.CELLS[key]
-    for name in (fam.plan_file_name(key, "generation"), rcv.plan_file_name(spec["prefix"], "generation", False)):
+    for name in [rcv.plan_file_name(spec["prefix"], "generation", index) for index in range(fam.recovery_index(key), -1, -1)]:
         path = Path(root) / pkg / name
         if path.is_file():
             return json.loads(path.read_text(encoding="utf-8"))
     return None
+
+
+REPLAY_PROOF_FILE = "resume-replay-proof-rec2-v1.json"
+
+
+def resume_plan_blocks(root: Path, pkg: str, key: str) -> dict:
+    """The generation plan blocks of a RESUME recovery: the declaration, the run-cumulative accounting of what this attempt flies, and (once the
+    offline replay ran and its receipt is committed) the ``resume_replay_proof`` the registration check requires of a cell that declares ``resume_from``."""
+
+    rec = fam.recovery(key)
+    if not rec or not rec.get("resume_from"):
+        return {}
+    counts = rec["resume_counts"]
+    spent_calls, spent_audio = fam.predecessor_spend(key)
+    cap_calls, cap_audio = fam.generation_calls(key), fam.cell_audio_cap(key)
+    flown_contacts = counts["flown"] * fam.CONTACTS_PER_ROW
+    out = {
+        "resume_from": dict(rec["resume_from"]),
+        "resume_budget": {
+            "mode": "checkpoint" if "checkpoint_sha256" in rec["resume_from"] else "trace", "kept_rows": counts["kept"], "flown_rows": counts["flown"], "partial_rows": counts["partial"], "unstarted_rows": counts["unstarted"],
+            "flown_worst_case_program_contacts": flown_contacts, "contacts_per_row": fam.CONTACTS_PER_ROW,
+            "earlier_attempts_actual_calls": spent_calls, "earlier_attempts_actual_audio_seconds": round(spent_audio, 1),
+            "run_cumulative_worst_case_calls": spent_calls + flown_contacts, "cap_calls": cap_calls, "cap_audio_seconds": cap_audio,
+            "headroom_calls": cap_calls - spent_calls - flown_contacts,
+            "gpu_hours_expected": round(fam.expected_gpu_hours(counts["flown"]), 2), "gpu_hours_ceiling": fam.CELLS[key]["gpu_hours"],
+            "note": (f"This attempt flies {counts['flown']} rows x {fam.CONTACTS_PER_ROW} program contacts = {flown_contacts} contacts and nothing else; the cumulative cap "
+                     "is a bound, not a target; the registered GPU-hour ceiling stands."),
+        },
+    }
+    proof_path = Path(root) / pkg / REPLAY_PROOF_FILE
+    if proof_path.is_file():
+        out["resume_replay_proof"] = json.loads(proof_path.read_text(encoding="utf-8"))
+    return out
 
 
 def plan_docs(root: Path, ids: Mapping[str, Mapping], commit: str, at: str, protocol_sha: str, pkg: str, recov: Mapping[str, Mapping] | None = None) -> dict:
@@ -283,13 +322,14 @@ def plan_docs(root: Path, ids: Mapping[str, Mapping], commit: str, at: str, prot
         if recov and key in recov:
             base["recovery"] = json.loads(json.dumps(recov[key]))
             base["recovery_budget"] = rcv.recovery_budget(fam.RECOVERIES, key, i["family_budget"])
+        resume_extra = resume_plan_blocks(root, pkg, key) if recov and key in recov else {}
         gen = dict(i["execution_plan"], attempt_id=i["attempt_id"], carrier_lock_key=i["carrier_lock_key"], protocol_hash=i["protocol_hash"],
                    run_id=i["run_id"], schema="saea-execution-plan-v1", split_identity_hash=i["split_identity_hash"], study="speech-aware-evidence-acquisition")
         route = ("Shared core.flight.cli worker on this cell alone (the batch driver's smoke step); never scored." if key == "smoke" else
                  f"Shared core.flight.cli campaign over {spec['campaign']} on the resident Thinking session ({fam.THINK_SESSION}); one official score per arm column "
                  "(stage3_rollout_score --mode perception-branches) after the seal. Flown by scripts/flights/nx/batch_chain_nxt_r2.sh.")
         docs[fam.plan_file_name(key, "generation")] = {
-            **base, "execution_plan": gen, "execution_route": route, "plan_kind": "generation", "schema": "saea-registered-generation-plan-v1",
+            **base, **resume_extra, "execution_plan": gen, "execution_route": route, "plan_kind": "generation", "schema": "saea-registered-generation-plan-v1",
             "purpose": f"{i['run_id']}: {spec['role']} of NX-T R2.",
             "scoring": "Per-arm official column scoring after a successful seal; no partial score." if key != "smoke" else "None: the smoke is never scored."}
         fit = dict(gen, attempt_id=i["fit_attempt_id"], run_id=i["fit_run_id"], planned_model_calls=i["family_budget"]["fit_endpoint_calls_cap"])
@@ -302,8 +342,21 @@ def plan_docs(root: Path, ids: Mapping[str, Mapping], commit: str, at: str, prot
 
 LEDGER_COLUMNS = reg.LEDGER_COLUMNS
 INHERITED = reg.LEDGER_INHERITED
-RECOVERY_LEDGER_MARK = "## Cell NXT-R2 recovery rec1: "
-RECOVERY_AUTHORITY = f"{fam.OWNER_RULINGS} (the per-node reasoning-budget column) and the generic recovery re-registration (owner decision 309 A)"
+def recovery_ledger_mark(key: str = "arm") -> str:
+    return f"## Cell NXT-R2 recovery rec{fam.recovery_index(key)}: "
+
+
+RECOVERY_AUTHORITY_REC1 = f"{fam.OWNER_RULINGS} (the per-node reasoning-budget column) and the generic recovery re-registration (owner decision 309 A)"
+def resume_mode_letter(rec: Mapping | None) -> str:
+    """``B`` (row checkpoint) or ``A`` (trace) for a resume record; the pin key in ``resume_from`` decides."""
+
+    return "B" if rec and "checkpoint_sha256" in (rec.get("resume_from") or {}) else "A"
+
+
+_REC_ARM = fam.recovery("arm") or {}
+RECOVERY_AUTHORITY = RECOVERY_AUTHORITY_REC1 + (
+    f" and {_REC_ARM['owner_exception']} (the explicit exception to the one-recovery rule for the rec{_REC_ARM['recovery_index']} mode-{resume_mode_letter(_REC_ARM)} resume)"
+    if _REC_ARM.get("owner_exception") else "")
 SCOPE = (f"the 268-B Thinking lock system (plain review-off COMP-1b module graph on lock {fam.LOCK}) with the {fam.K}-arm per-node reasoning-budget column ("
          + ", ".join(fam.ARM_ORDER) + f", no twin) at the Perception node (program {fam.PROGRAM}, {fam.CONTACTS_PER_ROW} contacts per row), TRAIN Fold B ({fam.OWNER_RULINGS})")
 
@@ -467,22 +520,48 @@ def original_registered_at(root: Path) -> str:
     return json.loads((Path(root) / fam.package_file("registered-facts-v1.json")).read_text(encoding="utf-8"))["registered_at_utc"]
 
 
+def assert_resume_mode_is_launchable(root: Path, ids: Mapping[str, Mapping]) -> None:
+    """A mode-B declaration (``resume_from`` = checkpoint pin) is refused at launch unless the checkpoint header's protocol hash and split identity hash equal this
+    registration's; fail here, offline, from the committed rec2 snapshot's header copy, instead of at the driver's gate. Mode A has no such binding."""
+
+    rec = fam.recovery("arm")
+    if not rec or "checkpoint_sha256" not in (rec.get("resume_from") or {}):
+        return
+    header = rcv.load_snapshot(Path(root) / fam.PREDECESSOR_SNAPSHOTS["arm"][-1])["resume"]["checkpoint_header"]
+    for name in ("protocol_hash", "split_identity_hash"):
+        if header[name] != ids["arm"][name]:
+            raise SystemExit(f"mode B refused: the checkpoint header's {name} {header[name]} differs from this registration's {ids['arm'][name]} (a new attempt id "
+                             "moves the protocol hash); record resume_mode 'trace' in the rec2 recovery input (nxt_r2_rec2_mode.py computes it)")
+
+
 def verify_snapshots(root: Path, data_root: str | None) -> dict:
     """Re-read each predecessor's attempt record on the data root and compare it with the committed snapshot receipt (skipped, and said so, when the
-    data root or the record is absent: a CI checkout has no data root). A disagreement raises."""
+    data root or the record is absent: a CI checkout has no data root). A snapshot that pins a trace is re-hashed too. A disagreement raises."""
 
     out = {}
     for key in fam.ALL_KEYS:
         if not fam.recovery(key):
             continue
-        snap = rcv.load_snapshot(Path(root) / fam.PREDECESSOR_SNAPSHOT[key])
-        record = Path(data_root or "/nonexistent") / "attempts" / snap["run_id"] / f"{snap['attempt_id']}.json"
-        if data_root and record.is_file():
-            fresh = rcv.verify_predecessor_snapshot(snap, data_root)
-            out[key] = {"verified": True, "state_now": fresh["state"], "actual_calls": fresh["actual_calls"],
-                        "actual_audio_seconds": fresh["actual_audio_seconds"]}
-        else:
-            out[key] = {"verified": False, "reason": "no attempt record on the data root (snapshot receipt used as committed)"}
+        entries = []
+        for rel in fam.PREDECESSOR_SNAPSHOTS[key]:
+            if not (Path(root) / rel).is_file():
+                continue
+            snap = rcv.load_snapshot(Path(root) / rel)
+            record = Path(data_root or "/nonexistent") / "attempts" / snap["run_id"] / f"{snap['attempt_id']}.json"
+            if data_root and record.is_file():
+                fresh = rcv.verify_predecessor_snapshot(snap, data_root)
+                entry = {"attempt_id": snap["attempt_id"], "verified": True, "state_now": fresh["state"], "actual_calls": fresh["actual_calls"],
+                         "actual_audio_seconds": fresh["actual_audio_seconds"]}
+                if snap.get("trace"):
+                    entry["trace_sha256_verified"] = rcv.verify_trace_pin(snap, data_root)["trace_sha256"]
+                    if snap["trace"].get("checkpoint_sha256"):
+                        entry["checkpoint_sha256_verified"] = rcv.read_trace_pin(data_root, snap["run_id"], snap["attempt_id"])["checkpoint_sha256"]
+                        if entry["checkpoint_sha256_verified"] != snap["trace"]["checkpoint_sha256"]:
+                            raise rcv.RecoveryError(f"the row checkpoint of {snap['attempt_id']} moved since its snapshot")
+            else:
+                entry = {"attempt_id": snap["attempt_id"], "verified": False, "reason": "no attempt record on the data root (snapshot receipt used as committed)"}
+            entries.append(entry)
+        out[key] = entries
     return out
 
 
@@ -494,11 +573,14 @@ def recovery_blocks(root: Path, ids: Mapping[str, Mapping], at: str, recovery_at
         if not fam.recovery(key):
             continue
         i, spec = ids[key], fam.CELLS[key]
-        scope = f"Cell NXT-R2 {spec['role']} -- RECOVERY rec1: {SCOPE}; re-flown whole after the host restart that killed the first attempt"
+        rec = fam.recovery(key)
+        flown_text = ("re-flown whole after the host restart that killed the first attempt" if rec["recovery_index"] == 1
+                      else f"{rec['flown_phrase']} (explicit owner exception, {rec['owner_exception']})")
+        scope = f"Cell NXT-R2 {spec['role']} -- RECOVERY rec{rec['recovery_index']}: {SCOPE}; {flown_text}"
         out[key] = rcv.recovery_ledger_block(
-            fam.RECOVERIES, key, mark=RECOVERY_LEDGER_MARK, authority=RECOVERY_AUTHORITY, package=fam.PACKAGE, role=spec["role"], run=i["run_id"],
+            fam.RECOVERIES, key, mark=recovery_ledger_mark(key), authority=RECOVERY_AUTHORITY, package=fam.PACKAGE, role=spec["role"], run=i["run_id"],
             fit_run=i["fit_run_id"], attempt=i["attempt_id"], fit_attempt=i["fit_attempt_id"], session=fam.THINK_SESSION, scope=scope,
-            fit_scope=f"Cell NXT-R2 {spec['role']} -- RECOVERY rec1 live phase-fit spend identity, request envelopes only, no generation.",
+            fit_scope=f"Cell NXT-R2 {spec['role']} -- RECOVERY rec{rec['recovery_index']} live phase-fit spend identity, request envelopes only, no generation.",
             model_tool=fam.think_model_text(key), carrier=f"slurp TRAIN Fold B {i['rows']:,}", split_hash=i["split_identity_hash"], caps=i["family_budget"],
             config_hash=i["composed_config_hash"], protocol_hash=i["protocol_hash"], registered_at=recovery_at, base_commit=recovery_base,
             worktree=worktree, branch=branch, plan_names=(fam.plan_file_name(key, "generation"), fam.plan_file_name(key, "fit")), inherited=INHERITED)
@@ -506,16 +588,20 @@ def recovery_blocks(root: Path, ids: Mapping[str, Mapping], at: str, recovery_at
 
 
 def recovery_markdown(ids: Mapping[str, Mapping]) -> str:
-    """The README / preregistration recovery text: one section per recovered cell."""
+    """The README / preregistration recovery text: one section per recovery of each recovered cell, oldest first (rec1 keeps its own numbers)."""
 
     out = ""
     for key in fam.ALL_KEYS:
-        if not fam.recovery(key):
-            continue
+        history = fam.RECOVERY_HISTORY.get(key, [])
         i, spec = ids[key], fam.CELLS[key]
-        out += rcv.recovery_section(
-            fam.RECOVERIES, key, role=spec["role"], run=i["run_id"], attempt=i["attempt_id"], fit_run=i["fit_run_id"], fit_attempt=i["fit_attempt_id"],
-            caps=i["family_budget"], plan_names=(fam.plan_file_name(key, "generation"), fam.plan_file_name(key, "fit")))
+        for position, rec in enumerate(history):
+            later = history[position + 1] if position + 1 < len(history) else None
+            attempt, fit_attempt, fit_run = ((later["predecessor_attempt_id"], later["predecessor_fit_attempt_id"], later["predecessor_fit_run_id"]) if later
+                                             else (i["attempt_id"], i["fit_attempt_id"], i["fit_run_id"]))
+            caps = i["family_budget"] if later is None else fam.history_caps(key, rec["recovery_index"], i["family_budget"])
+            names = tuple(rcv.plan_file_name(spec["prefix"], kind, rec["recovery_index"]) for kind in ("generation", "fit"))
+            out += rcv.recovery_section({key: rec}, key, role=spec["role"], run=i["run_id"], attempt=attempt, fit_run=fit_run, fit_attempt=fit_attempt, caps=caps,
+                                        plan_names=names)
     return out
 
 
@@ -541,6 +627,23 @@ def recovery_sequence_text(ids: Mapping[str, Mapping]) -> str:
     """The coordinator's recovery sequence (README only)."""
 
     arm, smoke = ids["arm"], ids["smoke"]
+    if fam.recovery_index("arm") >= 2:
+        counts = fam.RECOVERIES["arm"]["resume_counts"]
+        return (
+            "\n### Recovery rec2 sequence (the coordinator's; it replaces steps 2 to 6 above)\n\n"
+            f"1. Run the writer on master WITH the recovery ledger block: `python -B scripts/flights/nx/nxt_r2_write_registration.py --study-commit <sha> "
+            "--recovery-registered-at <UTC> --append-recovery-ledger` (appends the rec2 generation row and the FIT-REC2 row; idempotent).\n"
+            f"2. Fold the rec1 generation row of `{arm['run_id']}` into the rec2 row (one run id, one row; the notes name BOTH earlier attempts) and countersign the two "
+            f"new rows (`{arm['run_id']}`, `{arm['fit_run_id']}`) with `countersign-row-texts-v1.json`; the READ row stays a draft until the seal.\n"
+            "3. `python scripts/flights/nx/nxt_r2_mint_receipt.py --supersede` (the current receipt is renamed to a dated backup; the new one lists the rec2 FIT run id "
+            "after the rec1 one and carries the rec2 plan sha256s and the snapshots).\n"
+            "4. After the NX-T R2b column seal (serial GPU): `NXT2_KINDS=arm bash scripts/flights/batch/flip_package_ext4.sh --flip \"scripts/flights/nx/nxt_r2_flip.sh\" --package "
+            f"{fam.PACKAGE} --cells {arm['experiment']} --pins-commit-msg /home/chao/nxt2-pins-commit.txt` (the arm cell only; the sealed smoke is not touched; "
+            "`--allow-output-change` is never passed).\n"
+            "5. Hold the idle watchdog; `bash scripts/flights/nx/batch_chain_nxt_r2.sh arm-only` (checks the predecessor pin, runs the resume prelaunch gate through the driver, "
+            f"swaps to `{fam.THINK_SWAP_TARGET}` when it is not resident, and flies {counts['flown']} rows; the merged manifest is {counts['roster']:,} rows).\n"
+            "6. `bash scripts/flights/nx/nxt_r2_read.sh columns`, countersign the READ row, then `bash scripts/flights/nx/nxt_r2_read.sh` (the reader reads the merged "
+            "manifest: the kept and the flown rows of the one run id)."+"\n")
     return (
         "\n### Recovery sequence (the coordinator's; it replaces steps 2 to 6 above for the recovered column flight)\n\n"
         "0. (Before the writer.) Snapshot the failed attempt and commit the diagnosis: `python -B scripts/flights/lib/recovery.py snapshot --data-root $SPEECHRL_DATA_DIR "
@@ -576,6 +679,7 @@ def write_package(root: Path, commit: str, at: str | None, *, append_ledger: boo
     pkg = fam.PACKAGE
     ids = identities(root)
     arm, smoke = ids["arm"], ids["smoke"]
+    assert_resume_mode_is_launchable(root, ids)
     blockers = [{"id": "loader-refuses-the-derived-cell", "cell": k, "detail": v.get("refusal")} for k, v in loader.items() if not v.get("ok", False)]
     cost = cost_estimate()
     protocol = {
@@ -592,14 +696,19 @@ def write_package(root: Path, commit: str, at: str | None, *, append_ledger: boo
         "schema": "saea-registered-protocol-v1", "status": STATUS, "study_commit_at_registration": commit,
         "the_question": ("How much reasoning does each node of the locked Thinking system need (owner rulings 304/307, 313 A, 318 A)? Each candidate arm is read PAIRED per "
                          f"row against the delivering {fam.DELIVERING} arm on the same 1,080 Fold B rows in one flight, against the declared A/A offset (no twin).")}
-    snapshot_refs = {k: {"path": fam.PREDECESSOR_SNAPSHOT[k],
-                         "sha256": hashlib.sha256((root / fam.PREDECESSOR_SNAPSHOT[k]).read_bytes()).hexdigest()} for k in recov}
+    snapshot_refs = {k: [{"path": rel, "sha256": hashlib.sha256((root / rel).read_bytes()).hexdigest()}
+                         for rel in fam.PREDECESSOR_SNAPSHOTS[k] if (root / rel).is_file()] for k in recov}
     if recov:
         protocol["recovery"] = json.loads(json.dumps(recov))
         protocol["predecessor_snapshots"] = snapshot_refs
-        protocol["superseded_attempt_ids"] = [a for k in recov for a in (fam.recovery(k)["predecessor_attempt_id"], fam.recovery(k)["predecessor_fit_attempt_id"])]
+        protocol["superseded_attempt_ids"] = [a for k in recov for rec in fam.RECOVERY_HISTORY[k]
+                                              for a in (rec["predecessor_attempt_id"], rec["predecessor_fit_attempt_id"])]
         protocol["recovery_note"] = " ".join(f"[{fam.CELLS[k]['role']}] {fam.recovery(k)['reason']}" for k in recov)
-        protocol["failure_policy"] += " Recovery rec1 is spent for a recovered cell: a second failure closes it."
+        if any(fam.recovery(k).get("owner_exception") for k in recov):
+            protocol["failure_policy"] += (f" Recovery rec1 is spent; rec2 stands under an explicit owner exception ({fam.recovery('arm')['owner_exception']}) to the rule of one "
+                                           "recovery per run id and covers that one re-registration only: a failure of it closes the cell.")
+        else:
+            protocol["failure_policy"] += " Recovery rec1 is spent for a recovered cell: a second failure closes it."
     protocol_sha = reg.wjson(root, f"{pkg}/protocol-registered-v1.json", protocol)
     plans = plan_docs(root, ids, commit, at, protocol_sha, pkg, recov)
     shas = {name: reg.wjson(root, f"{pkg}/{name}", doc) for name, doc in plans.items()}
@@ -658,6 +767,9 @@ def write_package(root: Path, commit: str, at: str | None, *, append_ledger: boo
         facts["recovery"] = json.loads(json.dumps(recov))
         facts["predecessor_snapshots"] = snapshot_refs
         facts["recovery_budget"] = {k: rcv.recovery_budget(fam.RECOVERIES, k, ids[k]["family_budget"]) for k in recov}
+        facts["resume"] = {k: {"resume_from": fam.recovery(k)["resume_from"], "counts": fam.recovery(k)["resume_counts"], "mode": fam.recovery(k)["resume_mode"],
+                               "owner_exception": fam.recovery(k)["owner_exception"], "fix_commit": fam.recovery(k).get("fix_commit")}
+                           for k in recov if fam.recovery(k).get("resume_from")}
     shas["registered-facts-v1.json"] = reg.wjson(root, f"{pkg}/registered-facts-v1.json", facts)
     draft = {
         "_draft_note": ("A DRAFT for the coordinator to mint on the data root with scripts/flights/nx/nxt_r2_mint_receipt.py. It authorises "
@@ -686,8 +798,8 @@ def write_package(root: Path, commit: str, at: str | None, *, append_ledger: boo
         draft["antecedents"]["recovery_plans"] = {
             k: {kind: {"path": f"{pkg}/{fam.plan_file_name(k, kind)}", "sha256": shas[fam.plan_file_name(k, kind)]} for kind in ("generation", "fit")}
             for k in recov}
-        draft["supersedes_receipt"] = {"path": fam.DECISION_RELPATH, "note": ("the first-registration receipt lists the first four run ids; this one appends the rec1 FIT "
-                                                                           "run id. nxt_r2_mint_receipt.py --supersede renames the old receipt to a dated backup first.")}
+        draft["supersedes_receipt"] = {"path": fam.DECISION_RELPATH, "note": ("the current receipt's run ids are a strict prefix of this list; this one appends the latest "
+                                                                           "recovery's FIT run id. nxt_r2_mint_receipt.py --supersede renames the old receipt to a dated backup first.")}
     shas["root-admission-draft-v1.json"] = reg.wjson(root, f"{pkg}/root-admission-draft-v1.json", draft)
     row_cells = draft_rows(ids, commit, at, pkg, shas)
     lines = [fam.LEDGER_MARK + " (DRAFT, root countersignature pending)", "",
@@ -731,12 +843,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--root", default=str(REPO_ROOT), help="repository (or overlay) root to read and write")
     parser.add_argument("--append-ledger", action="store_true", help="append the DRAFT rows at the END of docs/exposure-ledger.md (idempotent)")
     parser.add_argument("--append-recovery-ledger", action="store_true",
-                        help="append ONLY the recovered cell's two DRAFT rows (rec1) as a new ledger block; idempotent on the rec1 attempt id")
+                        help="append ONLY the recovered cell's two DRAFT rows (rec1) as a new ledger block; idempotent on the latest recovery's generation attempt id")
     parser.add_argument("--recovery-registered-at", default=None,
                         help="UTC timestamp of the recovery re-registration (default: now); recorded in the recovery plan and ledger rows")
     parser.add_argument("--recovery-base-commit", default=None, help="the commit the recovery was registered on top of (default: --study-commit)")
-    parser.add_argument("--recovery-branch", default="sonnet/nxt2-rec1")
-    parser.add_argument("--recovery-worktree", default="/home/chao/saea-worktrees/sonnet-nxt2-rec1")
+    parser.add_argument("--recovery-branch", default="sonnet/nxt2-rec2")
+    parser.add_argument("--recovery-worktree", default="/home/chao/saea-worktrees/sonnet-nxt2-rec2")
     parser.add_argument("--data-root", default=os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR"),
                         help="re-verify the predecessor snapshot against this data root when its attempt record is present")
     parser.add_argument("--no-derive", action="store_true", help="do not re-derive the fragments first")
