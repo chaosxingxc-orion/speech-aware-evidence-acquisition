@@ -3218,3 +3218,24 @@ read at n = 1,080 intact. Cost about 1.5 GPU-h after the successor-3 seal; the s
 - Follow-ups: (a) `package_launch.py` countersign step to accept the recovery row form ("REGISTERED (DRAFT, root countersignature pending)");
   (b) the pins / flight-commit / chain wrapper segment for a rec flight should come from the launch spec (a `recovery` launch id) instead of a
   hand edit of `/home/chao/saea-queue/chain_nxt2.sh`.
+
+### INCIDENT: R2 rec1 ABORTED 13:42Z by the coordinator (serving-task registration auto-started a second server; its reaper killed the resident one); R2b goes on the GPU now; owner exception 328 requested for R2 rec2 (coordinator, 2026-10-17 13:44Z)
+
+- 13:41Z: to prepare NX-T R2b's serving session I registered the Windows tasks SAEA-Serving-THINKB7 / SAEA-Monitor-THINKB7 with
+  `saea_task.ps1 -Name ... -Script ...`. The helper REGISTERS AND STARTS a task; the serving entry script's start-up reaper (memory of
+  2026-09-22: an unscoped `pgrep -f 'llama-server --host'` kill) killed the resident THINKB server under the R2 rec1 flight. The driver saw
+  "Remote end closed connection" on a Solver contact and aborted: rec1 attempt ABORTED at 172 calls / 481.5 speech-seconds, 27 rows
+  checkpointed (trace present); chain exit rc 9 at 13:42:04Z. Coordinator error, not a harness or owner action. The THINKB7 task was stopped
+  within a minute; no second server is up.
+- Rules recorded: (1) never register or start a serving/monitor task while a flight is open -- the entry's reaper is unscoped; (2) `saea_task.ps1`
+  gets a `-NoStart` switch (follow-up, model-free) and the serving entry's reaper must be scoped to its own session; (3) the pre-flight
+  checklist of every chain: "no other SAEA-Serving-* task Running".
+- R2 cell status: this is the cell's SECOND failure (rec1 was the host reboot). The package rule reads "a second failure closes the cell; the fix
+  is proven on a four-row dry run" and `recovery.py` refuses a second record without an `owner_exception` naming the ruling (320 B precedent).
+  **Owner decision 328 requested:** A = exception granted for R2 rec2 as a mode-A trace resume of the rec1 attempt (keep the 27 complete rows,
+  fly 1,053; the harness is unchanged, so the resume gate's full-trace replay applies; ~18.5 GPU-h); B = exception granted as a whole re-fly
+  under rec2 ids (~19 GPU-h); C = the cell is closed (R2's question -- the perception-off same-roster replicate and solver-2048 -- is answered
+  in a later package). Recommended A.
+- GPU continuity (owner directive >= 24 h): NX-T R2b (ruling 325 A) is registered on master now and flipped + chained immediately -- it is
+  independent of R2's read, its serving session is THINKB7, and the queue hook for "R2 then R2b" is therefore not installed; after 328 the R2
+  rec2 flies behind R2b through the same hook form (R2b exit -> R2 rec2).

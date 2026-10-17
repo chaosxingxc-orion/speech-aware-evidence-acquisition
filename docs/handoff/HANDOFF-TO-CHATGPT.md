@@ -1,11 +1,20 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-17T13:09:11Z
+Last refreshed: 2026-10-17T13:44:32Z
 
 
 
 
 
+
+
+## R2 rec1 ABORTED 13:42Z (coordinator registered the THINKB7 serving task, which auto-started and reaped the resident server; 27 rows checkpointed, trace present); owner decision 328 requested (R2 rec2 by trace resume); R2b (ruling 325 A) registered and launched now on THINKB7 (2026-10-17T13:44:32Z, Fable 5.1 root)
+
+R2b package merged 89218534b (Sonnet 1712c1e68): one arm solver-6144 / cap 7,168, fragment ...-budget3072-max7168-v1, chain on chain_lib
+machine sign-off, conditions emitted by derive, expected 21.2 GPU-h / ceiling 27.6 + 0.5 smoke. Rule: never register/start a serving task
+while a flight is open. Registry 13:44Z.
+
+Superseded stamp: 2026-10-17T13:09:11Z
 
 ## R2 column re-flown as recovery rec1 since 13:05Z at 9790c071f (host reboot 12:52Z killed the first attempt at 42 calls / 6 rows); queue unchanged: R2 -> R2b (hook) -> 324-B confirm (2026-10-17T13:09:11Z, Fable 5.1 root)
 
