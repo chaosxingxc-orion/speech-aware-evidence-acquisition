@@ -7,7 +7,7 @@
     "both-on"
   ],
   "cell": "slurp-native-stage3-nxt-r1-thinking-policy-fold-b-v1",
-  "composed_config_hash": "911d2c22bc1cfc7dc625728ef3896f51a7784abc1d58e53242edc28a2757e190",
+  "composed_config_hash": "51235f09ab8a5c1d62f4f4322773ec3adb82b3ee8e2c1e6a53c5d2c49810289b",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-rec2-v1",
     "carrier_lock_key": "slurp",
@@ -15,7 +15,7 @@
     "planned_gpu_hours": 41.4,
     "planned_model_calls": 28782,
     "planned_speech_audio_seconds": 83877,
-    "protocol_hash": "4fa390446ce1e8aa64af64c8964129ceb31d6f6f146492f082fa434d567e9498",
+    "protocol_hash": "44ce1afce5877c63b90ef18b6945194748e50216cb26eef4cab00db3a44951eb",
     "run_id": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
@@ -49,15 +49,15 @@
   "plan_kind": "generation",
   "preparation_base_commit": "8132badd8",
   "prepared_phase_supply": {
-    "relpath": "prepared/SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1/phase-supply-v2.json",
-    "sha256": "0c2fe45ea9ad5aab09ee794835c3f67e6647b7f34bd5837610284680852ad34c"
+    "relpath": "prepared/SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1/phase-supply-v4.json",
+    "sha256": "5fa565a371143086f182d613d4eedee0f60bf6829b3b695eef83db779417ddd3"
   },
   "prepared_phase_supply_annotations": {
     "note": "the flip mints this cell's own first-phase supply under its own run id (item E16)"
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "50d9dfa0670df339449f5d548da3810989468c5de6481c24db0f2255844ce416"
+    "sha256": "b94a8924e1f122a932734c498c608dfd82dd6993d431b699eb7d000640afc87d"
   },
   "purpose": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1: thinking-policy column flight (five arms in one flight) of NX-T R1.",
   "recovery": {

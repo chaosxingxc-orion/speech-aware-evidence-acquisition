@@ -19,7 +19,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/protocol-registered-v1.json",
-      "sha256": "50d9dfa0670df339449f5d548da3810989468c5de6481c24db0f2255844ce416"
+      "sha256": "b94a8924e1f122a932734c498c608dfd82dd6993d431b699eb7d000640afc87d"
     },
     "recovery_plans": {
       "arm": {

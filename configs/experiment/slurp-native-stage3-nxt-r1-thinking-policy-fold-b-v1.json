@@ -20,7 +20,7 @@
             "kind": "decision",
             "reason": "Decision slurp-nxt-r1-thinking-policy-fold-b-admission-v1 pinned by scripts/flights/repin_cell.py.",
             "relpath": "coordination/slurp-nxt-r1-thinking-policy-fold-b-v1/root-admission-v1.json",
-            "sha256": "676df36f9ee63c1a678828e3284f8765a4379f09d49eb940d10c12dc4b45a917"
+            "sha256": "087e68b537384ecbb4fed82e56faa857d05833929e1295032fc1c2287c95914b"
           },
           {
             "kind": "preparation",
@@ -31,8 +31,8 @@
           {
             "kind": "preparation",
             "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under its own run id with core.flight.cli prepare-supply at the flip from the sealed TRAIN Fold B speech-query segment vectors, the centroid key file SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1 and the Fold B agreement table (item E16). --allow-output-change must never be passed.",
-            "relpath": "prepared/SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1/phase-supply-v2.json",
-            "sha256": "0c2fe45ea9ad5aab09ee794835c3f67e6647b7f34bd5837610284680852ad34c"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1/phase-supply-v4.json",
+            "sha256": "5fa565a371143086f182d613d4eedee0f60bf6829b3b695eef83db779417ddd3"
           }
         ],
         "state": "ready"
