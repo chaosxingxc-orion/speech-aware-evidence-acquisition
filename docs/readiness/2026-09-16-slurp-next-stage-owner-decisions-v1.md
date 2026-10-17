@@ -3129,3 +3129,26 @@ read at n = 1,080 intact. Cost about 1.5 GPU-h after the successor-3 seal; the s
   recommended B: one 2-arm column, ~5 GPU-h, the lock rule of C0.6).
 - Next: `package_launch.sh scripts/flights/nx/nxt_r2_launch_spec.json --root-countersign --until commit` (derive from the new table, register,
   countersign, mint, commit), then `--from flip` (flip + chain SAEA-Chain-NXT2 + smoke sign-off). Opus writes the R1 results note.
+
+### NX-T R2 FLYING since 10:49Z; R1 results note merged; CORRECTION to the 10:37Z section (coordinator, 2026-10-17 10:51Z)
+
+- **Correction (Opus's check of the read file):** the 10:37Z heading and line "Extra word NOT-NEEDED-AT-THE-FLOOR (Perception)" are WRONG. The
+  reader awarded perception-off the word NO-RESOLVED-LOSS and NO extra word: both floor clauses fail (SLU CI lower bound -1.69 vs the -1.49 floor;
+  intent lower bound -1.76 vs -0.65). The top-level `extra_word` key in `read.json` is a constant the reader writes into every read, not a verdict
+  (coordinator misread; the per-arm `extra_word` is null). Consequence: Perception no-think is "no loss the design resolves", not "not needed at the
+  floor"; the R2 arm `perception-off-solver-3072` (same-roster replicate) is therefore REQUIRED evidence, not optional, and item 324 stays B
+  (Fold A confirm before any adoption). Two smaller corrections from the same check: the rec2 seal time is 10:22:16Z on the manifest (10:23:53Z was
+  the chain exit); the rec1 stop left 1,029 complete rows with the failing row the 1,030th (the "row 1,031" heading of 2026-10-15 counted the
+  in-flight row). Results note: `docs/results/2026-10-17-slurp-nxt-r1-thinking-policy-column-read.md` (Opus, merged f9b44984e; it adds the per-arm
+  official TP/FP/FN: the Solver no-think loss is mostly precision, TP -98 / FP +280 / FN +94 vs both-on; the words are unchanged under the 268-B
+  offset |o| = 1.15).
+- **R2 launched through the package launcher (M7, first real use):** register `--root-countersign --until commit` 10:38-10:39Z (derive from the new
+  arm table, 4 rows countersigned, receipt minted, commit 2b277fa3a; 23 occurrences of each new arm id across the package; ceiling 31.3 GPU-h,
+  11,880 calls). Two launcher defects surfaced and were fixed before the flip ran: (a) a flip env value with a space (`NXT2_KINDS=smoke arm`) was
+  passed to the wrapper as two words ("bad extra env 'arm'") -- each KEY=VALUE is now one quoted shell word, regression test added (df8f184f2);
+  (b) the pins-commit message file the spec names (`/home/chao/nxt2-pins-commit.txt`) is created by nobody -- written by hand this time; the
+  launcher should write it from the spec (small follow-up). Flip 10:43-10:49Z in ext4: gate PASS x2, master 68f398caf -> 7ec52005b (pins commit);
+  chain SAEA-Chain-NXT2 started 10:49:57Z at flight commit 7ec52005b = master. Sequence: smoke-4 -> machine sign-off (`smoke_signoff.py`, conditions
+  file `docs/readiness/2026-10-15-slurp-nxt-r2-thinking-budget-fold-b-v1-signoff-conditions-v1.json`, 20-min veto) -> the 1,080-row column
+  (arms perception-off-solver-3072, solver-2048, delivering budget-3072). Expected cost well under the 31.3 GPU-h ceiling (the two candidates are
+  both cheaper than the delivering arm).

@@ -1,8 +1,17 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-17T10:37:09Z
+Last refreshed: 2026-10-17T10:51:16Z
 
 
+
+
+## NX-T R2 FLYING since 10:49:57Z at 7ec52005b (smoke-4 -> machine sign-off -> 1,080-row budget column: perception-off replicate + solver-2048); R1 note merged f9b44984e (2026-10-17T10:51:16Z, Fable 5.1 root)
+
+Correction: R1's perception-off word is NO-RESOLVED-LOSS with NO extra word (floor clauses fail: SLU lb -1.69 vs -1.49); the 10:37Z registry line
+claiming NOT-NEEDED-AT-THE-FLOOR was a misread of a constant key. R2 launched through `package_launch.sh` (two launcher defects fixed: env quoting
+df8f184f2; the pins-commit message file is still hand-written). Chain log `/home/chao/nxt2-chain.out`. Owner items 323/324 open. Registry 10:51Z.
+
+Superseded stamp: 2026-10-17T10:37:09Z
 
 ## NX-T R1 READ 10:37Z: Perception no-think -0.19 SLU [-1.69, +1.29] NO-RESOLVED-LOSS at 55 % of the row cost; Solver no-think -7.11 [-8.97, -5.25] NEEDS-THINKING; R2 arms = perception-off replicate + solver-2048 (2026-10-17T10:37:09Z, Fable 5.1 root)
 
