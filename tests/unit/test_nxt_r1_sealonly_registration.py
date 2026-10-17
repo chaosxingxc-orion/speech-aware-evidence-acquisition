@@ -51,10 +51,15 @@ N = ROWS["count"]
 
 
 def test_the_identities_derive_from_the_rec1_arm_cell():
-    arm = fam.CELLS["arm"]
-    assert SPEC["run"] == arm["run"] and SPEC["fit_run"] == arm["fit_run"] and SPEC["predecessor_attempt"] == arm["attempt"]
-    assert SPEC["attempt"] == arm["attempt"].replace("-rec1-v1", "-rec1-sealonly-v1") and SPEC["attempt"] != arm["attempt"]
-    assert SPEC["fit_attempt"] == arm["fit_attempt"].replace("-rec1-v1", "-rec1-sealonly-v1")
+    # The seal-only package (decision 320 A, now UNUSED: owner ruling 320 B chose the rec2 mode-A resume) is pinned to the rec1 identities; the family's arm cell has
+    # moved on to rec2, so the seal-only spec derives the rec1 ids from the family's recovery history, not from the live arm cell.
+    arm, rec1 = fam.CELLS["arm"], fam.RECOVERY_HISTORY["arm"][0]
+    stopped_attempt, stopped_fit_run = fam.recovery("arm")["predecessor_attempt_id"], fam.recovery("arm")["predecessor_fit_run_id"]
+    stopped_fit_attempt = fam.recovery("arm")["predecessor_fit_attempt_id"]
+    assert rec1["recovery_index"] == 1 and arm["attempt"].endswith("-rec2-v1")
+    assert SPEC["run"] == arm["run"] and SPEC["fit_run"] == stopped_fit_run and SPEC["predecessor_attempt"] == stopped_attempt
+    assert SPEC["attempt"] == stopped_attempt.replace("-rec1-v1", "-rec1-sealonly-v1") and SPEC["attempt"] != stopped_attempt
+    assert SPEC["fit_attempt"] == stopped_fit_attempt.replace("-rec1-v1", "-rec1-sealonly-v1")
     assert SPEC["package"] == f"docs/readiness/{fam.DATE}-slurp-nxt-r1-thinking-policy-fold-b-v1-sealonly-v1"
     assert SPEC["cell"] == SPEC["experiment"] and SPEC["cell"].endswith("-v1-sealonly")
     assert SPEC["decision_relpath"].startswith("coordination/slurp-nxt-r1-thinking-policy-fold-b-v1/") and SPEC["decision_relpath"].endswith("root-admission-sealonly-v1.json")
@@ -79,7 +84,8 @@ def test_the_cell_is_a_held_mode_a_seal_only_resume_of_the_stopped_attempt():
     assert base["native_contact_fit"]["attempt_id"] == SPEC["fit_attempt"] and base["native_contact_fit"]["run_id"] == SPEC["fit_run"]
     differing = sorted(k for k in set(base) | set(parent) if base.get(k) != parent.get(k))
     assert differing == ["native_contact_fit", "what_this_is"]                              # the parent's bytes except the FIT attempt id and the note
-    assert {k: v for k, v in base["native_contact_fit"].items() if k != "attempt_id"} == {k: v for k, v in parent["native_contact_fit"].items() if k != "attempt_id"}
+    # the parent arm cell is on rec2 now: the seal-only baseline keeps the rec1 FIT identity, so only the FIT run / attempt ids may differ
+    assert {k: v for k, v in base["native_contact_fit"].items() if k not in ("attempt_id", "run_id")} == {k: v for k, v in parent["native_contact_fit"].items() if k not in ("attempt_id", "run_id")}
 
 
 def test_the_cell_composes_and_the_planned_config_hash_is_the_composed_one():

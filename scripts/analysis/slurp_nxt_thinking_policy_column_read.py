@@ -375,8 +375,26 @@ def sealonly_block(roster_doc: Mapping, resume_from: Mapping, manifest: Mapping 
     return block
 
 
+def resume_block(manifest: Mapping, resume_from: Mapping, rows: int) -> dict:
+    """The mode-A RESUME (rec2, owner ruling 320 B) account, by COUNT: the rows kept from the stopped attempt by trace replay and the rows the resume flew, with
+    proof that the sealed manifest's predecessor block names the registered trace. The read is at the full roster (kept + flown); the split is reported, never used."""
+
+    predecessor = manifest.get("predecessor_attempt")
+    if not isinstance(predecessor, Mapping) or predecessor.get("trace_sha256") != resume_from.get("trace_sha256"):
+        raise ReadError(f"the sealed manifest's predecessor_attempt does not name the registered trace {resume_from.get('trace_sha256')!r}")
+    kept = len(predecessor.get("kept_sample_ids") or [])
+    if kept == 0 or kept >= rows:
+        raise ReadError(f"a resume that kept {kept} of {rows} rows is not the registered kept/flown split")
+    return {"kept": kept, "flown": rows - kept, "rows": rows, "resume_from": dict(resume_from), "predecessor_counts": dict(predecessor.get("counts") or {}),
+            "kept_sample_ids_sha256": predecessor.get("kept_sample_ids_sha256")}
+
+
 def render_markdown(result: Mapping) -> str:
     lines = ["# NX-T R1 read -- the per-node thinking-policy column", ""]
+    rs = result.get("resume")
+    if rs:
+        lines += [f"RESUME (rec2, mode A): n = {rs['rows']:,}; {rs['kept']:,} rows kept from the stopped attempt by trace replay and {rs['flown']} rows flown by the resume "
+                  "(the split is reported only; kept and flown rows are never separated in a contrast). Absent columns are counted per arm below.", ""]
     so = result.get("sealonly")
     if so:
         lines += [f"SEAL-ONLY completion: n = {so['rows']:,} of {so['parent_rows']:,} registered rows (the rows the stopped attempt completed); {so['failed_rows']} failing row(s) and "
@@ -478,6 +496,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             if args.sealonly:
                 registered = json.loads((args.repo_root / "configs" / "experiment" / f"{spec['experiment']}.json").read_text(encoding="utf-8"))["cells"][0]["resume_from"]
                 sealonly = sealonly_block(json.loads(roster_path.read_text(encoding="utf-8")), registered, manifest)
+            resume = None
+            if not args.sealonly:
+                declared = json.loads((args.repo_root / "configs" / "experiment" / f"{cells['arm']['cell']}.json").read_text(encoding="utf-8"))["cells"][0].get("resume_from")
+                if declared is not None:
+                    resume = resume_block(manifest, declared, fam.ROWS)
             arms = load_column_rows(root / "columns")
             ids, cluster_of, scenario_of = base.roster_maps(roster_path)
             for arm, rows in arms.items():
@@ -491,6 +514,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             result["sealed_hashes"] = {n: base.sha256_file(paths[n]) for n in ("trace", "outputs", "manifest")}
             if sealonly is not None:
                 result["sealonly"] = sealonly
+            if resume is not None:
+                result["resume"] = resume
             out = root / "read.json"
     except ReadError as error:
         print(f"REFUSED: {error}", file=sys.stderr)

@@ -2,7 +2,7 @@
 """Generic recovery re-registration helpers for flight packages. Model-free.
 
 A (run_id, attempt_id) pair is a one-time key (``core/attempts/store.py``), so a cell whose attempt stopped is re-flown WHOLE under new attempt ids
-(``-rec1``): a new generation attempt id AND a new live-phase-fit run id and attempt id, with a plan that carries the original plan plus the failed
+(``-rec1``; a later recovery under an explicit owner exception ``-rec2`` ...): a new generation attempt id AND a new live-phase-fit run id and attempt id, with a plan that carries the original plan plus the failed
 attempt's REALISED spend (the adapter budget is run-cumulative across the attempts of a run id; every attempt state counts, an OPENED one included).
 
 This module lifts the mechanism of ``scripts/flights/direct/direct_fb_family.py`` / ``direct_fb_write_registration.py`` (which stay untouched) into
@@ -29,6 +29,16 @@ from typing import Any, Mapping
 
 REC = "-rec1"
 SNAPSHOT_SCHEMA = "saea-recovery-predecessor-snapshot-v1"
+
+
+def rec_marker(index: int) -> str:
+    """The attempt-id marker of recovery ``index`` (``-rec1``, ``-rec2`` ...)."""
+
+    return f"-rec{int(index)}"
+
+
+#: Optional keys of a recovery record that are persisted when present (a later recovery under an explicit owner exception, a resume declaration).
+OPTIONAL_PERSISTED_KEYS = ("owner_exception", "resume_from", "resume_mode", "fix_commit", "resume_counts")
 
 #: Keys every recovery record carries (the writer prints them; the persisted subset is :data:`PERSISTED_RECOVERY_KEYS`).
 REQUIRED_KEYS = (
@@ -63,6 +73,15 @@ def validate_recovery(rec: Mapping[str, Any]) -> None:
                 raise RecoveryError(f"predecessor entry misses {k!r}: {p}")
     if rec["predecessor_attempt_id"] not in [p["attempt_id"] for p in rec["predecessors"]]:
         raise RecoveryError("predecessor_attempt_id is not among the predecessors")
+    index = rec["recovery_index"]
+    if isinstance(index, bool) or not isinstance(index, int) or index < 1:
+        raise RecoveryError(f"recovery_index must be a positive integer, got {index!r}")
+    if index >= 2 and not str(rec.get("owner_exception") or "").strip():
+        raise RecoveryError(f"recovery rec{index} is a second or later re-registration of one run id: the package rule allows ONE, so the record must carry an "
+                            "explicit owner_exception naming the owner ruling that grants it")
+    if index >= 2 and len(rec["predecessors"]) < index:
+        raise RecoveryError(f"recovery rec{index} must name every earlier attempt as a predecessor ({index} expected, {len(rec['predecessors'])} named): the plan "
+                            "budget is run-cumulative across all of them")
 
 
 def recovery(recoveries: Mapping[str, Mapping], key: str) -> Mapping | None:
@@ -70,7 +89,8 @@ def recovery(recoveries: Mapping[str, Mapping], key: str) -> Mapping | None:
 
 
 def rec_suffix(recoveries: Mapping[str, Mapping], key: str) -> str:
-    return REC if key in recoveries else ""
+    rec = recoveries.get(key)
+    return rec_marker(rec.get("recovery_index", 1)) if rec else ""
 
 
 def predecessor_spend(recoveries: Mapping[str, Mapping], key: str) -> tuple[int, float]:
@@ -90,16 +110,20 @@ def cumulative_budget(recoveries: Mapping[str, Mapping], key: str, original_call
     return original_calls + calls, math.ceil(original_audio + audio - 1e-9)
 
 
-def plan_file_name(stem: str, plan_kind: str, recovered: bool) -> str:
-    """Package file name of a registered plan: ``<stem><kind>-plan-registered[-rec1]-v1.json`` (``stem`` carries its own trailing dash or is empty)."""
+def plan_file_name(stem: str, plan_kind: str, recovered: bool | int) -> str:
+    """Package file name of a registered plan: ``<stem><kind>-plan-registered[-rec<N>]-v1.json`` (``stem`` carries its own trailing dash or is empty).
+    ``recovered`` is the recovery index (``True`` = rec1, ``False`` / 0 = the first attempt)."""
 
-    return f"{stem}{plan_kind}-plan-registered{REC if recovered else ''}-v1.json"
+    index = int(recovered)
+    return f"{stem}{plan_kind}-plan-registered{rec_marker(index) if index else ''}-v1.json"
 
 
-def superseded_plan_file_names(stem: str, recovered: bool, kinds: tuple[str, ...] = ("generation", "fit")) -> list[str]:
-    """First-attempt plan names a recovery supersedes (removed from the package; git history keeps them, the failed attempt stays on the data root)."""
+def superseded_plan_file_names(stem: str, recovered: bool | int, kinds: tuple[str, ...] = ("generation", "fit")) -> list[str]:
+    """Earlier-attempt plan names a recovery supersedes (removed from the package; git history keeps them, the failed attempts stay on the data root):
+    the first-attempt plans and, for rec2 and later, every earlier rec plan. ``recovered`` is the recovery index (``True`` = rec1)."""
 
-    return [plan_file_name(stem, kind, False) for kind in kinds] if recovered else []
+    index = int(recovered)
+    return [plan_file_name(stem, kind, earlier) for earlier in range(index) for kind in kinds]
 
 
 # ---- the predecessor: read from the data root, never typed ---------------------------------------------------------------------------
@@ -138,13 +162,39 @@ def read_fit_progress(data_root: str | Path, fit_run_id: str, fit_attempt_id: st
             "prepared_dir_present": prepared.is_dir(), "prepared_request_fit_envelopes": envelopes}
 
 
+def read_trace_pin(data_root: str | Path, run_id: str, attempt_id: str) -> dict:
+    """The identity of a stopped attempt's trace file (read-only): its relpath under the data root, size and sha256. A mode-A resume pins exactly these bytes
+    (``resume_from.trace_sha256``); the checkpoint file, when present, is recorded beside it as corroboration only."""
+
+    attempt_dir = Path(data_root) / "runs" / run_id / attempt_id
+    trace = attempt_dir / f"{run_id}.trace.jsonl"
+    if not trace.is_file():
+        raise RecoveryError(f"no trace at {trace}")
+    pin = {"trace_relpath": f"runs/{run_id}/{attempt_id}/{run_id}.trace.jsonl", "trace_bytes": trace.stat().st_size, "trace_sha256": _sha256_stream(trace)}
+    checkpoint = attempt_dir / f"{run_id}.rows.ckpt.jsonl"
+    if checkpoint.is_file():
+        pin.update(checkpoint_relpath=f"runs/{run_id}/{attempt_id}/{run_id}.rows.ckpt.jsonl", checkpoint_bytes=checkpoint.stat().st_size,
+                   checkpoint_sha256=_sha256_stream(checkpoint))
+    return pin
+
+
+def _sha256_stream(path: Path) -> str:
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as handle:
+        for block in iter(lambda: handle.read(1 << 20), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
 def snapshot_predecessor(data_root: str | Path, run_id: str, attempt_id: str, fit_run_id: str | None = None, fit_attempt_id: str | None = None,
-                         now: datetime | None = None) -> dict:
-    """The committed snapshot receipt of a failed attempt's realised spend."""
+                         now: datetime | None = None, trace_pin: bool = False) -> dict:
+    """The committed snapshot receipt of a failed attempt's realised spend (``trace_pin``: also the identity of its trace, for a mode-A resume)."""
 
     doc = {"schema": SNAPSHOT_SCHEMA, "snapshotted_at_utc": (now or datetime.now(timezone.utc)).isoformat(), **read_predecessor_attempt(data_root, run_id, attempt_id)}
     if fit_run_id and fit_attempt_id:
         doc["fit"] = read_fit_progress(data_root, fit_run_id, fit_attempt_id)
+    if trace_pin:
+        doc["trace"] = read_trace_pin(data_root, run_id, attempt_id)
     return doc
 
 
@@ -173,6 +223,19 @@ def verify_predecessor_snapshot(snapshot: Mapping[str, Any], data_root: str | Pa
     return fresh
 
 
+def verify_trace_pin(snapshot: Mapping[str, Any], data_root: str | Path) -> dict:
+    """Re-hash the trace a snapshot pins (read-only) and compare. Raises :class:`RecoveryError` on a mismatch or when the snapshot pins no trace."""
+
+    pinned = snapshot.get("trace")
+    if not pinned:
+        raise RecoveryError(f"the snapshot of {snapshot.get('attempt_id')} pins no trace")
+    fresh = read_trace_pin(data_root, snapshot["run_id"], snapshot["attempt_id"])
+    if fresh["trace_sha256"] != pinned["trace_sha256"] or fresh["trace_bytes"] != pinned["trace_bytes"]:
+        raise RecoveryError(f"the trace of {snapshot['attempt_id']} on the data root is {fresh['trace_sha256']} ({fresh['trace_bytes']} bytes); the snapshot pins "
+                            f"{pinned['trace_sha256']} ({pinned['trace_bytes']}): the predecessor moved, a mode-A resume would be refused")
+    return fresh
+
+
 # ---- persisted blocks and text ------------------------------------------------------------------------------------------------------
 
 
@@ -181,6 +244,7 @@ def persisted_recovery(recoveries: Mapping[str, Mapping], key: str, recovery_at:
 
     rec = recoveries[key]
     out = {name: rec[name] for name in PERSISTED_RECOVERY_KEYS}
+    out.update({name: rec[name] for name in OPTIONAL_PERSISTED_KEYS if name in rec})
     out["registered_at_utc"] = rec.get("registered_at_utc") or recovery_at
     out["base_commit"] = rec.get("base_commit") or recovery_base
     return dict(sorted(out.items()))
@@ -201,26 +265,72 @@ def recovery_budget(recoveries: Mapping[str, Mapping], key: str, caps: Mapping[s
     }
 
 
+def _index(rec: Mapping[str, Any]) -> int:
+    return int(rec.get("recovery_index", 1))
+
+
+def _flown_phrase(rec: Mapping[str, Any]) -> str:
+    """How the recovery flies the cell: ``re-flown whole`` by default; a resume record supplies its own phrase."""
+
+    return str(rec.get("flown_phrase") or "re-flown whole")
+
+
+def _cap(text: str) -> str:
+    return text[:1].upper() + text[1:]
+
+
+def _single_phrase(rec: Mapping[str, Any]) -> str:
+    """The rule the recovery stands under: rec1 is the cell's single recovery; a later one names its explicit owner exception."""
+
+    if _index(rec) == 1:
+        return "the cell's single root-diagnosed recovery re-registration"
+    return (f"the cell's rec{_index(rec)} re-registration, a SECOND root-diagnosed recovery granted by the explicit owner exception "
+            f"{rec['owner_exception']} to the rule of one recovery per run id")
+
+
+def _predecessor_clause(rec: Mapping[str, Any]) -> str:
+    """The text that names the predecessor attempt(s) and their state. Rec1 names its one predecessor as before; a later recovery names EVERY earlier
+    attempt with its recorded spend (the plan budget is run-cumulative across all of them), the immediate one last."""
+
+    if _index(rec) == 1:
+        return f"the predecessor attempt {rec['predecessor_attempt_id']} {rec['predecessor_state']}"
+    spends = "; ".join(f"{p['attempt_id']} ({p['contacts_spent']} calls, {p['speech_seconds_spent']:g} speech-seconds)" for p in rec["predecessors"])
+    return (f"the predecessor attempts {spends}; the immediate predecessor {rec['predecessor_attempt_id']} {rec['predecessor_state']}")
+
+
 def recovery_section(recoveries: Mapping[str, Mapping], key: str, *, role: str, run: str, attempt: str, fit_run: str, fit_attempt: str,
                      caps: Mapping[str, Any], plan_names: tuple[str, str]) -> str:
-    """The rec1 text of the README and the preregistration: failed attempt, root cause, fix, rec1 ids, cumulative budget, untouched cells."""
+    """The recovery text of the README and the preregistration: failed attempt(s), root cause, fix, the recovery's ids, cumulative budget, untouched cells."""
 
     rec, budget = recoveries[key], recovery_budget(recoveries, key, caps)
-    receipt = rec.get("receipt_clause") or f"the generation run id `{run}` is unchanged; the decision receipt is re-minted with the rec1 FIT run id"
+    n = _index(rec)
+    receipt = rec.get("receipt_clause") or f"the generation run id `{run}` is unchanged; the decision receipt is re-minted with the rec{n} FIT run id"
     extra = f"- {rec['extra_note']}\n" if rec.get("extra_note") else ""
+    heading = ("(the cell's single recovery re-registration)" if n == 1
+               else f"(the cell's rec{n} re-registration, under an explicit owner exception to the one-recovery rule)")
+    exception = f"- Owner exception: {rec['owner_exception']}; no further recovery is covered by it.\n" if rec.get("owner_exception") else ""
+    if n == 1:
+        failed = f"- Failed attempt: `{rec['predecessor_attempt_id']}` ({rec['predecessor_state']})\n"
+        superseded = "the first-attempt plan files are superseded and removed from the package; the git history keeps them, and the failed attempt stays on the data root"
+    else:
+        failed = "".join(f"- Earlier attempt: `{p['attempt_id']}` ({p['state']}); recorded spend {p['contacts_spent']} calls / {p['speech_seconds_spent']:g} speech-seconds\n"
+                         for p in rec["predecessors"])
+        failed += f"- Immediate predecessor (the stopped attempt): `{rec['predecessor_attempt_id']}` ({rec['predecessor_state']})\n"
+        superseded = ("the earlier plan files (the first attempt and every earlier rec) are superseded and removed from the package; the git history keeps them, "
+                      "and the earlier attempts stay on the data root")
     return (
-        f"\n## Recovery rec1: the {role} (the cell's single recovery re-registration)\n\n"
+        f"\n## Recovery rec{n}: the {role} {heading}\n\n"
         f"{rec['reason']}\n\n{rec['amendment']}\n\n"
-        f"- Failed attempt: `{rec['predecessor_attempt_id']}` ({rec['predecessor_state']})\n"
+        f"{failed}"
         f"- Root cause: {rec['root_cause']}.\n"
         f"- Fix: {rec['fix']}\n"
-        f"- Re-flown whole under generation attempt `{attempt}` and FIT run `{fit_run}` / attempt `{fit_attempt}`; {receipt}.\n"
+        f"- {_cap(_flown_phrase(rec))} under generation attempt `{attempt}` and FIT run `{fit_run}` / attempt `{fit_attempt}`; {receipt}.\n"
         f"- Run-cumulative plan budget: {budget['original_plan']['planned_model_calls']} + {budget['failed_attempt_spend']['model_calls']} = "
         f"{budget['cumulative_plan']['planned_model_calls']} calls; {budget['original_plan']['planned_speech_audio_seconds']} + "
         f"{budget['failed_attempt_spend']['speech_audio_seconds']:g} = {budget['cumulative_plan']['planned_speech_audio_seconds']} "
         "speech-seconds; the FIT cap stays structural.\n"
-        f"- Plans: `{plan_names[0]}`, `{plan_names[1]}` (the first-attempt plan files are superseded and removed from the package; the git history keeps them, "
-        "and the failed attempt stays on the data root).\n"
+        f"- Plans: `{plan_names[0]}`, `{plan_names[1]}` ({superseded}).\n"
+        f"{exception}"
         f"- {rec['unchanged']}\n"
         f"{extra}"
         f"- {rec['rule']}\n")
@@ -234,8 +344,8 @@ def countersign_text(recoveries: Mapping[str, Mapping], key: str, *, authority: 
     calls, audio = predecessor_spend(recoveries, key)
     spend = "0 spent" if calls == 0 else f"{calls} calls and {audio:g} speech-seconds spent"
     return ("REGISTERED BEFORE CONTACT (root countersigned <UTC timestamp> by root flight operations on the coordinator's brief: "
-            f"{authority}; RECOVERY rec1 of the {role}, the cell's single root-diagnosed recovery re-registration: {label}; the predecessor attempt "
-            f"{rec['predecessor_attempt_id']} {rec['predecessor_state']} Root cause: {rec['root_cause']}. Re-flown whole under generation attempt {attempt} and "
+            f"{authority}; RECOVERY rec{_index(rec)} of the {role}, {_single_phrase(rec)}: {label}; {_predecessor_clause(rec)} Root cause: {rec['root_cause']}. "
+            f"{_cap(_flown_phrase(rec))} under generation attempt {attempt} and "
             f"FIT run {fit_run} / attempt {fit_attempt}; the plan budget is run-cumulative (original plan + {spend}); {receipt_clause}; {tail})")
 
 
@@ -252,21 +362,32 @@ def recovery_ledger_block(recoveries: Mapping[str, Mapping], key: str, *, mark: 
                           attempt: str, fit_attempt: str, session: str, scope: str, fit_scope: str, model_tool: str, carrier: str, split_hash: str,
                           caps: Mapping[str, Any], config_hash: str, protocol_hash: str, registered_at: str, base_commit: str, worktree: str,
                           branch: str, plan_names: tuple[str, str], inherited: str, profile: str = "bounded-discovery-probe") -> str:
-    """The two DRAFT rows of a recovered cell (generation, FIT) as one new ledger block; the first-attempt rows stay exactly as they are
-    (same form as the 266-E ``recovery rec1`` blocks of ``docs/exposure-ledger.md``)."""
+    """The two DRAFT rows of a recovered cell (generation, FIT) as one new ledger block; the earlier rows stay exactly as they are
+    (same form as the 266-E ``recovery rec1`` blocks of ``docs/exposure-ledger.md``). For rec2 and later the generation row names EVERY earlier attempt and
+    supersedes the previous recovery row of the same run id (one run id has one ledger row)."""
 
     rec = recoveries[key]
+    n = _index(rec)
     budget = recovery_budget(recoveries, key, caps)
     registered_at = rec.get("registered_at_utc") or registered_at
     base_commit = rec.get("base_commit") or base_commit
     worktree, branch = rec.get("worktree") or worktree, rec.get("branch") or branch
-    common = (f"RECOVERY RE-REGISTRATION (root-diagnosed, the cell's single one, {rec['recovered_at']}): this row SUPERSEDES the first-attempt row of the same run id "
+    if n == 1:
+        earlier = "the first-attempt row of the same run id"
+    else:
+        earlier = f"the rec{n - 1} row of the same run id (which had itself folded the earlier rows)"
+    who = "the cell's single one" if n == 1 else _single_phrase(rec)
+    common = (f"RECOVERY RE-REGISTRATION (root-diagnosed, {who}, {rec['recovered_at']}): this row SUPERSEDES {earlier} "
               "(the coordinator folds the earlier row into this one when countersigning). ")
+    flown = _flown_phrase(rec)
+    poss = "attempt's" if n == 1 else "attempts'"
+    attempts_clause = (f"Attempt {rec['predecessor_attempt_id']} {rec['predecessor_state']}" if n == 1
+                       else f"Predecessors: {_predecessor_clause(rec)[len('the predecessor attempts '):]}")
     gen_notes = (
         f"REGISTERED (DRAFT, root countersignature pending) {registered_at[:10]} at base commit {base_commit} by {rec['agent']} "
-        f"(worktree {worktree}, branch {branch}); {authority}. {common}Attempt {rec['predecessor_attempt_id']} {rec['predecessor_state']} "
-        f"Root cause: {rec['root_cause']}. The cell is re-flown whole under generation attempt {attempt}, a (run_id, attempt_id) pair being a one-time key; "
-        f"the plan budget is run-cumulative across the attempts of the run id: the original plan plus the failed attempt's recorded spend, "
+        f"(worktree {worktree}, branch {branch}); {authority}. {common}{attempts_clause} "
+        f"Root cause: {rec['root_cause']}. The cell is {flown} under generation attempt {attempt}, a (run_id, attempt_id) pair being a one-time key; "
+        f"the plan budget is run-cumulative across the attempts of the run id: the original plan plus the failed {poss} recorded spend, "
         f"{budget['original_plan']['planned_model_calls']} + {budget['failed_attempt_spend']['model_calls']} = {budget['cumulative_plan']['planned_model_calls']} calls and "
         f"{budget['original_plan']['planned_speech_audio_seconds']} + {budget['failed_attempt_spend']['speech_audio_seconds']:g} = "
         f"{budget['cumulative_plan']['planned_speech_audio_seconds']} speech-seconds. Composed config {config_hash}, protocol {protocol_hash} "
@@ -274,7 +395,7 @@ def recovery_ledger_block(recoveries: Mapping[str, Mapping], key: str, *, mark: 
         f"HELD: this registration performs no contact and authorises none.")
     fit_notes = (
         f"REGISTERED (DRAFT, root countersignature pending) {registered_at[:10]} at base commit {base_commit} by {rec['agent']} "
-        f"(worktree {worktree}, branch {branch}); {authority}. {common}The FIT row of {run} under the rec1 identities: FIT run {fit_run}, "
+        f"(worktree {worktree}, branch {branch}); {authority}. {common}The FIT row of {run} under the rec{n} identities: FIT run {fit_run}, "
         f"FIT attempt {fit_attempt} (supersedes FIT run {rec['predecessor_fit_run_id']} / attempt {rec['predecessor_fit_attempt_id']}, {rec['fit_predecessor_phrase']}). "
         f"Root cause: {rec['root_cause']}. The FIT cap stays structural ({caps['fit_endpoint_calls_cap']}, not scaled); speech seconds and GPU hours are the "
         "generation row's ceilings, shared and not additive. HELD: this registration performs no contact and authorises none.")
@@ -283,8 +404,9 @@ def recovery_ledger_block(recoveries: Mapping[str, Mapping], key: str, *, mark: 
     fit = ledger_row(registered_at, fit_run, profile, fit_scope, model_tool, carrier, split_hash, caps["fit_endpoint_calls_cap"],
                      caps["repeated_speech_audio_seconds_cap"], caps["gpu_hours_fit_inclusive"], inherited, f"{package}/{plan_names[1]}", fit_notes)
     header = (f"\n{mark}{rec['ledger_title']} (DRAFT, root countersignature pending)\n\n"
-              f"Two unconsumed rows -- the recovered generation row and its rec1 live-phase-fit identity -- for the single recovery re-registration of the {role} of "
-              f"{authority}. Package {package}. Neither row is countersigned and neither authorises a contact; the first-attempt rows above are unchanged.\n\n"
+              f"Two unconsumed rows -- the recovered generation row and its rec{n} live-phase-fit identity -- for the "
+              f"{'single recovery re-registration' if n == 1 else f'rec{n} re-registration (explicit owner exception)'} of the {role} of "
+              f"{authority}. Package {package}. Neither row is countersigned and neither authorises a contact; the earlier rows above are unchanged.\n\n"
               "| " + " | ".join(LEDGER_COLUMN_NAMES) + " |\n"
               "| " + " | ".join("---" for _ in LEDGER_COLUMN_NAMES) + " |\n")
     return header + gen + "\n" + fit + "\n"
@@ -314,12 +436,13 @@ def main(argv: list[str] | None = None) -> int:
     snap.add_argument("--fit-run-id")
     snap.add_argument("--fit-attempt-id")
     snap.add_argument("--out", required=True)
+    snap.add_argument("--trace-pin", action="store_true", help="also pin the stopped attempt's trace (and row checkpoint) by sha256, for a mode-A resume")
     ver = sub.add_parser("verify", help="re-read the data root and compare it with a snapshot receipt")
     ver.add_argument("--data-root", required=True)
     ver.add_argument("--snapshot", required=True)
     args = parser.parse_args(argv)
     if args.cmd == "snapshot":
-        doc = snapshot_predecessor(args.data_root, args.run_id, args.attempt_id, args.fit_run_id, args.fit_attempt_id)
+        doc = snapshot_predecessor(args.data_root, args.run_id, args.attempt_id, args.fit_run_id, args.fit_attempt_id, trace_pin=args.trace_pin)
         Path(args.out).write_bytes((json.dumps(doc, indent=2, sort_keys=True) + "\n").encode("utf-8"))
         print(json.dumps({k: doc[k] for k in ("run_id", "attempt_id", "state", "actual_calls", "actual_audio_seconds")}, sort_keys=True))
         return 0

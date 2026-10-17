@@ -203,3 +203,83 @@ def test_cli_snapshot_and_verify(tmp_path, capsys):
     bad.write_text("{}", encoding="utf-8")
     with pytest.raises(rcv.RecoveryError):
         rcv.load_snapshot(bad)
+
+
+# ---- a second recovery (rec2) needs an explicit owner exception ------------------------------------------------------------------------------
+
+
+def _second(tmp_path: Path, **overrides) -> dict:
+    first = rcv.snapshot_predecessor(_root_with(tmp_path, ATT, 1204, 3298.5), RUN, ATT)
+    stopped = rcv.snapshot_predecessor(_root_with(tmp_path, "attempt-test-generation-rec1-v1", 10298, 30101.2), RUN, "attempt-test-generation-rec1-v1")
+    record = _record(stopped)
+    record.update(recovery_index=2, predecessors=[rcv.predecessor_from_snapshot(first), rcv.predecessor_from_snapshot(stopped)],
+                  predecessor_attempt_id=stopped["attempt_id"], owner_exception="owner ruling 999 B of 2099-01-01", flown_phrase="resumed in mode A from the stopped attempt")
+    record.update(overrides)
+    return record
+
+
+def _root_with(root: Path, attempt: str, calls: int, audio: float) -> Path:
+    _attempt(root, calls=calls, audio=audio, attempt=attempt)
+    return root
+
+
+def test_a_second_record_without_an_owner_exception_is_refused(tmp_path):
+    record = _second(tmp_path)
+    rcv.validate_recovery(record)
+    for bad in ("", "   ", None):
+        broken = dict(record, owner_exception=bad)
+        with pytest.raises(rcv.RecoveryError, match="owner_exception"):
+            rcv.validate_recovery(broken)
+    del_missing = {k: v for k, v in record.items() if k != "owner_exception"}
+    with pytest.raises(rcv.RecoveryError, match="owner_exception"):
+        rcv.validate_recovery(del_missing)
+    with pytest.raises(rcv.RecoveryError, match="every earlier attempt"):
+        rcv.validate_recovery(dict(record, predecessors=record["predecessors"][1:]))
+    with pytest.raises(rcv.RecoveryError, match="positive integer"):
+        rcv.validate_recovery(dict(record, recovery_index=0))
+
+
+def test_rec2_markers_plan_names_caps_and_texts_follow_the_index(tmp_path):
+    record = _second(tmp_path)
+    recs = {"arm": record}
+    assert rcv.rec_suffix(recs, "arm") == "-rec2" and rcv.rec_suffix(recs, "smoke") == ""
+    assert rcv.plan_file_name("", "generation", 2) == "generation-plan-registered-rec2-v1.json"
+    assert rcv.plan_file_name("", "generation", True) == "generation-plan-registered-rec1-v1.json" and rcv.plan_file_name("", "fit", False) == "fit-plan-registered-v1.json"
+    assert rcv.superseded_plan_file_names("", 1) == ["generation-plan-registered-v1.json", "fit-plan-registered-v1.json"]
+    assert rcv.superseded_plan_file_names("", 2) == ["generation-plan-registered-v1.json", "fit-plan-registered-v1.json",
+                                                     "generation-plan-registered-rec1-v1.json", "fit-plan-registered-rec1-v1.json"]
+    assert rcv.superseded_plan_file_names("x-", 0) == []
+    assert rcv.predecessor_spend(recs, "arm") == (11502, 3298.5 + 30101.2) and rcv.cumulative_budget(recs, "arm", 17280, 50477) == (28782, 83877)
+    assert rcv.persisted_recovery(recs, "arm", "2026-10-17T00:00:00Z", "abc")["owner_exception"] == "owner ruling 999 B of 2099-01-01"
+    caps = {"generation_calls_cap": 28782, "repeated_speech_audio_seconds_cap": 83877, "fit_endpoint_calls_cap": 43200, "gpu_hours_fit_inclusive": 41.4}
+    section = rcv.recovery_section(recs, "arm", role="column", run=RUN, attempt="a2", fit_run="F2", fit_attempt="fa2", caps=caps, plan_names=("g2", "f2"))
+    assert "## Recovery rec2: the column" in section and "17280 + 11502 = 28782 calls" in section and "Owner exception: owner ruling 999 B of 2099-01-01" in section
+    assert "Resumed in mode A from the stopped attempt under generation attempt `a2`" in section and ATT in section and "attempt-test-generation-rec1-v1" in section
+    text = rcv.countersign_text(recs, "arm", authority="auth", role="column", label="L", attempt="a2", fit_run="F2", fit_attempt="fa2", receipt_clause="rc", tail="t")
+    assert "RECOVERY rec2" in text and "owner ruling 999 B" in text and "11502 calls" in text and ATT in text and "attempt-test-generation-rec1-v1" in text
+    block = rcv.recovery_ledger_block(recs, "arm", mark="## M: ", authority="auth", package="pkg", role="column", run=RUN, fit_run="F2", attempt="a2", fit_attempt="fa2",
+                                      session="s", scope="sc", fit_scope="fs", model_tool="m", carrier="c", split_hash="h", caps=caps, config_hash="ch",
+                                      protocol_hash="ph", registered_at="2026-10-17T00:00:00Z", base_commit="abc", worktree="/wt", branch="br",
+                                      plan_names=("g2", "f2"), inherited="i")
+    rows = [ln for ln in block.splitlines() if ln.startswith("| 2026")]
+    assert len(rows) == 2 and "SUPERSEDES the rec1 row" in rows[0] and "17280 + 11502 = 28782 calls" in rows[0] and "rec2 identities" in rows[1]
+    assert ATT in rows[0] and "attempt-test-generation-rec1-v1" in rows[0]
+
+
+def test_the_trace_pin_is_read_hashed_and_verified(tmp_path):
+    import hashlib
+
+    _attempt(tmp_path)
+    attempt_dir = tmp_path / "runs" / RUN / ATT
+    attempt_dir.mkdir(parents=True)
+    (attempt_dir / f"{RUN}.trace.jsonl").write_bytes(b'{"a": 1}\n')
+    (attempt_dir / f"{RUN}.rows.ckpt.jsonl").write_bytes(b"ckpt\n")
+    snap = rcv.snapshot_predecessor(tmp_path, RUN, ATT, trace_pin=True)
+    assert snap["trace"]["trace_sha256"] == hashlib.sha256(b'{"a": 1}\n').hexdigest() and snap["trace"]["checkpoint_sha256"] == hashlib.sha256(b"ckpt\n").hexdigest()
+    assert rcv.verify_trace_pin(snap, tmp_path)["trace_bytes"] == 9
+    (attempt_dir / f"{RUN}.trace.jsonl").write_bytes(b'{"a": 2}\n')
+    with pytest.raises(rcv.RecoveryError, match="predecessor moved"):
+        rcv.verify_trace_pin(snap, tmp_path)
+    with pytest.raises(rcv.RecoveryError, match="pins no trace"):
+        rcv.verify_trace_pin(rcv.snapshot_predecessor(tmp_path, RUN, ATT), tmp_path)
+    assert "trace" not in rcv.snapshot_predecessor(tmp_path, RUN, ATT)

@@ -14,6 +14,9 @@
 #           geometry first when that session is not resident (`serving_swap.sh <target>`, the target from nxt_r1_family.ACTIVE_GEOMETRY: owner decision 315 A,
 #           think-budget-np4 by default; np6 / np8 untested until their fragments land). Hold the idle watchdog (/home/chao/saea-queue/watchdog.hold) first.
 #           `all` refuses (exit 9) when the arm's geometry is not the smoke's.
+#           RECOVERY rec2 (owner ruling 320 B): when the arm cell declares resume_from (a mode-A resume of the stopped rec1 attempt) arm-only first verifies that the
+#           predecessor trace on the data root still hashes to the declared sha256 and that the rec2 attempt does not exist yet (exit 6 otherwise); the driver then runs the
+#           resume prelaunch replay gate itself (resume_gate_run) before the campaign opens. The step flies only the rows the predecessor did not complete.
 #
 # Registered order: swap to think-budget-np4 -> smoke -> sign-off -> the column flight -> swap back to slurp-np4. Both segments fly from ONE flight commit
 # (/home/chao/nxt1-flight-commit.txt, written by the flip).
@@ -75,6 +78,35 @@ case "$SEGMENT" in
     [ "$SMOKE_STATE" = sealed ] || { echo "segment arm-only refused: the smoke is not sealed (state $SMOKE_STATE)" >> $LOG; echo "refusing: smoke state $SMOKE_STATE"; exit 9; }
     [ -s "$SIGNOFF_MARKER" ] || { echo "segment arm-only refused: no sign-off marker $SIGNOFF_MARKER" >> $LOG; echo "refusing: no sign-off marker"; exit 5; } ;;
 esac
+if [ "$SEGMENT" = arm-only ]; then
+  PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src NXT1_MAIN=$MAIN NXT1_DATA=$DATA /home/chao/.venvs/speechrl/bin/python -B - >> $LOG 2>&1 <<'PY' || { echo "arm-only refused: the resume precondition failed; abort" >> $LOG; echo "refusing: resume precondition"; exit 6; }
+import hashlib
+import json
+import os
+import sys
+from pathlib import Path
+
+sys.path.insert(0, os.environ["NXT1_MAIN"] + "/scripts/flights/nx")
+import nxt_r1_family as fam  # noqa: E402
+
+data, spec = Path(os.environ["NXT1_DATA"]), fam.CELLS["arm"]
+cell = json.loads((Path(os.environ["NXT1_MAIN"]) / "configs/experiment" / (spec["cell"] + ".json")).read_text(encoding="utf-8"))["cells"][0]
+resume = cell.get("resume_from")
+if resume is None:
+    print("the arm cell declares no resume_from: an ordinary re-flown arm; nothing to check")
+    raise SystemExit(0)
+assert set(resume) == {"attempt_id", "trace_sha256"}, "resume_from is not the registered mode-A declaration"
+assert resume == fam.RECOVERIES["arm"]["resume_from"], "resume_from is not the family's registered rec2 declaration"
+trace = data / "runs" / spec["run"] / resume["attempt_id"] / (spec["run"] + ".trace.jsonl")
+digest = hashlib.sha256()
+with trace.open("rb") as handle:
+    for block in iter(lambda: handle.read(1 << 20), b""):
+        digest.update(block)
+assert digest.hexdigest() == resume["trace_sha256"], "the predecessor trace moved"
+assert not (data / "runs" / spec["run"] / spec["attempt"]).exists(), "the rec2 attempt already exists on the data root"
+print("resume precondition OK: predecessor trace", resume["trace_sha256"][:12], "unchanged; attempt", spec["attempt"], "not yet opened")
+PY
+fi
 echo "chain start $(date -u +%FT%TZ) segment $SEGMENT commit $COMMIT session $BATCH_SESSION" >> $LOG
 if [ -n "$(pgrep -af 'core.flight.cli|batch_driver.sh|lease_cli' | grep -v pgrep)" ]; then echo "a batch is running; abort" >> $LOG; exit 7; fi
 [ -e "$DATA/locks/flight.lock" ] && { echo "flight.lock present; abort" >> $LOG; exit 7; }
