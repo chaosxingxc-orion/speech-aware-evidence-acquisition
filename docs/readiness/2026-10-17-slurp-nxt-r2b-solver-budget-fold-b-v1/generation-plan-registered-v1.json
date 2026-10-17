@@ -22,7 +22,7 @@
       "reasoning_budget_tokens": 3072
     }
   },
-  "composed_config_hash": "5546b33d6b6170ba404e0dcae240040a015a0fcf7d4a4da177d6185f814ffb2e",
+  "composed_config_hash": "2965d3926a9c9edc30e5fb25c8269dfffbbdc682f07cbcedd6b2d5af4283e312",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-nxt-r2b-solver-budget-fold-b-generation-v1",
     "carrier_lock_key": "slurp",
@@ -30,7 +30,7 @@
     "planned_gpu_hours": 27.6,
     "planned_model_calls": 8640,
     "planned_speech_audio_seconds": 25239,
-    "protocol_hash": "566281cd30f8fbedd253934cd771a3b405c75c586549549a5ab7142cc62ccc16",
+    "protocol_hash": "48885596582dc0360beacee8f232da45dad90b6583dbca6d6333663515d6f38d",
     "run_id": "SAEA-SLURP-STAGE3-NXT-R2B-SOLVER-BUDGET-FOLD-B-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
@@ -63,7 +63,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-17-slurp-nxt-r2b-solver-budget-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "baba7b360e48059a7d59487c25e778a0b5a9f15b1b57d2bf88d069d87b5d92aa"
+    "sha256": "3d9b7a264028aebc141b17748cf346a7f12af241e3075346d3a612653861a3cb"
   },
   "purpose": "SAEA-SLURP-STAGE3-NXT-R2B-SOLVER-BUDGET-FOLD-B-V1: Solver reasoning-budget raise column flight (2 arms in one flight) of NX-T R2b.",
   "registered_at_utc": "2026-10-17T13:47:05Z",
