@@ -1,6 +1,6 @@
 # NX-T R2b: the Solver reasoning-budget raise, preregistration (DRAFT / HELD)
 
-Registered 2026-10-17 at study commit `4a0e938e4` by script. Development numbers only.
+Registered 2026-10-17 at study commit `24b1730ad8138574006fd10108bc6fdb00573273` by script. Development numbers only.
 
 Runs: `SAEA-SLURP-STAGE3-NXT-R2B-SOLVER-BUDGET-FOLD-B-V1` / `SAEA-SLURP-STAGE3-NXT-R2B-SOLVER-BUDGET-FOLD-B-FIT-V1`; `SAEA-SLURP-STAGE3-NXT-R2B-SOLVER-BUDGET-FOLD-B-SMOKE-4-V1` / `SAEA-SLURP-STAGE3-NXT-R2B-SOLVER-BUDGET-FOLD-B-SMOKE-4-FIT-V1`; read `SAEA-SLURP-NXT-R2B-SOLVER-BUDGET-FOLD-B-READ-V1`.
 

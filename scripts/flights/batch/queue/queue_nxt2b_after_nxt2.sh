@@ -52,7 +52,7 @@ fi
 
 say "NX-T R2 exited with rc=0; launching NX-T R2b from $MAIN: $LAUNCH"
 cd "$MAIN" || { say "cannot cd to $MAIN"; exit 1; }
-eval "$LAUNCH" >> "$OUT" 2>&1
+bash -c "$LAUNCH" >> "$OUT" 2>&1
 rc=$?
 say "launcher exit rc=$rc"
 exit $rc

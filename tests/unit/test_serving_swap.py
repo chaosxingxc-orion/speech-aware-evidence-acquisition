@@ -48,6 +48,10 @@ GEOMETRY = {
     "think-budget-np4": ("serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
                          "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1", 4, 24576,
                          "SAEA-Serving-THINKB", "SAEA-Monitor-THINKB", "serving-slurp-thinkb-np4-"),
+    # NX-T R2b (owner rulings 323 / 325 A): the same np4 x 24576 server geometry, a new session id for the raised geometry cap (max_tokens 7168)
+    "think-budget7168-np4": ("serving-slurp-thinking-module-fold-b-np4-budget3072-max7168-v1",
+                             "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max7168-v1", 4, 24576,
+                             "SAEA-Serving-THINKB7", "SAEA-Monitor-THINKB7", "serving-slurp-thinkb7-np4-"),
 }
 PORT_SERVER = "9000101 /home/chao/llama.cpp-featcache/build/bin/llama-server --host 127.0.0.1 --port 8080 -m m.gguf"
 SIDECAR = "9000201 /home/chao/llama.cpp-featcache/build/bin/llama-server --host 127.0.0.1 --port 8081 -m m.gguf -ngl 0"

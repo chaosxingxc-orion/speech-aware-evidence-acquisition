@@ -1,30 +1,30 @@
 {
-  "data_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+  "data_root": "/home/chao/saea-data/speechrl-data",
   "fragments": [
     {
       "binding_refusal": null,
       "binds": true,
       "carrier_lock_key": "slurp",
-      "carrier_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/slurp",
+      "carrier_root": "/home/chao/saea-data/speechrl-data/datasets/slurp",
       "control_decoy_same_root": {
         "media_relpath": "derived/slurp-dev1000-tail2s-v1/audio-1498758443@ts2.flac",
         "message": "payload media_relpath 'derived/slurp-dev1000-tail2s-v1/audio-1498758443@ts2.flac' does not match the verified split's own media_relpath 'derived/slurp-dev1000-tail2s-v1/audio-1497266596@ts2.flac' for sample 'slurp:devel:000011:audio-1497266596@ts2' -- confinement under the carrier root is necessary but not sufficient; the payload must name EXACTLY the file the binding (and, at the gate, verify_media_identity) vouches for, never merely some other file that happens to live under the same root (I4 exact media-relpath binding; a runtime slice is admitted only through a registered core.model.SliceRecord derivation chain)",
         "refused": true
       },
       "control_foreign_declaration": {
-        "declared_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/e22-esb-utterances/dev1500-tail2s-v1",
-        "message": "payload media_relpath escapes its confined root /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/slurp: 'derived/slurp-dev1000-tail2s-v1/audio-1497266596@ts2.flac' (and the declared derived media root(s) /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/e22-esb-utterances/dev1500-tail2s-v1)",
+        "declared_root": "/home/chao/saea-data/speechrl-data/derived/e22-esb-utterances/dev1500-tail2s-v1",
+        "message": "payload media_relpath escapes its confined root /home/chao/saea-data/speechrl-data/datasets/slurp: 'derived/slurp-dev1000-tail2s-v1/audio-1497266596@ts2.flac' (and the declared derived media root(s) /home/chao/saea-data/speechrl-data/derived/e22-esb-utterances/dev1500-tail2s-v1)",
         "refused": true
       },
       "control_without_declaration": {
-        "message": "payload media_relpath escapes its confined root /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/slurp: 'derived/slurp-dev1000-tail2s-v1/audio-1497266596@ts2.flac'",
+        "message": "payload media_relpath escapes its confined root /home/chao/saea-data/speechrl-data/datasets/slurp: 'derived/slurp-dev1000-tail2s-v1/audio-1497266596@ts2.flac'",
         "refused": true
       },
       "d1_media_supplement": "receipts/artifacts/d1-slurp-dev1000-tail2s.json",
       "dataset_fragment": "slurp-speech-native-dev1000-tail2s",
       "dataset_fragment_sha256": "0fa702fc2276a411c5267e59b1c260ec6f455e57a944b5badd305c86db55bb9f",
       "declared_derived_media_roots": [
-        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/slurp-dev1000-tail2s-v1"
+        "/home/chao/saea-data/speechrl-data/derived/slurp-dev1000-tail2s-v1"
       ],
       "row": {
         "audio_seconds": 5.4555625,
@@ -39,26 +39,26 @@
       "binding_refusal": null,
       "binds": true,
       "carrier_lock_key": "audio2tool",
-      "carrier_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/audio2tool",
+      "carrier_root": "/home/chao/saea-data/speechrl-data/datasets/audio2tool",
       "control_decoy_same_root": {
         "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_000062@ts2.wav",
         "message": "payload media_relpath 'derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_000062@ts2.wav' does not match the verified split's own media_relpath 'derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_000045@ts2.wav' for sample 'tier1_direct:000045@ts2' -- confinement under the carrier root is necessary but not sufficient; the payload must name EXACTLY the file the binding (and, at the gate, verify_media_identity) vouches for, never merely some other file that happens to live under the same root (I4 exact media-relpath binding; a runtime slice is admitted only through a registered core.model.SliceRecord derivation chain)",
         "refused": true
       },
       "control_foreign_declaration": {
-        "declared_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/e22-esb-utterances/dev1500-tail2s-v1",
-        "message": "payload media_relpath escapes its confined root /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/audio2tool: 'derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_000045@ts2.wav' (and the declared derived media root(s) /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/e22-esb-utterances/dev1500-tail2s-v1)",
+        "declared_root": "/home/chao/saea-data/speechrl-data/derived/e22-esb-utterances/dev1500-tail2s-v1",
+        "message": "payload media_relpath escapes its confined root /home/chao/saea-data/speechrl-data/datasets/audio2tool: 'derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_000045@ts2.wav' (and the declared derived media root(s) /home/chao/saea-data/speechrl-data/derived/e22-esb-utterances/dev1500-tail2s-v1)",
         "refused": true
       },
       "control_without_declaration": {
-        "message": "payload media_relpath escapes its confined root /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/audio2tool: 'derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_000045@ts2.wav'",
+        "message": "payload media_relpath escapes its confined root /home/chao/saea-data/speechrl-data/datasets/audio2tool: 'derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_000045@ts2.wav'",
         "refused": true
       },
       "d1_media_supplement": "receipts/artifacts/d1-a2t-calibration-400-tail2s.json",
       "dataset_fragment": "audio2tool-calibration-400-tail2s",
-      "dataset_fragment_sha256": "c06eaabd4b88c0511adf2b0d5d936fe0be54d1f4b101b2451b06f4a68acac9d9",
+      "dataset_fragment_sha256": "c02aa4c258b0838fa874bb44852b25e881fd9b9275df446c2077b0f1b8ba1632",
       "declared_derived_media_roots": [
-        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/a2t-calibration-400-tail2s-v1"
+        "/home/chao/saea-data/speechrl-data/derived/a2t-calibration-400-tail2s-v1"
       ],
       "row": {
         "audio_seconds": 3.496875,
@@ -73,26 +73,26 @@
       "binding_refusal": null,
       "binds": true,
       "carrier_lock_key": "audio2tool",
-      "carrier_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/audio2tool",
+      "carrier_root": "/home/chao/saea-data/speechrl-data/datasets/audio2tool",
       "control_decoy_same_root": {
         "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_000062@16k.wav",
         "message": "payload media_relpath 'derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_000062@16k.wav' does not match the verified split's own media_relpath 'derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_000045@16k.wav' for sample 'tier1_direct:000045@16k' -- confinement under the carrier root is necessary but not sufficient; the payload must name EXACTLY the file the binding (and, at the gate, verify_media_identity) vouches for, never merely some other file that happens to live under the same root (I4 exact media-relpath binding; a runtime slice is admitted only through a registered core.model.SliceRecord derivation chain)",
         "refused": true
       },
       "control_foreign_declaration": {
-        "declared_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/e22-esb-utterances/dev1500-tail2s-v1",
-        "message": "payload media_relpath escapes its confined root /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/audio2tool: 'derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_000045@16k.wav' (and the declared derived media root(s) /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/e22-esb-utterances/dev1500-tail2s-v1)",
+        "declared_root": "/home/chao/saea-data/speechrl-data/derived/e22-esb-utterances/dev1500-tail2s-v1",
+        "message": "payload media_relpath escapes its confined root /home/chao/saea-data/speechrl-data/datasets/audio2tool: 'derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_000045@16k.wav' (and the declared derived media root(s) /home/chao/saea-data/speechrl-data/derived/e22-esb-utterances/dev1500-tail2s-v1)",
         "refused": true
       },
       "control_without_declaration": {
-        "message": "payload media_relpath escapes its confined root /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/audio2tool: 'derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_000045@16k.wav'",
+        "message": "payload media_relpath escapes its confined root /home/chao/saea-data/speechrl-data/datasets/audio2tool: 'derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_000045@16k.wav'",
         "refused": true
       },
       "d1_media_supplement": "receipts/artifacts/d1-a2t-calibration-400-16k.json",
       "dataset_fragment": "audio2tool-calibration-400-16k",
-      "dataset_fragment_sha256": "8f4595aa5ba4c6f6472f288b1558cea9e1eac39f5e0417213fd38485e1f6177c",
+      "dataset_fragment_sha256": "f86d60fcaf39b4e0df62228f20806b2a81d1aa9f3df065890c1da8bf0a5a5734",
       "declared_derived_media_roots": [
-        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/a2t-calibration-400-16k-v1"
+        "/home/chao/saea-data/speechrl-data/derived/a2t-calibration-400-16k-v1"
       ],
       "row": {
         "audio_seconds": 1.496875,
@@ -107,26 +107,26 @@
       "binding_refusal": null,
       "binds": true,
       "carrier_lock_key": "audio2tool",
-      "carrier_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/audio2tool",
+      "carrier_root": "/home/chao/saea-data/speechrl-data/datasets/audio2tool",
       "control_decoy_same_root": {
         "media_relpath": "derived/a2t-calibration-400-16k-tail2s-v1/tier1_direct/tier1_direct_000062@16k+ts2.wav",
         "message": "payload media_relpath 'derived/a2t-calibration-400-16k-tail2s-v1/tier1_direct/tier1_direct_000062@16k+ts2.wav' does not match the verified split's own media_relpath 'derived/a2t-calibration-400-16k-tail2s-v1/tier1_direct/tier1_direct_000045@16k+ts2.wav' for sample 'tier1_direct:000045@16k+ts2' -- confinement under the carrier root is necessary but not sufficient; the payload must name EXACTLY the file the binding (and, at the gate, verify_media_identity) vouches for, never merely some other file that happens to live under the same root (I4 exact media-relpath binding; a runtime slice is admitted only through a registered core.model.SliceRecord derivation chain)",
         "refused": true
       },
       "control_foreign_declaration": {
-        "declared_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/e22-esb-utterances/dev1500-tail2s-v1",
-        "message": "payload media_relpath escapes its confined root /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/audio2tool: 'derived/a2t-calibration-400-16k-tail2s-v1/tier1_direct/tier1_direct_000045@16k+ts2.wav' (and the declared derived media root(s) /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/e22-esb-utterances/dev1500-tail2s-v1)",
+        "declared_root": "/home/chao/saea-data/speechrl-data/derived/e22-esb-utterances/dev1500-tail2s-v1",
+        "message": "payload media_relpath escapes its confined root /home/chao/saea-data/speechrl-data/datasets/audio2tool: 'derived/a2t-calibration-400-16k-tail2s-v1/tier1_direct/tier1_direct_000045@16k+ts2.wav' (and the declared derived media root(s) /home/chao/saea-data/speechrl-data/derived/e22-esb-utterances/dev1500-tail2s-v1)",
         "refused": true
       },
       "control_without_declaration": {
-        "message": "payload media_relpath escapes its confined root /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/audio2tool: 'derived/a2t-calibration-400-16k-tail2s-v1/tier1_direct/tier1_direct_000045@16k+ts2.wav'",
+        "message": "payload media_relpath escapes its confined root /home/chao/saea-data/speechrl-data/datasets/audio2tool: 'derived/a2t-calibration-400-16k-tail2s-v1/tier1_direct/tier1_direct_000045@16k+ts2.wav'",
         "refused": true
       },
       "d1_media_supplement": "receipts/artifacts/d1-a2t-calibration-400-16k-tail2s.json",
       "dataset_fragment": "audio2tool-calibration-400-16k-tail2s",
-      "dataset_fragment_sha256": "1b9902199bfbcc18d5e5868f04a13a40c572ad46ee96c6fbeec934628766264f",
+      "dataset_fragment_sha256": "2a72e182e26469dc780fe6863f44f03984a019ae43d05a12a4f0ea2a394e75b2",
       "declared_derived_media_roots": [
-        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/a2t-calibration-400-16k-tail2s-v1"
+        "/home/chao/saea-data/speechrl-data/derived/a2t-calibration-400-16k-tail2s-v1"
       ],
       "row": {
         "audio_seconds": 3.496875,
@@ -141,14 +141,14 @@
       "binding_refusal": null,
       "binds": true,
       "carrier_lock_key": "slurp",
-      "carrier_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/slurp",
+      "carrier_root": "/home/chao/saea-data/speechrl-data/datasets/slurp",
       "control_decoy_same_root": {
         "media_relpath": "datasets/slurp/slurp_real/audio-1498758443.flac",
         "message": "payload media_relpath 'datasets/slurp/slurp_real/audio-1498758443.flac' does not match the verified split's own media_relpath 'datasets/slurp/slurp_real/audio-1497266596.flac' for sample 'slurp:devel:000011:audio-1497266596' -- confinement under the carrier root is necessary but not sufficient; the payload must name EXACTLY the file the binding (and, at the gate, verify_media_identity) vouches for, never merely some other file that happens to live under the same root (I4 exact media-relpath binding; a runtime slice is admitted only through a registered core.model.SliceRecord derivation chain)",
         "refused": true
       },
       "control_foreign_declaration": {
-        "declared_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/e22-esb-utterances/dev1500-tail2s-v1",
+        "declared_root": "/home/chao/saea-data/speechrl-data/derived/e22-esb-utterances/dev1500-tail2s-v1",
         "message": null,
         "refused": false
       },
@@ -168,12 +168,44 @@
         "sample_rate_hz": 16000
       },
       "verdict": "PASS"
+    },
+    {
+      "binding_refusal": null,
+      "binds": true,
+      "carrier_lock_key": "audio2tool",
+      "carrier_root": "/home/chao/saea-data/speechrl-data/datasets/audio2tool",
+      "control_decoy_same_root": {
+        "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_00043/speaker_05_ecapa_speaker_34316.wav",
+        "message": "payload media_relpath 'datasets/audio2tool/public/tier1_direct_audios/query_00043/speaker_05_ecapa_speaker_34316.wav' does not match the verified split's own media_relpath 'datasets/audio2tool/public/tier1_direct_audios/query_00035/speaker_13_ecapa_speaker_22787.wav' for sample 'tier1_direct:000069' -- confinement under the carrier root is necessary but not sufficient; the payload must name EXACTLY the file the binding (and, at the gate, verify_media_identity) vouches for, never merely some other file that happens to live under the same root (I4 exact media-relpath binding; a runtime slice is admitted only through a registered core.model.SliceRecord derivation chain)",
+        "refused": true
+      },
+      "control_foreign_declaration": {
+        "declared_root": "/home/chao/saea-data/speechrl-data/derived/e22-esb-utterances/dev1500-tail2s-v1",
+        "message": null,
+        "refused": false
+      },
+      "control_without_declaration": {
+        "message": null,
+        "refused": false
+      },
+      "d1_media_supplement": "receipts/artifacts/d1-a2t-org1-union-4000.json",
+      "dataset_fragment": "audio2tool-paired-400",
+      "dataset_fragment_sha256": "41bb8c2c9b0cc007beb596bf2575753cbca360d27fd2729093e71099b9ff6500",
+      "declared_derived_media_roots": [],
+      "row": {
+        "audio_seconds": 2.616875,
+        "audio_sha256": "e6eb82285178a5cc7f942228493cacc7a3aca609f8c1cb7e3f4dbe4fb864f258",
+        "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_00035/speaker_13_ecapa_speaker_22787.wav",
+        "sample_id": "tier1_direct:000069",
+        "sample_rate_hz": 24000
+      },
+      "verdict": "PASS"
     }
   ],
-  "generated_utc": "2026-09-07T21:08:29Z",
+  "generated_utc": "2026-10-17T13:28:46Z",
   "model_contacts": 0,
   "schema": "saea-derived-media-confinement-receipt-v1",
   "sockets_opened": 0,
-  "study_commit": "b127538021a3fe22515b8cea1e47e5fccf6fc361",
+  "study_commit": "",
   "verdict": "PASS"
 }

@@ -53,7 +53,7 @@
   "measurement_design": "same-flight-node-column",
   "read_run_id": "SAEA-SLURP-NXT-R2B-SOLVER-BUDGET-FOLD-B-READ-V1",
   "recipe_id": "slurp-nxt-r2b-solver-budget-fold-b-read-v1",
-  "registered_at_utc": "2026-10-17T14:00:00.000000+00:00",
+  "registered_at_utc": "2026-10-17T13:26:36.000000+00:00",
   "roster": {
     "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
     "roster_id": "SLURP-EVO-FOLD-B-V2",
