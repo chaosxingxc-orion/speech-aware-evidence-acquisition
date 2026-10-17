@@ -257,3 +257,14 @@ def test_a_flip_env_value_with_a_space_reaches_the_wrapper_as_one_word(fx, monke
     monkeypatch.setenv("FLIP_EXTRA_OUT", str(out))
     assert launch(fx, "--root-countersign", "--until", "flip") == 0
     assert out.read_text(encoding="utf-8").splitlines() == ["2", "NXT2_KINDS=smoke arm", "TFRL_ONLY=1"]
+
+
+def test_the_pins_commit_message_file_is_written_from_the_spec_when_missing(fx):
+    spec = json.loads(fx["spec"].read_text(encoding="utf-8"))
+    spec["steps"]["flip"]["pins_commit_text"] = "re-pin X\n\nCo-Authored-By: T <t@x>"
+    fx["spec"].write_text(json.dumps(spec), encoding="utf-8")
+    msg = fx["aux"] / "msg.txt"
+    assert not msg.exists()
+    assert launch(fx, "--root-countersign", "--until", "flip") == 0
+    assert msg.read_text(encoding="utf-8") == "re-pin X\n\nCo-Authored-By: T <t@x>\n"
+

@@ -48,7 +48,8 @@
       "env": {
         "NXT2_KINDS": "smoke arm"
       },
-      "flight_commit_file": "/home/chao/nxt2-flight-commit.txt"
+      "flight_commit_file": "/home/chao/nxt2-flight-commit.txt",
+      "pins_commit_text": "NX-T R2: re-pin the per-node reasoning-budget column package (smoke-4, column) on the Thinking base at the registered study commit (rulings 313 A / 318 A; ext4 flip)\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\n"
     },
     "chain": {
       "task": "SAEA-Chain-NXT2",

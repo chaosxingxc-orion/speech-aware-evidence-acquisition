@@ -245,6 +245,13 @@ class Launch:
         wrapper = cfg.get("wrapper", "bash scripts/flights/batch/flip_package_ext4.sh")
         cells = ",".join(cfg["cells"])
         log = cfg.get("log") or f"/home/chao/{Path(cfg.get('package', self.spec['readiness_dir'])).name}-flip.out"
+        # The pins-commit message file is the wrapper's, not the repo's: when the spec carries `pins_commit_text` and the
+        # file is missing, write it (2026-10-17: the NX-T R2 flip was refused "pins commit message file ... not found"
+        # because nothing had ever created it; the nxt1 worked example had a hand-written one).
+        pins_path = Path(cfg["pins_commit_msg"])
+        if cfg.get("pins_commit_text") and not pins_path.is_file() and not self.dry:
+            pins_path.parent.mkdir(parents=True, exist_ok=True)
+            pins_path.write_text(cfg["pins_commit_text"].rstrip("\n") + "\n", encoding="utf-8")
         cmd = (f'{wrapper} --flip "{cfg["script"]}" --package {cfg.get("package", self.spec["readiness_dir"])} --cells {cells} '
                f'--pins-commit-msg {cfg["pins_commit_msg"]} --log {log}')
         # Each KEY=VALUE is ONE shell word (2026-10-17: `NXT2_KINDS=smoke arm` unquoted reached the wrapper as two
