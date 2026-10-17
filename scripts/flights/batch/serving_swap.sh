@@ -117,7 +117,7 @@ import json, sys
 from datetime import datetime, timezone
 steps_path, target, source, result, code, dry, started, host_free = sys.argv[1:9]
 steps = []
-for line in open(steps_path, encoding="utf-8"):
+for line in open(steps_path, encoding="utf-8", errors="replace"):  # the ps1 echoes locale (GBK) bytes on a refusal; never let the summary itself crash
     name, _, rest = line.rstrip("\n").partition("\t")
     verdict, _, detail = rest.partition("\t")
     steps.append({"step": name, "verdict": verdict, "detail": detail})
