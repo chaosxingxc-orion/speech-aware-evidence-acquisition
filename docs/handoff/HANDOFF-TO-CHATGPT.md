@@ -1,6 +1,6 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-17T14:36:00Z
+Last refreshed: 2026-10-17T15:10:55Z
 
 
 
@@ -8,6 +8,14 @@ Last refreshed: 2026-10-17T14:36:00Z
 
 
 
+
+
+## R2 rec2 (328) registered 71c9fc205 (mode-A trace resume, 26 kept / 1,054 flown) and queued: SAEA-Queue-NXT2REC2 flips + chains it when R2b exits rc 0; R2b flying since 13:58Z (2026-10-17T15:10:55Z, Fable 5.1 root)
+
+Design flaw recorded: checkpoint resume (mode B) binds the protocol hash that carries the attempt id, so no rec attempt can use it -- fix
+model-free (hash without attempt id). Rule: no master commit between R2b's seal and the hook's flip. Registry 15:10Z.
+
+Superseded stamp: 2026-10-17T14:36:00Z
 
 ## NX-T R2b FLYING since 13:58Z at cdd6cd95b on THINKB7 (max 7,168); smoke -> machine sign-off -> 1,080-row column, seal ~2026-10-18 12:00Z; owner ruling 328 14:36Z: R2 rec2 = checkpoint/trace RESUME of rec1 (27 rows kept), package in build, flies after R2b via the queue hook (2026-10-17T14:04:04Z, Fable 5.1 root)
 

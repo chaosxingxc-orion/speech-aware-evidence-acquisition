@@ -3270,3 +3270,24 @@ read at n = 1,080 intact. Cost about 1.5 GPU-h after the successor-3 seal; the s
   (R2b exit rc 0 -> flip `NXT2_KINDS=arm` -> chain `arm-only`).
 - Rule for every next package writer: the single-recovery form defaults to RESUME (mode B, fallback mode A); "re-flown whole" only when no
   pin exists. R2b's family inherits this at its first (if any) recovery.
+
+### NX-T R2 rec2 (328) REGISTERED and queued behind R2b; checkpoint-resume design flaw found (coordinator, 2026-10-17 15:10Z)
+
+- Sonnet's rec2 package merged (faa104243): the R2 family carries a rec1 + rec2 history; rec2 = mode-A TRACE resume of the aborted rec1 attempt,
+  26 complete rows kept (the registry's "27" counted the header line; the checkpoint and the trace agree on 26 complete + 4 partial), 1,054 rows
+  flown (~23.5 GPU-h by the plan's formula; the ruling's "18.5" was the coordinator's rough figure), run-cumulative caps 12,094 calls / 35,317 s,
+  ceiling 31.3 unchanged; offline replay proof on a scratch copy 26 checked / 0 failing / 0 sealed twice. Registered on master 15:07Z (writer
+  `--append-recovery-ledger`, rec2 generation + FIT-REC2 rows countersigned 15:07:25Z, the rec1 generation row folded, receipt re-minted
+  `--supersede`, commit 71c9fc205; the pre-flip registration gate shows the expected receipt-hash mismatch the flip's re-pin resolves).
+- **Design flaw (M5, ruling 309): checkpoint resume (mode B) can never serve a NEW attempt id.** The checkpoint header binds the cell's protocol
+  hash, and that hash covers the experiment fragment INCLUDING the attempt id, so every rec attempt (which must carry a new attempt id, the
+  one-time key) is refused by the launch-time checkpoint reader. Only the trace pin (mode A) works. Follow-up (model-free): bind the checkpoint
+  to the protocol hash computed WITHOUT the attempt id (or to the roster + program + config identity), with a test that a rec attempt resumes a
+  predecessor's checkpoint. Until then every resume is mode A.
+- Queue: hook `queue_nxt2rec2_after_nxt2b.sh` (06a68a83d; installed as task SAEA-Queue-NXT2REC2, armed 15:10Z with start stamp
+  2026-10-17T13:57:38Z) waits for `CHAIN_NXT2B_EXIT rc=0`, then flips the R2 arm cell (`NXT2_KINDS=arm`, ext4), verifies the gate block and
+  flight commit = master, and starts SAEA-Chain-NXT2 (`arm-only`: resume precondition + driver replay gate + serving swap to THINKB). It refuses
+  on any other R2b exit, a dirty master, a live flight or a non-converged flip. RULE while it is armed: no commit on master between R2b's seal
+  and the hook's flip (the flip refuses a moved master).
+- Expected timeline: R2b seal ~2026-10-18 12:00Z -> R2 rec2 flies ~12:10Z -> seal ~2026-10-19 12:00Z. Then reads (R2b, R2) -> 324-B confirm /
+  Solver template column (326 A).
