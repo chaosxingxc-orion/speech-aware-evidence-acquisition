@@ -1,0 +1,45 @@
+{
+  "_note": "Numbers only, reduced from sealed bytes by read-only passes (no model, server, tokenizer, encoder or GPU contact; no text, transcript, gold or model output). Registered 2026-10-17 for NX-T R2b.",
+  "r1_measured": {
+    "source": "the NX-T R1 column read on TRAIN Fold B, arms_nodes.both-on and throughput.arms.both-on (1,080-row pass at 4 slots)",
+    "source_path": "analysis/SAEA-SLURP-NXT-R1-THINKING-POLICY-FOLD-B-READ-V1/read.json",
+    "source_sha256": "36928d77639010548ee3680678d285cde11fe0c55084871b26b09df31d40f308",
+    "slots": 4,
+    "perception_seconds_per_contact_mean": 47.82309884060969,
+    "solver_seconds_per_contact_mean": 62.210390497766,
+    "seconds_per_row_both_on": 110.03348933837569,
+    "gpu_hours_per_1080_row_pass": 8.252511700378177,
+    "solver_forced_closes_at_3072": 19,
+    "solver_contacts": 51,
+    "solver_completion_tokens_p90": 3128.0,
+    "solver_prompt_tokens_mean_both_on": 9153.392156862745,
+    "solver_prompt_tokens_mean_perception_off": 11379,
+    "note": "the both-on arm of the R1 smoke's read table (51 contacts per node); its seconds per row is the sum of the two node means"
+  },
+  "fit_observations": {
+    "method": "COST-channel prompt_tokens of every Solver contact in the sealed trace, read once, model-free (2026-10-17)",
+    "limit_basis": "slot 24,576 - operational reserve 3,072 - completion ceiling - special reserve 2 (rails.context_budget.serving_bound_reserve_tokens; ContextFitBudget.prompt_limit_tokens)",
+    "sets": [
+      {
+        "id": "268b-thinking-system-lock-fold-b",
+        "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-LOCK-V1",
+        "solver_contacts": 1080,
+        "solver_prompt_tokens_max": 13465,
+        "solver_prompt_tokens_p99": 12486,
+        "perception_prompt_tokens_max": 3813
+      },
+      {
+        "id": "nxt-r1-fold-b-all-five-arms",
+        "run_id": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1 (rec1 + rec2 attempts)",
+        "solver_contacts": 5400,
+        "solver_prompt_tokens_max": 13918,
+        "solver_prompt_tokens_p99": 13443,
+        "solver_contacts_above_13500": 43,
+        "p99_and_above_13500_note": "the p99 and the above-13,500 count are those of the rec1 attempt's 5,145 Solver contacts; the maximum is over all 5,400",
+        "perception_prompt_tokens_max": 3818,
+        "supplied_count_max": 8,
+        "supplied_count_rows": 5400
+      }
+    ]
+  }
+}

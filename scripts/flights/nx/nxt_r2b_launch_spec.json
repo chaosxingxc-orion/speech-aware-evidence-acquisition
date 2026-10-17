@@ -1,0 +1,63 @@
+{
+  "schema": "saea-package-launch-spec-v1",
+  "_note": "NX-T R2b launch spec for package_launch.sh (owner ruling 318 A). Register in flight with `--root-countersign --until commit`; flip + chain after the GPU is free (`--from flip`). Edit scripts/flights/nx/nxt_r2b_arms.json per R1's read BEFORE derive.",
+  "short": "nxt2b",
+  "launch_id": "nxt2b-first-attempt",
+  "package": "slurp-nxt-r2b-solver-budget-fold-b-v1",
+  "readiness_dir": "docs/readiness/2026-10-17-slurp-nxt-r2b-solver-budget-fold-b-v1",
+  "steps": {
+    "derive": {
+      "cmd": "python -B scripts/flights/nx/nxt_r2b_derive_cells.py"
+    },
+    "write": {
+      "cmd": "python -B scripts/flights/nx/nxt_r2b_write_registration.py --study-commit {head} --append-ledger"
+    },
+    "countersign": {
+      "texts": "{readiness_dir}/countersign-row-texts-v1.json",
+      "ledger": "docs/exposure-ledger.md",
+      "skip_substrings": [
+        "-READ-"
+      ]
+    },
+    "mint": {
+      "cmd": "python -B scripts/flights/nx/nxt_r2b_mint_receipt.py",
+      "done_if": {
+        "file": "coordination/slurp-nxt-r2b-solver-budget-fold-b-v1/root-admission-v1.json",
+        "contains": [
+          "SAEA-SLURP-STAGE3-NXT-R2B-SOLVER-BUDGET-FOLD-B-FIT-V1"
+        ]
+      }
+    },
+    "commit": {
+      "paths": [
+        "configs",
+        "docs/exposure-ledger.md",
+        "{readiness_dir}",
+        "{readiness_dir}-preregistration.md"
+      ],
+      "message": "register: NX-T R2b (the per-node reasoning-budget column, TRAIN Fold B); rows countersigned; receipt minted"
+    },
+    "flip": {
+      "script": "scripts/flights/nx/nxt_r2b_flip.sh",
+      "package": "docs/readiness/2026-10-17-slurp-nxt-r2b-solver-budget-fold-b-v1",
+      "cells": [
+        "slurp-native-stage3-nxt-r2b-solver-budget-fold-b-smoke-4-v1",
+        "slurp-native-stage3-nxt-r2b-solver-budget-fold-b-v1"
+      ],
+      "pins_commit_msg": "/home/chao/nxt2b-pins-commit.txt",
+      "env": {
+        "NXT2B_KINDS": "smoke arm"
+      },
+      "flight_commit_file": "/home/chao/nxt2b-flight-commit.txt",
+      "pins_commit_text": "NX-T R2b: re-pin the per-node reasoning-budget column package (smoke-4, column) on the Thinking base at the registered study commit (rulings 313 A / 318 A; ext4 flip)\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\n"
+    },
+    "chain": {
+      "task": "SAEA-Chain-NXT2B",
+      "wrapper": "/home/chao/saea-queue/chain_nxt2.sh",
+      "flight_commit_file": "/home/chao/nxt2b-flight-commit.txt"
+    },
+    "read": {
+      "cmd": "bash scripts/flights/nx/nxt_r2b_read.sh smoke"
+    }
+  }
+}
