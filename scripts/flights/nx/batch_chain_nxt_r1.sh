@@ -103,7 +103,21 @@ with trace.open("rb") as handle:
     for block in iter(lambda: handle.read(1 << 20), b""):
         digest.update(block)
 assert digest.hexdigest() == resume["trace_sha256"], "the predecessor trace moved"
-assert not (data / "runs" / spec["run"] / spec["attempt"]).exists(), "the rec2 attempt already exists on the data root"
+# "Not yet opened" is the attempt RECORD (attempts/<run>/<attempt>.json: the one-time key the runtime itself refuses on), never the
+# run directory alone: preflight-class steps run at flip time (the re-pin / registration passes of 2026-10-17 08:47Z and 08:53Z) write
+# <run dir>/resume-declaration.json (runtime._write_resume_declaration, owner decision 309) before any gate touch, so the rec2 run
+# directory legitimately exists holding exactly that declaration. Tolerate exactly that: the declaration must name this attempt, this
+# run and the registered predecessor + trace sha, and nothing else may sit in the directory (an outputs/trace/manifest file = flown).
+assert not (data / "attempts" / spec["run"] / (spec["attempt"] + ".json")).exists(), "the rec2 attempt record already exists on the data root"
+run_dir = data / "runs" / spec["run"] / spec["attempt"]
+if run_dir.exists():
+    extra = sorted(p.name for p in run_dir.iterdir() if p.name != "resume-declaration.json")
+    assert not extra, "the rec2 run directory holds more than the preflight declaration: %s" % extra[:5]
+    decl = json.loads((run_dir / "resume-declaration.json").read_text(encoding="utf-8"))
+    expect = {"schema": "saea-resume-declaration-v1", "run_id": spec["run"], "attempt_id": spec["attempt"],
+              "predecessors": [{"attempt_id": resume["attempt_id"], "mode": "trace", "pin_sha256": resume["trace_sha256"]}]}
+    assert decl == expect, "the preflight resume declaration in the rec2 run directory does not match the registered resume_from"
+    print("rec2 run directory holds only the matching preflight resume declaration (tolerated)")
 print("resume precondition OK: predecessor trace", resume["trace_sha256"][:12], "unchanged; attempt", spec["attempt"], "not yet opened")
 PY
 fi
