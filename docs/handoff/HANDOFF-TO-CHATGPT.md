@@ -1,6 +1,6 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-17T14:04:04Z
+Last refreshed: 2026-10-17T14:36:00Z
 
 
 
@@ -9,7 +9,7 @@ Last refreshed: 2026-10-17T14:04:04Z
 
 
 
-## NX-T R2b FLYING since 13:58Z at cdd6cd95b on THINKB7 (max 7,168); smoke -> machine sign-off -> 1,080-row column, seal ~2026-10-18 12:00Z; R2 rec2 waits for owner decision 328 (2026-10-17T14:04:04Z, Fable 5.1 root)
+## NX-T R2b FLYING since 13:58Z at cdd6cd95b on THINKB7 (max 7,168); smoke -> machine sign-off -> 1,080-row column, seal ~2026-10-18 12:00Z; owner ruling 328 14:36Z: R2 rec2 = checkpoint/trace RESUME of rec1 (27 rows kept), package in build, flies after R2b via the queue hook (2026-10-17T14:04:04Z, Fable 5.1 root)
 
 The 13:53Z swap failure (hand-registered THINKB7 task refused re-registration; summary decode crash) is fixed: tasks unregistered, e907c011d.
 Rule: serving tasks are created by serving_swap.sh only, never while a flight is open. Registry 14:04Z.

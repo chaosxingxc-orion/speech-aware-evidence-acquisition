@@ -3254,3 +3254,19 @@ read at n = 1,080 intact. Cost about 1.5 GPU-h after the successor-3 seal; the s
   20-min veto) -> the 1,080-row column (arms budget-3072 delivering, solver-6144). Seal expected about 2026-10-18 12:00Z.
 - Standing rule from today's two serving incidents: serving/monitor tasks are created only by `serving_swap.sh` (never by hand), and no
   serving task is ever registered or started while a flight is open.
+
+### Owner ruling 328 (2026-10-17 14:36Z; owner message translated from Chinese: "Decision 328: just resume from the checkpoint, no?")
+
+- **328 = resume.** The owner grants the exception in the form of the rectified recovery capability itself (ruling 309): NX-T R2 continues as
+  **rec2 = a resume of the rec1 attempt keeping its 27 complete rows** (checkpoint mode B when `rails/runner.py` is byte-identical between the
+  rec1 flight commit 9790c071f and the rec2 flight commit, else trace mode A; both replay-gated before launch), flying the remaining 1,053 rows
+  (~18.5 GPU-h). The owner's wording is also a standing correction of the coordinator's choice at rec1: **a stopped attempt is resumed, never
+  re-flown whole, whenever a checkpoint or trace exists**; the whole re-fly is reserved for an attempt that left no trace.
+- Engineering (model-free, Sonnet, worktree): the R2 family gets a second recovery record in the R1 rec2 form (`recovery_index` 2,
+  `owner_exception` = "owner ruling 328 of 2026-10-17", `resume_from`, `resume_mode`, predecessors = the first attempt + rec1 snapshots,
+  run-cumulative caps 11,880 + 42 + 172 calls), the writer appends the rec2 generation row + FIT-REC2 row (the rec1 generation row folds into
+  it), the chain's `arm-only` segment carries R1's resume precondition (predecessor pin unchanged, rec2 attempt record absent, the run directory
+  may hold only the preflight resume declaration), and the package re-mints with `--supersede`. Flies after R2b through the queue hook
+  (R2b exit rc 0 -> flip `NXT2_KINDS=arm` -> chain `arm-only`).
+- Rule for every next package writer: the single-recovery form defaults to RESUME (mode B, fallback mode A); "re-flown whole" only when no
+  pin exists. R2b's family inherits this at its first (if any) recovery.
