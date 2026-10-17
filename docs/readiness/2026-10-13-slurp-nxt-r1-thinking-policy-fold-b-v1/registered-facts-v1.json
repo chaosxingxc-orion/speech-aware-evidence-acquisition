@@ -284,7 +284,7 @@
   "recovery": {
     "arm": {
       "amendment": "RECOVERY 2026-10-16 (rec2; owner ruling 320 B of 2026-10-16, coordinator brief, Fable 5.1). MODE A (trace replay), not mode B: the absent-arm fix changes rails/runner.py and a checkpoint resume refuses a code-identity change. `resume_from` names the rec1 attempt and the sha256 of its trace, 3238cd8aedb50c8a142b15e321070ffc7cf2cd055088fdcb0aee83d8a0895835 (667,787,659 bytes), read from the data root into docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/predecessor-snapshot-arm-rec2-v1.json. The attempt keeps the 1,029 complete rows (each replayed through the seal under the current code; the offline replay proof is a block of the generation plan) and flies the 51 remaining rows: 51 x 10 = 510 program contacts and nothing else. The generation budget is run-cumulative across the attempts of the run id (core/model/adapter.py): the registered plan plus both earlier attempts' recorded spend (11,502 calls, 33399.5 speech-seconds, read from the attempt records into docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/predecessor-snapshot-arm-rec1-v1.json and docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/predecessor-snapshot-arm-rec2-v1.json). The FIT cap is structural and unchanged. The FIT run id and the FIT attempt id take the rec2 marker because a (run_id, attempt_id) pair is a one-time key; the generation run id is unchanged. The registered GPU-hour ceiling (41.4 GPU-h) stands; the resume is expected to spend about 1.5 GPU-h (51 rows x 3.25 full-row equivalents / 1.84 rows per minute). `--allow-output-change` is never passed: the rebuilt supply, the roster (1,080 rows) and the read (n = 1,080) are the registered ones.",
-      "base_commit": "d5c5eaf45",
+      "base_commit": "5acfbc38b",
       "fit_cap_rule": "The FIT cap is structural: rows x program contacts x endpoints per contact.",
       "fix_commit": "60134738e",
       "owner_exception": "owner ruling 320 B of 2026-10-16",
@@ -309,7 +309,7 @@
       "reason": "The rec1 column attempt stopped on a HARNESS defect, not on the infrastructure: after 1,029 complete rows the next row's `both-off` arm sealed a no-think Solver contact that ended on finish_reason `length` at its 1,024-token cap, and the fan-out raised before the delivering arm ran on that row. The absent-arm fix is merged on master (60134738e). Owner ruling 320 B of 2026-10-16 grants an EXPLICIT exception to the package rule of one recovery re-registration per run id: this rec2 keeps the 1,029 complete rows of the stopped attempt by mode-A trace replay and flies the 51 remaining rows (the failing row included) under the fix.",
       "recovered_at": "2026-10-16",
       "recovery_index": 2,
-      "registered_at_utc": "2026-10-17T04:51:28Z",
+      "registered_at_utc": "2026-10-17T04:53:44Z",
       "resume_counts": {
         "flown": 51,
         "kept": 1029,
@@ -347,7 +347,7 @@
       "rule": "The adapter budget is run-cumulative across the attempts of a run id; the FIT cap is structural and never scaled."
     }
   },
-  "registered_at_utc": "2026-10-14T16:58:26Z",
+  "registered_at_utc": "2026-10-17T04:53:44Z",
   "registration_basis": "owner rulings 301-307 (2026-10-13), coordinator approval of the NX-T R1 design (rulings 1-5); docs/superpowers/specs/2026-10-12-thinking-core-engineering-base-design.md. DRAFT: nothing here authorises a flip or a flight.",
   "resume": {
     "arm": {
@@ -411,7 +411,7 @@
     }
   },
   "status": "DRAFT-HELD",
-  "study_commit_at_registration": "d5c5eaf45",
+  "study_commit_at_registration": "5acfbc38b",
   "thinking_arms": {
     "both-off": {
       "perception": {
