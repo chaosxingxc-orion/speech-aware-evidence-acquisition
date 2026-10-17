@@ -3168,3 +3168,22 @@ read at n = 1,080 intact. Cost about 1.5 GPU-h after the successor-3 seal; the s
   NEEDS-FULL-BUDGET words of the R2 reader, re-used).
 - **324 -- B (recommended):** Perception no-think enters the lock candidate only after (i) the R2 same-roster replicate reads no resolved loss and
   (ii) a Fold A confirm (one 2-arm column, ~5 GPU-h) reads no resolved loss. Until then the lock form keeps Perception thinking at 3,072.
+
+### NX-T R2 column FLYING since 12:40:36Z after a 1 h 43 min idle at the sign-off; owner directive: a >= 24 h GPU queue (coordinator, 2026-10-17 12:42Z)
+
+- **Idle incident (GPU 0 % 10:57-12:40Z).** The R2 smoke sealed COMPLETED at 10:56:47Z (4 rows, 5 checkpoint lines). `batch_chain_nxt_r2.sh`
+  then waited for a HAND-WRITTEN sign-off marker: the R2 chain (built 2026-10-15) carries its own `wait_signoff` and never calls
+  `chain_lib.sh wait_or_machine_signoff` (M6), so the machine sign-off never ran; my waiter watched for "arm-start"/"veto" and not for the
+  "waiting for the sign-off marker" line, so the idle went unnoticed until the 12:37Z check. Second defect found when the sign-off was run by hand:
+  the conditions file beside the package still expected the DEFAULT arm table (budget-1536/2048) -- the derive step does not regenerate it --
+  so the first machine sign-off REFUSED 3/43 (two missing arms; the perception-off arm's Perception node in no-think mode); re-issued for the
+  2026-10-17 table (2059ff8fb) -> PASS 47/47 at 12:39:53Z; the chain saw the marker and opened the column at 12:40:36Z (attempt OPENED, GPU 90 %).
+  Rules for every next package (R2b carries them): the chain calls the M6 library; the derive emits the sign-off conditions INSIDE the package
+  from the arm table; the coordinator's waiter greps the chain log for "waiting for the sign-off marker" as an alarm.
+- **Owner directive (12:42Z, translated): "Next, run a set of large-scale GPU experiments that must run for at least 24 hours; after tidying up,
+  launch them as the priority."** Queue (serial, one experiment in flight, each through the batch driver): (1) NX-T R2 column, flying, ~19 GPU-h
+  expected (three arms at 1.0 / 0.55 / ~0.8 of the 8.25 GPU-h delivering pass), seal expected about 2026-10-18 08:00Z; (2) NX-T R2b (ruling 323:
+  Solver budget 6,144 / cap 7,168, one candidate arm, new serving fragment, same np4 x 24k geometry) -- package in build by Sonnet now at 0 GPU,
+  registered on master today, flipped + chained by the queue hook `queue_nxt2b_after_nxt2.sh` the moment R2's chain exits rc 0 (~20 GPU-h);
+  (3) after R2's read: the 324-B Fold A confirm column for Perception no-think (2 arms, ~5 GPU-h) if the R2 replicate reads no resolved loss, else
+  the next node round (USE node: Solver instruction-template column, NX plan R1 of 2026-10-09). (1)+(2) alone cover ~39 GPU-h without a hand step.

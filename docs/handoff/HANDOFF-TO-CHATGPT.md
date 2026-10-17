@@ -1,9 +1,18 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-17T12:38:22Z
+Last refreshed: 2026-10-17T12:42:54Z
 
 
 
+
+
+## NX-T R2 COLUMN flying since 12:40:36Z (after a 1 h 43 min idle: the R2 chain waits for a hand marker, not the M6 machine sign-off; stale conditions file re-issued 2059ff8fb); owner: >= 24 h GPU queue -> R2 (~19 GPU-h) then R2b (ruling 323, Solver budget 6,144 / cap 7,168; Sonnet building; queue hook) (2026-10-17T12:42:54Z, Fable 5.1 root)
+
+R2 attempt OPENED 12:40Z at 7ec52005b, seal ~2026-10-18 08:00Z, then `nxt_r2_read.sh columns` -> READ countersign -> read. R2b: register on master
+today (`package_launch.sh scripts/flights/nx/nxt_r2b_launch_spec.json --root-countersign --until commit`), then `queue_nxt2b_after_nxt2.sh` flips +
+chains it when `/home/chao/nxt2-chain.out` shows `CHAIN_NXT2_EXIT rc=0`. Then 324-B Fold A confirm (if the R2 replicate reads no loss). Registry 12:42Z.
+
+Superseded stamp: 2026-10-17T12:38:22Z
 
 ## NX-T R2 FLYING since 10:49:57Z at 7ec52005b (smoke-4 -> machine sign-off -> 1,080-row budget column: perception-off replicate + solver-2048); R1 note merged f9b44984e (2026-10-17T10:51:16Z, Fable 5.1 root)
 
