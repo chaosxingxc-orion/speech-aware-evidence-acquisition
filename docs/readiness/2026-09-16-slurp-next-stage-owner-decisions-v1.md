@@ -3033,3 +3033,22 @@ read at n = 1,080 intact. Cost about 1.5 GPU-h after the successor-3 seal; the s
 - Addendum 05:00Z: the lid and power-button actions were HIDDEN in the active scheme (the first `setacvalueindex` was a no-op); after
   `powercfg /attributes SUB_BUTTONS LIDACTION -ATTRIB_HIDE` (and PBUTTONACTION) both are set to "do nothing" on AC (lid: AC 0 / DC 1 unchanged;
   power button: AC 0 / DC 1 unchanged -- it was 1 = sleep, i.e. a press while awake slept the machine). Reversible with the same commands.
+
+### NX-T R1 rec2 (320 B) registered in flight; flies after the successor-3 seal (coordinator, 2026-10-17 05:05Z)
+
+- Sonnet's rec2 package merged 5acfbc38b: `scripts/flights/lib/recovery.py` now refuses a second recovery record without an `owner_exception`
+  naming the ruling (and one that does not name every earlier attempt); `nxt_r1_family.py` carries the recovery history (rec1, rec2), two
+  predecessor snapshots read from the attempt records (first attempt 1,204 calls / 3,298 s; rec1 10,298 / 30,101 s -- the rec1 record now
+  reads ABORTED), `resume_from = {rec1 attempt, trace sha 3238cd8aedb5...}` (mode A; 667,787,659 bytes), kept 1,029 / flown 51 / partial 0 (the
+  failing row's records were never flushed, so it is among the 51), run-cumulative caps 28,782 calls / 83,877 s, the 41.4 GPU-h ceiling
+  unchanged, expected about 1.5 GPU-h (510 contacts); offline replay proof on a scratch copy: 1,029 checked / 0 failing / 0 sealed twice
+  (`resume-replay-proof-rec2-v1.json`). Tests 124 passed in the worktree; gates PASS; the seal-only package re-pinned to the rec1 ids and parked.
+- Registered on master at 5acfbc38b (04:53:44Z): writer `--append-recovery-ledger`; receipt minted with `--supersede` (sha 087e68b5...,
+  backup `root-admission-v1.json.superseded-20261017T045351Z-by-rec2.bak`); commit 09569de59. LAPSE: the fold and countersign helpers had been
+  lost with the scratchpad, the derived helper files were empty and both steps silently did nothing in that commit; repaired at 04:58Z
+  (547f83c04): the rec1 generation row folded (one row per run id), the rec2 generation row and `...-FIT-REC2-V1` countersigned 04:58:15Z; a
+  second mint was refused as already current (the 04:53Z receipt carries the rec2 ids). Lesson recorded: helpers must assert their own effect
+  (both now do) and `python3 <empty file>` exits 0.
+- Risk to watch at the flip (Sonnet): `repin.py` ~1536 looks up a resume cell's parent by attempt id across `configs/experiment/`; the rec1
+  attempt id no longer appears there. Next: after the successor-3 seal, `NXT1_KINDS=arm` flip (column only; never `--allow-output-change`),
+  chain `arm-only` (it re-hashes the predecessor trace and refuses if the rec2 attempt exists), `nxt_r1_read.sh columns`, READ row, read.
