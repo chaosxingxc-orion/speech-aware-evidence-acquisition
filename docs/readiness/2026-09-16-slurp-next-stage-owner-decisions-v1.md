@@ -3152,3 +3152,19 @@ read at n = 1,080 intact. Cost about 1.5 GPU-h after the successor-3 seal; the s
   file `docs/readiness/2026-10-15-slurp-nxt-r2-thinking-budget-fold-b-v1-signoff-conditions-v1.json`, 20-min veto) -> the 1,080-row column
   (arms perception-off-solver-3072, solver-2048, delivering budget-3072). Expected cost well under the 31.3 GPU-h ceiling (the two candidates are
   both cheaper than the delivering arm).
+
+### Owner rulings 323 and 324 (2026-10-17 12:38Z; owner message translated from Chinese: "Decision 323: adjust the truncation configuration; decision 324: follow your recommendation")
+
+- **323 -- adjust the truncation configuration.** Read as: the Solver's reasoning budget / completion cap are to be RAISED so that Solver
+  reasoning is no longer cut (NX-T R1: 19/51 forced closes at budget 3,072, p90 completion = the budget; owner directive of 2026-10-12 "never
+  truncate", rulings 268-273). Not read as: a change to the finite-completion or forced-close HANDLING, which stays as registered. Plan: NX-T R2
+  continues as registered (its two candidates are the cheaper direction and the perception-off replicate); a successor round **NX-T R2b** is built
+  now at 0 GPU as a one-candidate same-flight column on the same roster: Solver budget raised with the cap raised in step (first proposal budget
+  6,144 / cap 7,168, answer reserve 1,024; Perception at the lock form 3,072 / 4,096). A raised cap is a new serving geometry (the resident fragment
+  is `q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1`; the direct bare-core line already served max 8,192 at np4),
+  so R2b carries its own serving fragment + geometry receipt (ruling 315 A: geometry receipt first) and the FIT gate on the 24,576-token live slot
+  (Solver prompts ~9.2-11.4k tokens + 7,168 cap = ~18.6k). The family's budget clip [min, 3072] is lifted for R2b only; R2's package is untouched.
+  R2b flies after R2 seals (one experiment in flight). Its read decides the Solver budget of the v3.0 lock candidate (GAIN / NO-RESOLVED-LOSS /
+  NEEDS-FULL-BUDGET words of the R2 reader, re-used).
+- **324 -- B (recommended):** Perception no-think enters the lock candidate only after (i) the R2 same-roster replicate reads no resolved loss and
+  (ii) a Fold A confirm (one 2-arm column, ~5 GPU-h) reads no resolved loss. Until then the lock form keeps Perception thinking at 3,072.

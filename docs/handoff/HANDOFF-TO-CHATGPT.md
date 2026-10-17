@@ -1,6 +1,6 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-17T10:51:16Z
+Last refreshed: 2026-10-17T12:38:22Z
 
 
 
@@ -9,7 +9,7 @@ Last refreshed: 2026-10-17T10:51:16Z
 
 Correction: R1's perception-off word is NO-RESOLVED-LOSS with NO extra word (floor clauses fail: SLU lb -1.69 vs -1.49); the 10:37Z registry line
 claiming NOT-NEEDED-AT-THE-FLOOR was a misread of a constant key. R2 launched through `package_launch.sh` (two launcher defects fixed: env quoting
-df8f184f2; the pins-commit message file is still hand-written). Chain log `/home/chao/nxt2-chain.out`. Owner items 323/324 open. Registry 10:51Z.
+df8f184f2; the pins-commit message file is still hand-written). Chain log `/home/chao/nxt2-chain.out`. Rulings 12:38Z: 323 = raise the Solver budget/cap so reasoning is not truncated (R2b package built now, flies after R2; new serving geometry); 324 B = Fold A confirm before adopting Perception no-think. Registry 12:38Z.
 
 Superseded stamp: 2026-10-17T10:37:09Z
 
