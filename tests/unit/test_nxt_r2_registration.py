@@ -73,14 +73,17 @@ def table(*arms: dict) -> dict:
 def test_ids_are_unique_and_follow_the_registered_pattern():
     runs = [fam.CELLS[k][f] for k in fam.ALL_KEYS for f in ("run", "fit_run")]
     assert len(set(runs)) == 4
-    assert fam.RECOVERIES == {} and fam.recovery("arm") is None and fam.rec_suffix("arm") == ""
-    assert fam.eligible_run_ids() == [fam.CELLS["smoke"]["run"], fam.CELLS["smoke"]["fit_run"], fam.CELLS["arm"]["run"], fam.CELLS["arm"]["fit_run"]]
+    # the arm cell is on its rec2 (owner ruling 328): the first-registration list, then the rec1 FIT run id, then the rec2 FIT run id
+    assert set(fam.RECOVERIES) == {"arm"} and fam.recovery_index("arm") == 2 and fam.rec_suffix("arm") == "-rec2" and fam.recovery("smoke") is None
+    assert fam.eligible_run_ids() == [fam.CELLS["smoke"]["run"], fam.CELLS["smoke"]["fit_run"], fam.CELLS["arm"]["run"],
+                                      "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-FIT-V1", "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-FIT-REC1-V1",
+                                      fam.CELLS["arm"]["fit_run"]]
     assert fam.CELLS["arm"]["run"] == "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1"
-    assert fam.CELLS["arm"]["fit_run"] == "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-FIT-V1"
+    assert fam.CELLS["arm"]["fit_run"] == "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-FIT-REC2-V1"
     assert fam.CELLS["arm"]["cell"] == "slurp-native-stage3-nxt-r2-thinking-budget-fold-b-v1"
     assert fam.CELLS["smoke"]["cell"] == "slurp-native-stage3-nxt-r2-thinking-budget-fold-b-smoke-4-v1"
-    assert fam.CELLS["arm"]["attempt"] == "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-v1"
-    assert fam.CELLS["arm"]["fit_attempt"] == "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-fit-v1"
+    assert fam.CELLS["arm"]["attempt"] == "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-rec2-v1"
+    assert fam.CELLS["arm"]["fit_attempt"] == "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-fit-rec2-v1"
     assert fam.PACKAGE == "docs/readiness/2026-10-15-slurp-nxt-r2-thinking-budget-fold-b-v1" and fam.SHORT == "nxt2"
     assert fam.READ_RUN_ID == "SAEA-SLURP-NXT-R2-THINKING-BUDGET-FOLD-B-READ-V1"
     for key in fam.ALL_KEYS:
@@ -353,9 +356,10 @@ def test_registered_costs_ceiling_and_plans_follow_from_the_cost_model():
     assert arm["gpu_hours"] == fam.planned_gpu_hours(1080) == round(math.ceil(round(expected * 1.3 / 0.1, 9)) * 0.1, 1)
     assert fam.CELLS["smoke"]["gpu_hours"] == 0.5
     rows, c, f = 1080, fam.CONTACTS_PER_ROW, fam.FALLBACK_CONTACTS_PER_ROW_CEILING
-    assert fam.original_generation_calls("arm") == fam.generation_calls("arm") == rows * (c + f) and fam.program_calls("arm") == rows * c
+    spent_calls, spent_audio = fam.predecessor_spend("arm")                       # rec2: both earlier attempts' realised spend (run-cumulative)
+    assert fam.original_generation_calls("arm") == rows * (c + f) and fam.generation_calls("arm") == rows * (c + f) + spent_calls and fam.program_calls("arm") == rows * c
     assert fam.fit_contact_cap(1080) == rows * c * tsf.tf.FIT_ENDPOINTS_PER_CONTACT and fam.fit_contact_cap(4) == 4 * c * tsf.tf.FIT_ENDPOINTS_PER_CONTACT
-    assert fam.audio_cap("arm") == math.ceil(fam.roster_audio("arm") * (c + f) - 1e-9) == fam.cell_audio_cap("arm")
+    assert fam.audio_cap("arm") == math.ceil(fam.roster_audio("arm") * (c + f) - 1e-9) and fam.cell_audio_cap("arm") == math.ceil(fam.audio_cap("arm") + spent_audio - 1e-9)
     assert rows * (c + 2) <= fam.generation_calls("arm")          # the runner's own plan check
     for key in fam.ALL_KEYS:
         spec = fam.CELLS[key]
@@ -431,11 +435,11 @@ def test_plans_protocol_receipt_and_ledger_agree():
     ledger = (REPO / "docs/exposure-ledger.md").read_text(encoding="utf-8")
     for key in fam.ALL_KEYS:
         for kind in ("generation", "fit"):
-            assert fam.plan_file_name(key, kind) == (f"{fam.CELLS[key]['prefix']}{kind}-plan-registered-v1.json")
+            assert fam.plan_file_name(key, kind) == (f"{fam.CELLS[key]['prefix']}{kind}-plan-registered{'-rec2' if key == 'arm' else ''}-v1.json")
             plan = json.loads((PKG / fam.plan_file_name(key, kind)).read_text(encoding="utf-8"))
             assert plan["expected_session_id"] == fam.THINK_SESSION and plan["protocol_document"]["sha256"] == protocol_sha
             assert plan["thinking_knobs"]["thinking_budget_tokens"] == 3072 and plan["execution_plan"]["split_role"] == "discovery"
-            assert plan["arm_order"] == list(fam.ARM_ORDER) and plan["no_twin"] is True and "recovery" not in plan
+            assert plan["arm_order"] == list(fam.ARM_ORDER) and plan["no_twin"] is True and ("recovery" in plan) == (key == "arm")
             assert plan["thinking_arms"][fam.CANDIDATE_ARMS[0]]["thinking_policy"] == fam.POLICIES[fam.CANDIDATE_ARMS[0]]
             assert plan["thinking_arms"][fam.DELIVERING]["thinking_policy"] is None
             run = fam.CELLS[key]["run" if kind == "generation" else "fit_run"]
@@ -446,7 +450,7 @@ def test_plans_protocol_receipt_and_ledger_agree():
     draft = json.loads((PKG / "root-admission-draft-v1.json").read_text(encoding="utf-8"))
     assert draft["eligible_run_ids"] == fam.eligible_run_ids() and draft["eligible_attempt_ids"] == fam.eligible_attempt_ids()
     assert draft["decision_id"] == fam.DECISION_ID and draft["status"] == "DRAFT-NOT-MINTED" and draft["service"]["expected_session_id"] == fam.THINK_SESSION
-    assert "recovery" not in draft and draft["budget"]["generation_calls_cap"] == fam.generation_calls("arm")
+    assert "recovery" in draft and draft["budget"]["generation_calls_cap"] == fam.generation_calls("arm")
     texts = json.loads((PKG / "countersign-row-texts-v1.json").read_text(encoding="utf-8"))
     current = {fam.CELLS[k][f] for k in fam.ALL_KEYS for f in ("run", "fit_run")}
     assert set(texts["rows"]) == current | {fam.READ_RUN_ID} and draft_rows.count(f"| {fam.READ_RUN_ID} |") == 1
@@ -671,9 +675,10 @@ def test_the_structural_dry_run_script_compiles_and_states_the_registered_node_d
 
 
 def _snapshot() -> dict:
-    return {"schema": "saea-recovery-predecessor-snapshot-v1", "run_id": fam.CELLS["arm"]["run"], "attempt_id": fam.CELLS["arm"]["attempt"], "state": "OPENED",
+    first = lambda text: text.replace("-rec2-v1", "-v1").replace("-REC2-V1", "-V1")  # noqa: E731  (the snapshot of the FIRST attempt; the committed tree is on rec2)
+    return {"schema": "saea-recovery-predecessor-snapshot-v1", "run_id": fam.CELLS["arm"]["run"], "attempt_id": first(fam.CELLS["arm"]["attempt"]), "state": "OPENED",
             "actual_calls": 700, "actual_audio_seconds": 1900.5, "reserved_calls": fam.generation_calls("arm"), "reserved_audio_seconds": float(fam.audio_cap("arm")),
-            "fit": {"run_id": fam.CELLS["arm"]["fit_run"], "attempt_id": fam.CELLS["arm"]["fit_attempt"], "attempt_record_present": False, "prepared_dir_present": True,
+            "fit": {"run_id": first(fam.CELLS["arm"]["fit_run"]), "attempt_id": first(fam.CELLS["arm"]["fit_attempt"]), "attempt_record_present": False, "prepared_dir_present": True,
                     "prepared_request_fit_envelopes": 700}}
 
 
@@ -682,10 +687,16 @@ def _recovery_input() -> dict:
             "root_cause": "infrastructure, not the cell", "fix": "none in the cell", "decision": "owner decision 309 A"}
 
 
-def test_recovery_is_empty_now_and_the_rec1_path_is_data_driven(monkeypatch, tmp_path):
-    assert fam.RECOVERIES == {} and fam.rcv.REC == "-rec1"
+def test_the_first_attempt_state_and_the_rec1_path_are_data_driven(monkeypatch, tmp_path):
+    # the committed tree is on rec2 (tests/unit/test_nxt_r2_rec2.py); here the family is put back on its FIRST attempt, then rec1 is rebuilt from the two files' shape
+    monkeypatch.setattr(fam, "RECOVERIES", {})
+    monkeypatch.setattr(fam, "RECOVERY_HISTORY", {})
+    assert fam.RECOVERIES == {} and fam.rcv.REC == "-rec1" and fam.recovery_index("arm") == 0
     assert fam.plan_file_name("arm", "generation") == "generation-plan-registered-v1.json" and fam.superseded_plan_file_names("arm") == []
     assert fam.predecessor_spend("arm") == (0, 0.0) and fam.cumulative_budget("arm", 100, 50.0) == (100, 50)
+    first = {"smoke": fam._spec("smoke", "x", 4, "smoke", 0, 0.5, ids_stem=f"{fam.SLUG}-smoke-4", parent_key="smoke"),
+             "arm": fam._spec("arm", "x", 1080, "arm", 1, 1.0, ids_stem=fam.SLUG, parent_key="lock")}
+    assert first["arm"]["attempt"].endswith("generation-v1") and first["arm"]["fit_run"].endswith("-FIT-V1") and first["arm"]["fit_attempt"].endswith("-fit-v1")
     # build the record from the two committed files' shape and wire it through the family (no file in the real package is touched)
     root = tmp_path / "repo"
     (root / fam.PACKAGE).mkdir(parents=True)
@@ -694,23 +705,24 @@ def test_recovery_is_empty_now_and_the_rec1_path_is_data_driven(monkeypatch, tmp
     loaded = fam._load_recoveries(root)
     assert set(loaded) == {"arm"} and loaded["arm"]["predecessors"][0]["contacts_spent"] == 700 and loaded["arm"]["recovery_index"] == 1
     fam.rcv.validate_recovery(loaded["arm"])
+    assert set(fam._load_history(root)["arm"][0]) == set(loaded["arm"]) and len(fam._load_history(root)["arm"]) == 1
     assert fam._load_recoveries(tmp_path) == {}
     monkeypatch.setitem(fam.RECOVERIES, "arm", loaded["arm"])
-    assert fam.rec_suffix("arm") == "-rec1" and fam.rec_suffix("smoke") == ""
+    monkeypatch.setitem(fam.RECOVERY_HISTORY, "arm", [loaded["arm"]])
+    assert fam.rec_suffix("arm") == "-rec1" and fam.rec_suffix("smoke") == "" and fam.recovery_index("arm") == 1
     assert fam.plan_file_name("arm", "generation") == "generation-plan-registered-rec1-v1.json" and fam.plan_file_name("smoke", "fit") == "smoke-fit-plan-registered-v1.json"
     assert fam.superseded_plan_file_names("arm") == ["generation-plan-registered-v1.json", "fit-plan-registered-v1.json"]
     assert fam.predecessor_spend("arm") == (700, 1900.5)
     assert fam.generation_calls("arm") == fam.original_generation_calls("arm") + 700 and fam.cell_audio_cap("arm") == fam.audio_cap("arm") + 1901
-    old = {k: dict(v) for k, v in fam.CELLS.items()}
     rebuilt = {"smoke": fam._spec("smoke", "x", 4, "smoke", 0, 0.5, ids_stem=f"{fam.SLUG}-smoke-4", parent_key="smoke"),
                "arm": fam._spec("arm", "x", 1080, "arm", 1, 1.0, ids_stem=fam.SLUG, parent_key="lock")}
-    assert rebuilt["smoke"] == {**old["smoke"], "role": "x", "gpu_hours": 0.5} or rebuilt["smoke"]["attempt"] == old["smoke"]["attempt"]
     spec = rebuilt["arm"]
-    assert spec["attempt"].endswith("generation-rec1-v1") and spec["fit_run"].endswith("FIT-REC1-V1") and spec["run"] == old["arm"]["run"]
+    assert spec["attempt"].endswith("generation-rec1-v1") and spec["fit_run"].endswith("FIT-REC1-V1") and spec["run"] == first["arm"]["run"]
     assert spec["fit_attempt"].endswith("fit-rec1-v1")
     monkeypatch.setattr(fam, "CELLS", rebuilt)
-    assert fam.eligible_run_ids() == [old["smoke"]["run"], old["smoke"]["fit_run"], old["arm"]["run"], old["arm"]["fit_run"], spec["fit_run"]]
-    assert fam.eligible_attempt_ids() == [old["smoke"]["attempt"], old["smoke"]["fit_attempt"], old["arm"]["attempt"], old["arm"]["fit_attempt"], spec["attempt"], spec["fit_attempt"]]
+    assert fam.eligible_run_ids() == [first["smoke"]["run"], first["smoke"]["fit_run"], first["arm"]["run"], first["arm"]["fit_run"], spec["fit_run"]]
+    assert fam.eligible_attempt_ids() == [first["smoke"]["attempt"], first["smoke"]["fit_attempt"], first["arm"]["attempt"], first["arm"]["fit_attempt"], spec["attempt"],
+                                          spec["fit_attempt"]]
     budget = fam.rcv.recovery_budget(fam.RECOVERIES, "arm", {"generation_calls_cap": fam.generation_calls("arm"),
                                                              "repeated_speech_audio_seconds_cap": fam.cell_audio_cap("arm")})
     assert budget["failed_attempt_spend"]["model_calls"] == 700 and budget["original_plan"]["planned_model_calls"] == fam.original_generation_calls("arm")
@@ -727,9 +739,10 @@ def test_the_writer_recovery_text_and_ledger_are_wired(tmp_path):
     import nxt_r2_write_registration as writer
 
     ids = writer.identities(REPO)
-    assert writer.recovery_blocks(REPO, ids, "x", "2026-10-20T00:00:00+00:00", "abc", "/wt", "br") == {}
+    blocks = writer.recovery_blocks(REPO, ids, "x", "2026-10-20T00:00:00+00:00", "abc", "/wt", "br")
+    assert set(blocks) == {"arm"} and blocks["arm"].lstrip().startswith("## Cell NXT-R2 recovery rec2: ")
     text = writer.recovery_sequence_text(ids)
-    assert "recovery-input-arm-v1.json" in text and "predecessor-snapshot-arm-rec1-v1.json" in text and "NXT2_KINDS=arm" in text and "arm-only" in text
+    assert "Recovery rec2 sequence" in text and "NXT2_KINDS=arm" in text and "arm-only" in text and "--supersede" in text
     out = subprocess.run([sys.executable, "-B", str(REPO / "scripts/flights/nx/nxt_r2_write_registration.py"), "--help"], capture_output=True, text=True, cwd=REPO)
     assert out.returncode == 0
     for flag in ("--append-recovery-ledger", "--recovery-registered-at", "--recovery-base-commit", "--study-commit", "--append-ledger", "--registered-at", "--geometry"):
@@ -742,7 +755,7 @@ def test_the_mint_supersedes_only_the_first_registration_receipt(tmp_path, monke
     import nxt_r2_mint_receipt as mint
 
     first = fam.eligible_run_ids()
-    longer = first + [fam.CELLS["arm"]["fit_run"].replace("-FIT-", "-FIT-REC1-")]
+    longer = first + ["SAEA-X-FIT-NEXT-V1"]
     path = tmp_path / "root-admission-v1.json"
     path.write_text(json.dumps({"decision_id": fam.DECISION_ID, "eligible_run_ids": first}), encoding="utf-8")
     monkeypatch.setattr(fam, "eligible_run_ids", lambda: longer)
@@ -753,7 +766,7 @@ def test_the_mint_supersedes_only_the_first_registration_receipt(tmp_path, monke
         with pytest.raises(SystemExit):
             mint.check_supersedable(str(path))
     stamp = datetime(2026, 10, 20, 17, 0, 5, tzinfo=timezone.utc)
-    assert mint.backup_name("/d/root-admission-v1.json", stamp) == "/d/root-admission-v1.json.superseded-20261020T170005Z-by-rec1.bak"
+    assert mint.backup_name("/d/root-admission-v1.json", stamp) == "/d/root-admission-v1.json.superseded-20261020T170005Z-by-rec2.bak"
 
 
 def test_the_chain_flip_and_read_scripts_consume_the_family_record():

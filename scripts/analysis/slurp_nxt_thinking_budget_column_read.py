@@ -434,8 +434,28 @@ def read_stage(arms: Mapping[str, Mapping[str, Mapping[str, float]]], ids: Seque
     }
 
 
+def resume_block(manifest: Mapping, resume_from: Mapping, rows: int) -> dict:
+    """The RESUME (rec2, owner ruling 328) account, by COUNT: the rows kept from the stopped rec1 attempt and the rows the resume flew, with proof that the sealed
+    manifest's predecessor block names the registered pin (the trace sha256 in mode A, the row-checkpoint sha256 in mode B). The read is at the full roster (kept +
+    flown); the split is reported, never used."""
+
+    predecessor = manifest.get("predecessor_attempt")
+    pin_key = "checkpoint_sha256" if "checkpoint_sha256" in resume_from else "trace_sha256"
+    if not isinstance(predecessor, Mapping) or predecessor.get(pin_key) != resume_from.get(pin_key):
+        raise ReadError(f"the sealed manifest's predecessor_attempt does not name the registered {pin_key} {resume_from.get(pin_key)!r}")
+    kept = len(predecessor.get("kept_sample_ids") or [])
+    if kept == 0 or kept >= rows:
+        raise ReadError(f"a resume that kept {kept} of {rows} rows is not the registered kept/flown split")
+    return {"kept": kept, "flown": rows - kept, "rows": rows, "resume_from": dict(resume_from), "predecessor_counts": dict(predecessor.get("counts") or {}),
+            "kept_sample_ids_sha256": predecessor.get("kept_sample_ids_sha256"), "mode": "checkpoint" if pin_key == "checkpoint_sha256" else "trace"}
+
+
 def render_markdown(result: Mapping) -> str:
     lines = [f"# {READ_TITLE}", ""]
+    rs = result.get("resume")
+    if rs:
+        lines += [f"RESUME (rec2, mode {'B' if rs['mode'] == 'checkpoint' else 'A'}): n = {rs['rows']:,}; {rs['kept']:,} rows kept from the stopped attempt and {rs['flown']:,} rows "
+                  "flown by the resume (the split is reported only; kept and flown rows are never separated in a contrast).", ""]
     nw = result.get("node_words")
     if nw:
         ref = nw["external_reference_twin_offsets"]
@@ -531,6 +551,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             manifest = json.loads(paths["manifest"].read_text(encoding="utf-8"))
             if str(manifest.get("status", "")).upper() != "COMPLETED":
                 raise ReadError(f"manifest status is {manifest.get('status')!r}, not COMPLETED")
+            declared = json.loads((args.repo_root / "configs" / "experiment" / f"{cells['arm']['cell']}.json").read_text(encoding="utf-8"))["cells"][0].get("resume_from")
+            resume = resume_block(manifest, declared, fam.ROWS) if declared is not None else None
             arms = load_column_rows(root / "columns")
             ids, cluster_of, scenario_of = base.roster_maps(args.repo_root / fam.ROSTER["arm"])
             for arm, rows in arms.items():
@@ -542,6 +564,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             result = read_stage(arms, ids, cluster_of, scenario_of, by_arm, flags, seed=args.seed, draws=args.draws,
                                 absent=base.absent_solver_columns(outputs_rows, ARMS))
             result["sealed_hashes"] = {n: base.sha256_file(paths[n]) for n in ("trace", "outputs", "manifest")}
+            if resume is not None:
+                result["resume"] = resume
             out = root / "read.json"
     except ReadError as error:
         print(f"REFUSED: {error}", file=sys.stderr)
