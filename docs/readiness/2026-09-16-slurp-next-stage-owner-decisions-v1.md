@@ -3030,3 +3030,6 @@ read at n = 1,080 intact. Cost about 1.5 GPU-h after the successor-3 seal; the s
   The periodic WSL cache drop stays (it still protects the host from the page-cache growth). GPU after the wake: 1,430 MHz, 93 W against a
   97 W software power cap (a laptop limit; decode 26-30 tokens/s per slot vs about 40 earlier in the flight -- observation only).
 - Flight: successor-3 at 2,587 / 3,010 at 04:48Z, resumed at speed; seal now about 08:00Z 2026-10-17.
+- Addendum 05:00Z: the lid and power-button actions were HIDDEN in the active scheme (the first `setacvalueindex` was a no-op); after
+  `powercfg /attributes SUB_BUTTONS LIDACTION -ATTRIB_HIDE` (and PBUTTONACTION) both are set to "do nothing" on AC (lid: AC 0 / DC 1 unchanged;
+  power button: AC 0 / DC 1 unchanged -- it was 1 = sleep, i.e. a press while awake slept the machine). Reversible with the same commands.
