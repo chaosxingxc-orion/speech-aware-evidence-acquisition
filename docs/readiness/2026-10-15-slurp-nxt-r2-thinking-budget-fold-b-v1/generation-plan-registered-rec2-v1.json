@@ -64,12 +64,12 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-15-slurp-nxt-r2-thinking-budget-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "c76bc213dc2c142ea76c092e553b9e3e2d3e2ce52a1938fe2b9f74b67c25319c"
+    "sha256": "b0f6e37aada62b28ce753d2c898d52d7288abeac68431191ee36b84af02b5965"
   },
   "purpose": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1: reasoning-budget column flight (3 arms in one flight) of NX-T R2.",
   "recovery": {
     "amendment": "RECOVERY 2026-10-17 (rec2; owner ruling 328 of 2026-10-17, coordinator brief on the owner's message, translated from Chinese: just resume from the checkpoint). MODE A (trace replay), not mode B: the runtime, runner and row_checkpoint modules are byte-identical between the rec1 flight commit 9790c071f and this registration, but the launch-time checkpoint reader refuses the rec1 checkpoint for the rec2 attempt: row checkpoint $SPEECHRL_DATA_DIR/runs/SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1/attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-rec1-v1/SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1.rows.ckpt.jsonl was written for protocol_hash 'f30958b8ade762b6cf9ccf090d90313d164d5f309547978c30b9a129d6e109ac', not '87c8551b7674ad9c9dd89970366263a9589b9536bd9cb44a133c4ae04e7fdb9c'; a resume applies only when the code, config and split are unchanged. The protocol hash covers the whole experiment fragment, including the cell's attempt id, so a new attempt id of the same cell can never present the header's protocol hash (f30958b8ade7... against the rec2 87c8551b7674...). The trace pin has no such binding and its complete-row set equals the checkpoint's (same kept-row id hash). `resume_from` names the rec1 attempt and the sha256 of its trace, add8fb93cd4096787e5ae559c3374ec77edff4f9145499ecf986c4c458473813 (10,810,021 bytes), read from the data root into docs/readiness/2026-10-15-slurp-nxt-r2-thinking-budget-fold-b-v1/predecessor-snapshot-arm-rec2-v1.json. The attempt keeps the 26 complete rows (each is proven by the offline replay recorded as a block of the generation plan) and flies the 1,054 remaining rows: 1,054 x 6 = 6,324 program contacts and nothing else. The generation budget is run-cumulative across the attempts of the run id (core/model/adapter.py): the registered plan plus both earlier attempts' recorded spend (214 calls, 613.647 speech-seconds, read from the attempt records into docs/readiness/2026-10-15-slurp-nxt-r2-thinking-budget-fold-b-v1/predecessor-snapshot-arm-rec1-v1.json and docs/readiness/2026-10-15-slurp-nxt-r2-thinking-budget-fold-b-v1/predecessor-snapshot-arm-rec2-v1.json). The FIT cap is structural and unchanged. The FIT run id and the FIT attempt id take the rec2 marker because a (run_id, attempt_id) pair is a one-time key; the generation run id is unchanged. The registered GPU-hour ceiling (31.3 GPU-h) stands; the resume is expected to spend about 23.5 GPU-h (1,054 rows x 2.46 full-row equivalents / 1.84 rows per minute). `--allow-output-change` is never passed: the rebuilt supply, the roster (1,080 rows) and the read (n = 1,080) are the registered ones.",
-    "base_commit": "b147641b2",
+    "base_commit": "faa10424363e220878dde7bebc75414155ff5e8b",
     "fit_cap_rule": "The FIT cap is structural: rows x program contacts x endpoints per contact.",
     "owner_exception": "owner ruling 328 of 2026-10-17",
     "predecessor_attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-rec1-v1",
@@ -93,7 +93,7 @@
     "reason": "The rec1 column attempt was ABORTED on 2026-10-17 at about 13:42Z by a coordinator action, not by the cell: registering the serving task SAEA-Serving-THINKB7 for the next flight started a second server, the serving entry's start-up reaper killed the resident THINKB server under the open flight, the driver saw \"Remote end closed connection\" on a Solver contact and aborted the attempt at 172 calls / 481.5 speech-seconds with its complete rows checkpointed and its trace present. Owner ruling 328 of 2026-10-17 grants an EXPLICIT exception to the package rule of one recovery re-registration per run id and rules that a stopped attempt is RESUMED, never re-flown whole, whenever a checkpoint or trace exists: this rec2 keeps the 26 complete rows of the stopped rec1 attempt by a mode-A resume and flies the 1,054 remaining rows.",
     "recovered_at": "2026-10-17",
     "recovery_index": 2,
-    "registered_at_utc": "2026-10-17T15:00:00Z",
+    "registered_at_utc": "2026-10-17T15:07:19Z",
     "resume_counts": {
       "flown": 1054,
       "kept": 26,
