@@ -3068,3 +3068,26 @@ read at n = 1,080 intact. Cost about 1.5 GPU-h after the successor-3 seal; the s
   test-sample read is closed; the chain of sample reads on this roster: successor-1 PLAN -> COMP-1b (+5.80 intent) -> successor-2 v2.2
   (+1.67 SLU) -> successor-3 Thinking v3.0 (+6.41 SLU / +3.97 intent). Results note: Opus (`docs/results/2026-10-17-slurp-successor3-thinking-system-test-sample-read.md`).
 - Next on the GPU (serial): NX-T R1 rec2 (320 B) flip + `arm-only` resume (51 rows) -> R1 read -> R2 arm table -> R2 via `package_launch.sh`.
+
+### NX-T R1 rec2 (320 B) FLYING since 09:05Z; one refusal root-caused and fixed; successor-3 results note merged (coordinator, 2026-10-17 09:11Z)
+
+- Flip converged at e4092610b (08:54Z; the first pass was refused rc7 because a docs commit moved master during the loop -- coordinator error,
+  re-run from 963856d38). Flight commit file = master = e4092610b; no lock, no driver, serving `think-budget-np4` resident, sign-off marker present.
+- First chain start 08:58Z REFUSED (rc 6): `the rec2 attempt already exists on the data root`. Root cause: the flip's re-pin step runs
+  `core.flight.cli check` once per cell (`repin_onepass` step 6) and the read-only flag was OPT-IN (`SAEA_REPIN_CHECK_READONLY=1`, M8); the flip
+  set no env, so preflight wrote `runs/<run>/<rec2 attempt>/resume-declaration.json` (owner decision 309 writer, before the first gate touch)
+  at 08:47Z and again 08:53Z (the two flip passes; re-pin receipts `check-...-repin-20261017T085352Z.json`). The directory held exactly that one
+  file; no attempt RECORD existed. Fixes (09028888c + this commit): (a) the chain precondition now checks the attempt record
+  (`attempts/<run>/<attempt>.json`, the runtime's own one-time key) and tolerates a run directory holding exactly the declaration that matches the
+  registered `resume_from` (schema, run, attempt, predecessor, trace sha); any other file still refuses; (b) `repin.default_run_check` passes
+  `--read-only` by DEFAULT (`=0` restores the writing check); 58 re-pin/cli unit tests pass; the launch-automation spec is amended.
+- Second chain start 09:05:36Z: resume precondition OK (trace 3238cd8aedb5 unchanged); resume replay gate 1,029 rows checked / 0 failing /
+  0 sealed twice; rec2 attempt OPENED 09:06Z (reserved 28,782 calls / 83,877 s = the run-cumulative caps); checkpoint file open; 18 contacts by
+  09:08Z; GPU 91 %. Expected ~1.5 GPU-h for the 51 rows (~510 contacts). Then `nxt_r1_read.sh columns` -> READ row countersign -> `nxt_r1_read.sh`.
+- Opus results note for the successor-3 test read merged (96a4509bd): `docs/results/2026-10-17-slurp-successor3-thinking-system-test-sample-read.md`
+  + ledger entry; NEUTRAL, gain reported not claimed; Opus adds one derived observation (the SLU gain is recall: TP 3,562 -> 4,100, FN 1,913 -> 1,378,
+  FP flat; successor 2's gain was precision) and flags inherited boilerplate in the vs-comparator README / allowance `milestone_rule` text /
+  `registered-facts-v1.json` post-stratification block (binding ids correct; wording stale) -- repair with the next package writer, not in place.
+- Coordinator lapse recorded: two WSL probes in this window were issued as inline `wsl bash -c '...; ...'` strings; the outer WSL shell split them at
+  `;` and `$A` expanded empty (one `ls` listed the repo root, one listed `/`). Standing rule re-affirmed: every WSL probe goes through a scratchpad
+  script file (memory `wsl-invocation-quoting`).

@@ -1,6 +1,17 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-17T08:48:27Z
+Last refreshed: 2026-10-17T09:11:25Z
+
+
+## NX-T R1 rec2 (320 B) FLYING since 09:05Z at e4092610b (51 rows, ~1.5 GPU-h); successor-3 results note merged 96a4509bd (2026-10-17T09:11:25Z, Fable 5.1 root)
+
+The first chain start (08:58Z) refused: the flip's re-pin `cli check` ran without `--read-only` and wrote the rec2 `resume-declaration.json`, so the
+"attempt not yet opened" precondition saw the run directory. Fixed: the precondition checks the attempt RECORD and tolerates the matching
+declaration (09028888c); `repin.default_run_check` is read-only by default. Resume replay gate 1,029 / 0 failing; attempt OPENED 09:06Z.
+Next: seal -> `nxt_r1_read.sh columns` -> countersign READ -> `nxt_r1_read.sh` -> Opus note -> edit `nxt_r2_arms.json` -> R2 via
+`package_launch.sh scripts/flights/nx/nxt_r2_launch_spec.json`. Registry 09:11Z. Opus note: `docs/results/2026-10-17-slurp-successor3-thinking-system-test-sample-read.md`.
+
+Superseded stamp: 2026-10-17T08:48:27Z
 
 ## SUCCESSOR-3 TEST READ sealed 08:38Z: Thinking system vs v2.2 on the 3,010-row sample SLU +6.41 [+4.44, +8.46], intent +3.97 [+2.26, +5.45]; word NEUTRAL (no harm; gain reported, not claimed); NX-T R1 rec2 resume next (2026-10-17T08:48:27Z, Fable 5.1 root)
 

@@ -527,8 +527,12 @@ def default_run_check(
         "--cell",
         cell_id,
     ]
-    if os.environ.get("SAEA_REPIN_CHECK_READONLY") == "1":
-        command.append("--read-only")  # M8: the check suppresses its one data-root write (resume declaration)
+    # M8 (read-only by DEFAULT since 2026-10-17): a check never needs its one data-root write. Opt-in
+    # read-only let the NX-T R1 rec2 flip (no env set) write <run dir>/resume-declaration.json at
+    # 08:47Z / 08:53Z, and the chain's "rec2 attempt not yet opened" precondition then refused the
+    # launch. SAEA_REPIN_CHECK_READONLY=0 restores the writing check (nothing in the repo needs it).
+    if os.environ.get("SAEA_REPIN_CHECK_READONLY", "1") != "0":
+        command.append("--read-only")
     env = dict(os.environ)
     env["PYTHONDONTWRITEBYTECODE"] = "1"
     env["PYTHONPATH"] = str(Path(repo_root) / "src")

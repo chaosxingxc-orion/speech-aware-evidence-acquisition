@@ -68,7 +68,7 @@ What `core.flight.cli check` (the flip's last gate, `repin.py:497` `default_run_
   (`cli.py` check branch, no `GenerationLease`; the lease is taken in `campaign.py:282`).
 * **One data-root write:** `_write_resume_declaration` (`runtime.py:1792-1830`, called at `runtime.py:4984`) writes
   `runs/<run>/<attempt>/resume-declaration.json` and creates that directory, for a resume cell only. NEW: `core.flight.cli check --read-only`
-  (`cli.py:176-183`, `cli.py:295-298`) suppresses it; `repin.default_run_check` passes the flag when `SAEA_REPIN_CHECK_READONLY=1` (`repin.py:530`).
+  (`cli.py:176-183`, `cli.py:295-298`) suppresses it; `repin.default_run_check` passes the flag when `SAEA_REPIN_CHECK_READONLY=1` (`repin.py:530`). AMENDED 2026-10-17: the flag is passed by DEFAULT (`SAEA_REPIN_CHECK_READONLY=0` restores the writing check) after the NX-T R1 rec2 flip, run without the env, wrote the declaration and the chain's attempt-not-opened precondition refused the launch.
   Tests: `tests/unit/test_flight_cli_check_read_only.py`.
 * **One benign write:** the GGUF identity cache, an atomic write-then-replace in the model materialization root (`identity_cache.py:204-226`), best effort.
 * **I/O:** unless `SAEA_RUNTIME_FULL_HASH` is set to a false value (`identity_cache.py:106-129`), the gate full-hashes the GGUF set once per process
