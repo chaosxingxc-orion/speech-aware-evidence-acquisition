@@ -3198,3 +3198,23 @@ read at n = 1,080 intact. Cost about 1.5 GPU-h after the successor-3 seal; the s
   of 2026-10-09 R1). Carrier base runs (A2T / E21 / E22) stay behind the SLURP line (ruling 307).
 - **327 A:** unattended hand-over authorised: the queue hook flips and chains R2b the moment the R2 chain exits rc 0, without an owner read of R2
   in between (R2b's design does not depend on R2's result). The hook refuses on any R2 exit other than 0.
+
+### Host reboot killed the R2 column; recovery rec1 registered, flipped and FLYING since 13:05Z (coordinator, 2026-10-17 13:09Z)
+
+- 12:52Z: the owner rebooted the laptop (message: "I just restarted the laptop") while the R2 column attempt was open (opened 12:40:36Z; the attempt
+  record reads OPENED with 42 calls / 132.1 speech-seconds; 6 rows checkpointed, last at 12:51Z). The driver, the flight, the resident server and
+  both coordinator agents (Sonnet R2b, the quiet watcher) died with the host; the data root re-mounted at boot (SAEA-Mount-Data1); the stale
+  `flight.lock` was parked after confirming no live process. Root cause: host restart, not a harness or serving defect.
+- Recovery rec1 (the package's registered single-recovery form: re-flown WHOLE under the rec1 ids; the six rows are not resumed because the R2
+  package registers the whole re-fly form and the saving would be ~10 min): predecessor snapshot `predecessor-snapshot-arm-rec1-v1.json`
+  (`recovery.py snapshot`, read-only on the data root), diagnosis `recovery-input-arm-v1.json`, writer `--append-recovery-ledger` at 13:00Z,
+  the rec1 generation row + FIT-REC1 row countersigned 13:01:30Z (the launcher's countersign step does not know the recovery row form; a
+  scratch helper did it), the first-attempt generation row FOLDED into the rec1 row (one row per run id), receipt re-minted `--supersede`
+  (sha 21e69b32...), commit 3a75967b2; flip `NXT2_KINDS=arm` in ext4 10:04-13:04Z: gate PASS, master 3a75967b2 -> 9790c071f, flight commit =
+  master; chain SAEA-Chain-NXT2 re-pointed at `arm-only` and started 13:04:38Z; serving swapped to think-budget-np4 (ready 13:05:15Z, 31 GB host
+  free); driver `arm` 13:05:16Z; rec1 attempt OPENED; GPU 92 %. Run-cumulative caps carry the 42 calls / 132 s of the dead attempt.
+- The 24-h queue is unchanged: R2 (~19 GPU-h from 13:05Z, seal ~2026-10-18 08:30Z) -> R2b by the queue hook (its start stamp must be later than
+  13:05Z so the 10:49Z chain-start line is never matched) -> 324-B confirm -> Solver template column.
+- Follow-ups: (a) `package_launch.py` countersign step to accept the recovery row form ("REGISTERED (DRAFT, root countersignature pending)");
+  (b) the pins / flight-commit / chain wrapper segment for a rec flight should come from the launch spec (a `recovery` launch id) instead of a
+  hand edit of `/home/chao/saea-queue/chain_nxt2.sh`.

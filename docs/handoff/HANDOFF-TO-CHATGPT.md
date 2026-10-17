@@ -1,10 +1,19 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-17T12:45:50Z
+Last refreshed: 2026-10-17T13:09:11Z
 
 
 
 
+
+
+## R2 column re-flown as recovery rec1 since 13:05Z at 9790c071f (host reboot 12:52Z killed the first attempt at 42 calls / 6 rows); queue unchanged: R2 -> R2b (hook) -> 324-B confirm (2026-10-17T13:09:11Z, Fable 5.1 root)
+
+rec1 registered 3a75967b2 (snapshot + recovery input, rows countersigned, first-attempt row folded, receipt re-minted), flipped 9790c071f,
+chain `arm-only` 13:04:38Z, serving swapped 13:05:15Z, attempt OPENED. Seal ~2026-10-18 08:30Z. R2b package in build (Sonnet, branch
+sonnet/nxt-r2b). Registry 13:09Z.
+
+Superseded stamp: 2026-10-17T12:45:50Z
 
 ## NX-T R2 COLUMN flying since 12:40:36Z (after a 1 h 43 min idle: the R2 chain waits for a hand marker, not the M6 machine sign-off; stale conditions file re-issued 2059ff8fb); owner: >= 24 h GPU queue -> R2 (~19 GPU-h) then R2b (ruling 323, Solver budget 6,144 / cap 7,168; Sonnet building; queue hook) (2026-10-17T12:42:54Z, Fable 5.1 root)
 
