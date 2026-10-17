@@ -1231,6 +1231,25 @@ def score_supply_variant_copies(
 RELISTEN_RENDER_SCHEMA = "saea-stage3-relisten-shadow-v1"
 
 
+def _custody_trace_source(bundle, predecessor_records, sid):
+    """The ONE trace a row's contacts were sealed in.
+
+    A KEPT row of a resume / seal-only completion (``sid`` in
+    ``predecessor_records``) was flown by its predecessor attempt, and that
+    attempt's trace is the only custody for it. Request ids are
+    attempt-scoped (``rails.core_client`` mints ``flight-NNNN`` per client) and
+    REPEAT across attempts -- NX-T R1 rec2 (2026-10-17) carried
+    ``flight-0026`` for a flown row while kept row 000006 carried the same id
+    in the rec1 trace -- so consulting the bundle's own trace first for a kept
+    row resolved the wrong attempt's contact and tripped the custody-hash
+    refusal. The bundle's own trace is therefore consulted only for a row the
+    bundle itself flew.
+    """
+
+    kept = predecessor_records.get(sid) if predecessor_records else None
+    return kept if kept is not None else bundle.trace_records
+
+
 def render_relisten_shadow_columns(
     bundle, roster: Mapping[str, str], out_dir: Path,
     *, run_id: str, attempt_id: str, roster_sha256: str, config_hash: str,
@@ -1317,9 +1336,7 @@ def render_relisten_shadow_columns(
                 continue
             blind = entity.get("blind") or {}
             contact_id = blind.get("contact_id")
-            response = bundle.trace_records.get(f"{contact_id}/response")
-            if response is None and predecessor_records:
-                response = (predecessor_records.get(sid) or {}).get(f"{contact_id}/response")
+            response = _custody_trace_source(bundle, predecessor_records, sid).get(f"{contact_id}/response")
             if not isinstance(response, Mapping) or not isinstance(response.get("text"), str):
                 raise Stage3ScoreError(
                     f"{sid}: accepted relisten entity {entity.get('index')} has no sealed "
@@ -1630,12 +1647,9 @@ def render_perception_branch_columns(
                     f"record {name!r} (solver_response_text_sha256 differs)"
                 )
             request_id = contact.get("request_id")
-            response = bundle.trace_records.get(f"{request_id}/response")
-            request = bundle.trace_records.get(f"{request_id}/request")
-            if (response is None or request is None) and predecessor_records:
-                kept = predecessor_records.get(sid) or {}
-                response = response if response is not None else kept.get(f"{request_id}/response")
-                request = request if request is not None else kept.get(f"{request_id}/request")
+            source = _custody_trace_source(bundle, predecessor_records, sid)
+            response = source.get(f"{request_id}/response")
+            request = source.get(f"{request_id}/request")
             if not isinstance(response, Mapping) or not isinstance(request, Mapping):
                 raise Stage3ScoreError(f"{sid}: first Solver branch trace pair is absent")
             raw = response.get("text")
