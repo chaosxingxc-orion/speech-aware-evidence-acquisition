@@ -7,7 +7,7 @@
         "worker",
         "campaign"
       ],
-      "attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-rec1-v1",
+      "attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-rec2-v1",
       "baseline_fragment": "slurp-native-stage3-nxt-r1-thinking-policy-fold-b-baseline-v1",
       "cell_id": "slurp-native-stage3-nxt-r1-thinking-policy-fold-b-v1",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
@@ -37,6 +37,10 @@
         ],
         "state": "ready"
       },
+      "resume_from": {
+        "attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-rec1-v1",
+        "trace_sha256": "3238cd8aedb50c8a142b15e321070ffc7cf2cd055088fdcb0aee83d8a0895835"
+      },
       "run_id": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1"
     }
   ],
@@ -56,29 +60,29 @@
   "execution_plan": {
     "execution_profile": "bounded-discovery-probe",
     "planned_gpu_hours": 41.4,
-    "planned_model_calls": 18484,
-    "planned_speech_audio_seconds": 53776,
+    "planned_model_calls": 28782,
+    "planned_speech_audio_seconds": 83877,
     "split_role": "discovery"
   },
   "execution_profile": "bounded-discovery-probe",
   "experiment_id": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1",
-  "failure_policy": "Stop and preserve on the first failure. No automatic restart, replay, row filtering, roster, role-graph, prompt, knowledge, geometry or cap change. AT MOST ONE root-diagnosed recovery re-registration per run id (a new generation attempt id AND a new native_contact_fit run and attempt id); a second failure closes the cell and the fix is proven on a four-row dry run. A response whose delivered content carries a reasoning marker is a failure of the read, not of a row: it stops the flight (reasoning_content_guard). A partial manifest is never scored and never read.",
+  "failure_policy": "Stop and preserve on the first failure. No automatic restart, replay, row filtering, roster, role-graph, prompt, knowledge, geometry or cap change. AT MOST ONE root-diagnosed recovery re-registration per run id (a new generation attempt id AND a new native_contact_fit run and attempt id); a second failure closes the cell and the fix is proven on a four-row dry run. A response whose delivered content carries a reasoning marker is a failure of the read, not of a row: it stops the flight (reasoning_content_guard). A partial manifest is never scored and never read. EXPLICIT OWNER EXCEPTION (owner ruling 320 B of 2026-10-16): this cell carries a SECOND recovery re-registration (rec2); the exception covers that one re-registration only, and a failure of it closes the cell.",
   "family_budget": {
     "asr_calls": 0,
     "ceilings_are_not_targets": true,
     "encoder_calls": 0,
     "fit_endpoint_calls_cap": 43200,
-    "generation_calls_cap": 18484,
+    "generation_calls_cap": 28782,
     "gpu_hours_fit_inclusive": 41.4,
-    "native_task_contract_calls_cap": 18484,
+    "native_task_contract_calls_cap": 28782,
     "official_complete_scoring_jobs": 1,
-    "repeated_speech_audio_seconds_cap": 53776
+    "repeated_speech_audio_seconds_cap": 83877
   },
   "fragment_kind": "saea-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-v1",
   "generation_budget": {
-    "cap": 18484,
-    "definition": "The review-off module graph (perception 1, solver 1; Reviewer and Planner never visited) under program phase-native-module-v1-c10 with the five-arm thinking-policy column at the Perception node: 1,080 x 10 = 10,800 is the exact program maximum (2 + 2 (K - 1), K = 5); the plan ceiling adds 6 answer-only fallback contacts per row (one per budgeted-thinking contact of the five arms: 2 + 2 + 1 + 1 + 0, core.reasoning_knobs): 17,280 = 1,080 x 16. The live phase fit makes 1080 x 10 x 4 = 43,200 tokenizer endpoint calls under its own run id SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-FIT-REC1-V1. The GPU-hour ceiling is a BOUND (rows x 3.25 full-row equivalents / 1.84 rows per minute / 60 x 1.3, ceil 0.1), never a target. The budget is RUN-CUMULATIVE across every attempt of this run id. Recovery rec1 (the cell's single one; a second failure closes the cell): the failed predecessor attempt attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-v1 spent 1,204 contacts and 3298.26 speech-seconds, so the run-cumulative budget is the original plan plus that spend: 18,484 calls, 53,776 speech-seconds.",
-    "target": 18484
+    "cap": 28782,
+    "definition": "The review-off module graph (perception 1, solver 1; Reviewer and Planner never visited) under program phase-native-module-v1-c10 with the five-arm thinking-policy column at the Perception node: 1,080 x 10 = 10,800 is the exact program maximum (2 + 2 (K - 1), K = 5); the plan ceiling adds 6 answer-only fallback contacts per row (one per budgeted-thinking contact of the five arms: 2 + 2 + 1 + 1 + 0, core.reasoning_knobs): 17,280 = 1,080 x 16. The live phase fit makes 1080 x 10 x 4 = 43,200 tokenizer endpoint calls under its own run id SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-FIT-REC2-V1. The GPU-hour ceiling is a BOUND (rows x 3.25 full-row equivalents / 1.84 rows per minute / 60 x 1.3, ceil 0.1), never a target. The budget is RUN-CUMULATIVE across every attempt of this run id. Recovery rec2 (owner ruling 320 B of 2026-10-16, an explicit exception to the one-recovery rule; a second failure closes the cell): the earlier attempts (attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-v1, attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-rec1-v1) spent 11,502 contacts and 33399.5 speech-seconds in total, so the run-cumulative budget is the original plan plus that spend: 28,782 calls, 83,877 speech-seconds. THIS ATTEMPT is a mode-A resume: it keeps 1,029 complete rows by trace replay and flies only the remaining 51 rows, 51 x 10 = 510 program contacts and nothing else; the cumulative ceiling is a bound, not a target, and the registered GPU-hour ceiling (41.4 GPU-h) stands (expected about 1.5 GPU-h).",
+    "target": 28782
   },
   "population": {
     "count": 1080,

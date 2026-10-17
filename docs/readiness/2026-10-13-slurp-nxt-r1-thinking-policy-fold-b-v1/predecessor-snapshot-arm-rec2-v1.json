@@ -1,0 +1,46 @@
+{
+  "actual_audio_seconds": 30101.20187499958,
+  "actual_calls": 10298,
+  "attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-rec1-v1",
+  "attempt_record_relpath": "attempts/SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1/attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-rec1-v1.json",
+  "attempt_record_sha256": "8070ec6d963c1d192592befa410112c2783474aaee789358147469bbd8388210",
+  "fit": {
+    "attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-fit-rec1-v1",
+    "attempt_record_present": false,
+    "prepared_dir_present": true,
+    "prepared_request_fit_envelopes": 10298,
+    "run_id": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-FIT-REC1-V1"
+  },
+  "reserved_audio_seconds": 53776.0,
+  "reserved_calls": 18484,
+  "resume": {
+    "counts": {
+      "flown": 51,
+      "kept": 1029,
+      "partial": 0,
+      "roster": 1080,
+      "unstarted": 51
+    },
+    "kept_sample_ids_sha256": "461092f79ed1c76b93124ae443affb1799bec19e92429099af51c05874f55a01",
+    "mode": "trace",
+    "partial_sample_ids": [],
+    "predecessor_contacts": 10290,
+    "program_id": "phase-native-module-v1-c10",
+    "roster_relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+    "roster_rows": 1080,
+    "schema": "saea-nxt-r1-rec2-resume-pin-v1",
+    "trace_record_count": 56596
+  },
+  "run_id": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1",
+  "schema": "saea-recovery-predecessor-snapshot-v1",
+  "snapshotted_at_utc": "2026-10-16T23:28:45.840688+00:00",
+  "state": "ABORTED",
+  "trace": {
+    "checkpoint_bytes": 768493993,
+    "checkpoint_relpath": "runs/SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1/attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-rec1-v1/SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1.rows.ckpt.jsonl",
+    "checkpoint_sha256": "547b1fe24427f439d78d8b8f593a2d4807f51d5a38803757615efbdb25e45112",
+    "trace_bytes": 667787659,
+    "trace_relpath": "runs/SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1/attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-rec1-v1/SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1.trace.jsonl",
+    "trace_sha256": "3238cd8aedb50c8a142b15e321070ffc7cf2cd055088fdcb0aee83d8a0895835"
+  }
+}

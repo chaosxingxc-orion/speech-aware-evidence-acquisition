@@ -208,7 +208,10 @@ def derive_baseline(key: str, *, repo_root: Path = REPO_ROOT, write: bool = True
     document["what_this_is"] = f"{ROLE_TEXT[key]} " + WHAT_THIS_IS
     rec = fam.recovery(key)
     if rec:
-        document["what_this_is"] += f" Recovery rec1 ({rec['recovered_at']}): {rec['root_cause']}."
+        document["what_this_is"] += f" Recovery rec{rec['recovery_index']} ({rec['recovered_at']}): {rec['root_cause']}."
+        if rec.get("owner_exception"):
+            document["what_this_is"] += (f" The rec{rec['recovery_index']} re-registration stands under an explicit owner exception ({rec['owner_exception']}) to the "
+                                         f"one-recovery rule and is a {rec['resume_mode']} resume of {rec['predecessor_attempt_id']}.")
     episode = document["native_episode"]
     if episode.get("finite_completion_policy") != "deliver-latest-or-abstain" or episode.get("react_exhaustion_policy") != "continue-without-answer":
         raise SystemExit("the native_episode finite-completion / ReAct-exhaustion policies are not the registered ones")
@@ -299,6 +302,12 @@ def derive_experiment(key: str, *, repo_root: Path = REPO_ROOT, write: bool = Tr
     document["populations"] = [{"dataset_fragment": fam.DATASET, "ids": ids}]
     cell.update(attempt_id=spec["attempt"], model_fragment=spec["model"],
                 allowed_execution_stages=["check", "prepare-supply", "worker"] + ([] if smoke else ["campaign"]))
+    recovery_record = fam.recovery(key)
+    if recovery_record and recovery_record.get("resume_from"):
+        # rec2 (owner ruling 320 B): a mode-A resume of the stopped rec1 attempt; the pin is the trace sha256 read from the data root into the snapshot receipt
+        cell["resume_from"] = dict(recovery_record["resume_from"])
+    else:
+        cell.pop("resume_from", None)
     document["generation_budget"] = {
         "cap": plan["planned_model_calls"], "target": plan["planned_model_calls"],
         "definition": (
@@ -314,10 +323,21 @@ def derive_experiment(key: str, *, repo_root: Path = REPO_ROOT, write: bool = Tr
     if rec:
         # prose only: the cap above is the cumulative one (the original ceiling plus the failed attempt's realised spend)
         spent_calls, spent_audio = fam.predecessor_spend(key)
-        document["generation_budget"]["definition"] += (
-            f" Recovery rec1 (the cell's single one; a second failure closes the cell): the failed predecessor attempt {rec['predecessor_attempt_id']} spent "
-            f"{spent_calls:,} contacts and {spent_audio:g} speech-seconds, so the run-cumulative budget is the original plan plus that spend: "
-            f"{plan['planned_model_calls']:,} calls, {plan['planned_speech_audio_seconds']:,} speech-seconds.")
+        if rec["recovery_index"] == 1:
+            document["generation_budget"]["definition"] += (
+                f" Recovery rec1 (the cell's single one; a second failure closes the cell): the failed predecessor attempt {rec['predecessor_attempt_id']} spent "
+                f"{spent_calls:,} contacts and {spent_audio:g} speech-seconds, so the run-cumulative budget is the original plan plus that spend: "
+                f"{plan['planned_model_calls']:,} calls, {plan['planned_speech_audio_seconds']:,} speech-seconds.")
+        else:
+            counts = rec["resume_counts"]
+            document["generation_budget"]["definition"] += (
+                f" Recovery rec{rec['recovery_index']} ({rec['owner_exception']}, an explicit exception to the one-recovery rule; a second failure closes the cell): the "
+                f"earlier attempts ({', '.join(p['attempt_id'] for p in rec['predecessors'])}) spent {spent_calls:,} contacts and {spent_audio:g} speech-seconds in "
+                f"total, so the run-cumulative budget is the original plan plus that spend: {plan['planned_model_calls']:,} calls, "
+                f"{plan['planned_speech_audio_seconds']:,} speech-seconds. THIS ATTEMPT is a mode-A resume: it keeps {counts['kept']:,} complete rows by trace replay "
+                f"and flies only the remaining {counts['flown']} rows, {counts['flown']} x {fam.CONTACTS_PER_ROW} = {counts['flown'] * fam.CONTACTS_PER_ROW:,} program "
+                "contacts and nothing else; the cumulative ceiling is a bound, not a target, and the registered GPU-hour ceiling "
+                f"({spec['gpu_hours']} GPU-h) stands (expected about {fam.expected_gpu_hours(counts['flown']):.1f} GPU-h).")
     out = f"configs/experiment/{spec['cell']}.json"
     cell["readiness"] = {
         "reason": (f"{ROLE_TEXT[key]} Registered before contact on {fam.DATE} by script (decision 58) from the 268-B Thinking lock cell and the module "
@@ -351,6 +371,9 @@ def derive_experiment(key: str, *, repo_root: Path = REPO_ROOT, write: bool = Tr
             "change. AT MOST ONE root-diagnosed recovery re-registration per run id (a new generation attempt id AND a new native_contact_fit run and attempt "
             "id); a second failure closes the cell and the fix is proven on a four-row dry run. A response whose delivered content carries a reasoning "
             "marker is a failure of the read, not of a row: it stops the flight (reasoning_content_guard). A partial manifest is never scored and never read.")
+        if recovery_record and recovery_record.get("owner_exception"):
+            document["failure_policy"] += (f" EXPLICIT OWNER EXCEPTION ({recovery_record['owner_exception']}): this cell carries a SECOND recovery re-registration "
+                                           f"(rec{recovery_record['recovery_index']}); the exception covers that one re-registration only, and a failure of it closes the cell.")
     document["core_read_design"] = {
         "arms": {arm: spec["run"] for arm in fam.ARM_ORDER},
         "chain": "swap to the Thinking session -> smoke -> coordinator sign-off -> the column flight -> swap back to the Instruct session",

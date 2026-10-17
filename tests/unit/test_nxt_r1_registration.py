@@ -59,16 +59,18 @@ def composed(key: str):
 def test_ids_are_unique_and_follow_the_registered_pattern():
     runs = [fam.CELLS[k][f] for k in fam.ALL_KEYS for f in ("run", "fit_run")]
     assert len(set(runs)) == 4
-    # rec1: the first four ids (the first-registration receipt's list, in its order) then the rec1 FIT run id
-    first_fit = fam.recovery("arm")["predecessor_fit_run_id"]
-    assert fam.eligible_run_ids() == [fam.CELLS["smoke"]["run"], fam.CELLS["smoke"]["fit_run"], fam.CELLS["arm"]["run"], first_fit, fam.CELLS["arm"]["fit_run"]]
+    # rec2: the first four ids (the first-registration receipt's list, in its order), then the rec1 FIT run id, then the rec2 FIT run id
+    first_fit = fam.RECOVERY_HISTORY["arm"][0]["predecessor_fit_run_id"]
+    assert fam.eligible_run_ids() == [fam.CELLS["smoke"]["run"], fam.CELLS["smoke"]["fit_run"], fam.CELLS["arm"]["run"], first_fit,
+                                      fam.recovery("arm")["predecessor_fit_run_id"], fam.CELLS["arm"]["fit_run"]]
     assert first_fit == "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-FIT-V1"
-    assert fam.CELLS["arm"]["fit_run"] == "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-FIT-REC1-V1"
+    assert fam.recovery("arm")["predecessor_fit_run_id"] == "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-FIT-REC1-V1"
+    assert fam.CELLS["arm"]["fit_run"] == "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-FIT-REC2-V1"
     assert fam.CELLS["arm"]["run"] == "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1"
     assert fam.CELLS["arm"]["cell"] == "slurp-native-stage3-nxt-r1-thinking-policy-fold-b-v1"
     assert fam.CELLS["smoke"]["cell"] == "slurp-native-stage3-nxt-r1-thinking-policy-fold-b-smoke-4-v1"
-    assert fam.CELLS["arm"]["attempt"] == "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-rec1-v1"
-    assert fam.CELLS["arm"]["fit_attempt"] == "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-fit-rec1-v1"
+    assert fam.CELLS["arm"]["attempt"] == "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-rec2-v1"
+    assert fam.CELLS["arm"]["fit_attempt"] == "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-fit-rec2-v1"
     # the smoke is NOT recovered: its ids are the first-registration ids
     assert fam.recovery("smoke") is None and fam.CELLS["smoke"]["attempt"] == "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-smoke-4-generation-v1"
     assert fam.CELLS["smoke"]["fit_run"] == "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-SMOKE-4-FIT-V1"
@@ -180,8 +182,8 @@ def test_budgets_follow_the_formula_in_one_place():
     assert fam.planned_gpu_hours(1080) == round(__import__("math").ceil(round(1080 * 3.25 / 1.84 / 60 * 1.3 / 0.1, 9)) * 0.1, 1)
     assert fam.CELLS["smoke"]["gpu_hours"] == 0.5
     assert fam.original_generation_calls("arm") == 1080 * 16 == 17280 and fam.program_calls("arm") == 10800 and fam.generation_calls("smoke") == 64
-    # rec1: the registered caps are run-cumulative: the original plan plus the failed attempt's realised spend (the snapshot receipt's, 1,204 calls)
-    assert fam.generation_calls("arm") == 17280 + 1204 == 18484 and fam.cell_audio_cap("arm") == 53776 == fam.audio_cap("arm") + 3299
+    # rec2: the registered caps are run-cumulative: the original plan plus BOTH earlier attempts' realised spend (the snapshot receipts': 1,204 + 10,298 calls)
+    assert fam.generation_calls("arm") == 17280 + 1204 + 10298 == 28782 and fam.cell_audio_cap("arm") == 83877 == fam.audio_cap("arm") + 33400
     assert fam.FALLBACK_CONTACTS_PER_ROW_CEILING == 6 == 2 + 2 + 1 + 1 + 0
     assert fam.fit_contact_cap(1080) == 43200 == 1080 * 10 * tsf.tf.FIT_ENDPOINTS_PER_CONTACT and fam.fit_contact_cap(4) == 160
     assert fam.audio_cap("smoke") == fam.tsf.math.ceil(fam.roster_audio("smoke") * 16 - 1e-9) and fam.audio_cap("arm") == fam.tsf.math.ceil(fam.roster_audio("arm") * 16 - 1e-9)
@@ -388,118 +390,201 @@ def test_the_structural_dry_run_script_compiles_and_states_the_registered_node_d
     assert dry.ON["max_tokens"] == 4096 and dry.OFF["max_tokens"] == 1024 and dry.OFF["thinking_budget_tokens"] is None
 
 
-# ---- recovery rec1 (owner decision 309 A): the column flight re-registered after a Windows Update forced restart ----------------------------------
+# ---- recoveries: rec1 (owner decision 309 A, a Windows restart) and rec2 (owner ruling 320 B, a mode-A resume under an explicit owner exception) ---------
 
 
 def _plan(key: str, kind: str) -> dict:
     return json.loads((PKG / fam.plan_file_name(key, kind)).read_text(encoding="utf-8"))
 
 
-def test_the_predecessor_spend_is_the_snapshot_receipts_and_it_is_cumulative():
-    snap = json.loads((REPO / fam.PREDECESSOR_SNAPSHOT["arm"]).read_text(encoding="utf-8"))
-    assert snap["schema"] == "saea-recovery-predecessor-snapshot-v1" and snap["run_id"] == fam.CELLS["arm"]["run"]
-    assert snap["attempt_id"] == "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-v1" and snap["state"] == "OPENED"
-    assert (snap["actual_calls"], snap["actual_audio_seconds"]) == (1204, 3298.2618750000015)
-    assert (snap["reserved_calls"], snap["reserved_audio_seconds"]) == (17280, 50477.0)
-    assert snap["fit"]["prepared_request_fit_envelopes"] == 1204 and snap["fit"]["attempt_record_present"] is False
-    assert fam.recovery("arm")["predecessors"] == [{"attempt_id": snap["attempt_id"], "state": "OPENED", "contacts_spent": 1204,
-                                                    "speech_seconds_spent": 3298.2618750000015}]
-    assert fam.predecessor_spend("arm") == (1204, 3298.2618750000015) and fam.predecessor_spend("smoke") == (0, 0.0)
-    assert fam.cumulative_budget("arm", 17280, 50477) == (18484, 53776)
-    assert fam.recovery("arm")["predecessor_fit_run_id"] == snap["fit"]["run_id"]
-    assert fam.recovery("arm")["predecessor_fit_attempt_id"] == snap["fit"]["attempt_id"]
+def _snapshots() -> tuple[dict, dict]:
+    first, stopped = (json.loads((REPO / rel).read_text(encoding="utf-8")) for rel in fam.PREDECESSOR_SNAPSHOTS["arm"])
+    return first, stopped
 
 
-def test_rec1_plans_carry_the_recovery_block_and_the_run_cumulative_caps():
+def test_the_predecessor_spend_is_the_snapshot_receipts_and_it_is_cumulative_over_both_earlier_attempts():
+    first, stopped = _snapshots()
+    for snap in (first, stopped):
+        assert snap["schema"] == "saea-recovery-predecessor-snapshot-v1" and snap["run_id"] == fam.CELLS["arm"]["run"]
+    assert first["attempt_id"] == "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-v1" and first["state"] == "OPENED"
+    assert (first["actual_calls"], first["actual_audio_seconds"]) == (1204, 3298.2618750000015)
+    assert stopped["attempt_id"] == "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-rec1-v1"
+    assert (stopped["actual_calls"], stopped["actual_audio_seconds"]) == (10298, 30101.20187499958) and stopped["state"] in ("ABORTED", "OPENED", "FAILED")
+    assert stopped["fit"]["prepared_request_fit_envelopes"] == 10298
+    rec = fam.recovery("arm")
+    assert rec["recovery_index"] == 2 and [p["attempt_id"] for p in rec["predecessors"]] == [first["attempt_id"], stopped["attempt_id"]]
+    assert [p["contacts_spent"] for p in rec["predecessors"]] == [1204, 10298]
+    assert fam.predecessor_spend("arm") == (1204 + 10298, 3298.2618750000015 + 30101.20187499958) and fam.predecessor_spend("smoke") == (0, 0.0)
+    assert fam.cumulative_budget("arm", 17280, 50477) == (28782, 83877)
+    assert rec["predecessor_fit_run_id"] == stopped["fit"]["run_id"] and rec["predecessor_fit_attempt_id"] == stopped["fit"]["attempt_id"]
+    # the rec1 record of the history keeps its own (first-attempt) accounting
+    rec1 = fam.RECOVERY_HISTORY["arm"][0]
+    assert rec1["recovery_index"] == 1 and [p["contacts_spent"] for p in rec1["predecessors"]] == [1204] and "owner_exception" not in rec1
+    assert fam.history_caps("arm", 1, {})["generation_calls_cap"] == 18484 and fam.history_caps("arm", 1, {})["repeated_speech_audio_seconds_cap"] == 53776
+
+
+def test_the_resume_pin_is_the_trace_sha_the_snapshot_read_and_the_counts_add_up():
+    _first, stopped = _snapshots()
+    rec = fam.recovery("arm")
+    assert rec["owner_exception"] == "owner ruling 320 B of 2026-10-16" and rec["fix_commit"] == "60134738e"
+    assert rec["resume_from"] == {"attempt_id": stopped["attempt_id"], "trace_sha256": stopped["trace"]["trace_sha256"]}
+    assert re.fullmatch(r"[0-9a-f]{64}", rec["resume_from"]["trace_sha256"]) and rec["resume_from"]["trace_sha256"].startswith("3238cd8a")
+    counts = rec["resume_counts"]
+    assert counts == stopped["resume"]["counts"] == {"roster": 1080, "kept": 1029, "flown": 51, "partial": 0, "unstarted": 51}
+    assert counts["kept"] + counts["flown"] == counts["roster"] == fam.ROWS and rec["resume_mode"] == "resume-mode-A-keep-1029-fly-51"
+    assert set(rec["resume_from"]) == {"attempt_id", "trace_sha256"}                     # exactly the mode-A declaration shape core.flight.resume accepts
+
+
+def test_a_second_recovery_record_is_refused_without_the_owner_exception():
+    import copy
+
+    rec = copy.deepcopy(fam.recovery("arm"))
+    fam.rcv.validate_recovery(rec)
+    for bad in (None, "", "   "):
+        broken = {k: v for k, v in rec.items() if k != "owner_exception"}
+        if bad is not None:
+            broken["owner_exception"] = bad
+        with pytest.raises(fam.rcv.RecoveryError, match="owner_exception"):
+            fam.rcv.validate_recovery(broken)
+    short = dict(rec, predecessors=rec["predecessors"][-1:])
+    with pytest.raises(fam.rcv.RecoveryError, match="every earlier attempt"):
+        fam.rcv.validate_recovery(short)
+    fam.rcv.validate_recovery(copy.deepcopy(fam.RECOVERY_HISTORY["arm"][0]))             # rec1 needs no exception
+
+
+def test_rec2_plans_carry_the_recovery_block_the_resume_blocks_and_the_run_cumulative_caps():
     gen, fit = _plan("arm", "generation"), _plan("arm", "fit")
-    assert fam.plan_file_name("arm", "generation") == "generation-plan-registered-rec1-v1.json"
-    assert fam.plan_file_name("arm", "fit") == "fit-plan-registered-rec1-v1.json"
+    assert fam.plan_file_name("arm", "generation") == "generation-plan-registered-rec2-v1.json"
+    assert fam.plan_file_name("arm", "fit") == "fit-plan-registered-rec2-v1.json"
     assert fam.plan_file_name("smoke", "generation") == "smoke-generation-plan-registered-v1.json"
+    assert fam.superseded_plan_file_names("arm") == ["generation-plan-registered-v1.json", "fit-plan-registered-v1.json",
+                                                      "generation-plan-registered-rec1-v1.json", "fit-plan-registered-rec1-v1.json"]
     for stale in fam.superseded_plan_file_names("arm"):
-        assert not (PKG / stale).exists()
+        assert not (PKG / stale).exists()                                                 # the first-attempt and rec1 plans are removed, consistently
     assert fam.superseded_plan_file_names("smoke") == []
-    assert gen["execution_plan"]["attempt_id"] == fam.CELLS["arm"]["attempt"]
-    assert fit["execution_plan"]["attempt_id"] == fam.CELLS["arm"]["fit_attempt"]
+    assert gen["execution_plan"]["attempt_id"] == fam.CELLS["arm"]["attempt"] and fit["execution_plan"]["attempt_id"] == fam.CELLS["arm"]["fit_attempt"]
     assert gen["execution_plan"]["run_id"] == fam.CELLS["arm"]["run"] and fit["execution_plan"]["run_id"] == fam.CELLS["arm"]["fit_run"]
+    assert fam.CELLS["arm"]["fit_run"].endswith("-FIT-REC2-V1") and fam.CELLS["arm"]["fit_attempt"].endswith("-fit-rec2-v1")
     for plan in (gen, fit):
         ep = plan["execution_plan"]
-        assert ep["planned_speech_audio_seconds"] == 53776 and ep["planned_gpu_hours"] == 41.4      # the ceiling does not change; the audio cap grows by the spend
-        assert plan["recovery"]["predecessor_attempt_id"] == fam.recovery("arm")["predecessor_attempt_id"] and plan["recovery"]["recovery_index"] == 1
-        assert plan["recovery"]["predecessors"][0]["contacts_spent"] == 1204 and plan["recovery"]["root_cause"].startswith("infrastructure")
+        assert ep["planned_speech_audio_seconds"] == 83877 and ep["planned_gpu_hours"] == 41.4      # the GPU ceiling stands; the audio cap grows by the spend
+        assert plan["recovery"]["recovery_index"] == 2 and plan["recovery"]["owner_exception"] == "owner ruling 320 B of 2026-10-16"
+        assert plan["recovery"]["resume_from"] == fam.recovery("arm")["resume_from"]
+        assert [p["contacts_spent"] for p in plan["recovery"]["predecessors"]] == [1204, 10298]
         assert plan["recovery_budget"]["original_plan"] == {"planned_model_calls": 17280, "planned_speech_audio_seconds": 50477}
-        assert plan["recovery_budget"]["cumulative_plan"] == {"planned_model_calls": 18484, "planned_speech_audio_seconds": 53776}
-    assert gen["execution_plan"]["planned_model_calls"] == 18484
+        assert plan["recovery_budget"]["cumulative_plan"] == {"planned_model_calls": 28782, "planned_speech_audio_seconds": 83877}
+        assert plan["recovery_budget"]["failed_attempt_spend"]["attempt_ids"] == [p["attempt_id"] for p in fam.recovery("arm")["predecessors"]]
+    assert gen["execution_plan"]["planned_model_calls"] == 28782
     assert fit["execution_plan"]["planned_model_calls"] == 43200 == fam.fit_contact_cap(1080)
-    # the supply is already minted under the same run id: the plan carries the baseline's pin, not the placeholder
+    assert gen["resume_from"] == fam.recovery("arm")["resume_from"] and "resume_from" not in fit
+    budget = gen["resume_budget"]
+    assert (budget["kept_rows"], budget["flown_rows"], budget["flown_worst_case_program_contacts"]) == (1029, 51, 510)
+    assert budget["run_cumulative_worst_case_calls"] == 11502 + 510 and budget["cap_calls"] == 28782 and budget["gpu_hours_ceiling"] == 41.4
+    assert budget["gpu_hours_expected"] == 1.5
+    proof = gen["resume_replay_proof"]
+    assert (proof["rows_checked"], proof["rows_failing"], proof["sealed_twice"], proof["model_contacts"]) == (1029, 0, 0, 0)
+    assert proof["predecessor_attempts"][0]["trace_sha256"] == gen["resume_from"]["trace_sha256"]
     assert gen["prepared_phase_supply"] == baseline("arm")["prepared_phase_supply"] and gen["prepared_phase_supply"]["sha256"] != "MINTED_AT_THE_FLIP"
     exp = experiment("arm")
-    assert exp["execution_plan"]["planned_model_calls"] == 18484 == exp["family_budget"]["generation_calls_cap"] == exp["generation_budget"]["cap"]
-    assert exp["family_budget"]["repeated_speech_audio_seconds_cap"] == 53776 and exp["family_budget"]["fit_endpoint_calls_cap"] == 43200
+    cell = exp["cells"][0]
+    assert cell["resume_from"] == fam.recovery("arm")["resume_from"] and "resume_from" not in experiment("smoke")["cells"][0]
+    assert exp["execution_plan"]["planned_model_calls"] == 28782 == exp["family_budget"]["generation_calls_cap"] == exp["generation_budget"]["cap"]
+    assert exp["family_budget"]["repeated_speech_audio_seconds_cap"] == 83877 and exp["family_budget"]["fit_endpoint_calls_cap"] == 43200
     assert baseline("arm")["native_contact_fit"]["attempt_id"] == fam.CELLS["arm"]["fit_attempt"]
-    assert "Recovery rec1" in baseline("arm")["what_this_is"] and "Recovery rec1" in exp["generation_budget"]["definition"]
+    assert baseline("arm")["native_contact_fit"]["run_id"] == fam.CELLS["arm"]["fit_run"]
+    definition = exp["generation_budget"]["definition"]
+    assert "Recovery rec2" in baseline("arm")["what_this_is"] and "Recovery rec2" in definition
+    assert "51 x 10 = 510 program contacts and nothing else" in definition and "owner ruling 320 B" in definition and "41.4 GPU-h" in definition
+    assert "EXPLICIT OWNER EXCEPTION" in exp["failure_policy"]
 
 
 def test_the_smoke_cell_is_untouched_by_the_recovery():
     for kind in ("generation", "fit"):
         plan = _plan("smoke", kind)
-        assert "recovery" not in plan and "recovery_budget" not in plan
+        assert "recovery" not in plan and "recovery_budget" not in plan and "resume_from" not in plan
         assert plan["execution_plan"]["attempt_id"] == fam.CELLS["smoke"]["attempt" if kind == "generation" else "fit_attempt"]
-        assert "-rec1" not in plan["execution_plan"]["attempt_id"] and "REC1" not in plan["execution_plan"]["run_id"]
+        assert "-rec" not in plan["execution_plan"]["attempt_id"] and "-REC" not in plan["execution_plan"]["run_id"]
     smoke_plan = _plan("smoke", "generation")
     assert smoke_plan["execution_plan"]["planned_model_calls"] == fam.generation_calls("smoke") == 64 and smoke_plan["preparation_base_commit"] == "8132badd8"
-    assert "Recovery rec1" not in baseline("smoke")["what_this_is"]
+    assert "Recovery rec" not in baseline("smoke")["what_this_is"]
     assert baseline("smoke")["native_contact_fit"]["attempt_id"] == fam.CELLS["smoke"]["fit_attempt"]
     assert experiment("smoke")["cells"][0]["attempt_id"] == fam.CELLS["smoke"]["attempt"]
 
 
 def test_protocol_facts_and_draft_receipt_carry_the_recovery_block_and_the_new_plan_shas():
     protocol = json.loads((PKG / "protocol-registered-v1.json").read_text(encoding="utf-8"))
-    assert set(protocol["recovery"]) == {"arm"} and protocol["recovery"]["arm"]["predecessors"][0]["contacts_spent"] == 1204
+    assert set(protocol["recovery"]) == {"arm"} and [p["contacts_spent"] for p in protocol["recovery"]["arm"]["predecessors"]] == [1204, 10298]
     assert protocol["cells"]["arm"]["attempt_id"] == fam.CELLS["arm"]["attempt"] and protocol["cells"]["arm"]["fit_run_id"] == fam.CELLS["arm"]["fit_run"]
     assert protocol["cells"]["smoke"]["attempt_id"] == fam.CELLS["smoke"]["attempt"]
-    assert fam.recovery("arm")["predecessor_attempt_id"] in protocol["superseded_attempt_ids"]
+    for rec in fam.RECOVERY_HISTORY["arm"]:
+        assert rec["predecessor_attempt_id"] in protocol["superseded_attempt_ids"] and rec["predecessor_fit_attempt_id"] in protocol["superseded_attempt_ids"]
+    assert "owner ruling 320 B" in protocol["failure_policy"]
+    refs = protocol["predecessor_snapshots"]["arm"]
+    assert [r["path"] for r in refs] == fam.PREDECESSOR_SNAPSHOTS["arm"]
+    assert all(r["sha256"] == hashlib.sha256((REPO / r["path"]).read_bytes()).hexdigest() for r in refs)
     facts = json.loads((PKG / "registered-facts-v1.json").read_text(encoding="utf-8"))
-    assert facts["recovery_budget"]["arm"]["cumulative_plan"]["planned_model_calls"] == 18484
-    assert facts["accounting"]["arm_generation_calls"] == 18484
+    assert facts["recovery_budget"]["arm"]["cumulative_plan"]["planned_model_calls"] == 28782
+    assert facts["accounting"]["arm_generation_calls"] == 28782
+    assert facts["resume"]["arm"]["counts"]["kept"] == 1029 and facts["resume"]["arm"]["counts"]["flown"] == 51
+    assert facts["resume"]["arm"]["resume_from"] == fam.recovery("arm")["resume_from"]
     assert facts["accounting"]["cost_estimate"]["column_flight"]["planned_ceiling_gpu_hours"] == 41.4
     draft = json.loads((PKG / "root-admission-draft-v1.json").read_text(encoding="utf-8"))
-    assert draft["recovery"]["arm"]["recovery_index"] == 1 and draft["budget"]["generation_calls_cap"] == 18484
+    assert draft["recovery"]["arm"]["recovery_index"] == 2 and draft["budget"]["generation_calls_cap"] == 28782
     for kind in ("generation", "fit"):
         entry = draft["antecedents"]["recovery_plans"]["arm"][kind]
         assert entry["path"] == f"{fam.PACKAGE}/{fam.plan_file_name('arm', kind)}"
         assert entry["sha256"] == hashlib.sha256((PKG / fam.plan_file_name("arm", kind)).read_bytes()).hexdigest()
-    snap_entry = draft["antecedents"]["predecessor_snapshots"]["arm"]
-    assert snap_entry["sha256"] == hashlib.sha256((REPO / snap_entry["path"]).read_bytes()).hexdigest()
+    for entry in draft["antecedents"]["predecessor_snapshots"]["arm"]:
+        assert entry["sha256"] == hashlib.sha256((REPO / entry["path"]).read_bytes()).hexdigest()
     assert draft["supersedes_receipt"]["path"] == fam.DECISION_RELPATH
 
 
-def test_the_recovery_ledger_block_and_the_countersign_texts():
+def test_the_eligible_ids_extend_the_rec1_receipts_list_by_exactly_the_rec2_fit_run_and_attempts():
+    ids = fam.eligible_run_ids()
+    rec1_list = [fam.CELLS["smoke"]["run"], fam.CELLS["smoke"]["fit_run"], fam.CELLS["arm"]["run"], "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-FIT-V1",
+                 "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-FIT-REC1-V1"]
+    assert ids == rec1_list + ["SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-FIT-REC2-V1"]      # the minted rec1 receipt is a strict prefix: --supersede accepts it
+    attempts = fam.eligible_attempt_ids()
+    assert attempts[-2:] == [fam.CELLS["arm"]["attempt"], fam.CELLS["arm"]["fit_attempt"]] and len(attempts) == len(set(attempts)) == 8
+
+
+def test_the_recovery_ledger_block_names_both_predecessors_and_the_countersign_texts_carry_the_exception():
     rows = (PKG / "draft-ledger-rows.md").read_text(encoding="utf-8")
-    block = rows[rows.index("## Cell NXT-R1 recovery rec1: "):]
+    assert "## Cell NXT-R1 recovery rec2: " in rows and "recovery rec1: " not in rows
+    block = rows[rows.index("## Cell NXT-R1 recovery rec2: "):]
     data = [ln for ln in block.splitlines() if ln.startswith("| 2026")]
     assert len(data) == 2 and all(ln.count("|") == 16 for ln in data)
     assert f"| {fam.CELLS['arm']['run']} |" in data[0] and f"| {fam.CELLS['arm']['fit_run']} |" in data[1]
-    assert "| no | 18484 | 53776 | 41.4 |" in data[0] and "| no | 43200 | 53776 | 41.4 |" in data[1]
-    assert "17280 + 1204 = 18484 calls" in data[0] and fam.CELLS["arm"]["attempt"] in data[0] and fam.recovery("arm")["predecessor_fit_run_id"] in data[1]
+    assert "| no | 28782 | 83877 | 41.4 |" in data[0] and "| no | 43200 | 83877 | 41.4 |" in data[1]
+    first, stopped = _snapshots()
+    assert "17280 + 11502 = 28782 calls" in data[0] and fam.CELLS["arm"]["attempt"] in data[0]
+    assert first["attempt_id"] in data[0] and stopped["attempt_id"] in data[0]                                  # BOTH predecessors are named
+    assert "owner ruling 320 B" in data[0] and "SUPERSEDES the rec1 row" in data[0] and "mode A" in data[0]
+    assert fam.recovery("arm")["predecessor_fit_run_id"] in data[1] and "SUPERSEDES" in data[1]
     assert "root countersigned" not in block
     texts = json.loads((PKG / "countersign-row-texts-v1.json").read_text(encoding="utf-8"))["rows"]
     for run in (fam.CELLS["arm"]["run"], fam.CELLS["arm"]["fit_run"]):
-        assert "RECOVERY rec1" in texts[run] and "1204 calls" in texts[run] and "nxt_r1_mint_receipt.py --supersede" in texts[run]
-        assert fam.CELLS["arm"]["attempt"] in texts[run]
+        assert "RECOVERY rec2" in texts[run] and "11502 calls" in texts[run] and "nxt_r1_mint_receipt.py --supersede" in texts[run]
+        assert "owner ruling 320 B" in texts[run] and first["attempt_id"] in texts[run] and stopped["attempt_id"] in texts[run]
+        assert fam.CELLS["arm"]["attempt"] in texts[run] and "Resumed in mode A" in texts[run]
     assert "RECOVERY" not in texts[fam.CELLS["smoke"]["run"]]
     readme = (PKG / "README.md").read_text(encoding="utf-8")
     prereg = (REPO / fam.PREREG).read_text(encoding="utf-8")
     for text in (readme, prereg):
         assert "## Recovery rec1: the thinking-policy column flight" in text and "17280 + 1204 = 18484 calls" in text and "Windows Update" in text
-    assert "Recovery sequence" in readme and "arm-only" in readme and not re.search(r"[^\x00-\x7f]", prereg)
+        assert "## Recovery rec2: the thinking-policy column flight" in text and "17280 + 11502 = 28782 calls" in text
+        assert "explicit owner exception" in text.lower() and "Owner exception: owner ruling 320 B of 2026-10-16" in text
+        assert "3238cd8aedb50c8a142b15e321070ffc7cf2cd055088fdcb0aee83d8a0895835" in text and "51 x 10 = 510 program contacts" in text
+        assert "kept 1,029 rows" in text and "solver_absent" in text and "60134738e" in text
+    assert "Recovery rec2 sequence" in readme and "arm-only" in readme and "NXT1_KINDS=arm" in readme and not re.search(r"[^\x00-\x7f]", prereg)
 
 
 def test_the_writer_is_idempotent_on_the_recovery_ledger(tmp_path):
     import nxt_r1_write_registration as writer
 
     ids = writer.identities(REPO)
-    blocks = writer.recovery_blocks(REPO, ids, "x", "2026-10-14T16:30:00+00:00", "abc", "/wt", "br")
-    assert set(blocks) == {"arm"}
+    blocks = writer.recovery_blocks(REPO, ids, "x", "2026-10-17T04:45:39Z", "abc", "/wt", "br")
+    assert set(blocks) == {"arm"} and blocks["arm"].lstrip().startswith("## Cell NXT-R1 recovery rec2: ")
     ledger = tmp_path / "ledger.md"
     ledger.write_text("# Ledger\n", encoding="utf-8")
     assert writer.rcv.append_recovery_ledger_block(ledger, blocks["arm"], ids["arm"]["attempt_id"]) is True
@@ -507,22 +592,42 @@ def test_the_writer_is_idempotent_on_the_recovery_ledger(tmp_path):
     assert ledger.read_text(encoding="utf-8").count(f"| {ids['arm']['run_id']} |") == 1
 
 
-def test_the_mint_supersedes_only_the_first_registration_receipt(tmp_path):
+def test_the_writer_verifies_both_snapshots_and_the_trace_pin_against_a_data_root(tmp_path):
+    import nxt_r1_write_registration as writer
+
+    first, stopped = _snapshots()
+    run = fam.CELLS["arm"]["run"]
+    for snap, trace in ((first, False), (stopped, True)):
+        record = tmp_path / "attempts" / run / f"{snap['attempt_id']}.json"
+        record.parent.mkdir(parents=True, exist_ok=True)
+        record.write_text(json.dumps({"run_id": run, "attempt_id": snap["attempt_id"], "state": "ABORTED", "reserved": {}, "actual": {
+            "calls": snap["actual_calls"], "audio_seconds": snap["actual_audio_seconds"]}}), encoding="utf-8")
+    trace = tmp_path / "runs" / run / stopped["attempt_id"] / f"{run}.trace.jsonl"
+    trace.parent.mkdir(parents=True)
+    trace.write_bytes(b"not the registered trace\n")
+    with pytest.raises(fam.rcv.RecoveryError, match="predecessor moved"):
+        writer.verify_snapshots(REPO, str(tmp_path))
+    assert writer.verify_snapshots(REPO, str(tmp_path / "absent"))["arm"][0]["verified"] is False
+
+
+def test_the_mint_supersedes_only_a_receipt_whose_list_is_a_strict_prefix(tmp_path):
     from datetime import datetime, timezone
 
     import nxt_r1_mint_receipt as mint
 
-    first = fam.eligible_run_ids()[:4]
+    rec1_list = fam.eligible_run_ids()[:5]
     path = tmp_path / "root-admission-v1.json"
-    path.write_text(json.dumps({"decision_id": fam.DECISION_ID, "eligible_run_ids": first}), encoding="utf-8")
-    assert mint.check_supersedable(str(path)) == first
-    for bad in ({"decision_id": "other", "eligible_run_ids": first}, {"decision_id": fam.DECISION_ID, "eligible_run_ids": fam.eligible_run_ids()},
-                {"decision_id": fam.DECISION_ID, "eligible_run_ids": list(reversed(first))}, {"decision_id": fam.DECISION_ID, "eligible_run_ids": []}):
+    path.write_text(json.dumps({"decision_id": fam.DECISION_ID, "eligible_run_ids": rec1_list}), encoding="utf-8")
+    assert mint.check_supersedable(str(path)) == rec1_list
+    path.write_text(json.dumps({"decision_id": fam.DECISION_ID, "eligible_run_ids": rec1_list[:4]}), encoding="utf-8")
+    assert mint.check_supersedable(str(path)) == rec1_list[:4]                   # a receipt that was never superseded is a prefix too
+    for bad in ({"decision_id": "other", "eligible_run_ids": rec1_list}, {"decision_id": fam.DECISION_ID, "eligible_run_ids": fam.eligible_run_ids()},
+                {"decision_id": fam.DECISION_ID, "eligible_run_ids": list(reversed(rec1_list))}, {"decision_id": fam.DECISION_ID, "eligible_run_ids": []}):
         path.write_text(json.dumps(bad), encoding="utf-8")
         with pytest.raises(SystemExit):
             mint.check_supersedable(str(path))
-    stamp = datetime(2026, 10, 14, 17, 0, 5, tzinfo=timezone.utc)
-    assert mint.backup_name("/d/root-admission-v1.json", stamp) == "/d/root-admission-v1.json.superseded-20261014T170005Z-by-rec1.bak"
+    stamp = datetime(2026, 10, 17, 17, 0, 5, tzinfo=timezone.utc)
+    assert mint.backup_name("/d/root-admission-v1.json", stamp) == "/d/root-admission-v1.json.superseded-20261017T170005Z-by-rec2.bak"
 
 
 def test_the_chain_flip_and_read_scripts_consume_the_family_record():
@@ -530,11 +635,35 @@ def test_the_chain_flip_and_read_scripts_consume_the_family_record():
     chain, flip, read = [(nx / n).read_text(encoding="utf-8") for n in ("batch_chain_nxt_r1.sh", "nxt_r1_flip.sh", "nxt_r1_read.sh")]
     for script in ("batch_chain_nxt_r1.sh", "nxt_r1_flip.sh", "nxt_r1_read.sh", "nxt_r1_repin_cell.sh"):
         assert subprocess.run(["bash", "-n", str(nx / script)], capture_output=True).returncode == 0
-    # arm-only: the smoke must be sealed and the marker present; all refuses to re-fly the smoke attempt; the chain flies the family's rec1 ids
+    # arm-only: the smoke must be sealed and the marker present; all refuses to re-fly the smoke attempt; the chain flies the family's rec2 ids
     assert "arm|arm-only)" in chain and "arm-only) run_driver arm" in chain and "use arm-only" in chain and "exit 9" in chain
     assert '"$SMOKE_STATE" = sealed' in chain and "COMPLETED" in chain and "no sign-off marker" in chain
     assert 'spec["attempt"]' in chain and "gen_attempt_id" in chain and "generation-v1" not in chain
-    assert "PLAN_REC=" in flip and "rec_suffix" in flip and "generation-v1" not in read and "nxt_r1_family" in read
+    # the rec2 resume precondition: the predecessor trace is re-hashed against the family's resume_from, and the rec2 attempt must not exist yet
+    assert "resume_from" in chain and "RECOVERIES[\"arm\"][\"resume_from\"]" in chain and "the predecessor trace moved" in chain and "already exists" in chain
+    assert "PLAN_REC=" in flip and "rec_suffix" in flip and "NXT1_KINDS" in flip and "generation-v1" not in read and "nxt_r1_family" in read
+
+
+def test_the_reader_reports_the_kept_and_flown_split_of_a_resume_and_refuses_another_trace():
+    resume_from = fam.recovery("arm")["resume_from"]
+    manifest = {"predecessor_attempt": {"trace_sha256": resume_from["trace_sha256"], "kept_sample_ids": [f"s{i}" for i in range(1029)], "kept_sample_ids_sha256": "ab" * 32,
+                                        "counts": {"kept": 1029}}}
+    block = reader.resume_block(manifest, resume_from, 1080)
+    assert (block["kept"], block["flown"], block["rows"]) == (1029, 51, 1080)
+    with pytest.raises(reader.ReadError, match="registered trace"):
+        reader.resume_block({"predecessor_attempt": dict(manifest["predecessor_attempt"], trace_sha256="0" * 64)}, resume_from, 1080)
+    with pytest.raises(reader.ReadError, match="kept/flown split"):
+        reader.resume_block({"predecessor_attempt": dict(manifest["predecessor_attempt"], kept_sample_ids=[])}, resume_from, 1080)
+    text = reader.render_markdown({"resume": block, "arms_nodes": {}})
+    assert "1,029 rows kept" in text and "51 rows flown" in text
+
+
+def test_the_rec2_snapshot_and_replay_proof_tools_compile_and_are_read_only_on_the_data_root():
+    for name in ("nxt_r1_rec2_snapshot.py", "nxt_r1_rec2_replay_proof.py"):
+        source = (REPO / "scripts/flights/nx" / name).read_text(encoding="utf-8")
+        compile(source, name, "exec")
+        assert source.isascii() and "write_text" not in source.replace("Path(args.out).write_bytes", "")
+    assert "--trace-pin" in (REPO / "scripts/flights/lib/recovery.py").read_text(encoding="utf-8")
 
 
 def test_the_writer_cli_exposes_the_recovery_flags():

@@ -9,9 +9,9 @@ column flight, each with its FIT identity, in chain order) and the budget caps a
 
     python scripts/flights/nx/nxt_r1_mint_receipt.py [--coordinator "Fable5.1"] [--dry] [--supersede]
 
-RECOVERY rec1: the draft carries the recovery block, the new plan sha256 and the predecessor snapshot as antecedents, and ``eligible_run_ids`` gains the rec1
-FIT run id. ``--supersede`` renames the existing first-registration receipt to ``root-admission-v1.json.superseded-<UTC>-by-rec1.bak`` (never deleted; restored
-if the mint is refused) after proving its run ids are a strict prefix of the rec1 list.
+RECOVERY rec1 / rec2 (the second recovery, owner ruling 320 B): the draft carries the recovery block, the new plan sha256 and the predecessor snapshot as antecedents, and ``eligible_run_ids`` gains the latest
+recovery's FIT run id. ``--supersede`` renames the existing receipt to ``root-admission-v1.json.superseded-<UTC>-by-rec<N>.bak`` (never deleted; restored
+if the mint is refused) after proving its run ids are a strict prefix of the latest recovery's list (rec2: the rec1 receipt, whose list lacks only the rec2 FIT run id).
 """
 
 from __future__ import annotations
@@ -35,19 +35,19 @@ TOOL = "scripts/flights/nx/nxt_r1_mint_receipt.py"
 
 def check_supersedable(out: str) -> list[str]:
     """The existing receipt's eligible run ids, after proving it is the first-registration receipt of THIS decision: same decision id, and its run ids are a
-    strict prefix of the rec1 list (the recovery only appends the rec1 FIT run id)."""
+    strict prefix of the latest recovery's list (a recovery only appends its own FIT run id)."""
 
     old = json.loads(Path(out).read_text(encoding="utf-8"))
     if old.get("decision_id") != fam.DECISION_ID:
         raise SystemExit(f"the existing receipt is decision {old.get('decision_id')!r}, expected {fam.DECISION_ID!r}")
     old_ids, new_ids = list(old.get("eligible_run_ids") or []), fam.eligible_run_ids()
     if not old_ids or len(new_ids) <= len(old_ids) or new_ids[:len(old_ids)] != old_ids:
-        raise SystemExit("the existing receipt's eligible_run_ids are not a strict prefix of the rec1 list; refusing to supersede it")
+        raise SystemExit("the existing receipt's eligible_run_ids are not a strict prefix of the latest recovery list; refusing to supersede it")
     return old_ids
 
 
 def backup_name(out: str, now: datetime) -> str:
-    return f"{out}.superseded-{now.strftime('%Y%m%dT%H%M%SZ')}-by-rec1.bak"
+    return f"{out}.superseded-{now.strftime('%Y%m%dT%H%M%SZ')}-by-rec{fam.recovery_index('arm')}.bak"
 
 
 def main() -> int:
@@ -55,7 +55,7 @@ def main() -> int:
     parser.add_argument("--coordinator", default="Fable5.1")
     parser.add_argument("--dry", action="store_true", help="print the receipt, write nothing")
     parser.add_argument("--supersede", action="store_true",
-                        help="the recovery re-mint: rename the existing first-registration receipt to a dated backup (never deleted), then mint the rec1 receipt")
+                        help="the recovery re-mint: rename the existing first-registration receipt to a dated backup (never deleted), then mint the latest recovery receipt")
     args = parser.parse_args()
     root = base.ROOT.rstrip("/")
     out = os.path.join(base.DATA, fam.DECISION_RELPATH)

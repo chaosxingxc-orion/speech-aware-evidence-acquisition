@@ -1,0 +1,249 @@
+{
+  "arm_order": [
+    "perception-off",
+    "solver-off",
+    "both-off",
+    "both-on-twin",
+    "both-on"
+  ],
+  "cell": "slurp-native-stage3-nxt-r1-thinking-policy-fold-b-v1",
+  "composed_config_hash": "911d2c22bc1cfc7dc625728ef3896f51a7784abc1d58e53242edc28a2757e190",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-rec2-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 41.4,
+    "planned_model_calls": 28782,
+    "planned_speech_audio_seconds": 83877,
+    "protocol_hash": "4fa390446ce1e8aa64af64c8964129ceb31d6f6f146492f082fa434d567e9498",
+    "run_id": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared core.flight.cli campaign over configs/campaign/slurp-native-stage3-nxt-r1-thinking-policy-fold-b-v1.json on the resident Thinking session (serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1); one official score per arm column (stage3_rollout_score --mode perception-branches) after the seal. Flown by scripts/flights/nx/batch_chain_nxt_r1.sh.",
+  "expected_session_id": "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
+  "experiment": "slurp-native-stage3-nxt-r1-thinking-policy-fold-b-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 43200,
+    "generation_calls_cap": 28782,
+    "gpu_hours_fit_inclusive": 41.4,
+    "native_task_contract_calls_cap": 28782,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 83877
+  },
+  "no_think_node": {
+    "answer_reserve_tokens": 1024,
+    "budget_field": "absent (no thinking_budget_tokens)",
+    "chat_template_kwargs": {
+      "enable_thinking": false
+    },
+    "enable_thinking": false,
+    "max_tokens": 1024
+  },
+  "one_factor": "The per-node thinking decoding of the non-delivering arms (enable_thinking false at the named node). The delivering arm is the 268-B lock form (budget 3072 + reserve 1024 = cap 4096); the system, the knowledge supply, the sealed query vectors and the roster are the 268-B lock's.",
+  "plan_kind": "generation",
+  "preparation_base_commit": "8132badd8",
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1/phase-supply-v2.json",
+    "sha256": "0c2fe45ea9ad5aab09ee794835c3f67e6647b7f34bd5837610284680852ad34c"
+  },
+  "prepared_phase_supply_annotations": {
+    "note": "the flip mints this cell's own first-phase supply under its own run id (item E16)"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/protocol-registered-v1.json",
+    "sha256": "a1b1e44578c49f483890a1c5dbeeff28f878728028ebbe62a3263eff0b693236"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1: thinking-policy column flight (five arms in one flight) of NX-T R1.",
+  "recovery": {
+    "amendment": "RECOVERY 2026-10-16 (rec2; owner ruling 320 B of 2026-10-16, coordinator brief, Fable 5.1). MODE A (trace replay), not mode B: the absent-arm fix changes rails/runner.py and a checkpoint resume refuses a code-identity change. `resume_from` names the rec1 attempt and the sha256 of its trace, 3238cd8aedb50c8a142b15e321070ffc7cf2cd055088fdcb0aee83d8a0895835 (667,787,659 bytes), read from the data root into docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/predecessor-snapshot-arm-rec2-v1.json. The attempt keeps the 1,029 complete rows (each replayed through the seal under the current code; the offline replay proof is a block of the generation plan) and flies the 51 remaining rows: 51 x 10 = 510 program contacts and nothing else. The generation budget is run-cumulative across the attempts of the run id (core/model/adapter.py): the registered plan plus both earlier attempts' recorded spend (11,502 calls, 33399.5 speech-seconds, read from the attempt records into docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/predecessor-snapshot-arm-rec1-v1.json and docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/predecessor-snapshot-arm-rec2-v1.json). The FIT cap is structural and unchanged. The FIT run id and the FIT attempt id take the rec2 marker because a (run_id, attempt_id) pair is a one-time key; the generation run id is unchanged. The registered GPU-hour ceiling (41.4 GPU-h) stands; the resume is expected to spend about 1.5 GPU-h (51 rows x 3.25 full-row equivalents / 1.84 rows per minute). `--allow-output-change` is never passed: the rebuilt supply, the roster (1,080 rows) and the read (n = 1,080) are the registered ones.",
+    "base_commit": "d5c5eaf45",
+    "fit_cap_rule": "The FIT cap is structural: rows x program contacts x endpoints per contact.",
+    "fix_commit": "60134738e",
+    "owner_exception": "owner ruling 320 B of 2026-10-16",
+    "predecessor_attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-rec1-v1",
+    "predecessor_fit_attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-fit-rec1-v1",
+    "predecessor_fit_run_id": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-FIT-REC1-V1",
+    "predecessor_state": "ABORTED (its attempt record), flight commit 8f9d8e1ee, started 2026-10-14T17:14:43Z, stopped 2026-10-15T22:33:00Z on the finite completion above; 10,298 calls / 30101.20 speech-seconds realised per its attempt record (reserved 18,484 / 53,776); 1,029 complete rows in the trace (sha256 3238cd8a...) and in the row checkpoint; the failing row's records were never flushed; preserved unread.",
+    "predecessors": [
+      {
+        "attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-v1",
+        "contacts_spent": 1204,
+        "speech_seconds_spent": 3298.2618750000015,
+        "state": "OPENED"
+      },
+      {
+        "attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-rec1-v1",
+        "contacts_spent": 10298,
+        "speech_seconds_spent": 30101.20187499958,
+        "state": "ABORTED"
+      }
+    ],
+    "reason": "The rec1 column attempt stopped on a HARNESS defect, not on the infrastructure: after 1,029 complete rows the next row's `both-off` arm sealed a no-think Solver contact that ended on finish_reason `length` at its 1,024-token cap, and the fan-out raised before the delivering arm ran on that row. The absent-arm fix is merged on master (60134738e). Owner ruling 320 B of 2026-10-16 grants an EXPLICIT exception to the package rule of one recovery re-registration per run id: this rec2 keeps the 1,029 complete rows of the stopped attempt by mode-A trace replay and flies the 51 remaining rows (the failing row included) under the fix.",
+    "recovered_at": "2026-10-16",
+    "recovery_index": 2,
+    "registered_at_utc": "2026-10-17T04:51:28Z",
+    "resume_counts": {
+      "flown": 51,
+      "kept": 1029,
+      "partial": 0,
+      "roster": 1080,
+      "unstarted": 51
+    },
+    "resume_from": {
+      "attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-rec1-v1",
+      "trace_sha256": "3238cd8aedb50c8a142b15e321070ffc7cf2cd055088fdcb0aee83d8a0895835"
+    },
+    "resume_mode": "resume-mode-A-keep-1029-fly-51",
+    "root_cause": "the no-think finite completion on a candidate arm: the `both-off` arm's no-think Solver contact (cap 1,024 tokens) ended on finish_reason `length`, FrozenCoreRoleFiniteCompletionError left the branch fan-out so the delivering arm never ran on that row, and the level-2 fold found no Solver record for the arm (RailsRunnerError: perception branch 'both-off' sealed no level-2 Solver column); the first such event in 2,058 earlier no-think Solver contacts (longest 66 tokens)",
+    "rule": "A third recovery is not covered by the owner exception; a second failure of rec2 closes the cell, and the fix is proven on a four-row dry run."
+  },
+  "recovery_budget": {
+    "cumulative_plan": {
+      "planned_model_calls": 28782,
+      "planned_speech_audio_seconds": 83877
+    },
+    "failed_attempt_spend": {
+      "attempt_ids": [
+        "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-v1",
+        "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-rec1-v1"
+      ],
+      "model_calls": 11502,
+      "speech_audio_seconds": 33399.46374999958
+    },
+    "original_plan": {
+      "planned_model_calls": 17280,
+      "planned_speech_audio_seconds": 50477
+    },
+    "rule": "The adapter budget is run-cumulative across the attempts of a run id; the FIT cap is structural and never scaled."
+  },
+  "registered_at_utc": "2026-10-14T16:58:26Z",
+  "resume_budget": {
+    "cap_audio_seconds": 83877,
+    "cap_calls": 28782,
+    "contacts_per_row": 10,
+    "earlier_attempts_actual_audio_seconds": 33399.5,
+    "earlier_attempts_actual_calls": 11502,
+    "flown_rows": 51,
+    "flown_worst_case_program_contacts": 510,
+    "gpu_hours_ceiling": 41.4,
+    "gpu_hours_expected": 1.5,
+    "headroom_calls": 16770,
+    "kept_rows": 1029,
+    "mode": "trace",
+    "note": "This attempt flies 51 rows x 10 program contacts = 510 contacts and nothing else; the cumulative cap is a bound, not a target; the registered GPU-hour ceiling stands.",
+    "partial_rows": 0,
+    "run_cumulative_worst_case_calls": 12012,
+    "unstarted_rows": 51
+  },
+  "resume_from": {
+    "attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-rec1-v1",
+    "trace_sha256": "3238cd8aedb50c8a142b15e321070ffc7cf2cd055088fdcb0aee83d8a0895835"
+  },
+  "resume_replay_proof": {
+    "checker_sha256": "7391863cbd58f97346b87e536cd48c92b6e618943d0f9e22cffba8a5122d25b8",
+    "code_commit": "d5c5eaf45",
+    "gate": "scripts/checks/resume_prelaunch_gate_check.py (via scripts/flights/batch/resume_prelaunch_gate.sh) on this cell, re-run by the driver's prelaunch on the flight commit",
+    "model_contacts": 0,
+    "note": "Model-free and read-only over a scratch COPY of the stopped rec1 attempt's trace (sha256 verified identical to the data root's), assets read through symlinks to the data root: every kept row rendered through the real seal stage and re-checked against I7 / I7n / I7v (the v5 thinking-policy wire check and the absent-column check included) one row at a time; no row fails and no sample is sealed twice. The replay ran at the branch base commit (src/ identical to the branch tip); the driver's prelaunch gate re-runs the same check at launch on the flight commit.",
+    "predecessor_attempts": [
+      {
+        "attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-rec1-v1",
+        "complete": 1029,
+        "incomplete": 0,
+        "perception_branch_note_parse_status": {
+          "both-off:duplicates-collapsed": 169,
+          "both-off:ok": 860,
+          "both-on-twin:duplicates-collapsed": 4,
+          "both-on-twin:ok": 1025,
+          "both-on:duplicates-collapsed": 4,
+          "both-on:ok": 1025,
+          "perception-off:duplicates-collapsed": 153,
+          "perception-off:ok": 876,
+          "solver-off:duplicates-collapsed": 8,
+          "solver-off:ok": 1021
+        },
+        "rows_checked": 1029,
+        "rows_failing": 0,
+        "rows_with_deliver_normaliser": 1029,
+        "rows_with_perception_branches": 1029,
+        "samples_started": 1029,
+        "trace_sha256": "3238cd8aedb50c8a142b15e321070ffc7cf2cd055088fdcb0aee83d8a0895835"
+      }
+    ],
+    "resume_py_sha256": "c7d9a64ab9830a0d6ad74d0f6d55491d8aa266d063d95d2ed3d717fc36972eff",
+    "rows_checked": 1029,
+    "rows_failing": 0,
+    "run_at_utc": "2026-10-17T04:45:38Z",
+    "schema": "saea-resume-replay-proof-v1",
+    "sealed_twice": 0,
+    "tool": "scripts/analysis/replay_seal_consistency.py --experiment slurp-native-stage3-nxt-r1-thinking-policy-fold-b-v1 --run-id SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1 --predecessor attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-rec1-v1:3238cd8aedb50c8a142b15e321070ffc7cf2cd055088fdcb0aee83d8a0895835",
+    "union_complete_rows": 1029
+  },
+  "schema": "saea-registered-generation-plan-v1",
+  "scoring": "Per-arm official column scoring after a successful seal; no partial score.",
+  "status": "DRAFT-HELD-REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_COUNTERSIGN_AND_READINESS_FLIP",
+  "thinking_arms": {
+    "both-off": {
+      "thinking_policy": {
+        "perception": {
+          "enable_thinking": false
+        },
+        "solver": {
+          "enable_thinking": false
+        }
+      }
+    },
+    "both-on": {
+      "role": "delivering",
+      "thinking_policy": null
+    },
+    "both-on-twin": {
+      "role": "twin",
+      "thinking_policy": null
+    },
+    "perception-off": {
+      "thinking_policy": {
+        "perception": {
+          "enable_thinking": false
+        }
+      }
+    },
+    "solver-off": {
+      "thinking_policy": {
+        "solver": {
+          "enable_thinking": false
+        }
+      }
+    }
+  },
+  "thinking_knobs": {
+    "answer_fallback": {
+      "enable_thinking": false,
+      "id": "saea-thinking-answer-fallback-v1",
+      "max_tokens": 1024,
+      "mode": "answer-only re-ask",
+      "per_node": 1
+    },
+    "answer_reserve_tokens": 1024,
+    "budget_message": "Considering the limited time by the user, I have to give the solution based on the thinking directly now.",
+    "completion_cap": 4096,
+    "decoding": {
+      "seed": 20260913,
+      "temperature": 0
+    },
+    "node_modes": {
+      "perception": "think",
+      "solver": "think"
+    },
+    "reasoning_context_policy": "drop-reasoning-v1",
+    "reasoning_format": "deepseek",
+    "thinking_budget_tokens": 3072
+  },
+  "unused_budget_is_not_attempt_authority": true
+}

@@ -11,6 +11,8 @@
 # RECOVERY rec1 (2026-10-14): after the rec1 re-registration and the re-mint (nxt_r1_mint_receipt.py --supersede) BOTH cells are flipped again (default KINDS
 # "smoke arm"): each readiness block pins the decision receipt, whose sha256 changed, and the shared protocol sha256 changed. Flipping is not flying: the sealed
 # smoke is never re-flown (batch_chain_nxt_r1.sh arm-only).
+# RECOVERY rec2 (owner ruling 320 B, 2026-10-16): the mode-A resume of the stopped rec1 attempt flips the ARM cell only (NXT1_KINDS=arm; the sealed smoke is not
+# touched); the arm cell now declares resume_from, so the re-pin chain treats it as a resume cell. --allow-output-change is still never passed.
 MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 # Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70

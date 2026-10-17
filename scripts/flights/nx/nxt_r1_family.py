@@ -238,19 +238,31 @@ def arm_row_equivalent_rows_per_minute(arm: str) -> float:
     return ROWS_PER_MINUTE_FULL / ROW_COST[arm]
 
 
-# ---- the single recovery (rec1) of a cell --------------------------------------------------------------------------------------------
-#: A (run_id, attempt_id) pair is a one-time key, so a cell whose attempt stopped is re-flown WHOLE under the ``-rec1`` attempt ids (generation AND the live
-#: phase fit) with a plan that carries the original plan plus the failed attempt's realised spend (the adapter budget is run-cumulative across the attempts of
-#: a run id). The package protocol fixes ONE root-diagnosed recovery per run id; a second failure closes the cell. Generic mechanism:
-#: ``scripts/flights/lib/recovery.py``. The failed attempt's spend is the committed snapshot receipt's (read from the attempt record by the lib's CLI, never
-#: typed here); the writer re-verifies it against the data root whenever the root is present.
+# ---- the recoveries of a cell ---------------------------------------------------------------------------------------------------------
+#: A (run_id, attempt_id) pair is a one-time key, so a cell whose attempt stopped is re-registered under the ``-recN`` attempt ids (generation AND the live
+#: phase fit) with a plan that carries the original plan plus every earlier attempt's realised spend (the adapter budget is run-cumulative across the attempts
+#: of a run id). The package protocol fixes ONE root-diagnosed recovery per run id. NX-T R1 has TWO, the second under an EXPLICIT owner exception:
+#:
+#: * ``rec1`` (owner decision 309 A, 2026-10-14): the column flight re-flown WHOLE after a Windows Update forced restart killed the first attempt.
+#: * ``rec2`` (owner ruling 320 B, 2026-10-16): the rec1 attempt stopped at its row 1,030 on a harness defect (a non-delivering arm's no-think Solver contact
+#:   hit its cap; fixed on master by the absent-arm fix). rec2 is a mode-A RESUME: it keeps the rec1 attempt's complete rows by trace replay
+#:   (``resume_from``) and flies the remaining rows. The recovery lib refuses a second record without ``owner_exception`` (``recovery.validate_recovery``).
+#:
+#: Generic mechanism: ``scripts/flights/lib/recovery.py``. Every predecessor's spend is the committed snapshot receipt's (read from the attempt record by the
+#: lib's CLI or by ``nxt_r1_rec2_snapshot.py``, never typed here); the writer re-verifies each against the data root whenever the root is present.
+#: ``RECOVERY_HISTORY[key]`` lists the records in order; ``RECOVERIES[key]`` is the LATEST one, the state the ids, plans and caps follow.
 REC = rcv.REC
-PREDECESSOR_SNAPSHOT = {"arm": f"{PACKAGE}/predecessor-snapshot-arm-rec1-v1.json"}
+#: The committed snapshot receipts, in attempt order. ``rec1``'s is the FIRST attempt's; ``rec2``'s is the rec1 (stopped) attempt's, with its trace pin.
+PREDECESSOR_SNAPSHOTS = {"arm": [f"{PACKAGE}/predecessor-snapshot-arm-rec1-v1.json", f"{PACKAGE}/predecessor-snapshot-arm-rec2-v1.json"]}
+OWNER_EXCEPTION_REC2 = "owner ruling 320 B of 2026-10-16"
+_OWNER_EXCEPTION_CAP = OWNER_EXCEPTION_REC2[:1].upper() + OWNER_EXCEPTION_REC2[1:]
+ABSENT_ARM_FIX_COMMIT = "60134738e"
 _ARM_FIT_ATTEMPT_FIRST = "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-fit-v1"
 
 
-def _arm_recovery() -> dict:
-    snap = rcv.load_snapshot(REPO_ROOT / PREDECESSOR_SNAPSHOT["arm"])
+def _arm_rec1(snap: dict) -> dict:
+    """Recovery rec1: the column flight re-flown whole after the host restart that killed the first attempt (``snap`` = the first attempt's snapshot)."""
+
     fit = snap.get("fit") or {}
     calls, audio = snap["actual_calls"], snap["actual_audio_seconds"]
     return {
@@ -283,7 +295,7 @@ def _arm_recovery() -> dict:
             "RECOVERY 2026-10-14 (the cell's single one; owner decision 309 A, coordinator brief, Fable 5.1). The generation budget is run-cumulative across "
             "the attempts of the run id (core/model/adapter.py; every attempt state counts, an OPENED one included), so the rec1 plan carries the original "
             f"plan plus the failed attempt's recorded spend ({calls:,} calls, {audio:g} speech-seconds, read from the attempt record into "
-            f"{PREDECESSOR_SNAPSHOT['arm']}). The FIT cap is structural and unchanged (rows x program contacts x endpoints per contact). The FIT run id and "
+            f"{PREDECESSOR_SNAPSHOTS['arm'][0]}). The FIT cap is structural and unchanged (rows x program contacts x endpoints per contact). The FIT run id and "
             "the FIT attempt id both take the rec1 marker because the cell is re-flown whole and a (run_id, attempt_id) pair is a one-time key; the generation "
             "run id is unchanged. The registered GPU-hour ceiling does not change."),
         "fix": ("none in the cell; infrastructure: the Windows Update auto-restart policy is set (decision 310 A) and the data-disk mount task is fixed "
@@ -296,9 +308,115 @@ def _arm_recovery() -> dict:
     }
 
 
-RECOVERIES: dict[str, dict] = {"arm": _arm_recovery()}
-for _rec in RECOVERIES.values():
-    rcv.validate_recovery(_rec)
+def _arm_rec2(first: dict, stopped: dict) -> dict:
+    """Recovery rec2 (owner ruling 320 B): a mode-A RESUME of the stopped rec1 attempt. ``first`` = the first attempt's snapshot, ``stopped`` = the rec1
+    attempt's snapshot, which carries its trace pin and the replay classification (kept / flown counts) read from the data root."""
+
+    fit, trace, resume = stopped.get("fit") or {}, stopped["trace"], stopped["resume"]
+    counts = dict(resume["counts"])
+    kept, flown = counts["kept"], counts["flown"]
+    if kept + flown != counts["roster"]:
+        raise ValueError(f"the rec2 resume counts do not add up: {counts}")
+    predecessors = [rcv.predecessor_from_snapshot(first), rcv.predecessor_from_snapshot(stopped)]
+    calls, audio = sum(p["contacts_spent"] for p in predecessors), sum(p["speech_seconds_spent"] for p in predecessors)
+    contacts = flown * CONTACTS_PER_ROW
+    gpu = expected_gpu_hours(flown)
+    snaps = " and ".join(PREDECESSOR_SNAPSHOTS["arm"])
+    root_cause = ("the no-think finite completion on a candidate arm: the `both-off` arm's no-think Solver contact (cap 1,024 tokens) ended on finish_reason "
+                  "`length`, FrozenCoreRoleFiniteCompletionError left the branch fan-out so the delivering arm never ran on that row, and the level-2 fold found no "
+                  "Solver record for the arm (RailsRunnerError: perception branch 'both-off' sealed no level-2 Solver column); the first such event in 2,058 earlier "
+                  "no-think Solver contacts (longest 66 tokens)")
+    return {
+        "recovery_index": 2,
+        "recovered_at": "2026-10-16",
+        "ledger_title": "the column flight rec2 resume re-registration (owner ruling 320 B)",
+        "agent": "the NX-T R1 rec2 engineering agent (Sonnet)",
+        "registered_at_utc": None,
+        "base_commit": None,
+        "worktree": None,
+        "branch": None,
+        "owner_exception": OWNER_EXCEPTION_REC2,
+        "predecessor_attempt_id": stopped["attempt_id"],
+        "predecessor_fit_run_id": fit["run_id"],
+        "predecessor_fit_attempt_id": fit["attempt_id"],
+        "fit_predecessor_phrase": (f"{'its attempt record is present, ' if fit.get('attempt_record_present') else 'no attempt record was opened for it, '}its prepared "
+                                   f"directory holds {fit['prepared_request_fit_envelopes']:,} request-fit envelopes preserved unread on the data root"),
+        "predecessor_state": (
+            f"{stopped['state']} (its attempt record), flight commit 8f9d8e1ee, started 2026-10-14T17:14:43Z, stopped 2026-10-15T22:33:00Z on the finite completion "
+            f"above; {stopped['actual_calls']:,} calls / {stopped['actual_audio_seconds']:.2f} speech-seconds realised per its attempt record (reserved "
+            f"{stopped['reserved_calls']:,} / {stopped['reserved_audio_seconds']:,.0f}); {kept:,} complete rows in the trace (sha256 {trace['trace_sha256'][:8]}...) "
+            "and in the row checkpoint; the failing row's records were never flushed; preserved unread."),
+        "predecessors": predecessors,
+        "reason": (
+            f"The rec1 column attempt stopped on a HARNESS defect, not on the infrastructure: after {kept:,} complete rows the next row's `both-off` arm sealed a "
+            "no-think Solver contact that ended on finish_reason `length` at its 1,024-token cap, and the fan-out raised before the delivering arm ran on that row. "
+            f"The absent-arm fix is merged on master ({ABSENT_ARM_FIX_COMMIT}). {_OWNER_EXCEPTION_CAP} grants an EXPLICIT exception to the package rule "
+            f"of one recovery re-registration per run id: this rec2 keeps the {kept:,} complete rows of the stopped attempt by mode-A trace replay and flies the "
+            f"{flown} remaining rows (the failing row included) under the fix."),
+        "root_cause": root_cause,
+        "amendment": (
+            f"RECOVERY 2026-10-16 (rec2; {OWNER_EXCEPTION_REC2}, coordinator brief, Fable 5.1). MODE A (trace replay), not mode B: the absent-arm fix changes "
+            "rails/runner.py and a checkpoint resume refuses a code-identity change. `resume_from` names the rec1 attempt and the sha256 of its trace, "
+            f"{trace['trace_sha256']} ({trace['trace_bytes']:,} bytes), read from the data root into {PREDECESSOR_SNAPSHOTS['arm'][1]}. The attempt keeps the {kept:,} "
+            f"complete rows (each replayed through the seal under the current code; the offline replay proof is a block of the generation plan) and flies the "
+            f"{flown} remaining rows: {flown} x {CONTACTS_PER_ROW} = {contacts:,} program contacts and nothing else. The generation budget is run-cumulative across the "
+            f"attempts of the run id (core/model/adapter.py): the registered plan plus both earlier attempts' recorded spend ({calls:,} calls, {audio:g} "
+            f"speech-seconds, read from the attempt records into {snaps}). The FIT cap is structural and unchanged. The FIT run id and the FIT attempt id take the "
+            "rec2 marker because a (run_id, attempt_id) pair is a one-time key; the generation run id is unchanged. The registered GPU-hour ceiling "
+            f"({planned_gpu_hours(ROWS)} GPU-h) stands; the resume is expected to spend about {gpu:.1f} GPU-h ({flown} rows x {ARM_MIX_ROWS} full-row equivalents / "
+            f"{ROWS_PER_MINUTE_FULL} rows per minute). `--allow-output-change` is never passed: the rebuilt supply, the roster ({ROWS:,} rows) and the read "
+            f"(n = {ROWS:,}) are the registered ones."),
+        "fix": (f"the merged absent-arm fix (commit {ABSENT_ARM_FIX_COMMIT}): a finite completion on a NON-delivering branch is recorded as `solver_absent` "
+                "with an `absent_reason` (optional receipt keys, schema unchanged) and the fan-out continues so the delivering arm runs; the renderer scores an absent "
+                "column as the canonical empty answer; both column readers print `absent_rows` per arm; a finite completion on the DELIVERING arm still aborts by design"),
+        "unchanged": (f"Unchanged: the smoke cell `slurp-native-stage3-nxt-r1-thinking-policy-fold-b-smoke-4-v1` (sealed, not re-flown) and every registered knob, arm, "
+                      f"policy, roster ({ROWS:,} rows), prompt, geometry, cap, the program {PROGRAM} and the {planned_gpu_hours(ROWS)} GPU-hour ceiling of the arm cell."),
+        "extra_note": (f"Resume accounting: kept {kept:,} rows (replayed from `{stopped['attempt_id']}`, kept-row id hash {resume['kept_sample_ids_sha256']}); flown "
+                       f"{flown} rows ({counts['partial']} partial, {counts['unstarted']} never started; the failing row is among them), {contacts:,} program contacts. "
+                       "An arm whose Solver contact ends on a finite completion is an ABSENT column (`solver_absent`), scored as the canonical empty answer; the read "
+                       f"reports kept / flown / absent counts per arm beside the arm columns. {_OWNER_EXCEPTION_CAP} covers this one re-registration only."),
+        "rule": "A third recovery is not covered by the owner exception; a second failure of rec2 closes the cell, and the fix is proven on a four-row dry run.",
+        "fit_cap_rule": "The FIT cap is structural: rows x program contacts x endpoints per contact.",
+        "fix_commit": ABSENT_ARM_FIX_COMMIT,
+        "resume_mode": f"resume-mode-A-keep-{kept}-fly-{flown}",
+        "resume_from": {"attempt_id": stopped["attempt_id"], "trace_sha256": trace["trace_sha256"]},
+        "resume_counts": counts,
+        "flown_phrase": (f"resumed in mode A (trace replay) from `{stopped['attempt_id']}`: the {kept:,} complete rows are kept and the {flown} remaining rows "
+                         "(the failing row included) are flown"),
+    }
+
+
+def _arm_history() -> list[dict]:
+    first = rcv.load_snapshot(REPO_ROOT / PREDECESSOR_SNAPSHOTS["arm"][0])
+    history = [_arm_rec1(first)]
+    stopped_path = REPO_ROOT / PREDECESSOR_SNAPSHOTS["arm"][1]
+    if stopped_path.is_file():                              # absent before the rec2 snapshot is taken (nxt_r1_rec2_snapshot.py)
+        history.append(_arm_rec2(first, rcv.load_snapshot(stopped_path)))
+    return history
+
+
+RECOVERY_HISTORY: dict[str, list[dict]] = {"arm": _arm_history()}
+RECOVERIES: dict[str, dict] = {key: records[-1] for key, records in RECOVERY_HISTORY.items()}
+for _records in RECOVERY_HISTORY.values():
+    for _position, _rec in enumerate(_records, 1):
+        rcv.validate_recovery(_rec)
+        if _rec["recovery_index"] != _position:
+            raise ValueError("the recovery history is out of order")
+
+
+def recovery_index(key: str) -> int:
+    """0 for a cell on its first attempt, else the index of its latest recovery."""
+
+    rec = RECOVERIES.get(key)
+    return int(rec["recovery_index"]) if rec else 0
+
+
+def history_caps(key: str, index: int, caps: dict) -> dict:
+    """The run-cumulative caps AS OF recovery ``index`` (the original plan plus the spend of the attempts that recovery names); used to print an earlier
+    recovery section of the README with its own cumulative numbers."""
+
+    calls, audio = rcv.cumulative_budget({key: RECOVERY_HISTORY[key][index - 1]}, key, original_generation_calls(key), audio_cap(CELLS[key]["roster"]))
+    return {**caps, "generation_calls_cap": calls, "repeated_speech_audio_seconds_cap": audio}
 
 
 def recovery(key: str) -> dict | None:
@@ -354,9 +472,11 @@ def eligible_run_ids() -> list[str]:
 
     out: list[str] = []
     for key in ALL_KEYS:
-        rec = recovery(key)
-        out += [CELLS[key]["run"], rec["predecessor_fit_run_id"] if rec else CELLS[key]["fit_run"]]
-    out += [CELLS[key]["fit_run"] for key in ALL_KEYS if recovery(key)]
+        history = RECOVERY_HISTORY.get(key, [])
+        out += [CELLS[key]["run"], history[0]["predecessor_fit_run_id"] if history else CELLS[key]["fit_run"]]
+    for key in ALL_KEYS:                                # every recovery's FIT run id, oldest first: each receipt's list is a strict prefix of the next
+        history = RECOVERY_HISTORY.get(key, [])
+        out += [rec["predecessor_fit_run_id"] for rec in history[1:]] + ([CELLS[key]["fit_run"]] if history else [])
     return out
 
 
@@ -365,8 +485,7 @@ def eligible_attempt_ids() -> list[str]:
 
     out: list[str] = []
     for key in ALL_KEYS:
-        rec = recovery(key)
-        if rec:
+        for rec in RECOVERY_HISTORY.get(key, []):
             out += [rec["predecessor_attempt_id"], rec["predecessor_fit_attempt_id"]]
         out += [CELLS[key]["attempt"], CELLS[key]["fit_attempt"]]
     return out
@@ -385,13 +504,13 @@ def package_file(name: str) -> str:
 def plan_file_name(key: str, plan_kind: str) -> str:
     """Package file name of a cell's registered plan; a recovered cell's plans carry the ``-rec1`` marker."""
 
-    return rcv.plan_file_name(CELLS[key]["prefix"], plan_kind, key in RECOVERIES)
+    return rcv.plan_file_name(CELLS[key]["prefix"], plan_kind, recovery_index(key))
 
 
 def superseded_plan_file_names(key: str) -> list[str]:
     """First-attempt plan names a recovery supersedes (removed from the package; the failed attempt stays on the data root)."""
 
-    return rcv.superseded_plan_file_names(CELLS[key]["prefix"], key in RECOVERIES)
+    return rcv.superseded_plan_file_names(CELLS[key]["prefix"], recovery_index(key))
 
 
 def roster_doc(kind: str) -> dict:
@@ -473,14 +592,15 @@ def sealonly_spec() -> dict:
 
     arm = CELLS["arm"]
     stem = f"slurp-native-stage3-{SLUG}"
+    rec1 = {"attempt": f"attempt-{stem}-generation-rec1-v1", "fit_run": f"SAEA-SLURP-STAGE3-{SLUG.upper()}-FIT-REC1-V1", "fit_attempt": f"attempt-{stem}-fit-rec1-v1"}
     return {
         "package": SEALONLY_PACKAGE, "preregistration": SEALONLY_PREREG,
         "experiment": f"{stem}-v1-sealonly", "cell": f"{stem}-v1-sealonly", "baseline": f"{stem}-baseline-v1-sealonly",
         "parent_cell": arm["cell"], "parent_baseline": arm["baseline"],
-        "run": arm["run"], "fit_run": arm["fit_run"],
-        "predecessor_attempt": arm["attempt"],
-        "attempt": arm["attempt"].replace("-rec1-v1", "-rec1-sealonly-v1"),
-        "fit_attempt": arm["fit_attempt"].replace("-rec1-v1", "-rec1-sealonly-v1"),
+        "run": arm["run"], "fit_run": rec1["fit_run"],
+        "predecessor_attempt": rec1["attempt"],
+        "attempt": rec1["attempt"].replace("-rec1-v1", "-rec1-sealonly-v1"),
+        "fit_attempt": rec1["fit_attempt"].replace("-rec1-v1", "-rec1-sealonly-v1"),
         "decision_id": SEALONLY_DECISION_ID, "decision_relpath": SEALONLY_DECISION_RELPATH, "proof_run": SEALONLY_PROOF_RUN_ID,
         "read_run": READ_RUN_ID, "complete_rows": SEALONLY_COMPLETE_ROWS, "analysis_dir": SEALONLY_ANALYSIS_DIR,
         "session": arm["session"], "model": arm["model"],
