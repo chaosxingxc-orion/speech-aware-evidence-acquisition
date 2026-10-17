@@ -3239,3 +3239,18 @@ read at n = 1,080 intact. Cost about 1.5 GPU-h after the successor-3 seal; the s
 - GPU continuity (owner directive >= 24 h): NX-T R2b (ruling 325 A) is registered on master now and flipped + chained immediately -- it is
   independent of R2's read, its serving session is THINKB7, and the queue hook for "R2 then R2b" is therefore not installed; after 328 the R2
   rec2 flies behind R2b through the same hook form (R2b exit -> R2 rec2).
+
+### NX-T R2b FLYING since 13:58Z on the new serving session (coordinator, 2026-10-17 14:04Z)
+
+- R2b registered through the launcher at 13:47Z (derive from the one-arm table, 4 rows countersigned, receipt minted, commit 2ef569b9e;
+  expected 21.2 GPU-h, ceiling 27.6 + 0.5 smoke; fit: supply bound 55 -> 52 items for the estimate only, observed max 8 items / 13,918-token
+  Solver prompt under a 14,334 limit); flipped in ext4 13:47-13:52Z (gate PASS x2, master -> cdd6cd95b = flight commit); chain SAEA-Chain-NXT2B.
+- First chain start 13:53Z failed at the serving swap: the THINKB7 task I had registered by hand (the 13:41Z incident) could not be re-registered
+  by the swap's WSL-interop helper ("register refused: access denied", another principal); the swap tore down and restored THINKB, then its
+  summary crashed decoding the refusal's GBK bytes (fixed e907c011d, `errors="replace"`). Fix: both hand-made THINKB7 tasks unregistered; the
+  chain restarted 13:57:38Z by hand (the launcher's chain step requires flight commit = master HEAD, and master had moved by two commits that
+  touch no registered bytes); the swap registered and started THINKB7 itself: `serving-slurp-thinking-module-fold-b-np4-budget3072-max7168-v1`
+  ready 13:58:24Z (29 GB host free); smoke driver 13:58:24Z; GPU 92 %. Sequence: smoke-4 -> machine sign-off (conditions emitted by the derive,
+  20-min veto) -> the 1,080-row column (arms budget-3072 delivering, solver-6144). Seal expected about 2026-10-18 12:00Z.
+- Standing rule from today's two serving incidents: serving/monitor tasks are created only by `serving_swap.sh` (never by hand), and no
+  serving task is ever registered or started while a flight is open.
