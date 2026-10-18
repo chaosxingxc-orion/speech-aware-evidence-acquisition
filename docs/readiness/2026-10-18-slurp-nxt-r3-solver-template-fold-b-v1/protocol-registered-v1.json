@@ -135,9 +135,9 @@
     "No session is started by this registration. No paper-scale profile. No system-level claim."
   ],
   "protocol_id": "slurp-nxt-r3-solver-template-fold-b-protocol-v1",
-  "registered_at_utc": "2026-10-18T14:00:00.000000+00:00",
+  "registered_at_utc": "2026-10-18T15:51:41Z",
   "schema": "saea-registered-protocol-v1",
   "status": "DRAFT-HELD-REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_COUNTERSIGN_AND_READINESS_FLIP",
-  "study_commit_at_registration": "310e23ae09989da91f9aec476cc58735012e418f",
+  "study_commit_at_registration": "aad056bccf706d0f53305d41933b706b928c7deb",
   "the_question": "Does a minimal change of the Solver's instruction template move the score of the locked Thinking system (owner ruling 326 A, the USE node)? Each candidate arm and the twin aa are read PAIRED per row against the delivering lock arm on the same 1,080 Fold B rows in one flight."
 }

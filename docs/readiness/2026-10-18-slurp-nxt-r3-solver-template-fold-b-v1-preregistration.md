@@ -1,6 +1,6 @@
 # NX-T R3: the Solver instruction-template column, preregistration (DRAFT / HELD)
 
-Registered 2026-10-18 at study commit `310e23ae09989da91f9aec476cc58735012e418f` by script. Development numbers only.
+Registered 2026-10-18 at study commit `aad056bccf706d0f53305d41933b706b928c7deb` by script. Development numbers only.
 
 Runs: `SAEA-SLURP-STAGE3-NXT-R3-SOLVER-TEMPLATE-FOLD-B-V1` / `SAEA-SLURP-STAGE3-NXT-R3-SOLVER-TEMPLATE-FOLD-B-FIT-V1`; `SAEA-SLURP-STAGE3-NXT-R3-SOLVER-TEMPLATE-FOLD-B-SMOKE-4-V1` / `SAEA-SLURP-STAGE3-NXT-R3-SOLVER-TEMPLATE-FOLD-B-SMOKE-4-FIT-V1`; read `SAEA-SLURP-NXT-R3-SOLVER-TEMPLATE-FOLD-B-READ-V1`.
 

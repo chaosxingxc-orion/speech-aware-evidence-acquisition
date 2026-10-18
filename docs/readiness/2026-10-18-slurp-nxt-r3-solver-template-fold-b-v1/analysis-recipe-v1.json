@@ -52,7 +52,7 @@
   },
   "read_run_id": "SAEA-SLURP-NXT-R3-SOLVER-TEMPLATE-FOLD-B-READ-V1",
   "recipe_id": "slurp-nxt-r3-solver-template-fold-b-read-v1",
-  "registered_at_utc": "2026-10-18T14:00:00.000000+00:00",
+  "registered_at_utc": "2026-10-18T15:51:41Z",
   "roster": {
     "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
     "roster_id": "SLURP-EVO-FOLD-B-V2",

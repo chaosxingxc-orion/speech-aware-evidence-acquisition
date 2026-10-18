@@ -100,10 +100,10 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-18-slurp-nxt-r3-solver-template-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "fc01bf59744f57638b96d5e1931055f830c0184fd67c6f6c0b8979055c2aa3b0"
+    "sha256": "c5625d617f2ad457462d38a01b6b4604143b3e391e7e44b3ec310c91bebf178f"
   },
   "purpose": "SAEA-SLURP-STAGE3-NXT-R3-SOLVER-TEMPLATE-FOLD-B-FIT-V1: request envelopes only; reads nothing.",
-  "registered_at_utc": "2026-10-18T14:00:00.000000+00:00",
+  "registered_at_utc": "2026-10-18T15:51:41Z",
   "schema": "saea-registered-fit-plan-v1",
   "serving": {
     "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
