@@ -154,7 +154,7 @@ def test_verify_proves_each_rebuilt_request_hashes_to_the_sealed_payload_hash(tm
     root = _fixture_data_root(tmp_path, payloads)
     report = diag.verify_roster(_roster_for(payloads), root)
     assert report["all_match"] and report["verified"] == 2 and report["contacts"] == 0
-    assert all(r["hash_match"] and r["budget_is_3072"] and r["control_contact_matches"] for r in report["results"])
+    assert all(r["hash_match"] and r["budget_matches_arm"] and r["control_contact_matches"] for r in report["results"])
 
 
 def test_verify_fails_closed_on_a_changed_payload_a_wrong_budget_or_a_missing_record(tmp_path):
@@ -303,7 +303,7 @@ def test_the_registered_package_binds_roster_protocol_and_plan(tmp_path):
     assert roster["selected_counts"] == dict(diag.GROUPS) and len(roster["rows"]) == 40
     plan = plan_doc["execution_plan"]
     assert plan["run_id"] == diag.RUN_ID == DIAGNOSTIC_RUN_ID
-    assert plan["execution_profile"] == "bounded-discovery-probe" and plan["planned_model_calls"] == 48 and plan["planned_gpu_hours"] < 1
+    assert plan["execution_profile"] == "bounded-discovery-probe" and plan["planned_model_calls"] == 56 and plan["planned_gpu_hours"] < 1
     assert protocol["claims_benefit"] is False and protocol["reissue"]["arm"] == diag.ARM_DELIVERING
     from speech_aware_evidence_acquisition.contracts import ExecutionPlan
 
@@ -326,7 +326,8 @@ def test_the_roster_rows_are_the_sealed_budget_3072_solver_requests_with_consist
         assert (sealed[diag.ARM_DELIVERING]["forced_close"], sealed[diag.ARM_RAISED]["forced_close"]) == flags[row["group"]]
         assert len(row["reissue"]["payload_sha256"]) == 64 and row["sealed"][diag.ARM_DELIVERING]["reasoning_content_sha256"]
     assert len({r["sample_id"] for r in roster["rows"]}) == 40
-    assert roster["raised_arm_reissue"] is False
+    assert roster["raised_arm_reissue"] is True
+    assert len(diag.contacts_from_roster(roster)) == 56
 
 
 def test_a_changed_roster_protocol_or_plan_breaks_the_registration(tmp_path):
@@ -388,3 +389,71 @@ def test_the_launcher_proceeds_only_beside_the_think_budget_np4_session_with_no_
     ):
         refused = _launch(tmp_path / label, **kwargs)
         assert refused.returncode == 70 and needle in refused.stderr, (label, refused.returncode, refused.stderr)
+
+
+# --------------------------------------------------------------------------------------------------------------------- the raised arm (coordinator decision 2)
+
+
+def _raised_roster(n_forced_both: int = 2):
+    rows, payloads = [], {}
+    for index in range(n_forced_both):
+        low = _payload(sample=f"slurp:train:{index:06d}:audio-{index}", contact=f"phase-native-module-v1-c4:solver:1:slurp:train:{index:06d}:audio-{index}")
+        high = _payload(sample=low["sample_id"], contact=f"phase-native-module-v1-c4:solver:0:slurp:train:{index:06d}:audio-{index}", budget=6144, cap=7168)
+        low["request_id"], high["request_id"] = f"flight-{index:04d}", f"flight-{index + 100:04d}"
+        low["decoding_params"]["id_slot"] = high["decoding_params"]["id_slot"] = index % 2
+        keys = (f"flight-{index:04d}", f"flight-{index + 100:04d}")
+        payloads[keys[0]] = {"payload": low, "payload_sha256": diag.request_sha256(low)}
+        payloads[keys[1]] = {"payload": high, "payload_sha256": diag.request_sha256(high)}
+        sealed = {"reasoning_content_sha256": hashlib.sha256(b"same").hexdigest(), "forced_close": True, "response_text_sha256": None}
+        rows.append({"sample_id": low["sample_id"], "group": "forced-both",
+                     "reissue": {"request_key": keys[0], "payload_sha256": diag.request_sha256(low), "id_slot": index % 2, "contact_id": low["history"][-1]["contact_id"]},
+                     "raised_arm_request": {"request_key": keys[1], "payload_sha256": diag.request_sha256(high), "id_slot": index % 2,
+                                            "contact_id": high["history"][-1]["contact_id"]},
+                     "sealed": {diag.ARM_DELIVERING: sealed, diag.ARM_RAISED: sealed}})
+    rows.append({"sample_id": "slurp:train:000900:audio-9", "group": "natural-both",
+                 "reissue": {"request_key": "k", "payload_sha256": "0" * 64, "id_slot": 0, "contact_id": "c"}, "sealed": {diag.ARM_DELIVERING: {}}})
+    return {"rows": rows, "raised_arm_reissue": True}, payloads
+
+
+def test_contacts_put_every_3072_request_first_then_the_6144_requests_of_the_forced_both_rows():
+    roster, _ = _raised_roster()
+    contacts = diag.contacts_from_roster(roster)
+    assert [(c["arm"], c["group"]) for c in contacts] == [("budget-3072", "forced-both")] * 2 + [("budget-3072", "natural-both")] + [("solver-6144", "forced-both")] * 2
+    off = dict(roster, raised_arm_reissue=False)
+    assert len(diag.contacts_from_roster(off)) == 3
+    groups = diag.sealed_slot_groups(contacts)
+    assert [c["arm"] for c in groups[0]] == ["budget-3072", "budget-3072", "solver-6144"]
+    assert all(group[0]["arm"] == "budget-3072" for group in groups.values())          # within a slot the 3072 request leads
+
+
+def test_the_6144_requests_rebuild_to_their_sealed_hashes_with_the_6144_budget(tmp_path):
+    roster, payloads = _raised_roster()
+    roster["rows"].pop()                                     # drop the natural row (no trace record)
+    root = _fixture_data_root(tmp_path, {key: record["payload"] for key, record in payloads.items()})
+    report = diag.verify_roster(roster, root)
+    assert report["all_match"] and report["contacts_checked"] == 4
+    assert sorted(r["arm"] for r in report["results"]) == ["budget-3072", "budget-3072", "solver-6144", "solver-6144"]
+    wrong = {**roster, "rows": [dict(roster["rows"][0], raised_arm_request=dict(roster["rows"][0]["reissue"]))]}       # a 3072 request posing as the raised one
+    assert not diag.verify_roster(wrong, root)["all_match"]
+
+
+def test_the_raised_contacts_are_sent_after_the_low_ones_and_keep_their_own_files_and_sealed_facts(tmp_path):
+    roster, payloads = _raised_roster(1)
+    roster["rows"].pop()
+    send, calls = _fake_send_factory("same")
+    contacts = diag.contacts_from_roster(roster)
+    results = diag.reissue_rows(contacts, payloads, send, tmp_path / "diag", ceiling=56)
+    assert [r["arm"] for r in results] == ["budget-3072", "solver-6144"]
+    assert [hashlib.sha256(c).hexdigest() for c in calls] == [contacts[0]["reissue"]["payload_sha256"], contacts[1]["reissue"]["payload_sha256"]]
+    assert sorted(p.name for p in (tmp_path / "diag" / "answers").glob("*")) == ["slurp_train_000000_audio-0.b6144.txt", "slurp_train_000000_audio-0.txt"]
+    summary = diag.summarize_results(results)
+    assert summary["by_group"]["forced-both"]["contacts"] == 1 and summary["by_group"]["forced-both@6144"]["contacts"] == 1
+
+
+def test_the_plan_ceiling_covers_all_56_contacts_and_stays_under_one_gpu_hour():
+    roster, _protocol, plan_doc = diag.check_registration(REPO)
+    assert len(diag.contacts_from_roster(roster)) == 56 == plan_doc["execution_plan"]["planned_model_calls"] == diag.CALL_CEILING
+    assert plan_doc["execution_plan"]["planned_gpu_hours"] < 1.0
+    budget = plan_doc["budget"]
+    assert budget["re_issues_budget_3072"] == 40 and budget["re_issues_budget_6144"] == 16
+    assert plan_doc["execution_plan"]["planned_speech_audio_seconds"] >= 56 * 4.73

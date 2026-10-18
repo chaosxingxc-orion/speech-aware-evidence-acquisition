@@ -12,8 +12,10 @@
       "forced-3072-only",
       "forced-6144-only",
       "forced-both",
-      "natural-both"
+      "natural-both",
+      "forced-both@6144"
     ],
+    "pairs": "forced-both rows: the 3072 reasoning against the 6144 reasoning of the same row (common prefix up to the forced close, repeat onset offsets)",
     "prints": "statistics only (no sentence, no quote)",
     "script": "scripts/analysis/solver_reasoning_diag_read.py"
   },
@@ -21,11 +23,11 @@
   "registered_at_utc": "2026-10-18T00:00:00Z",
   "reissue": {
     "arm": "budget-3072",
-    "raised_arm_requests": "NOT re-issued. The solver-6144 requests (budget 6144, max_tokens 7168) of the forced-both rows would be servable by the resident np4 server (max_tokens is a request parameter; no -n cap in the server arguments); adding them is a coordinator amendment (16 more contacts, ceiling 56).",
-    "reconstruction_proof": "sha256 of the adapter's canonical serialisation of the sealed payload equals the sealed payload_sha256 and the first-visit request_sha256; verified offline for all 40 rows by `solver_reasoning_diag.py verify` (and the exact wire body rendered by the transport's own renderer)",
+    "raised_arm_requests": "RE-ISSUED (coordinator decision 2, ruling 330 A 'both budgets'): the solver-6144 requests of the 16 forced-both rows. The resident np4 server admits them (max_tokens is a request parameter; no -n cap in the server arguments). Retained as <sample>.b6144.txt.",
+    "reconstruction_proof": "sha256 of the adapter's canonical serialisation of the sealed payload equals the sealed payload_sha256 and the first-visit request_sha256; verified offline for all 56 contacts by `solver_reasoning_diag.py verify` (and the exact wire body rendered by the transport's own renderer)",
     "reproduction_caveat": "np4 batching is not deterministic: the re-issued reasoning may differ from the sealed one; the hash match or mismatch is recorded per row.",
-    "what": "the sealed Solver MODEL_REQUEST payload of each roster row's budget-3072 first-visit contact, rebuilt from the sealed trace and sent through the registered llama-server transport unchanged (decoding: temperature 0, seed 20260913, thinking_budget_tokens 3072, max_tokens 4096, the sealed id_slot)",
-    "workers": "one sequential worker per sealed id_slot, so every sent payload is the sealed payload byte for byte"
+    "what": "the sealed Solver MODEL_REQUEST payload of each roster row's budget-3072 first-visit contact (40 contacts) and, for the forced-both rows, of the solver-6144 contact (16 contacts), rebuilt from the sealed trace and sent through the registered llama-server transport unchanged (decoding: temperature 0, seed 20260913, the sealed id_slot; thinking_budget_tokens 3072 / max_tokens 4096 for the first 40, 6144 / 7168 for the last 16)",
+    "workers": "one sequential worker per sealed id_slot, so every sent payload is the sealed payload byte for byte; within a slot the budget-3072 requests come first and the budget-6144 requests after them"
   },
   "retention": {
     "directory": "<data root>/diagnostics/SAEA-SLURP-SOLVER-REASONING-DIAGNOSTIC-V1/reasoning/<sample>.txt",
@@ -46,7 +48,7 @@
     "seed": 20261018,
     "selection_rule": "per group the quota is split evenly over supplied bin (<40, >=40 items of the budget-3072 arm's Solver request) x empty gold; rank = sha256(seed|group|sample_id); a short stratum is backfilled from the group in the same rank order"
   },
-  "roster_sha256": "fada60547d26c037ec7189f055fcd0f101bc35b6a7067549a8a9d75e40069e82",
+  "roster_sha256": "4c7de1afb7ae6ea3583c616fcd5de9e5ec6576ae145cea2f9cc4b50c69b695b6",
   "run_id": "SAEA-SLURP-SOLVER-REASONING-DIAGNOSTIC-V1",
   "schema": "saea-solver-reasoning-diag-protocol-v1",
   "source": {

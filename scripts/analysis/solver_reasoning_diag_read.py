@@ -48,6 +48,12 @@ MIN_UNIT_CHARS = 12
 LOOP_REPEATED_CHARS, LOOP_REPEATS, LOOP_TAIL_SHARE = 600, 3, 0.5
 ENUM_COVERAGE, ENUM_ORDER = 0.5, 0.6
 
+#: The sentence the server injects when the reasoning budget closes the think block (the fragment's pinned --reasoning-budget-message). A forced-close reasoning
+#: text ends with it; the pair comparison removes it before comparing the 3,072 text with the 6,144 text.
+FORCED_CLOSE_MESSAGE = "Considering the limited time by the user, I have to give the solution based on the thinking directly now."
+#: Two reasoning texts "share the prefix through the close" when the common prefix covers at least this share of the shorter one (message removed).
+PREFIX_SHARE_IDENTICAL = 0.99
+
 _SENTENCE_SPLIT = re.compile(r"(?<=[.!?])\s+|\n+")
 _TOKEN = re.compile(r"\w+|[^\w\s]")
 
@@ -246,6 +252,7 @@ def analyze_text(text: str, *, evidence_ids: Sequence[str] = (), answer_text: st
         "tail_repeated_sentence_share": (sum(quarter) / len(quarter)) if quarter else 0.0,
         "first_repeat_sentence_index": first_repeat,
         "first_repeat_char_fraction": (units[first_repeat][1] / len(text)) if first_repeat is not None and text else None,
+        "first_repeat_char_offset": units[first_repeat][1] if first_repeat is not None else None,
         **block, **enumeration_signal(text, labels, others), **restatement_signal(text, labels, answer),
     }
     row["pattern"] = pattern_word(row)
@@ -273,6 +280,66 @@ def _summary(values: Sequence[float]) -> dict[str, object]:
     return {"n": len(clean), "mean": statistics.fmean(clean), "median": statistics.median(clean), "min": min(clean), "max": max(clean)}
 
 
+def strip_forced_close(text: str) -> tuple[str, bool]:
+    """``(text without the injected close message, whether it was there)``."""
+
+    stripped = text.rstrip()
+    if stripped.endswith(FORCED_CLOSE_MESSAGE):
+        return stripped[: -len(FORCED_CLOSE_MESSAGE)].rstrip(), True
+    return text, False
+
+
+def common_prefix_length(a: str, b: str) -> int:
+    limit = min(len(a), len(b))
+    low = 0
+    while low < limit and a[low] == b[low]:
+        low += 1
+    return low
+
+
+def pair_comparison(text_3072: str, text_6144: str) -> dict[str, object]:
+    """The same row at two budgets: where does the 3,072 reasoning sit relative to the 6,144 one, and where does the repetition begin in each?
+
+    The 3,072 text is compared WITHOUT the injected close message. ``identical_through_close`` is true when the common prefix covers at least
+    PREFIX_SHARE_IDENTICAL of the (message-free) 3,072 text. Offsets are characters; nothing here returns text."""
+
+    head, closed = strip_forced_close(text_3072)
+    prefix = common_prefix_length(head, text_6144)
+    s3, s6 = analyze_text(head), analyze_text(text_6144)
+    onset3, onset6 = s3["first_repeat_char_offset"], s6["first_repeat_char_offset"]
+    beyond = text_6144[len(head):] if prefix >= len(head) * PREFIX_SHARE_IDENTICAL else text_6144[prefix:]
+    beyond_stats = analyze_text(beyond) if beyond.strip() else None
+    return {
+        "chars_3072_without_close": len(head), "chars_6144": len(text_6144), "forced_close_3072": closed,
+        "common_prefix_chars": prefix, "prefix_share_of_3072": (prefix / len(head)) if head else None,
+        "identical_through_close": bool(head) and prefix >= len(head) * PREFIX_SHARE_IDENTICAL,
+        "first_divergence_char_fraction_of_3072": (prefix / len(head)) if head else None,
+        "repeat_onset_offset_3072": onset3, "repeat_onset_offset_6144": onset6,
+        "repeat_onset_before_3072_close_in_6144": (onset6 is not None and onset6 < len(head)),
+        "repeat_onset_same_in_both": (onset3 is not None and onset3 == onset6),
+        "text_beyond_3072_chars": len(beyond),
+        "beyond_repeated_sentence_share": beyond_stats["repeated_sentence_share"] if beyond_stats else None,
+        "beyond_zlib_ratio": beyond_stats["zlib_ratio"] if beyond_stats else None,
+        "beyond_pattern": beyond_stats["pattern"] if beyond_stats else None,
+        "pattern_3072": s3["pattern"], "pattern_6144": s6["pattern"], "tokens_ratio_6144_over_3072": (s6["tokens_approx"] / s3["tokens_approx"]) if s3["tokens_approx"] else None,
+    }
+
+
+PAIR_FIELDS = ("prefix_share_of_3072", "repeat_onset_offset_3072", "repeat_onset_offset_6144", "text_beyond_3072_chars", "beyond_repeated_sentence_share",
+               "beyond_zlib_ratio", "tokens_ratio_6144_over_3072")
+
+
+def pair_summary(pairs: Sequence[Mapping[str, object]]) -> dict[str, object]:
+    out: dict[str, object] = {"pairs": len(pairs)}
+    for flag in ("identical_through_close", "repeat_onset_before_3072_close_in_6144", "repeat_onset_same_in_both", "forced_close_3072"):
+        out[flag] = dict(Counter(str(p[flag]) for p in pairs))
+    out["beyond_pattern"] = dict(Counter(str(p["beyond_pattern"]) for p in pairs))
+    out["pattern_3072_vs_6144"] = dict(Counter(f"{p['pattern_3072']}->{p['pattern_6144']}" for p in pairs))
+    for field in PAIR_FIELDS:
+        out[field] = _summary([p.get(field) for p in pairs])           # type: ignore[arg-type]
+    return out
+
+
 SUMMARY_FIELDS = ("reasoning_chars", "tokens_approx", "zlib_ratio", "repeated_sentence_share", "repeated_line_share", "tail_repeated_sentence_share",
                   "block_chars", "repeat_count", "repeated_chars_total", "first_repeat_char_fraction", "label_coverage", "label_mentions_max_single", "first_mention_order_share")
 
@@ -287,27 +354,54 @@ def group_summary(rows: Sequence[Mapping[str, object]]) -> dict[str, object]:
     return out
 
 
-def read_diagnostic(roster: Mapping, reasoning_dir: Path, answers_dir: Path | None = None) -> dict[str, object]:
-    """Analyse every roster row whose reasoning file exists. Rows without a file are counted, not guessed."""
+def _stem(sample_id: str) -> str:
+    return re.sub(r"[^A-Za-z0-9._-]", "_", sample_id).strip(".") or "sample"
 
-    rows, missing = [], []
-    for entry in roster["rows"]:
-        stem = re.sub(r"[^A-Za-z0-9._-]", "_", entry["sample_id"]).strip(".") or "sample"
-        path = Path(reasoning_dir) / f"{stem}.txt"
+
+def read_diagnostic(roster: Mapping, reasoning_dir: Path, answers_dir: Path | None = None) -> dict[str, object]:
+    """Analyse every roster row whose reasoning file exists, and, when the roster re-issues the raised arm, the forced-both rows' budget-6144 files and the
+    3,072-versus-6,144 pair comparison. Rows without a file are counted, not guessed."""
+
+    rows, missing, pairs = [], [], []
+    raised = bool(roster.get("raised_arm_reissue"))
+    texts: dict[str, str] = {}
+
+    def analyse(entry, name: str, arm: str, evidence_ids) -> dict | None:
+        path = Path(reasoning_dir) / f"{name}.txt"
         if not path.is_file():
-            missing.append(entry["sample_id"])
-            continue
-        answer_path = Path(answers_dir) / f"{stem}.txt" if answers_dir is not None else None
+            missing.append(f"{entry['sample_id']}@{arm}")
+            return None
+        answer_path = Path(answers_dir) / f"{name}.txt" if answers_dir is not None else None
         answer = answer_path.read_text(encoding="utf-8") if answer_path is not None and answer_path.is_file() else None
-        stats = analyze_text(path.read_text(encoding="utf-8"), evidence_ids=entry.get("supplied_evidence_ids", []), answer_text=answer)
-        stats.update(sample_id=entry["sample_id"], group=entry["group"], supplied_bin=entry["stratum"]["supplied_bin"],
-                     gold_empty=entry["stratum"]["gold_empty"])
-        rows.append(stats)
-    by_group = {group: group_summary([r for r in rows if r["group"] == group]) for group in GROUP_ORDER}
-    return {"schema": SCHEMA, "run_id": RUN_ID, "rows_read": len(rows), "rows_missing": len(missing), "rows": rows,
-            "by_group": by_group, "all_rows": group_summary(rows),
+        text = path.read_text(encoding="utf-8")
+        stats = analyze_text(text, evidence_ids=evidence_ids, answer_text=answer)
+        stats.update(sample_id=entry["sample_id"], group=entry["group"], arm=arm, supplied_bin=entry["stratum"]["supplied_bin"], gold_empty=entry["stratum"]["gold_empty"])
+        texts[f"{entry['sample_id']}@{arm}"] = text
+        return stats
+
+    for entry in roster["rows"]:
+        stem = _stem(entry["sample_id"])
+        stats = analyse(entry, stem, "budget-3072", entry.get("supplied_evidence_ids", []))
+        if stats is not None:
+            rows.append(stats)
+        if raised and entry["group"] == "forced-both" and "raised_arm_request" in entry:
+            high = analyse(entry, f"{stem}.b6144", "solver-6144", entry.get("supplied_evidence_ids", []))
+            if high is not None:
+                rows.append(high)
+                if stats is not None:
+                    pair = pair_comparison(texts[f"{entry['sample_id']}@budget-3072"], texts[f"{entry['sample_id']}@solver-6144"])
+                    pair.update(sample_id=entry["sample_id"], supplied_bin=entry["stratum"]["supplied_bin"], gold_empty=entry["stratum"]["gold_empty"])
+                    pairs.append(pair)
+    low = [r for r in rows if r["arm"] == "budget-3072"]
+    by_group = {group: group_summary([r for r in low if r["group"] == group]) for group in GROUP_ORDER}
+    high_rows = [r for r in rows if r["arm"] == "solver-6144"]
+    if raised:
+        by_group["forced-both@6144"] = group_summary(high_rows)
+    return {"schema": SCHEMA, "run_id": RUN_ID, "rows_read": len(rows), "rows_missing": len(missing), "rows": rows, "pairs": pairs,
+            "by_group": by_group, "pair_summary": pair_summary(pairs) if raised else None, "all_rows": group_summary(low),
             "pattern_rule": {"loop_repeated_chars": LOOP_REPEATED_CHARS, "loop_repeats": LOOP_REPEATS, "loop_tail_share": LOOP_TAIL_SHARE,
-                             "enum_coverage": ENUM_COVERAGE, "enum_order": ENUM_ORDER, "min_unit_chars": MIN_UNIT_CHARS},
+                             "enum_coverage": ENUM_COVERAGE, "enum_order": ENUM_ORDER, "min_unit_chars": MIN_UNIT_CHARS,
+                             "prefix_share_identical": PREFIX_SHARE_IDENTICAL},
             "model_contacts": 0, "text_printed": False}
 
 

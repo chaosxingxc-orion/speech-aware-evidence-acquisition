@@ -3,7 +3,8 @@
 # docs/readiness/2026-10-18-slurp-solver-reasoning-diagnostic-v1/). Run it from the study master AFTER the package is merged, its two ledger rows are
 # countersigned by root, the R2 rec2 flight has sealed and the resident serving session is think-budget-np4.
 #
-#   bash scripts/flights/diag/solver_reasoning_diag.sh                 # re-issue the roster (the live contacts)
+#   bash scripts/flights/diag/solver_reasoning_diag.sh                 # re-issue the roster: 40 budget-3072 contacts, then the 16 budget-6144 contacts
+#                                                                      # of the forced-both rows (per-slot sequential workers; ceiling 56 calls, < 1 GPU-h)
 #   bash scripts/flights/diag/solver_reasoning_diag.sh --check-only    # every refusal below, no contact, exit 0 when the launch would proceed
 #   bash scripts/flights/diag/solver_reasoning_diag.sh --render-only   # also build the transport and render every wire body, never POST
 #

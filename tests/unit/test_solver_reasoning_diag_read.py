@@ -147,4 +147,49 @@ def test_the_analyzer_prints_statistics_only(tmp_path, capsys):
     # Every value in a per-row record is a number, a boolean, null, or one of the fixed words.
     row = json.loads(printed)["rows"][0]
     for key, value in row.items():
-        assert isinstance(value, (int, float, bool, type(None))) or key in {"sample_id", "group", "supplied_bin", "pattern", "tokens_approx_basis"}, key
+        assert isinstance(value, (int, float, bool, type(None))) or key in {"sample_id", "group", "arm", "supplied_bin", "pattern", "tokens_approx_basis"}, key
+
+
+# --------------------------------------------------------------------------------------------------------------------- the 3072 versus 6144 pair
+
+
+def test_a_6144_text_that_continues_the_3072_text_shares_its_prefix_through_the_close():
+    head = normal_text()
+    closed = head + " " + read.FORCED_CLOSE_MESSAGE
+    longer = head + " " + "Let me double check the forecast card against the request once more before I decide anything at all. " * 8
+    pair = read.pair_comparison(closed, longer)
+    assert pair["forced_close_3072"] is True and pair["identical_through_close"] is True
+    assert pair["prefix_share_of_3072"] >= read.PREFIX_SHARE_IDENTICAL
+    assert pair["chars_3072_without_close"] == len(head) and pair["text_beyond_3072_chars"] > 500
+    assert pair["beyond_pattern"] == "repetition-loop" and pair["beyond_repeated_sentence_share"] > 0.8
+    assert pair["repeat_onset_offset_3072"] is None and pair["repeat_onset_before_3072_close_in_6144"] is False
+    assert pair["pattern_3072"] == "other" and pair["pattern_6144"] == "repetition-loop"
+
+
+def test_a_diverging_pair_and_a_pair_whose_repeat_begins_before_the_3072_close():
+    loop = loop_text()
+    pair = read.pair_comparison(loop + " " + read.FORCED_CLOSE_MESSAGE, loop + " " + loop)
+    assert pair["identical_through_close"] is True and pair["repeat_onset_same_in_both"] is True
+    assert pair["repeat_onset_before_3072_close_in_6144"] is True
+    other = read.pair_comparison(normal_text(), "A completely different opening, then " + normal_text())
+    assert other["identical_through_close"] is False and other["forced_close_3072"] is False and other["prefix_share_of_3072"] < 0.2
+
+
+def test_the_read_adds_the_forced_both_6144_group_and_the_pair_summary_without_printing_text(tmp_path):
+    reasoning, answers = tmp_path / "reasoning", tmp_path / "answers"
+    reasoning.mkdir()
+    answers.mkdir()
+    roster = _roster([("slurp:train:000001:audio-1", "forced-both"), ("slurp:train:000002:audio-2", "forced-both"), ("slurp:train:000003:audio-3", "natural-both")])
+    roster["raised_arm_reissue"] = True
+    for entry in roster["rows"][:2]:
+        entry["raised_arm_request"] = {}
+    (reasoning / "slurp_train_000001_audio-1.txt").write_text(normal_text() + " " + read.FORCED_CLOSE_MESSAGE, encoding="utf-8")
+    (reasoning / "slurp_train_000001_audio-1.b6144.txt").write_text(normal_text() + " " + loop_text(), encoding="utf-8")
+    (reasoning / "slurp_train_000002_audio-2.txt").write_text(enumeration_text(), encoding="utf-8")
+    report = read.read_diagnostic(roster, reasoning, answers)
+    assert report["by_group"]["forced-both@6144"]["rows"] == 1 and report["by_group"]["forced-both"]["rows"] == 2
+    assert report["pair_summary"]["pairs"] == 1 and report["pair_summary"]["identical_through_close"] == {"True": 1}
+    assert report["rows_missing"] == 2                         # the 6144 file of row 2 and the 3072 file of row 3; a natural row never has a raised file
+    assert {r["arm"] for r in report["rows"]} == {"budget-3072", "solver-6144"}
+    blob = json.dumps(report)
+    assert "double check the forecast card" not in blob and "umbrella" not in blob

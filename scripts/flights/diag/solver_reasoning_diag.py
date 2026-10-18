@@ -56,7 +56,7 @@ ARM_DELIVERING, ARM_RAISED = "budget-3072", "solver-6144"
 ROSTER_SCHEMA = "saea-solver-reasoning-diag-roster-v1"
 RESULT_SCHEMA = "saea-solver-reasoning-diag-result-v1"
 SEED = 20261018
-CALL_CEILING = 48                                         # the plan's cap; the roster holds 40 re-issues (+ up to 8 recovery contacts)
+CALL_CEILING = 56                                         # the plan's cap: 40 budget-3072 re-issues + 16 budget-6144 re-issues (+ 0 spare; one attempt)
 GPU_HOURS_CEILING = 0.9
 SUPPLIED_BIN_EDGE = 40                                    # supplied items < 40 or >= 40 (the coordinator's forced-close analysis bins)
 
@@ -306,7 +306,8 @@ def roster_document(selection: Mapping, pins: Mapping, rows_total: int) -> dict:
                        ARM_RAISED: {k: raised.get(k) for k in (
                 "forced_close", "finish_reason", "completion_tokens", "prompt_tokens", "reasoning_chars", "reasoning_tokens", "reasoning_content_sha256",
                 "response_text_sha256", "slu_f1", "intent_exact")}},
-            "raised_arm_request": {k: raised[k] for k in ("contact_id", "request_key", "payload_sha256", "id_slot", "thinking_budget_tokens", "max_tokens")},
+            "raised_arm_request": {k: raised[k] for k in ("contact_id", "request_key", "payload_sha256", "id_slot", "audio_seconds", "thinking_budget_tokens",
+                                                         "max_tokens")},
         })
     counts = Counter(row["group"] for row in rows)
     return {
@@ -314,12 +315,26 @@ def roster_document(selection: Mapping, pins: Mapping, rows_total: int) -> dict:
         "selection_rule": ("per group the quota is split evenly over supplied bin (<40, >=40 items of the budget-3072 arm's Solver request) x empty gold; "
                            "rank = sha256(seed|group|sample_id); a short stratum is backfilled from the group in the same rank order"),
         "groups": {group: quota for group, quota in GROUPS}, "selected_counts": dict(counts), "selection_report": selection["selection_report"],
-        "reissue_arm": ARM_DELIVERING, "raised_arm_reissue": False,
-        "raised_arm_note": ("The solver-6144 requests of the forced-both rows are NOT re-issued by default: the plan covers the budget-3072 arm only. The "
-                            "resident np4 server would admit them (max_tokens is a request parameter; the server carries no -n cap), so a coordinator "
-                            "amendment may add them (up to 16 contacts, ceiling then 56)."),
+        "reissue_arm": ARM_DELIVERING, "raised_arm_reissue": True,
+        "raised_arm_note": ("Coordinator decision 2 (ruling 330 A, both budgets): the sealed solver-6144 requests (budget 6144, max_tokens 7168) of the forced-both "
+                            "rows are re-issued too, after the budget-3072 requests, on the same per-slot sequential workers. The resident np4 server admits them "
+                            "(max_tokens is a request parameter; the server carries no -n cap). 40 + 16 = 56 contacts."),
         "rows": rows,
     }
+
+
+def contacts_from_roster(roster: Mapping) -> list[dict]:
+    """The contacts to send, in launch order: every row's budget-3072 request first, then (when the roster re-issues the raised arm) the budget-6144
+    requests of the forced-both rows. Each contact carries the sealed facts of ITS arm; workers keep this order within a slot."""
+
+    contacts: list[dict] = [{"sample_id": row["sample_id"], "group": row["group"], "arm": ARM_DELIVERING, "reissue": row["reissue"],
+                             "sealed": row["sealed"]} for row in roster["rows"]]
+    if roster.get("raised_arm_reissue"):
+        for row in roster["rows"]:
+            if row["group"] == "forced-both":
+                contacts.append({"sample_id": row["sample_id"], "group": row["group"], "arm": ARM_RAISED, "reissue": row["raised_arm_request"],
+                                 "sealed": row["sealed"]})
+    return contacts
 
 
 def roster_sample_ids(roster: Mapping) -> list[str]:
@@ -335,7 +350,8 @@ def verify_roster(roster: Mapping, data_root: Path, *, render: Callable[[bytes],
     and with ``render`` the exact wire body is built by the transport's own renderer (no POST). Nothing here prints request text."""
 
     paths = sealed_paths(data_root)
-    keys = {row["reissue"]["request_key"]: row for row in roster["rows"]}
+    contacts = contacts_from_roster(roster)
+    keys = {c["reissue"]["request_key"]: c for c in contacts}
     found = fetch_payloads(paths["trace"], keys)
     results, failures = [], []
     for key, row in keys.items():
@@ -346,11 +362,12 @@ def verify_roster(roster: Mapping, data_root: Path, *, render: Callable[[bytes],
             continue
         payload = record["payload"]
         rebuilt = request_sha256(payload)
-        facts = {"sample_id": sample, "request_key": key, "rebuilt_sha256": rebuilt, "sealed_payload_sha256": record["payload_sha256"],
+        facts = {"sample_id": sample, "arm": row["arm"], "request_key": key, "rebuilt_sha256": rebuilt, "sealed_payload_sha256": record["payload_sha256"],
                  "roster_sha256": row["reissue"]["payload_sha256"]}
         facts["hash_match"] = rebuilt == record["payload_sha256"] == row["reissue"]["payload_sha256"]
         decoding = payload.get("decoding_params") or {}
-        facts["budget_is_3072"] = decoding.get("thinking_budget_tokens") == 3072 and decoding.get("max_tokens") == 4096
+        want_budget, want_cap = (3072, 4096) if row["arm"] == ARM_DELIVERING else (6144, 7168)
+        facts["budget_matches_arm"] = decoding.get("thinking_budget_tokens") == want_budget and decoding.get("max_tokens") == want_cap
         facts["sample_matches"] = payload.get("sample_id") == sample
         facts["control_contact_matches"] = (payload.get("history") or [{}])[-1].get("contact_id") == row["reissue"]["contact_id"]
         if render is not None:
@@ -359,12 +376,12 @@ def verify_roster(roster: Mapping, data_root: Path, *, render: Callable[[bytes],
                 json.dumps(body, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
             facts["wire_body_budget"] = body.get("thinking_budget_tokens")
             facts["wire_body_max_tokens"] = body.get("max_tokens")
-        ok = facts["hash_match"] and facts["budget_is_3072"] and facts["sample_matches"] and facts["control_contact_matches"]
+        ok = facts["hash_match"] and facts["budget_matches_arm"] and facts["sample_matches"] and facts["control_contact_matches"]
         if not ok:
             failures.append(f"{sample}: {json.dumps({k: v for k, v in facts.items() if isinstance(v, bool)})}")
         results.append(facts)
-    return {"schema": "saea-solver-reasoning-diag-verify-v1", "rows": len(roster["rows"]), "verified": len(results) - len(failures),
-            "failures": failures, "all_match": not failures and len(results) == len(roster["rows"]), "rendered": render is not None,
+    return {"schema": "saea-solver-reasoning-diag-verify-v1", "rows": len(roster["rows"]), "contacts_checked": len(contacts), "verified": len(results) - len(failures),
+            "failures": failures, "all_match": not failures and len(results) == len(contacts), "rendered": render is not None,
             "results": results, "contacts": 0}
 
 
@@ -392,7 +409,7 @@ def check_registration(root: Path) -> tuple[dict, dict, dict]:
         raise DiagError("the plan's protocol_hash is not the sha256 of protocol-v1.json")
     if protocol["roster_sha256"] != file_sha256(package / ROSTER_NAME):
         raise DiagError("protocol-v1.json does not pin the roster file's sha256")
-    if len(roster["rows"]) > plan.planned_model_calls or plan.planned_model_calls > CALL_CEILING or plan.planned_gpu_hours >= 1.0:
+    if len(contacts_from_roster(roster)) > plan.planned_model_calls or plan.planned_model_calls > CALL_CEILING or plan.planned_gpu_hours >= 1.0:
         raise DiagError("the roster or the plan exceeds the registered ceilings (48 calls, < 1 GPU-h)")
     quota = {group: n for group, n in GROUPS}
     if roster["selected_counts"] != quota:
@@ -418,11 +435,12 @@ def result_row(row: Mapping, payload_sha: str, envelope: Mapping, latency: float
 
     summary = envelope.get("reasoning") or {}
     retained = envelope.get("reasoning_retention") or {}
-    sealed = row["sealed"][ARM_DELIVERING]
+    arm = row.get("arm", ARM_DELIVERING)
+    sealed = row["sealed"][arm]
     text = envelope.get("text") if isinstance(envelope.get("text"), str) else ""
     answer_sha = hashlib.sha256(text.encode("utf-8")).hexdigest()
     return {
-        "schema": RESULT_SCHEMA, "run_id": RUN_ID, "sample_id": row["sample_id"], "group": row["group"], "arm": ARM_DELIVERING,
+        "schema": RESULT_SCHEMA, "run_id": RUN_ID, "sample_id": row["sample_id"], "group": row["group"], "arm": arm,
         "request_sha256_sealed": row["reissue"]["payload_sha256"], "request_sha256_sent": payload_sha,
         "finish_reason": envelope.get("finish_reason"), "completion_tokens": (envelope.get("usage") or {}).get("completion_tokens"),
         "prompt_tokens": (envelope.get("usage") or {}).get("prompt_tokens"),
@@ -468,7 +486,8 @@ def reissue_rows(rows: Sequence[Mapping], payloads: Mapping[str, Mapping], send:
         latency = clock() - started
         answer = envelope.get("text") if isinstance(envelope.get("text"), str) else ""
         stem = re.sub(r"[^A-Za-z0-9._-]", "_", row["sample_id"]).strip(".") or "sample"
-        with open(out_dir / "answers" / f"{stem}.txt", "xb") as handle:
+        suffix = "" if row.get("arm", ARM_DELIVERING) == ARM_DELIVERING else ".b6144"
+        with open(out_dir / "answers" / f"{stem}{suffix}.txt", "xb") as handle:
             handle.write(answer.encode("utf-8"))
         entry = result_row(row, sent_sha, envelope, latency)
         with lock:
@@ -499,9 +518,10 @@ def reissue_rows(rows: Sequence[Mapping], payloads: Mapping[str, Mapping], send:
 
 def summarize_results(results: Sequence[Mapping]) -> dict:
     by_group: dict[str, dict] = {}
-    for group, _q in GROUPS:
-        items = [r for r in results if r["group"] == group]
-        by_group[group] = {
+    labels = [(group, group, ARM_DELIVERING) for group, _q in GROUPS] + [("forced-both@6144", "forced-both", ARM_RAISED)]
+    for label, group, arm in labels:
+        items = [r for r in results if r["group"] == group and r.get("arm", ARM_DELIVERING) == arm]
+        by_group[label] = {
             "contacts": len(items), "reasoning_hash_match": sum(1 for r in items if r["reasoning_hash_match"]),
             "forced_close_reproduced": sum(1 for r in items if r["forced_close_reproduced"]),
             "answer_match": sum(1 for r in items if r["answer_match"]), "forced_close_now": sum(1 for r in items if r["forced_close"]),
@@ -620,7 +640,8 @@ def run_live(args: argparse.Namespace) -> int:
     if (out_dir / "results.jsonl").exists() or retention.directory.exists():
         raise DiagError("refused: the diagnostic directory already holds an attempt (one attempt; supersede, never overwrite)")
     paths = sealed_paths(data_root)
-    payloads = fetch_payloads(paths["trace"], [row["reissue"]["request_key"] for row in roster["rows"]])
+    contacts = contacts_from_roster(roster)
+    payloads = fetch_payloads(paths["trace"], [c["reissue"]["request_key"] for c in contacts])
     verified = verify_roster(roster, data_root)
     if not verified["all_match"]:
         raise DiagError(f"refused: the sealed requests do not all rebuild: {verified['failures'][:3]}")
@@ -631,7 +652,7 @@ def run_live(args: argparse.Namespace) -> int:
         return 0 if proof["all_match"] else 1
     out_dir.mkdir(parents=True, exist_ok=True)
     started = time.monotonic()
-    results = reissue_rows(roster["rows"], payloads, transport, out_dir, ceiling=plan.planned_model_calls)
+    results = reissue_rows(contacts, payloads, transport, out_dir, ceiling=plan.planned_model_calls)
     summary = {"schema": "saea-solver-reasoning-diag-run-summary-v1", "run_id": DIAGNOSTIC_RUN_ID, "config_hash": composed.config_hash,
                "wall_seconds": round(time.monotonic() - started, 1), **summarize_results(results), "model_contacts": len(results)}
     (out_dir / "run-summary.json").write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")

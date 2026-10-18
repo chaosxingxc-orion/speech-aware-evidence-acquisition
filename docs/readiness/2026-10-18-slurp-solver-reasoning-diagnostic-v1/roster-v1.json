@@ -5,14 +5,15 @@
   "forced-both": 16,
   "natural-both": 8
  },
- "raised_arm_note": "The solver-6144 requests of the forced-both rows are NOT re-issued by default: the plan covers the budget-3072 arm only. The resident np4 server would admit them (max_tokens is a request parameter; the server carries no -n cap), so a coordinator amendment may add them (up to 16 contacts, ceiling then 56).",
- "raised_arm_reissue": false,
+ "raised_arm_note": "Coordinator decision 2 (ruling 330 A, both budgets): the sealed solver-6144 requests (budget 6144, max_tokens 7168) of the forced-both rows are re-issued too, after the budget-3072 requests, on the same per-slot sequential workers. The resident np4 server admits them (max_tokens is a request parameter; the server carries no -n cap). 40 + 16 = 56 contacts.",
+ "raised_arm_reissue": true,
  "reissue_arm": "budget-3072",
  "rows": [
   {
    "fill": "stratum",
    "group": "forced-both",
    "raised_arm_request": {
+    "audio_seconds": 3.3275625,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:011696:audio-1492785578",
     "id_slot": 0,
     "max_tokens": 7168,
@@ -106,6 +107,7 @@
    "fill": "stratum",
    "group": "forced-both",
    "raised_arm_request": {
+    "audio_seconds": 2.815625,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:000970:audio-1500035957",
     "id_slot": 3,
     "max_tokens": 7168,
@@ -198,6 +200,7 @@
    "fill": "stratum",
    "group": "forced-both",
    "raised_arm_request": {
+    "audio_seconds": 2.688,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:015339:audio-1495733844-headset",
     "id_slot": 2,
     "max_tokens": 7168,
@@ -292,6 +295,7 @@
    "fill": "stratum",
    "group": "forced-both",
    "raised_arm_request": {
+    "audio_seconds": 4.2234375,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:008174:audio-1494548442",
     "id_slot": 2,
     "max_tokens": 7168,
@@ -385,6 +389,7 @@
    "fill": "stratum",
    "group": "forced-both",
    "raised_arm_request": {
+    "audio_seconds": 4.3514375,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:005409:audio-1434541659",
     "id_slot": 2,
     "max_tokens": 7168,
@@ -476,6 +481,7 @@
    "fill": "stratum",
    "group": "forced-both",
    "raised_arm_request": {
+    "audio_seconds": 2.751625,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:012117:audio-1494512615",
     "id_slot": 1,
     "max_tokens": 7168,
@@ -570,6 +576,7 @@
    "fill": "stratum",
    "group": "forced-both",
    "raised_arm_request": {
+    "audio_seconds": 2.687625,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:005906:audio--1504191402",
     "id_slot": 3,
     "max_tokens": 7168,
@@ -663,6 +670,7 @@
    "fill": "stratum",
    "group": "forced-both",
    "raised_arm_request": {
+    "audio_seconds": 1.023875,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:012420:audio-1502201355",
     "id_slot": 1,
     "max_tokens": 7168,
@@ -755,6 +763,7 @@
    "fill": "stratum",
    "group": "forced-both",
    "raised_arm_request": {
+    "audio_seconds": 2.3036875,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:007872:audio-1501771861",
     "id_slot": 3,
     "max_tokens": 7168,
@@ -851,6 +860,7 @@
    "fill": "stratum",
    "group": "forced-both",
    "raised_arm_request": {
+    "audio_seconds": 2.176,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:015152:audio-1490355055-headset",
     "id_slot": 2,
     "max_tokens": 7168,
@@ -950,6 +960,7 @@
    "fill": "stratum",
    "group": "forced-both",
    "raised_arm_request": {
+    "audio_seconds": 2.4316875,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:011352:audio-1498573740",
     "id_slot": 0,
     "max_tokens": 7168,
@@ -1047,6 +1058,7 @@
    "fill": "stratum",
    "group": "forced-both",
    "raised_arm_request": {
+    "audio_seconds": 3.3275625,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:009763:audio-1492783211",
     "id_slot": 2,
     "max_tokens": 7168,
@@ -1145,6 +1157,7 @@
    "fill": "stratum",
    "group": "forced-both",
    "raised_arm_request": {
+    "audio_seconds": 3.136,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:006862:audio-1501692599-headset",
     "id_slot": 2,
     "max_tokens": 7168,
@@ -1244,6 +1257,7 @@
    "fill": "stratum",
    "group": "forced-both",
    "raised_arm_request": {
+    "audio_seconds": 2.943625,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:010584:audio-1497622577",
     "id_slot": 3,
     "max_tokens": 7168,
@@ -1345,6 +1359,7 @@
    "fill": "stratum",
    "group": "forced-both",
    "raised_arm_request": {
+    "audio_seconds": 3.1995625,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:011258:audio-1499264923",
     "id_slot": 2,
     "max_tokens": 7168,
@@ -1447,6 +1462,7 @@
    "fill": "stratum",
    "group": "forced-both",
    "raised_arm_request": {
+    "audio_seconds": 2.048,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:014951:audio-1494512598-headset",
     "id_slot": 1,
     "max_tokens": 7168,
@@ -1547,6 +1563,7 @@
    "fill": "stratum",
    "group": "forced-3072-only",
    "raised_arm_request": {
+    "audio_seconds": 4.16,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:005298:audio-1498757762-headset",
     "id_slot": 2,
     "max_tokens": 7168,
@@ -1639,6 +1656,7 @@
    "fill": "stratum",
    "group": "forced-3072-only",
    "raised_arm_request": {
+    "audio_seconds": 4.2234375,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:000547:audio-1490192947",
     "id_slot": 3,
     "max_tokens": 7168,
@@ -1725,6 +1743,7 @@
    "fill": "stratum",
    "group": "forced-3072-only",
    "raised_arm_request": {
+    "audio_seconds": 2.816,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:005081:audio-1434529979-headset",
     "id_slot": 3,
     "max_tokens": 7168,
@@ -1816,6 +1835,7 @@
    "fill": "stratum",
    "group": "forced-3072-only",
    "raised_arm_request": {
+    "audio_seconds": 2.048,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:010799:audio-1502199500-headset",
     "id_slot": 1,
     "max_tokens": 7168,
@@ -1907,6 +1927,7 @@
    "fill": "stratum",
    "group": "forced-3072-only",
    "raised_arm_request": {
+    "audio_seconds": 1.98375,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:009792:audio--1504195288",
     "id_slot": 0,
     "max_tokens": 7168,
@@ -2004,6 +2025,7 @@
    "fill": "stratum",
    "group": "forced-3072-only",
    "raised_arm_request": {
+    "audio_seconds": 2.24,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:007943:audio-1499690624-headset",
     "id_slot": 1,
     "max_tokens": 7168,
@@ -2103,6 +2125,7 @@
    "fill": "stratum",
    "group": "forced-3072-only",
    "raised_arm_request": {
+    "audio_seconds": 0.7679375,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:015499:audio-1501758681",
     "id_slot": 3,
     "max_tokens": 7168,
@@ -2203,6 +2226,7 @@
    "fill": "stratum",
    "group": "forced-3072-only",
    "raised_arm_request": {
+    "audio_seconds": 2.687625,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:006609:audio-1501777281",
     "id_slot": 0,
     "max_tokens": 7168,
@@ -2302,6 +2326,7 @@
    "fill": "stratum",
    "group": "forced-6144-only",
    "raised_arm_request": {
+    "audio_seconds": 3.072,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:000917:audio-1497265157-headset",
     "id_slot": 0,
     "max_tokens": 7168,
@@ -2392,6 +2417,7 @@
    "fill": "stratum",
    "group": "forced-6144-only",
    "raised_arm_request": {
+    "audio_seconds": 2.432,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:004639:audio-1497880790-headset",
     "id_slot": 2,
     "max_tokens": 7168,
@@ -2484,6 +2510,7 @@
    "fill": "stratum",
    "group": "forced-6144-only",
    "raised_arm_request": {
+    "audio_seconds": 2.17575,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:002170:audio-1490369573",
     "id_slot": 1,
     "max_tokens": 7168,
@@ -2577,6 +2604,7 @@
    "fill": "stratum",
    "group": "forced-6144-only",
    "raised_arm_request": {
+    "audio_seconds": 2.687625,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:016647:audio-1498484594",
     "id_slot": 1,
     "max_tokens": 7168,
@@ -2670,6 +2698,7 @@
    "fill": "stratum",
    "group": "forced-6144-only",
    "raised_arm_request": {
+    "audio_seconds": 3.52,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:012081:audio-1497030768-headset",
     "id_slot": 0,
     "max_tokens": 7168,
@@ -2769,6 +2798,7 @@
    "fill": "stratum",
    "group": "forced-6144-only",
    "raised_arm_request": {
+    "audio_seconds": 3.52,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:000990:audio-1490369020-headset",
     "id_slot": 1,
     "max_tokens": 7168,
@@ -2866,6 +2896,7 @@
    "fill": "stratum",
    "group": "forced-6144-only",
    "raised_arm_request": {
+    "audio_seconds": 2.816,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:006261:audio-1502112305-headset",
     "id_slot": 3,
     "max_tokens": 7168,
@@ -2965,6 +2996,7 @@
    "fill": "stratum",
    "group": "forced-6144-only",
    "raised_arm_request": {
+    "audio_seconds": 2.944,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:004919:audio-1490705812-headset",
     "id_slot": 3,
     "max_tokens": 7168,
@@ -3062,6 +3094,7 @@
    "fill": "stratum",
    "group": "natural-both",
    "raised_arm_request": {
+    "audio_seconds": 2.176,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:001920:audio-1498574408-headset",
     "id_slot": 2,
     "max_tokens": 7168,
@@ -3154,6 +3187,7 @@
    "fill": "stratum",
    "group": "natural-both",
    "raised_arm_request": {
+    "audio_seconds": 1.344,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:002881:audio-1490022343-headset",
     "id_slot": 1,
     "max_tokens": 7168,
@@ -3246,6 +3280,7 @@
    "fill": "stratum",
    "group": "natural-both",
    "raised_arm_request": {
+    "audio_seconds": 1.536,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:003369:audio-1498564272-headset",
     "id_slot": 2,
     "max_tokens": 7168,
@@ -3337,6 +3372,7 @@
    "fill": "stratum",
    "group": "natural-both",
    "raised_arm_request": {
+    "audio_seconds": 1.344,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:000143:audio-1497191658-headset",
     "id_slot": 1,
     "max_tokens": 7168,
@@ -3422,6 +3458,7 @@
    "fill": "stratum",
    "group": "natural-both",
    "raised_arm_request": {
+    "audio_seconds": 1.79175,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:016122:audio-1490263612",
     "id_slot": 1,
     "max_tokens": 7168,
@@ -3520,6 +3557,7 @@
    "fill": "stratum",
    "group": "natural-both",
    "raised_arm_request": {
+    "audio_seconds": 3.3275625,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:014386:audio-1497860790",
     "id_slot": 1,
     "max_tokens": 7168,
@@ -3620,6 +3658,7 @@
    "fill": "stratum",
    "group": "natural-both",
    "raised_arm_request": {
+    "audio_seconds": 4.73,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:000044:audio-1488623782",
     "id_slot": 2,
     "max_tokens": 7168,
@@ -3722,6 +3761,7 @@
    "fill": "stratum",
    "group": "natural-both",
    "raised_arm_request": {
+    "audio_seconds": 1.91975,
     "contact_id": "phase-native-module-v1-c4:solver:0:slurp:train:003302:audio-1497884199",
     "id_slot": 3,
     "max_tokens": 7168,

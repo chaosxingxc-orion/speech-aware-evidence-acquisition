@@ -13,8 +13,10 @@ restated over and over). Ruling 330 A is a bounded exception to decision 286 for
 ## What flies
 
 40 sealed budget-3072 Solver requests of the sealed R2b column (run `SAEA-SLURP-STAGE3-NXT-R2B-SOLVER-BUDGET-FOLD-B-V1`, attempt `attempt-slurp-native-stage3-nxt-r2b-solver-budget-fold-b-generation-v1`), re-sent unchanged to the resident
-`think-budget-np4` session (budget 3,072 / cap 4,096, temperature 0, seed 20260913). The reasoning bytes are written under
-`<data root>/diagnostics/SAEA-SLURP-SOLVER-REASONING-DIAGNOSTIC-V1/reasoning/<sample>.txt` and nowhere else; the stored wire message and every trace record keep the decision-286 projection.
+`think-budget-np4` session (budget 3,072 / cap 4,096, temperature 0, seed 20260913), followed by the 16 sealed solver-6144 requests (budget 6,144 / max_tokens 7,168) of the
+forced-both rows: 56 contacts, ceiling 56. The reasoning bytes are written under
+`<data root>/diagnostics/SAEA-SLURP-SOLVER-REASONING-DIAGNOSTIC-V1/reasoning/<sample>.txt` (`<sample>.b6144.txt` for the 6,144 requests) and nowhere else; the stored wire message and every trace record keep
+the decision-286 projection.
 
 | group | rows | meaning |
 | --- | ---: | --- |
@@ -24,12 +26,12 @@ restated over and over). Ruling 330 A is a bounded exception to decision 286 for
 | `natural-both` | 8 | natural at both budgets |
 
 Each group is stratified by supplied-item bin (< 40 / >= 40 items) and empty versus non-empty gold, with the fixed seed 20261018 (rank = sha256(seed|group|sample)).
-The 6,144-budget requests of the forced-both rows are not re-issued by default (see "Decisions for the coordinator").
+The read compares, on the forced-both rows, the 3,072 reasoning with the 6,144 reasoning of the same row (identical prefix up to the forced close? where does the repeat begin?).
 
 ## Request reconstruction
 
 The sealed trace holds each request payload and its `payload_sha256`; the adapter's own canonical serialisation of the payload hashes to it. `solver_reasoning_diag.py verify`
-re-reads the trace for the 40 roster rows, proves every rebuilt request hashes to the sealed `payload_sha256` and to the first-visit `request_sha256`, and (with
+re-reads the trace for the 56 contacts, proves every rebuilt request hashes to the sealed `payload_sha256` and to the first-visit `request_sha256`, and (with
 `--render`) renders the exact wire body through the transport's own `render_request` over the sealed session receipt (composed config hash equals the sealed one). All rows pass.
 
 ## Files
@@ -38,7 +40,7 @@ re-reads the trace for the 40 roster rows, proves every rebuilt request hashes t
 | --- | --- |
 | `roster-v1.json` | the preregistered roster (sample ids, groups, strata, sealed request and reasoning hashes; no text) |
 | `protocol-v1.json` | the protocol; pins the roster sha256 |
-| `execution-plan-v1.json` | the structured ExecutionPlan (bounded-discovery-probe, 48 calls, < 1 GPU-h); `protocol_hash` is the protocol file's sha256 |
+| `execution-plan-v1.json` | the structured ExecutionPlan (bounded-discovery-probe, 56 calls, < 1 GPU-h); `protocol_hash` is the protocol file's sha256 |
 | `draft-ledger-rows.md` | the probe row and the model-free READ row, DRAFT, root countersignature pending |
 
 Code: `scripts/flights/diag/solver_reasoning_diag.py` (select / verify / run), `scripts/flights/diag/solver_reasoning_diag.sh` (the one-command launcher),
@@ -47,5 +49,5 @@ Code: `scripts/flights/diag/solver_reasoning_diag.py` (select / verify / run), `
 ## Decisions for the coordinator
 
 1. Countersign the two ledger rows (`draft-ledger-rows.md`) before the launch; the gate refuses a model touch without the pre-registered row.
-2. Whether to add the 16 solver-6144 requests of the forced-both rows (budget 6144, max_tokens 7168). The resident np4 server admits them; the plan then needs a ceiling of 56 calls.
+2. (Settled by coordinator decision 2: the 16 solver-6144 requests are in the plan, ceiling 56.)
 3. Launch window: after the R2 rec2 flight seals (expected 2026-10-19 14:00Z) and before R3, with the resident session still `think-budget-np4`.
