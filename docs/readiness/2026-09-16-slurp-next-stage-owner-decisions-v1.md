@@ -3353,3 +3353,17 @@ Owner, verbatim: 「决策331：A，决策332：A，决策333：B，决策322：
   (backup) -> `wsl --shutdown` -> post-step `window_322_post_restart.sh` (close R2 rows + commit, swap to think-budget-np4, diagnostic, then
   `queue_nxt3_after_nxt2.sh` which flips and chains R3; SAEA-Chain-NXT3 is registered by the launcher's own `saea_task.ps1 -Start`). Any
   other R2 exit or a refused step leaves everything as is. RULE: master must be clean whenever the window can fire (R2 seal ~2026-10-19 14:00Z).
+
+### Carrier base (333 B) merged and P3.2 registered; carrier hooks wired into the 322 post-step (coordinator, 2026-10-18 16:30Z)
+
+- Merged d21b3b8b7 (Sonnet 2f3eee717): P3.2 Thinking packets (A2T paired 400; E21 / E22 windows re-keyed onto the existing Instruct slices, no
+  re-cut) and P3.3 all-off + direct baselines for A2T / E21 / E22 on the SLURP lock geometry (think-budget-np4, 3,072 / 4,096). Expected ~21 GPU-h
+  for P3.3 (A2T 2 x 1.6, E21 2 x 7.1, E22 2 x 2.0; ceilings ~30) + ~2.5 h packets. P3.2 registered 15c241904 (7 rows countersigned).
+- P3.3 is registered by its hook AFTER the packets seal (its cells pin the packet hashes): the coordinator delegates the root countersign to
+  `queue_carriers_after.sh --register` (rows say so). Hooks are Windows tasks SAEA-Queue-CARRIERPKT (waits CHAIN_NXT3_EXIT rc 0) and
+  SAEA-Queue-CARRIERBASE (waits CHAIN_CARRIERPACKETS_EXIT rc 0), registered not started; `window_322_post_restart.sh` starts them after R3
+  launches (a hook armed now would die at the 322 shutdown).
+- Coordinator calls (model-free): the four red Instruct registration tests pin unflown Instruct carrier cells superseded by the Thinking cells
+  -> retire them (cleanup later); 324-B is not built: after the R2 read, if needed, it is queued after the carriers. Known risks: E21/E22 window
+  packets have never run on GPU (the 4-window smoke is the rehearsal and stops the chain on any receipt failure); the E21 seal-path refusal
+  of 2026-10-10 ("unit-stitch has no matching trace record") is first exercised by the E21 smoke.
