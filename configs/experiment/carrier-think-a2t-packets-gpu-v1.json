@@ -1,0 +1,24 @@
+{
+  "a2t_packets_scope": {
+    "audio_seconds_total": 2760.438042,
+    "count": 400,
+    "packet_id_convention": "sample_id with ':' replaced by '/'",
+    "smoke_rows": 4,
+    "subset_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-27-a2t-paired-400-roster/flight-roster-receipt.json",
+    "subset_receipt_sha256": "844354b53a77a399bde62f34f3f971c3ab77502fb3ea8daac33295a1a11fc96e"
+  },
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.5,
+    "planned_model_calls": 400,
+    "planned_speech_audio_seconds": 2761,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-CARRIER-THINK-A2T-PACKETS-GPU-V1",
+  "feature_root": "/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6",
+  "legacy_cache_dir": "/home/chao/feat-cache/audio2tool-thinking-gpu-q4km-afdaeff6",
+  "preregistration": "docs/readiness/2026-10-18-carrier-packets-thinking-v1-preregistration.md",
+  "promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6/A2T-PAIRED-400-THINKING-promotion.json",
+  "purpose": "Exposure row SAEA-CARRIER-THINK-A2T-PACKETS-GPU-V1 (package docs/readiness/2026-10-18-carrier-packets-thinking-v1): Thinking-core speech-packet preparation for the Audio2Tool paired 400 (registry P3.2): a GPU encoder pass in a serving-swap window, one contact per row at max_tokens 1 (the four-row smoke stage first, then the remaining rows), then ADDITIVE promotion into the existing Thinking packet root under the new receipt A2T-PAIRED-400-THINKING-promotion.json. Label-free: no gold, task text or model output is opened. The Instruct packets of these rows are decoder-ready outputs of the Instruct audio encoder and are not valid input to the Thinking decoder (748 of 860 mmproj tensors differ). Keep every other Thinking packet and receipt untouched."
+}

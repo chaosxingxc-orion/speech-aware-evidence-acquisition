@@ -1,0 +1,42 @@
+{
+  "base_url": "http://127.0.0.1:8081",
+  "decoding_params": {
+    "max_tokens": 1,
+    "seed": 20260803,
+    "temperature": 0
+  },
+  "model_lock_key": "qwen3-omni-30b-a3b-thinking-gguf-q4km",
+  "model_materialization_root": "/home/chao",
+  "preparation_basis": "P3.2 (registry 'P3 programme under decision 299 A', owner ruling 333 B): the GPU encoder pass of SAEA-CARRIER-THINK-A2T-PACKETS-GPU-V1. Identical to q4km-thinking-feature-preprocess-gpu-np1-v1 in every serving flag, the model pins and the runtime receipt; it differs ONLY in the legacy feature cache directory (its own, so no earlier pass's entry is a foreign entry for this one) and, for window passes, the explicit serving_geometry the Earnings adapter reads. Offline packet preparation only: one-token responses are discarded unread, no answer is scored. The card holds one core: every serving session is stopped before this server starts.",
+  "prompt_order": "evidence-first-system-v2",
+  "runtime_receipt": "receipts/runtime-q4km-thinking-preprocess-gpu.json",
+  "server_args": [
+    "-c",
+    "16384",
+    "-np",
+    "1",
+    "-ngl",
+    "999",
+    "-fa",
+    "on",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0",
+    "-b",
+    "512",
+    "-ub",
+    "128"
+  ],
+  "server_env": {
+    "GGML_CUDA_DISABLE_GRAPHS": "1",
+    "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/audio2tool-thinking-gpu-q4km-afdaeff6"
+  },
+  "serving_geometry": {
+    "max_tokens": 1,
+    "slot_tokens": 16384,
+    "slots": 1
+  },
+  "timeout_seconds": 900.0,
+  "transport": "llama-server"
+}

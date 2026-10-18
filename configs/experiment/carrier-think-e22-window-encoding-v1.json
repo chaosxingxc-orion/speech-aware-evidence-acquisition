@@ -1,0 +1,47 @@
+{
+  "budget_basis": "Exactly 451 unique inputs from the Thinking-identity inventory analysis/SAEA-CARRIER-THINK-E22-WINDOW-INVENTORY-V1/window-inventory.json. Each unique window is encoded once with max_tokens=1; no automatic retry, no extra performance probe. The GPU-hour figure is an upper bound, not a predicted use.",
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "prepare-window-features"
+      ],
+      "attempt_id": "attempt-carrier-think-e22-window-encoding-v1",
+      "baseline_fragment": "window-feature-preprocess-ojw",
+      "cell_id": "carrier-think-e22-window-encoding",
+      "dataset_fragment": "earnings22-dev-subset10",
+      "model_fragment": "q4km-thinking-feature-preprocess-gpu-np1-carrier-e22-v1",
+      "readiness": {
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "The Thinking-identity window inventory must exist unchanged (carrier_think_windows.py materialize)",
+            "relpath": "analysis/SAEA-CARRIER-THINK-E22-WINDOW-INVENTORY-V1/window-inventory.json",
+            "sha256": "61396ba629f506fad64fe55623fdbbce981cf628918f950d4c06d7f1b5bb8611"
+          }
+        ],
+        "state": "ready"
+      },
+      "run_id": "SAEA-CARRIER-THINK-E22-WINDOW-GPU-ENCODING-V1"
+    }
+  ],
+  "date": "2026-10-18",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.8,
+    "planned_model_calls": 451,
+    "planned_speech_audio_seconds": 40056,
+    "split_role": "dev"
+  },
+  "experiment_id": "SAEA-CARRIER-THINK-E22-WINDOW-GPU-ENCODING-V1",
+  "output_relpath": "analysis/SAEA-CARRIER-THINK-E22-WINDOW-GPU-ENCODING-V1/window-encoding.json",
+  "purpose": "Thinking-core exact-window feature encoding for Earnings-22 (451 unique windows): one contact per unique window at max_tokens 1 on the GPU encoder under a root lease, then the cache audit, the source-bound preparation provenance and the formal window-packet promotion into the existing Thinking packet root. Label-free: no draft text, reference or transcript is opened. Package docs/readiness/2026-10-18-carrier-packets-thinking-v1. One-token responses materialise features only and are not a scientific task answer.",
+  "service_session_id": "serving-carrier-think-e22-window-encoding-v1",
+  "split_id": "dev",
+  "window_feature_preparation": {
+    "expected_n_embd": 2048,
+    "instruction": "Observe the complete speech signal for deterministic feature preprocessing. Respond with OK.",
+    "inventory_relpath": "analysis/SAEA-CARRIER-THINK-E22-WINDOW-INVENTORY-V1/window-inventory.json",
+    "inventory_sha256": "61396ba629f506fad64fe55623fdbbce981cf628918f950d4c06d7f1b5bb8611",
+    "source_run_id": "SAEA-E22-DEV-WINDOW-INVENTORY-V1"
+  }
+}
