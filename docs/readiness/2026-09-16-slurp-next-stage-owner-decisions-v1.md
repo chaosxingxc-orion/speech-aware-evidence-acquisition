@@ -3367,3 +3367,15 @@ Owner, verbatim: 「决策331：A，决策332：A，决策333：B，决策322：
   -> retire them (cleanup later); 324-B is not built: after the R2 read, if needed, it is queued after the carriers. Known risks: E21/E22 window
   packets have never run on GPU (the 4-window smoke is the rehearsal and stops the chain on any receipt failure); the E21 seal-path refusal
   of 2026-10-10 ("unit-stitch has no matching trace record") is first exercised by the E21 smoke.
+
+### NX-T R4 (decoding-policy column) merged and registered; the whole queue is wired (coordinator, 2026-10-18 17:40Z)
+
+- Merged 56853bba4 (Sonnet 66b3e6503): instrument kind `roles.solver.decoding_variants` (temperature / top_p / top_k / presence_penalty only,
+  bounded; every other axis refused by name; receipt v6) and package `slurp-nxt-r4-solver-decoding-fold-b-v1` (d1 T0.6/top_p0.95/top_k20, d2 +
+  presence 1.5, d3 T0.3, d4 greedy + presence 1.5, aa, lock; seed fixed; expected 33.3 GPU-h, ceiling 43.4 + 0.5). Registered 7ff9ab4f1.
+- The same merge carries a fix Sonnet found in R3: `nxt_r3_flip.sh` named the package directory with the wrong date (2026-10-17), which would
+  have stopped the unattended R3 flip. All package paths of R3 / R4 / carriers / diagnostic were re-checked against the tree.
+- Known limit: d4 keeps temperature 0; if the pinned llama.cpp build ignores presence_penalty under greedy, d4 reads as a second twin (its
+  discordance equals the twin's) -- the read will show it.
+- Full queue (all hooks start-only from the 322 post step): R2 rec2 -> 322 window -> diagnostic -> R3 (SAEA-Chain-NXT3) -> P3.2 packets
+  (SAEA-Queue-CARRIERPKT) -> P3.3 carriers registered by the hook (SAEA-Queue-CARRIERBASE) -> R4 (SAEA-Queue-NXT4, waits up to 5 days).
