@@ -395,8 +395,12 @@ def signoff_conditions(carrier: str) -> dict:
 
 
 def roster_label(carrier: str, kind: str) -> str:
+    """The exposure row's 'speech carrier + split' column. The gate (contracts.gate_exposure) requires it to name EXACTLY ONE carrier lock key, so the lock key leads."""
+
     c = CARRIER_SPEC[carrier]
-    return f"{c['label']} ({'four-row smoke' if kind == 'smoke' else 'full roster'}, {c['unit_kind']})"
+    units = CELLS[cell_key(carrier, kind)]["units"]
+    split = {"a2t": "A2T-PAIRED-400-V1", "e21": "discovery", "e22": "dev"}[carrier]
+    return f"{c['carrier_lock_key']} {split} {'four-' + c['unit_kind'][:-1] + ' smoke' if kind == 'smoke' else 'full roster'} {units}"
 
 
 __all__ = [name for name in globals() if not name.startswith("_")]

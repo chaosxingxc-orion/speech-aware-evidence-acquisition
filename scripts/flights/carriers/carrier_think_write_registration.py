@@ -236,11 +236,11 @@ def draft_rows(ids: Mapping[str, Mapping], commit: str, at: str, pkg: str, shas:
         rows.append([at[:10], fam.read_run_id(carrier), "model-free-check",
                      (f"The offline read of the {fam.CARRIER_SPEC[carrier]['label']} carrier base on the Thinking core: score the sealed all-off and direct arms once each with the standard scorer "
                       f"({fam.CARRIER_SPEC[carrier]['primary_metric']}), their difference as the in-chain A/A, the per-stratum table"
-                      + (" with the paper column" if fam.CARRIER_SPEC[carrier]["paper_column"] else "") + f", by the recipe {pkg}/analysis-recipe-v1.json. Zero model, server, encoder, embedder, "
+                      + (" with the paper column" if fam.CARRIER_SPEC[carrier]["paper_column"] else "") + f", by the recipe {pkg}/analysis-recipe-{carrier}-v1.json. Zero model, server, encoder, embedder, "
                       "tokenizer and GPU contacts."),
                      "no model or tool contact; read of sealed bytes and CPU official scorings over derived copies",
                      f"{fam.CARRIER_SPEC[carrier]['label']}, the sealed arms (after the seal)", arm["split_role"], arm["split_identity_hash"], "no", "0", "0", "0", INHERITED,
-                     f"{pkg}/analysis-recipe-v1.json",
+                     f"{pkg}/analysis-recipe-{carrier}-v1.json",
                      f"DRAFT. REGISTERED WITH THE FLIGHT (root countersignature pending; countersigned after the carrier's arms are sealed and before any number is read) {at[:10]} at "
                      f"study commit {commit}. Claims no benefit."])
     return rows
@@ -336,7 +336,7 @@ def readme_text(ids: Mapping[str, Mapping], cost: Mapping[str, Any], proof: Mapp
         "## Files\n\n| file | what it is |\n| --- | --- |\n"
         "| `registered-facts-v1.json` | identities, accounting, cost estimate, context-fit proofs, the composed-config proof, serving and packet pins, findings, the `stage3_measurement` blocks |\n"
         "| `protocol-registered-v1.json`, `*-plan-registered-v1.json` | the registered protocol and the plans (one generation plan per cell; one FIT plan per A2T cell) |\n"
-        "| `analysis-recipe-v1.json` | the offline read |\n"
+        "| `analysis-recipe-<carrier>-v1.json` | the offline read of each carrier (its READ run id) |\n"
         "| `signoff-conditions-<carrier>-v1.json` | the machine sign-off conditions, EMITTED BY THE DERIVE |\n"
         "| `root-admission-draft-v1.json` | the DRAFT decision receipt (mint with `carrier_think_mint_receipt.py`) |\n"
         "| `countersign-row-texts-v1.json` | the countersign texts of the DRAFT rows |\n"
@@ -393,7 +393,11 @@ def write_package(root: Path, commit: str, at: str | None, *, append_ledger: boo
                    "read": "bash scripts/flights/carriers/carrier_think_read.sh read <carrier>  (refuses unless the carrier's READ row is root countersigned)",
                    "smoke": "bash scripts/flights/carriers/carrier_think_read.sh smoke <carrier>  (decode cost of the sealed smoke; the machine sign-off input)"},
         "what_is_not_here": "No margins block and no admission: nothing is locked here."}
-    shas["analysis-recipe-v1.json"] = reg.wjson(root, f"{pkg}/analysis-recipe-v1.json", recipe)
+    for carrier in fam.CARRIERS:        # one recipe per carrier: the registration gate wants ONE read run id per recipe
+        per = dict({k: v for k, v in recipe.items() if k != "carriers"}, carriers={carrier: recipe["carriers"][carrier]},
+                   read_run_id=fam.read_run_id(carrier), recipe_id=f"{fam.SLUG}-{carrier}-read-v1", carrier=carrier,
+                   run_ids={"read": fam.read_run_id(carrier), **{k: ids[fam.cell_key(carrier, k)]["run_id"] for k in fam.KINDS}})
+        shas[f"analysis-recipe-{carrier}-v1.json"] = reg.wjson(root, f"{pkg}/analysis-recipe-{carrier}-v1.json", per)
     facts = {
         "_note": ("Every model-free fact this DRAFT registration rests on, and the CANONICAL stage3_measurement blocks scripts/checks/stage3_effect_floor_check.py and "
                   "scripts/checks/flight_registration_check.py resolve (keyed by run id)."),
@@ -421,7 +425,7 @@ def write_package(root: Path, commit: str, at: str | None, *, append_ledger: boo
               "gpu_hours_fit_inclusive": round(sum(float(v["family_budget"]["gpu_hours_fit_inclusive"]) for v in ids.values()), 1)}
     draft = {
         "_draft_note": "A DRAFT for the coordinator to mint on the data root with scripts/flights/carriers/carrier_think_mint_receipt.py. It authorises nothing while its status is not 'decided'.",
-        "antecedents": {"analysis_recipe": {"path": f"{pkg}/analysis-recipe-v1.json", "sha256": shas["analysis-recipe-v1.json"]},
+        "antecedents": {"analysis_recipes": {c: {"path": f"{pkg}/analysis-recipe-{c}-v1.json", "sha256": shas[f"analysis-recipe-{c}-v1.json"]} for c in fam.CARRIERS},
                         "protocol": {"path": f"{pkg}/protocol-registered-v1.json", "sha256": protocol_sha},
                         "registered_facts": {"path": f"{pkg}/registered-facts-v1.json", "sha256": shas["registered-facts-v1.json"]}, "registration_base_commit": commit},
         "authorization_basis": f"{fam.OWNER_RULINGS}; {INSTRUMENT}; {SPEC}.",
