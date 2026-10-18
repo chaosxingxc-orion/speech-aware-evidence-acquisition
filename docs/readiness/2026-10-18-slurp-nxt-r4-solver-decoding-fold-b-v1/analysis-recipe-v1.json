@@ -80,7 +80,7 @@
   },
   "read_run_id": "SAEA-SLURP-NXT-R4-SOLVER-DECODING-FOLD-B-READ-V1",
   "recipe_id": "slurp-nxt-r4-solver-decoding-fold-b-read-v1",
-  "registered_at_utc": "2026-10-18T16:29:27.000000+00:00",
+  "registered_at_utc": "2026-10-18T17:30:35Z",
   "roster": {
     "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
     "roster_id": "SLURP-EVO-FOLD-B-V2",

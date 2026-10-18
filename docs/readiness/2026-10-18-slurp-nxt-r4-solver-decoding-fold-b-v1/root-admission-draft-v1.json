@@ -3,17 +3,17 @@
   "antecedents": {
     "analysis_recipe": {
       "path": "docs/readiness/2026-10-18-slurp-nxt-r4-solver-decoding-fold-b-v1/analysis-recipe-v1.json",
-      "sha256": "c2688e4b35180332ea9dba9632e13ba24de09ea1c9159d13622347ec4c9fba4f"
+      "sha256": "9ed1f1c52db981c4c400097cbe67b331b9fd853922a8f39d63ab116d889f9b2e"
     },
     "protocol": {
       "path": "docs/readiness/2026-10-18-slurp-nxt-r4-solver-decoding-fold-b-v1/protocol-registered-v1.json",
-      "sha256": "c3a51d315f7242baf3fac6dc9d8cac307ab5890f8ce1c78cb241d2ac671e6a52"
+      "sha256": "543bcc86b55042a99b833ac85127867a02c8034eaf9f44d7925da6b372cc1347"
     },
     "registered_facts": {
       "path": "docs/readiness/2026-10-18-slurp-nxt-r4-solver-decoding-fold-b-v1/registered-facts-v1.json",
-      "sha256": "024e77b33292d5caa32a29ec9f03a018755c41d2018d230377df044f5a3dae28"
+      "sha256": "dafd9ec64b175be7662827199639e099f59d204316b402470c5ce6942be44cf0"
     },
-    "registration_base_commit": "32f81ade5417c0954849eb1259f30cf183f66dd1"
+    "registration_base_commit": "56853bba4a4b33b7574008f8853d34e20d0ea248"
   },
   "authorization_basis": "owner rulings 329 A and 332 A (2026-10-18), 326 A and 327 A (2026-10-17), 313 A (2026-10-14) and 304/307 (2026-10-13), coordinator approval of the NX-T R4 design; docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md; docs/superpowers/specs/2026-10-12-thinking-core-engineering-base-design.md.",
   "budget": {

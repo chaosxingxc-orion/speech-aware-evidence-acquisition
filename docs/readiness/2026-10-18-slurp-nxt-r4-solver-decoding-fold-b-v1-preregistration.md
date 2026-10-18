@@ -1,6 +1,6 @@
 # NX-T R4: the Solver decoding-policy column, preregistration (DRAFT / HELD)
 
-Registered 2026-10-18 at study commit `32f81ade5417c0954849eb1259f30cf183f66dd1` by script. Development numbers only.
+Registered 2026-10-18 at study commit `56853bba4a4b33b7574008f8853d34e20d0ea248` by script. Development numbers only.
 
 Runs: `SAEA-SLURP-STAGE3-NXT-R4-SOLVER-DECODING-FOLD-B-V1` / `SAEA-SLURP-STAGE3-NXT-R4-SOLVER-DECODING-FOLD-B-FIT-V1`; `SAEA-SLURP-STAGE3-NXT-R4-SOLVER-DECODING-FOLD-B-SMOKE-4-V1` / `SAEA-SLURP-STAGE3-NXT-R4-SOLVER-DECODING-FOLD-B-SMOKE-4-FIT-V1`; read `SAEA-SLURP-NXT-R4-SOLVER-DECODING-FOLD-B-READ-V1`.
 

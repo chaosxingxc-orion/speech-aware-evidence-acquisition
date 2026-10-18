@@ -91,10 +91,10 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-18-slurp-nxt-r4-solver-decoding-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "c3a51d315f7242baf3fac6dc9d8cac307ab5890f8ce1c78cb241d2ac671e6a52"
+    "sha256": "543bcc86b55042a99b833ac85127867a02c8034eaf9f44d7925da6b372cc1347"
   },
   "purpose": "SAEA-SLURP-STAGE3-NXT-R4-SOLVER-DECODING-FOLD-B-SMOKE-4-V1: four-row form smoke of the Solver decoding column of NX-T R4.",
-  "registered_at_utc": "2026-10-18T16:29:27.000000+00:00",
+  "registered_at_utc": "2026-10-18T17:30:35Z",
   "schema": "saea-registered-generation-plan-v1",
   "scoring": "None: the smoke is never scored.",
   "serving": {

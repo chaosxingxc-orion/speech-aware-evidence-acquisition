@@ -394,7 +394,7 @@
       "NOMINATED": "SLU delta CI95 lower bound > 0 AND intent delta point >= -0.65 pp AND the SLU delta point is not below the twin bar (the SLU delta point is >= |o|, the absolute SLU delta point of the twin aa against lock)"
     }
   },
-  "registered_at_utc": "2026-10-18T16:29:27.000000+00:00",
+  "registered_at_utc": "2026-10-18T17:30:35Z",
   "registration_basis": "owner rulings 329 A and 332 A (2026-10-18), 326 A and 327 A (2026-10-17), 313 A (2026-10-14) and 304/307 (2026-10-13), coordinator approval of the NX-T R4 design; docs/superpowers/specs/2026-10-12-thinking-core-engineering-base-design.md. DRAFT: nothing here authorises a flip or a flight.",
   "roster": {
     "arm": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
@@ -440,7 +440,7 @@
     }
   },
   "status": "DRAFT-HELD",
-  "study_commit_at_registration": "32f81ade5417c0954849eb1259f30cf183f66dd1",
+  "study_commit_at_registration": "56853bba4a4b33b7574008f8853d34e20d0ea248",
   "thinking_knobs": {
     "answer_fallback": {
       "enable_thinking": false,
