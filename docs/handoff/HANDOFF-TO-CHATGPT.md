@@ -1,6 +1,6 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-17T15:10:55Z
+Last refreshed: 2026-10-18T14:56:47Z
 
 
 
@@ -9,6 +9,18 @@ Last refreshed: 2026-10-17T15:10:55Z
 
 
 
+
+## R2b READ = NEEDS-NO-MORE-BUDGET (note d90c24f8b); R2 rec2 FLYING since 14:37Z (seal ~2026-10-19 14:00Z); forced-close root cause; rulings 329 A / 330 A; decisions 331-333 + 322 pending (2026-10-18T14:56:47Z, Fable 5.1 root)
+
+R2b: Solver 6,144 vs 3,072 SLU -0.81 [-2.19,+0.57], intent -0.56, 1.37x cost; forced closes 40.1 % -> 37.8 %; lock keeps 3,072. The R2 rec2
+hook flipped correctly but false-refused on a `refus` grep (informational repin line); chain started by hand 14:36:38Z. Forced-close analysis
+(model-free): share scales with Solver workload (supply >= 40 items 61 %); forced rows hold ~65 % of slot errors (selection effect); the
+close itself adds only over-fill (+28 FP over 269 discordant rows). 329 A: decoding-policy column axis (after R3). 330 A: bounded reasoning-
+byte diagnostic (~40 rows, data root only). Building (Sonnet, worktrees): NX-T R3 Solver template column (t1 decide-once, t2 grounded-or-empty,
+t3 supply-focus, t4 = t1+t2; aa; lock), 330 diagnostic probe. Pending owner: 331 queue order, 332 decoding arms, 333 carrier timing, 322.
+Registry a28640299.
+
+Superseded stamp: 2026-10-17T15:10:55Z
 
 ## R2 rec2 (328) registered 71c9fc205 (mode-A trace resume, 26 kept / 1,054 flown) and queued: SAEA-Queue-NXT2REC2 flips + chains it when R2b exits rc 0; R2b flying since 13:58Z (2026-10-17T15:10:55Z, Fable 5.1 root)
 
