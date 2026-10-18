@@ -3339,3 +3339,17 @@ Owner, verbatim: 「决策331：A，决策332：A，决策333：B，决策322：
   a few minutes.
 - Resulting queue: R2 rec2 (seal ~2026-10-19 14:00Z) -> 322 window -> 330 diagnostic -> R3 (~35 h) -> [324-B if R2 reads no loss] -> P3.2 +
   P3.3 carriers -> decoding column (332) -> Fold A confirms of nominated arms -> composed lock v3.x -> DEV replicate -> test read (new allowance).
+
+### R3 registered, 330 diagnostic registered, 322 window orchestrator armed (coordinator, 2026-10-18 16:05Z)
+
+- NX-T R3 merged (aad056bcc, Sonnet 61e5875be) and registered by `package_launch.sh --until commit` (7c66a786e; 4 rows countersigned 15:51:44Z,
+  receipt minted). Arms t1-decide-once, t2-grounded-or-empty, t3-supply-focus, t4-decide-once-grounded, aa, lock (program c7); expected 33.3
+  GPU-h, ceiling 43.4 + 0.5 smoke. Words: NOMINATED / EFFICIENT-NO-LOSS / HARM (loss resolved beyond the A/A offset) / NEUTRAL.
+- 330 diagnostic merged (79fbf07ba, Sonnet ba35d9d2b) and its probe row countersigned (579025b68): 40 sealed budget-3072 Solver requests +
+  16 sealed budget-6144 requests of forced-both rows, 56 calls, ceiling 0.9 GPU-h; reasoning bytes under the data root only; render proof of all
+  56 wire bodies against the sealed hashes passed offline.
+- 322 / 331 window: Windows task SAEA-Queue-W322 (`scripts/flights/batch/queue/window_322_orchestrator.ps1`, aa23bf921) armed 16:02:38Z: on
+  `CHAIN_NXT2_EXIT rc=0` after 14:36:38Z -> 180 s drain -> pre-step (no flight; `serving_swap.sh --stop-only`) -> `.wslconfig` memory 44 -> 36 GB
+  (backup) -> `wsl --shutdown` -> post-step `window_322_post_restart.sh` (close R2 rows + commit, swap to think-budget-np4, diagnostic, then
+  `queue_nxt3_after_nxt2.sh` which flips and chains R3; SAEA-Chain-NXT3 is registered by the launcher's own `saea_task.ps1 -Start`). Any
+  other R2 exit or a refused step leaves everything as is. RULE: master must be clean whenever the window can fire (R2 seal ~2026-10-19 14:00Z).
