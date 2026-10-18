@@ -1,0 +1,113 @@
+{
+  "schema": "saea-carrier-think-spec-v1",
+  "_note": "Data for the P3.2 / P3.3 carrier base package on the Thinking core (owner rulings 302 A, 306 A, 333 B). Every identity that a source cell already carries (rows, audio seconds, split identity, scorers, units) is READ from the source cell by the derive and is NOT repeated here; this file holds only what no source cell can supply: the source-cell names, the derived-id stems, the pins of the Thinking packet artifacts, the cost inputs and the sealed-prompt fit observations.",
+  "date": "2026-10-18",
+  "slug": "carrier-base-thinking",
+  "order": ["a2t", "e21", "e22"],
+  "cost": {
+    "slots": 4,
+    "margin": 1.3,
+    "round_h": 0.1,
+    "smoke_gpu_hours": 0.5,
+    "seconds_per_contact": {"a2t": 59.0, "e21": 64.0, "e22": 64.0},
+    "basis": "Thinking SLURP measured per-contact seconds at np4 (coordinator brief, NX-T R2b read): Perception about 59 s, Solver about 64 s; the delivering SLURP lock row is 123 s = 59 + 64. A2T is a one-node tool-call answer and takes the Perception figure; the Earnings window transcript (about 275 answer tokens) takes the Solver figure. Cross-check from the 266-E bare-core direct Thinking arm (22.75 s per contact mean, 1,032 completion tokens, 0.02298 s per token per slot) and from the sealed Instruct contact latencies: the all-contacts-reason-to-the-budget envelope is the Instruct latency plus 0.02298 x 3,072 = 71.5 s (A2T) and 82.4 s (Earnings), registered as the upper envelope in the facts and NOT as the ceiling.",
+    "envelope_decode_s_per_token": 0.02298,
+    "envelope_budget_tokens": 3072,
+    "instruct_contact_seconds": {"a2t": 0.94, "e21": 11.85, "e22": 11.85},
+    "instruct_contact_seconds_source": {
+      "a2t": "SAEA-A2T-STAGE3-AA-PAIRED-400-A-V1 COST channel, 400 contacts, mean client latency 0.94 s at np3",
+      "e21": "SAEA-E21-NATIVE-WINDOW-DIRECT-SUB10-V1 COST channel, 342 contacts, mean 11.85 s at np4",
+      "e22": "no sealed Earnings-22 run exists; the Earnings-21 native-window figure is the proxy (same 90 s window form, same instruction)"
+    }
+  },
+  "fit_observations": {
+    "limit_basis": "slot 24,576 - operational reserve 3,072 - completion cap 4,096 - special reserve 2 = 17,406 (thinking_system_family.PROMPT_LIMIT_THINKING)",
+    "a2t": {"run": "SAEA-A2T-STAGE3-AA-PAIRED-400-A-V1", "contacts": 400, "prompt_tokens_mean": 3746.56, "prompt_tokens_p99": 3911, "prompt_tokens_max": 12166, "note": "includes the 654.6 s synthesis-defect row; the Instruct geometry was np3 x 32,768"},
+    "e21": {"run": "SAEA-E21-NATIVE-WINDOW-DIRECT-SUB10-V1", "contacts": 342, "prompt_tokens_mean": 1456.16, "prompt_tokens_p99": 1476, "prompt_tokens_max": 1477, "also": "SAEA-E21-OFFLINE-DIRECT-GENERATION-NP4-V1 1,593 contacts max 1,230"},
+    "e22": {"run": "none (proxy: the Earnings-21 native-window maximum, same 90 s window form and instruction)", "contacts": 0, "prompt_tokens_max": 1477}
+  },
+  "carriers": {
+    "a2t": {
+      "label": "Audio2Tool",
+      "stem": "a2t",
+      "carrier_lock_key": "audio2tool",
+      "source": {"smoke": "a2t-native-stage3-module-alloff-smoke-4-v1", "arm": "a2t-native-stage3-module-alloff-v1"},
+      "direct_parent": {"arm": "a2t-stage3-aa-paired-400-a-v1", "smoke": "a2t-stage3-aa-paired-400-smoke-4-v1", "note": "the A2T-AA direct cells; the all-off source compiles to their request bytes (module_equivalence_proof --at a2t0)"},
+      "instruct_comparator": "A2T-AA pass A / pass B (Instruct, np3 x 32,768, owner decision 167: h_A2T 1.625 pp official tool accuracy)",
+      "unit_kind": "rows",
+      "batch": {"expected_rows": 400, "contacts_per_row": 1, "ceiling_per_row": 2, "smoke_expected_rows": 4, "smoke_contacts_per_row": 1, "smoke_form": "engineering"},
+      "fit": {"base": 1, "per_row": 3},
+      "primary_metric": "a2t-toolcall-official (paper-facing, arXiv:2604.22821 Table 3 calibration) beside a2t-toolcall-v2 / a2t-toolcall / cost",
+      "paper_column": true,
+      "packets": {
+        "kind": "receipt-rows",
+        "run_id": "SAEA-CARRIER-THINK-A2T-PACKETS-GPU-V1",
+        "experiment": "carrier-think-a2t-packets-gpu-v1",
+        "roster_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-27-a2t-paired-400-roster/flight-roster-receipt.json",
+        "roster_receipt_sha256": "844354b53a77a399bde62f34f3f971c3ab77502fb3ea8daac33295a1a11fc96e",
+        "rows": 400,
+        "audio_seconds": 2760.438042,
+        "promotion_receipt_name": "A2T-PAIRED-400-THINKING-promotion.json",
+        "legacy_cache_dir": "/home/chao/feat-cache/audio2tool-thinking-gpu-q4km-afdaeff6",
+        "plan_gpu_hours": 0.5,
+        "smoke_roster_rows": 4
+      }
+    },
+    "e21": {
+      "label": "Earnings-21 + ConEC",
+      "stem": "e21",
+      "carrier_lock_key": "earnings21-original",
+      "source": {"smoke": "earnings21-native-stage3-module-alloff-smoke-4-v1", "arm": "earnings21-native-stage3-module-alloff-v1"},
+      "direct_parent": {"arm": "e21-native-window-direct-full44-v1", "smoke": "e21-native-window-direct-four-row-v1", "note": "the E21 direct cells; the all-off source compiles to their baseline bytes (module_equivalence_proof --at e210)"},
+      "instruct_comparator": "none sealed on the module form: the Thinking all-off / direct pair is itself the Earnings native-window A/A (design 2b.3)",
+      "unit_kind": "windows",
+      "batch": {"expected_rows": 44, "contacts_per_row": 37, "ceiling_per_row": 400, "smoke_expected_rows": 1, "smoke_contacts_per_row": 4, "smoke_form": "cell"},
+      "fit": null,
+      "workflow_timeout_seconds": 43200,
+      "primary_metric": "asr-wer-whisper (Whisper-normalised WER) beside saea-scoring-v1 numerics: conec-entity-wer-official, numeric-value-accuracy-v1, semantic-high-impact-error-rate-v1 and cost",
+      "paper_column": false,
+      "packets": {
+        "kind": "windows",
+        "inventory_run_id": "SAEA-CARRIER-THINK-E21-WINDOW-INVENTORY-V1",
+        "encode_run_id": "SAEA-CARRIER-THINK-E21-WINDOW-GPU-ENCODING-V1",
+        "smoke_encode_run_id": "SAEA-CARRIER-THINK-E21-WINDOW-GPU-ENCODING-SMOKE-4-V1",
+        "source_inventory": {"run_id": "SAEA-E21-DR-SHARED-EXACT-WINDOW-INVENTORY-V1", "relpath": "analysis/SAEA-E21-DR-SHARED-EXACT-WINDOW-INVENTORY-V1/window-inventory.json", "sha256": "7b12a5c32654855701c48b57152ab1643e0c776b9a7a3853fda009a6ac78face"},
+        "smoke_source_inventory": {"run_id": "SAEA-E21-NATIVE-WINDOW-FOUR-ROW-V1", "relpath": "analysis/SAEA-E21-NATIVE-WINDOW-FOUR-ROW-V1/window-inventory.json", "sha256": "e5f3cfbcbc407fbb3a7b59469b86ab9d405f7b43963cb2d18b655790c5f4a32b"},
+        "legacy_cache_dir": "/home/chao/feat-cache/e21-thinking-gpu-q4km-afdaeff6",
+        "smoke_legacy_cache_dir": "/home/chao/feat-cache/e21-thinking-gpu-q4km-afdaeff6-smoke4",
+        "windows": 1593,
+        "smoke_windows": 4,
+        "audio_seconds": 141345.8526875,
+        "plan_gpu_hours": 2.0
+      }
+    },
+    "e22": {
+      "label": "Earnings-22",
+      "stem": "e22",
+      "carrier_lock_key": "earnings22-original",
+      "source": {"smoke": "earnings22-native-stage3-module-alloff-smoke-4-v1", "arm": "earnings22-native-stage3-module-alloff-v1"},
+      "direct_parent": {"arm": "e22-native-window-direct-dev10-v1", "smoke": "e22-native-window-direct-four-row-v1", "note": "Earnings-22 has no direct parent CELL; the shared direct layer e22-native-window-direct-base-v1 (the dev10 / four-row baselines) is the direct comparator (module_equivalence_proof --at e220)"},
+      "instruct_comparator": "none: Earnings-22 has no sealed run on the native-window form; the Thinking pair is its first measurement and its own A/A",
+      "unit_kind": "windows",
+      "batch": {"expected_rows": 10, "contacts_per_row": 46, "ceiling_per_row": 400, "smoke_expected_rows": 1, "smoke_contacts_per_row": 4, "smoke_form": "cell"},
+      "fit": null,
+      "workflow_timeout_seconds": 43200,
+      "primary_metric": "asr-wer-whisper only (corpus-level Whisper English-normalizer WER on the PLAIN window form; not the ESB short-form tail-2 s variant)",
+      "paper_column": false,
+      "packets": {
+        "kind": "windows",
+        "inventory_run_id": "SAEA-CARRIER-THINK-E22-WINDOW-INVENTORY-V1",
+        "encode_run_id": "SAEA-CARRIER-THINK-E22-WINDOW-GPU-ENCODING-V1",
+        "smoke_encode_run_id": "SAEA-CARRIER-THINK-E22-WINDOW-GPU-ENCODING-SMOKE-4-V1",
+        "source_inventory": {"run_id": "SAEA-E22-DEV-WINDOW-INVENTORY-V1", "relpath": "analysis/SAEA-E22-DEV-WINDOW-INVENTORY-V1/window-inventory.json", "sha256": "d3484ced01d264aec98d97b2fcfc24452d493b3c4fdd8c7e31ddccc7700b07e8"},
+        "smoke_source_inventory": {"run_id": "SAEA-E22-NATIVE-WINDOW-FOUR-ROW-V1", "relpath": "analysis/SAEA-E22-NATIVE-WINDOW-FOUR-ROW-V1/window-inventory.json", "sha256": "4dc552e6f2708bb1c9349cb228a0459889bef4b240dcf862eaf589dac7e85849"},
+        "legacy_cache_dir": "/home/chao/feat-cache/e22-thinking-gpu-q4km-afdaeff6",
+        "smoke_legacy_cache_dir": "/home/chao/feat-cache/e22-thinking-gpu-q4km-afdaeff6-smoke4",
+        "windows": 451,
+        "smoke_windows": 4,
+        "audio_seconds": 40055.9,
+        "plan_gpu_hours": 0.8
+      }
+    }
+  }
+}

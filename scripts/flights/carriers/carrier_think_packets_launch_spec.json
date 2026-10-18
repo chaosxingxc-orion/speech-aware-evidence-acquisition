@@ -1,0 +1,46 @@
+{
+  "schema": "saea-package-launch-spec-v1",
+  "_note": "P3.2 carrier Thinking packets (owner ruling 333 B) launch spec for package_launch.sh. The coordinator registers with `--root-countersign --until commit` (derive = the model-free proof that the window-inventory re-key reproduces the registered Instruct bytes; write = the encoder fragments, the experiments, the package and the seven DRAFT rows; countersign; mint = none, the packets need a countersigned exposure row and no decision receipt; commit), then starts the chain with `--from chain --until chain` (the packets rows are registered while NX-T R3 flies; the chain follows the R3 exit, see scripts/flights/batch/queue/queue_carriers_after.sh, which starts the chain through this spec when given --packets). There is no flip step: the Earnings window-encode cells are committed `ready` with their requirement pinned to the Thinking-identity inventory hash (the registered E21 DR encoding form), and the A2T pass is driver-run. The Windows task SAEA-Chain-CARRIERPACKETS must be registered first.",
+  "short": "carrierpackets",
+  "launch_id": "carrierpackets-first-attempt",
+  "package": "carrier-packets-thinking-v1",
+  "readiness_dir": "docs/readiness/2026-10-18-carrier-packets-thinking-v1",
+  "steps": {
+    "derive": {
+      "cmd": "python -B scripts/flights/carriers/carrier_think_windows.py selfcheck"
+    },
+    "write": {
+      "cmd": "python -B scripts/flights/carriers/carrier_think_packets_write_registration.py --study-commit {head} --registered-at {utc} --append-ledger"
+    },
+    "countersign": {
+      "texts": "{readiness_dir}/countersign-row-texts-v1.json",
+      "ledger": "docs/exposure-ledger.md",
+      "skip_substrings": []
+    },
+    "mint": {
+      "cmd": "true"
+    },
+    "commit": {
+      "paths": [
+        "configs",
+        "docs/exposure-ledger.md",
+        "{readiness_dir}",
+        "{readiness_dir}-preregistration.md"
+      ],
+      "message": "register: carrier Thinking packets (P3.2: A2T paired 400, Earnings-21 and Earnings-22 windows; owner ruling 333 B); rows countersigned"
+    },
+    "flip": {
+      "script": "scripts/flights/carriers/carrier_think_flip.sh",
+      "package": "docs/readiness/2026-10-18-carrier-packets-thinking-v1",
+      "cells": [],
+      "pins_commit_msg": "/home/chao/carrierpackets-pins-commit.txt"
+    },
+    "chain": {
+      "task": "SAEA-Chain-CARRIERPACKETS",
+      "wrapper": "/home/chao/saea-queue/chain_carrierpackets.sh"
+    },
+    "read": {
+      "cmd": "python -B scripts/flights/carriers/carrier_think_packets.py a2t --verify-receipt"
+    }
+  }
+}

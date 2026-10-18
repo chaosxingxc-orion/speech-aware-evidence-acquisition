@@ -1,0 +1,86 @@
+{
+  "date": "2026-10-18",
+  "e21": {
+    "counts": {
+      "full": {
+        "requests": 1593,
+        "unique_audio": 1593,
+        "unique_audio_seconds": 141345.852688
+      },
+      "smoke": {
+        "requests": 4,
+        "unique_audio": 4,
+        "unique_audio_seconds": 360.0
+      }
+    },
+    "full": {
+      "batch": "SAEA-E21-DR-SHARED-EXACT-WINDOW-INVENTORY-V1",
+      "registry_run_id": "SAEA-E21-DR-SHARED-EXACT-WINDOW-INVENTORY-V1",
+      "relpath": "analysis/SAEA-CARRIER-THINK-E21-WINDOW-INVENTORY-V1/window-inventory.json",
+      "sha256": "484d154ca497925dd4133f51ac8c650ecaeefc57593456068e8e76b79f525441",
+      "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
+      "unit_count": 1593
+    },
+    "smoke": {
+      "batch": "SAEA-E21-NATIVE-WINDOW-FOUR-ROW-V1",
+      "registry_run_id": "SAEA-E21-DR-SHARED-EXACT-WINDOW-INVENTORY-V1",
+      "relpath": "analysis/SAEA-CARRIER-THINK-E21-WINDOW-INVENTORY-V1/window-inventory-smoke-4.json",
+      "sha256": "6c4d8750c9a0cd43968c92995ab4af0c721bb51b92aeb4ab10897c4764cc4790",
+      "split_identity_hash": "4d9ea907c05b67c43b5829e3e6c379ee37d39df012028a864aa0cdb7ae0c1992",
+      "unit_count": 4
+    },
+    "smoke_selection": {
+      "batch": "SAEA-E21-NATIVE-WINDOW-FOUR-ROW-V1",
+      "per_call_limit": 4,
+      "sample_ids": [
+        "4320211"
+      ]
+    }
+  },
+  "e22": {
+    "counts": {
+      "full": {
+        "requests": 451,
+        "unique_audio": 451,
+        "unique_audio_seconds": 40055.889875
+      },
+      "smoke": {
+        "requests": 4,
+        "unique_audio": 4,
+        "unique_audio_seconds": 360.0
+      }
+    },
+    "full": {
+      "batch": "SAEA-E22-DEV-WINDOW-INVENTORY-V1",
+      "registry_run_id": "SAEA-E22-DEV-WINDOW-INVENTORY-V1",
+      "relpath": "analysis/SAEA-CARRIER-THINK-E22-WINDOW-INVENTORY-V1/window-inventory.json",
+      "sha256": "61396ba629f506fad64fe55623fdbbce981cf628918f950d4c06d7f1b5bb8611",
+      "split_identity_hash": "89b178d6b1ef46d9ca820ae54349e3d2099c60cde6d6b753ef9f66137c310028",
+      "unit_count": 451
+    },
+    "smoke": {
+      "batch": "SAEA-E22-NATIVE-WINDOW-FOUR-ROW-V1",
+      "registry_run_id": "SAEA-E22-DEV-WINDOW-INVENTORY-V1",
+      "relpath": "analysis/SAEA-CARRIER-THINK-E22-WINDOW-INVENTORY-V1/window-inventory-smoke-4.json",
+      "sha256": "aebb8ac72ca3c78acb5fb137947de938b70d970a25012031bd3f9b36a04a50c0",
+      "split_identity_hash": "597da35b75906520faf58246f2e01ff08a8883cd99492936a8e815a5c19528de",
+      "unit_count": 4
+    },
+    "smoke_selection": {
+      "batch": "SAEA-E22-NATIVE-WINDOW-FOUR-ROW-V1",
+      "per_call_limit": 4,
+      "sample_ids": [
+        "4453225"
+      ]
+    }
+  },
+  "identity": {
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "decoder_gguf_sha256": "afdaeff6f23c740429aadb3fa180f9d53b78278fe0d331b594b0b71bd9bf4835",
+    "mmproj_sha256": "57b7240fb3d8941f5969d760c694a754cbe74f7db428605d63e1dacceda98b38",
+    "runtime_receipt_sha256": "0b25b5128cfc47f3133f06a8fdcea40fb6a8870130b969df244e37be108729d6"
+  },
+  "note": "The Thinking-identity window inventories of the Earnings carriers: the registered Instruct inventories re-keyed to the Thinking encoder identity (carrier_think_windows.py). Deterministic and model-free; materialised on the data root by the P3.2 packets chain, which refuses unless the written bytes hash to these pins. No slice is re-cut: the requests point at the registered Instruct slices.",
+  "schema": "saea-carrier-think-window-pins-v1"
+}
+

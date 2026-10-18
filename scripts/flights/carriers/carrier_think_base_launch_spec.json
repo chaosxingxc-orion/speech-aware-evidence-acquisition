@@ -1,0 +1,67 @@
+{
+  "schema": "saea-package-launch-spec-v1",
+  "_note": "Carrier base on the Thinking core (P3.3; owner rulings 302 A, 306 A, 333 B) launch spec for package_launch.sh. It runs AFTER the P3.2 packets chain (carrier_think_packets_launch_spec.json) has promoted and sealed the Thinking packets of every carrier: the derive step pins the real packet artifacts with --require-receipts and REFUSES when one is absent (a zero sentinel is refused by the flip anyway). The coordinator registers with `--root-countersign --until commit`; the queue hook scripts/flights/batch/queue/queue_carriers_after.sh does the same on the coordinator's standing authority when installed with --register, then flips and starts the chain. The write step passes --no-derive so it cannot undo the pins, and --registered-at {utc} because a first registration has no registered-facts file to inherit a stamp from. The chain wrapper (scripts/flights/batch/queue/chain_carrierthink.sh, installed at /home/chao/saea-queue/chain_carrierthink.sh) swaps to the SLURP lock's Thinking session itself; no new Windows serving task exists. The Windows task SAEA-Chain-CARRIERTHINK must be registered first.",
+  "short": "carrierthink",
+  "launch_id": "carrierthink-first-attempt",
+  "package": "carrier-base-thinking-v1",
+  "readiness_dir": "docs/readiness/2026-10-18-carrier-base-thinking-v1",
+  "steps": {
+    "derive": {
+      "cmd": "python -B scripts/flights/carriers/carrier_think_derive_cells.py --require-receipts"
+    },
+    "write": {
+      "cmd": "python -B scripts/flights/carriers/carrier_think_write_registration.py --study-commit {head} --registered-at {utc} --append-ledger --no-derive"
+    },
+    "countersign": {
+      "texts": "{readiness_dir}/countersign-row-texts-v1.json",
+      "ledger": "docs/exposure-ledger.md",
+      "skip_substrings": [
+        "-READ-"
+      ]
+    },
+    "mint": {
+      "cmd": "python -B scripts/flights/carriers/carrier_think_mint_receipt.py",
+      "done_if": {
+        "file": "coordination/carrier-base-thinking-v1/root-admission-v1.json",
+        "contains": [
+          "SAEA-CARRIER-THINK-BASE-E22-DIRECT-V1"
+        ]
+      }
+    },
+    "commit": {
+      "paths": [
+        "configs",
+        "docs/exposure-ledger.md",
+        "{readiness_dir}",
+        "{readiness_dir}-preregistration.md"
+      ],
+      "message": "register: carrier base on the Thinking core (A2T, E21, E22 smoke / all-off / direct; owner rulings 302 A, 306 A, 333 B); rows countersigned; receipt minted"
+    },
+    "flip": {
+      "script": "scripts/flights/carriers/carrier_think_flip.sh",
+      "package": "docs/readiness/2026-10-18-carrier-base-thinking-v1",
+      "cells": [
+        "carrier-think-base-a2t-smoke-4-v1",
+        "carrier-think-base-a2t-alloff-v1",
+        "carrier-think-base-a2t-direct-v1",
+        "carrier-think-base-e21-smoke-4-v1",
+        "carrier-think-base-e21-alloff-v1",
+        "carrier-think-base-e21-direct-v1",
+        "carrier-think-base-e22-smoke-4-v1",
+        "carrier-think-base-e22-alloff-v1",
+        "carrier-think-base-e22-direct-v1"
+      ],
+      "pins_commit_msg": "/home/chao/carrierthink-pins-commit.txt",
+      "flight_commit_file": "/home/chao/carrierthink-flight-commit.txt",
+      "pins_commit_text": "Carrier base: re-pin the nine Thinking carrier cells (A2T, E21, E22: smoke, all-off, direct) at the registered study commit (owner rulings 302 A / 306 A / 333 B; ext4 flip)\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\n"
+    },
+    "chain": {
+      "task": "SAEA-Chain-CARRIERTHINK",
+      "wrapper": "/home/chao/saea-queue/chain_carrierthink.sh",
+      "flight_commit_file": "/home/chao/carrierthink-flight-commit.txt"
+    },
+    "read": {
+      "cmd": "bash scripts/flights/carriers/carrier_think_read.sh columns a2t"
+    }
+  }
+}
