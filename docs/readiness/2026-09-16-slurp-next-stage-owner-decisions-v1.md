@@ -3291,3 +3291,32 @@ read at n = 1,080 intact. Cost about 1.5 GPU-h after the successor-3 seal; the s
   and the hook's flip (the flip refuses a moved master).
 - Expected timeline: R2b seal ~2026-10-18 12:00Z -> R2 rec2 flies ~12:10Z -> seal ~2026-10-19 12:00Z. Then reads (R2b, R2) -> 324-B confirm /
   Solver template column (326 A).
+
+### R2b READ: NEEDS-NO-MORE-BUDGET; R2 rec2 flying; forced-close root-cause analysis; owner rulings 329 A and 330 A (coordinator, 2026-10-18 15:30Z)
+
+- R2b column sealed 2026-10-18T12:34:22Z (chain rc 0); ledger rows closed (a177f5d6f); READ row countersigned (310e23ae0); read written
+  14:40Z. Word `solver-6144` = **NEEDS-NO-MORE-BUDGET**: delivering budget-3072 72.74 SLU / 85.37 intent; solver-6144 71.93 / 84.81; paired SLU
+  -0.81 [-2.19, +0.57], intent -0.56 [-1.67, +0.56] (saves 17 / harms 23); Solver forced-close share 40.1 % -> 37.8 %; cost 1.37x delivering
+  rows (9.23 vs 12.69 GPU-h per lock flight). The lock keeps Solver 3,072 / 4,096. Results note: Opus (in progress).
+- R2 rec2: the queue hook flipped the R2 arm cell correctly (master 394f4a760 = flight commit, 12:38:56Z) but refused to launch on a false
+  match: its flip-log grep for `refus` hit the informational line `repin exit N (1 = its internal check refused the dirty tree, expected)`.
+  The coordinator verified HEAD = flight commit, no flight.lock, no flight process, chain script `arm-only`, and started SAEA-Chain-NXT2 by hand
+  at 14:36:38Z (GPU idle 12:39-14:36Z). Swap to think-budget-np4 ready 14:37:24Z; driver replay gate OK; arm-start 14:37:33Z. Seal expected
+  ~2026-10-19 14:00Z. Every later hook excludes the `repin exit` line from its refusal grep.
+- Forced-close analysis (coordinator, model-free, over the sealed R2b column rows and their official per-row scores; development numbers on
+  TRAIN Fold B, no text printed): forced share rises with the Solver's workload (supplied items 30-39: 33 %, >= 40: 61 %; Solver prompt
+  > 9k tokens 60-68 %; Perception candidates 1/2/3: 38/45/65 %; entities output 0/1/2+: 14/42/63-77 %); 66 % of rows forced at 3,072 are still
+  forced at 6,144; 25 % of rows flip forced status between the two arms (greedy decoding at temperature 0 is not reproducible under np4
+  batching). Forced rows hold 65 % of slot FP, 64 % of FN and 54 % of intent errors (empty-gold false fill 45.6 % vs 10.4 % natural), but the
+  within-row contrast over the 269 discordant rows shows the forced close itself only adds precision loss (+28 FP, +25 false-fill rows; TP,
+  FN, intent unchanged; rough ceiling of removing it ~+1.4 pp word-level SLU). Root cause: exhaustive verification over every candidate
+  intent and supplied item with no stopping rule, under greedy decoding. NX-T R3 (326 A template column, Sonnet building) arms: t1
+  decide-once, t2 grounded-or-empty, t3 supply-focus (replaces type-inventory), t4 = t1 + t2; twin aa; lock delivering.
+- Owner, verbatim: 「决策329：A，决策330：A」 (English: "Decision 329: A; decision 330: A").
+- **329 A:** a DECODING-POLICY control axis is opened: a same-flight column whose arms differ only in the Solver's sampling parameters
+  (temperature / top_p / top_k / presence penalty, fixed seed), with a twin and the greedy lock delivering. Instrument work is model-free
+  (Sonnet) and starts after the R3 package lands (both touch the column instrument). It flies after R3.
+- **330 A:** a bounded diagnostic exception to ruling 286: one small registered probe re-issues the sealed Solver requests of about 40 R2b
+  rows (forced and natural, both budgets) with the reasoning bytes RETAINED under the data root only (never in documents, notes or chat
+  transcripts beyond counts and pattern statistics), to classify the non-terminating reasoning (enumeration vs repetition loop). 286 stays in
+  force for every other cell. Registered with its own ledger rows; flies in the window after R2 rec2 seals and before R3 (under 1 GPU-h).
