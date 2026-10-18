@@ -1,0 +1,33 @@
+{
+  "_note": "The NX-T R4 arm table (data-driven; owner rulings 329 A and 332 A of 2026-10-18: a DECODING-POLICY control axis at the Solver node, on the Thinking core). Each candidate arm overrides ONLY the sampling parameters of its own Solver contact (temperature / top_p / top_k / presence_penalty: the closed set of rails.native_episode_receipt.DECODING_VARIANT_KNOBS, with bounds). The Solver instruction template (the locked one), the Perception note, the evidence, the QueryState, the request seed (the lock's), the per-node thinking budget (3,072 / cap 4,096), the response format and the tool authority are the lock's for every arm. The twin aa (replicate_of lock) and the delivering arm lock (the lock's request, no override) are added by the compiler, aa then lock LAST. A decoding of {temperature: 0} states the lock's own value, so d4 differs from the lock by its presence_penalty alone.",
+  "arms": [
+    {
+      "arm_id": "d1-qwen-sampling",
+      "evidence": "Owner ruling 332 A, arm 1: Qwen's published Thinking-mode sampling (temperature 0.6, top_p 0.95, top_k 20). The R2b forced-close analysis found the Solver's reasoning does not terminate on about 40 % of rows under greedy decoding at temperature 0 (66 % of rows forced at 3,072 are still forced at 6,144); the arm asks whether the published sampling setting changes that.",
+      "decoding": {"temperature": 0.6, "top_p": 0.95, "top_k": 20}
+    },
+    {
+      "arm_id": "d2-qwen-sampling-presence",
+      "evidence": "Owner ruling 332 A, arm 2: arm 1 plus presence_penalty 1.5, aimed at a reasoning that revisits the same tokens (the 330 diagnostic classifies enumeration against repetition loops).",
+      "decoding": {"temperature": 0.6, "top_p": 0.95, "top_k": 20, "presence_penalty": 1.5}
+    },
+    {
+      "arm_id": "d3-temp-0.3",
+      "evidence": "Owner ruling 332 A, arm 3: a milder temperature (0.3) with the same top_p and top_k, separating 'any sampling' from the published temperature.",
+      "decoding": {"temperature": 0.3, "top_p": 0.95, "top_k": 20}
+    },
+    {
+      "arm_id": "d4-greedy-presence",
+      "evidence": "Owner ruling 332 A, arm 4: the lock's greedy decoding (temperature 0) plus presence_penalty 1.5, isolating the penalty from any sampling.",
+      "decoding": {"temperature": 0, "presence_penalty": 1.5}
+    }
+  ],
+  "delivering": "lock",
+  "locked_decoding": {"seed": 20260913, "temperature": 0},
+  "locked_template": {
+    "relpath": "configs/probes/slurp_native_role_solver_v2.txt",
+    "sha256": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+  },
+  "schema": "saea-nxt-r4-arm-table-v1",
+  "twin": "aa"
+}

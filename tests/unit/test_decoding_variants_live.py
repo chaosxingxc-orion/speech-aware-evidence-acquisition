@@ -17,7 +17,7 @@ import pytest
 
 pytest.importorskip("openjiuwen", reason="OpenJiuwen unavailable")
 
-from test_decoding_variants import D1, D2, D3, D4, FIT, _parse  # noqa: E402
+from test_decoding_variants import D1, D2, D3, D4, _parse  # noqa: E402
 
 from speech_aware_evidence_acquisition.rails.native_episode_receipt import validate_supply_variant_receipt  # noqa: E402
 from speech_aware_evidence_acquisition.reproduction.ojw import openjiuwen_available  # noqa: E402

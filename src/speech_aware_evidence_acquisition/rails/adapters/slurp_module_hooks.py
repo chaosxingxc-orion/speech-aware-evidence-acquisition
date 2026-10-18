@@ -251,8 +251,7 @@ def carrier_module_hooks(*, repo_root: Path | None = None) -> CarrierHooks:
                        lock_v2_3.LOCK_V2_3: lock_layer_v2_3},
         lock_deliver_normalisers=lock_v2_3.lock_deliver_normalisers(),
         current_lock=CURRENT_LOCK,
-        roster_pin_paths=ROSTER_PIN_PATHS,
-        template_variant_frame=TEMPLATE_VARIANT_FRAME,
+        roster_pin_paths=ROSTER_PIN_PATHS, template_variant_frame=TEMPLATE_VARIANT_FRAME,
         perception_template_variant_frame=PERCEPTION_TEMPLATE_VARIANT_FRAME,
         thinking_variant_frame={**PERCEPTION_TEMPLATE_VARIANT_FRAME, "block_path": ("native_episode", "roles", "perception", "thinking_variants"), "delivering_arm_id": "both-on", "twin_arm_id": "both-on-twin"},  # NX-T R1
         supply_variant_frame={**TEMPLATE_VARIANT_FRAME, "block_path": ("native_episode", "roles", "solver", "supply_variants")},  # E-S1

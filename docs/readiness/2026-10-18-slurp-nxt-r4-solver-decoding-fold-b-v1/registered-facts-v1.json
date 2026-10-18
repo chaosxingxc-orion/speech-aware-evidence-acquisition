@@ -1,0 +1,467 @@
+{
+  "_note": "Every model-free fact this DRAFT registration rests on, and the CANONICAL stage3_measurement blocks scripts/checks/stage3_effect_floor_check.py and scripts/checks/flight_registration_check.py resolve (keyed by run id).",
+  "accounting": {
+    "arm_fit_endpoint_calls_cap": 30240,
+    "arm_generation_calls": 15120,
+    "arm_speech_audio_seconds_cap": 44168,
+    "arms": [
+      "d1-qwen-sampling",
+      "d2-qwen-sampling-presence",
+      "d3-temp-0.3",
+      "d4-greedy-presence",
+      "aa",
+      "lock"
+    ],
+    "contacts_per_row": 7,
+    "cost_estimate": {
+      "arm_mix_rows": 3.61,
+      "arm_table": [
+        {
+          "arm": "d1-qwen-sampling",
+          "decoding": {
+            "temperature": 0.6,
+            "top_k": 20,
+            "top_p": 0.95
+          },
+          "evidence": "Owner ruling 332 A, arm 1: Qwen's published Thinking-mode sampling (temperature 0.6, top_p 0.95, top_k 20). The R2b forced-close analysis found the Solver's reasoning does not terminate on about 40 % of rows under greedy decoding at temperature 0 (66 % of rows forced at 3,072 are still forced at 6,144); the arm asks whether the published sampling setting changes that.",
+          "role": "candidate"
+        },
+        {
+          "arm": "d2-qwen-sampling-presence",
+          "decoding": {
+            "presence_penalty": 1.5,
+            "temperature": 0.6,
+            "top_k": 20,
+            "top_p": 0.95
+          },
+          "evidence": "Owner ruling 332 A, arm 2: arm 1 plus presence_penalty 1.5, aimed at a reasoning that revisits the same tokens (the 330 diagnostic classifies enumeration against repetition loops).",
+          "role": "candidate"
+        },
+        {
+          "arm": "d3-temp-0.3",
+          "decoding": {
+            "temperature": 0.3,
+            "top_k": 20,
+            "top_p": 0.95
+          },
+          "evidence": "Owner ruling 332 A, arm 3: a milder temperature (0.3) with the same top_p and top_k, separating 'any sampling' from the published temperature.",
+          "role": "candidate"
+        },
+        {
+          "arm": "d4-greedy-presence",
+          "decoding": {
+            "presence_penalty": 1.5,
+            "temperature": 0
+          },
+          "evidence": "Owner ruling 332 A, arm 4: the lock's greedy decoding (temperature 0) plus presence_penalty 1.5, isolating the penalty from any sampling.",
+          "role": "candidate"
+        },
+        {
+          "arm": "aa",
+          "decoding": null,
+          "evidence": "the in-flight A/A (the lock's request again)",
+          "role": "twin (replicate_of lock)"
+        },
+        {
+          "arm": "lock",
+          "decoding": null,
+          "evidence": "the 268-B lock form; its requests are the lock's byte for byte",
+          "role": "delivering"
+        }
+      ],
+      "column_flight": {
+        "contacts": 7560,
+        "expected_gpu_hours": 33.32,
+        "plan_ceiling_calls": 15120,
+        "planned_ceiling_gpu_hours": 43.4,
+        "run_cumulative_plan_calls": 15120,
+        "run_cumulative_speech_audio_seconds": 44168
+      },
+      "cost_model": {
+        "inputs": "scripts/flights/nx/nxt_r4_cost_inputs.json (the NX-T R2b column flight of TRAIN Fold B, delivering arm: 9.23 GPU-h per 1,080-row lock flight, Perception 59 s and Solver 64.07 s per contact at 4 slots; numbers only)",
+        "limits": "every Solver contact is costed at the lock's Solver seconds (an estimate: a sampling arm may reason for more or fewer tokens than the greedy lock does)",
+        "module": "scripts/flights/nx/nxt_r4_family.py (ARM_MIX_ROWS, expected_gpu_hours)"
+      },
+      "fallback_note": "The answer-only fallback adds at most one contact per budgeted-thinking contact: 7 per row (Perception 1 + 6 Solver contacts); planned_model_calls is rows x (7 + 7) = 15120 (program maximum 7560). The FIT cap stays structural (rows x program contacts x endpoints = 30240).",
+      "formula": "expected = rows x arm mix / 1.95 rows per minute / 60 with the arm mix 3.61 lock-row equivalents per row = (Perception 59.00 s + 6 x Solver 64.07 s) / the lock row 123.07 s, rounded UP to 0.01; ceiling = ceil_0.1(expected x 1.3); rows per minute = 4 slots x 60 / the lock row seconds, rounded DOWN to 0.01",
+      "inputs": {
+        "arm_mix_rows": 3.61,
+        "margin": 1.3,
+        "r2b_measured": {
+          "gpu_hours_per_1080_row_lock_flight": 9.23,
+          "lock_seconds_per_row": 123.07,
+          "perception_seconds_per_contact": 59.0,
+          "slots": 4,
+          "solver_seconds_per_contact": 64.07
+        },
+        "rows_per_minute_full": 1.95
+      },
+      "lock_only_flight_gpu_hours": 9.23,
+      "reference_r2b": "one NX-T R2b delivering pass: 1,080 rows, 9.23 GPU-h at 4 slots (123.1 s per row)",
+      "registered_total_gpu_hours": 43.9,
+      "smoke": {
+        "contacts": 28,
+        "planned_ceiling_gpu_hours": 0.5
+      }
+    },
+    "lock": "v2.2",
+    "program": "phase-native-module-v1-c7",
+    "rows": 1080,
+    "smoke_generation_calls": 56,
+    "smoke_speech_audio_seconds_cap": 143
+  },
+  "blockers": [],
+  "composed_config_hashes": {
+    "arm": "658f4fb66698cd56d784608a1c97c6005cc26bc040f895ffecd39378a352ebcc",
+    "smoke": "aab6054b47b58ed20d1acbce880b446e936ab6e9cde60e12288b80403ff4046f"
+  },
+  "context_fit": {
+    "checks": {
+      "bound_is_positive": true,
+      "estimate_at_bound_fits_every_arm": true,
+      "observed_solver_prompt_max_fits": true,
+      "slot_holds_prompt_plus_cap": true
+    },
+    "completion_cap": 4096,
+    "estimate_at_bound_tokens": 15248,
+    "estimate_headroom_tokens": 2158,
+    "fit_estimate": {
+      "base_prompt_tokens": 2000,
+      "completion_ceiling": 4096,
+      "slot_tokens": 24576,
+      "tokens_per_supplied_item": 235
+    },
+    "longest_added_tokens_over_lock": 0,
+    "max_supplied_items": 55,
+    "note": "The Solver prompt mean is about 8,500 tokens against the 4,096 cap (prompt limit 17,406). Every arm renders the lock's template and the lock's evidence; a sampling parameter adds no prompt token, so the sealed Fold B Solver prompt maximum is the bound of every arm. The context-fit policy is compact-or-abstain, and the exact per-contact gate runs on every arm's REAL request.",
+    "observations": {
+      "268b-thinking-system-lock-fold-b": {
+        "id": "268b-thinking-system-lock-fold-b",
+        "solver_contacts": 1080,
+        "solver_prompt_tokens_max": 13465,
+        "solver_prompt_tokens_p99": 12486
+      },
+      "nxt-r1-fold-b-all-five-arms": {
+        "id": "nxt-r1-fold-b-all-five-arms",
+        "solver_contacts": 5400,
+        "solver_prompt_tokens_max": 13918,
+        "solver_prompt_tokens_p99": 13443
+      }
+    },
+    "observed_headroom_tokens": 3488,
+    "observed_solver_prompt_tokens_max": 13918,
+    "ok": true,
+    "prompt_limit_tokens": 17406,
+    "reserve_tokens": 3072,
+    "slot_tokens": 24576,
+    "slots": 4,
+    "special_reserve_tokens": 2,
+    "template_token_method": "ceil(bytes / 3.5); no tokenizer contact (the NX R1 estimate method)",
+    "template_tokens": 323
+  },
+  "decoding_arms": {
+    "aa": null,
+    "d1-qwen-sampling": {
+      "temperature": 0.6,
+      "top_k": 20,
+      "top_p": 0.95
+    },
+    "d2-qwen-sampling-presence": {
+      "presence_penalty": 1.5,
+      "temperature": 0.6,
+      "top_k": 20,
+      "top_p": 0.95
+    },
+    "d3-temp-0.3": {
+      "temperature": 0.3,
+      "top_k": 20,
+      "top_p": 0.95
+    },
+    "d4-greedy-presence": {
+      "presence_penalty": 1.5,
+      "temperature": 0
+    },
+    "lock": null
+  },
+  "findings": [
+    {
+      "finding": "Owner rulings 329 A and 332 A open a DECODING-POLICY control axis at the Solver node. The R2b forced-close analysis found that the Solver's reasoning does not terminate on about 40 % of rows regardless of the budget (66 % of rows forced at 3,072 are still forced at 6,144), under greedy decoding at temperature 0; the candidate arms change only the sampling: d1-qwen-sampling {\"temperature\": 0.6, \"top_k\": 20, \"top_p\": 0.95}; d2-qwen-sampling-presence {\"presence_penalty\": 1.5, \"temperature\": 0.6, \"top_k\": 20, \"top_p\": 0.95}; d3-temp-0.3 {\"temperature\": 0.3, \"top_k\": 20, \"top_p\": 0.95}; d4-greedy-presence {\"presence_penalty\": 1.5, \"temperature\": 0}",
+      "id": "why-the-decoding-axis",
+      "remedy": "none; the read reports the forced-close share (split by supplied-item bin), the empty-gold false-fill rows (split by forced status) and each arm's discordance against the lock beside the twin's."
+    },
+    {
+      "finding": "The per-node thinking fields are composed at request time, keyed by the contact's ROLE ID, and a decoding arm's override is applied AFTER them and only to the four sampling keys, so a Solver decoding-arm contact carries the same budget 3072 / max_tokens 4096 / enable_thinking / seed as the delivering contact. Proven at the request level by tests/unit/test_decoding_variants_live.py and tests/unit/test_nxt_r4_registration.py and, for the cell, by the dry run (node_decoding and decoding_override per arm).",
+      "id": "arm-contacts-carry-the-lock-thinking-fields",
+      "remedy": "none."
+    },
+    {
+      "finding": "The twin aa (replicate_of lock) is the in-flight A/A: its request is the lock's in every declared field, so its SLU delta against lock is the offset o of the read and its discordance share the run-to-run baseline of a greedy request at 4 slots (the R2b analysis measured 25 % forced-status flips between two greedy arms). The 268-B cross-flight offsets (SLU +1.15, P3.1 -0.61) are reported beside, never used in a word.",
+      "id": "in-flight-aa-twin",
+      "remedy": "none."
+    },
+    {
+      "finding": "The request seed (20260913) is the lock's for every arm. A sampling arm at that seed is reproducible only up to the serving geometry's batching nondeterminism, so the arms are single draws, not expectations: the read reports each sampling arm's discordance against the lock beside the twin's and never reads a single arm as a distribution.",
+      "id": "stochastic-arms-and-the-fixed-seed",
+      "remedy": "none; the discordance table is in the read."
+    },
+    {
+      "finding": "temperature, top_p, top_k and presence_penalty are in core.model.request_types.ALLOWED_DECODING_KEYS and core.model.transport moves every decoding_params key it does not own to the top level of the OpenAI-compatible request body, which is where llama.cpp's server reads each of them (read from source, no server was contacted). The llama.cpp build commit is the one the runtime receipt records; a build that ignored a field would show as a zero discordance of that arm against the lock beside a non-zero one for the other arms.",
+      "id": "wire-fields",
+      "remedy": "the smoke reads the four-row per-arm decode cost; the read reports discordance per arm."
+    },
+    {
+      "finding": "Arm d4 keeps temperature 0 and adds presence_penalty 1.5. Whether the pinned llama.cpp sampler chain applies the penalty before the greedy pick is a property of that build (read it from the runtime receipt); a build that applies it makes d4 differ from the lock, a build that does not makes d4 a second spelling of the lock and its discordance equal to the twin's.",
+      "id": "d4-greedy-with-a-penalty",
+      "remedy": "none needed to fly: the read reports d4's discordance against the twin's, which shows which case held."
+    },
+    {
+      "finding": "The live slot is 24,576 tokens; the prompt limit of every contact at the 4,096-token cap is 17,406. Every arm renders the lock's template and evidence, so a decoding arm adds 0 prompt tokens over the lock's. The registered estimate (base 2,000 + the locked template 323 + 55 items x 235) is 15,248 tokens and the sealed Fold B Solver prompt maximum is 13,918 (the derive refuses otherwise). The context-fit policy is compact-or-abstain.",
+      "id": "context-fit-with-no-template-addition",
+      "remedy": "none needed on the observed data."
+    },
+    {
+      "finding": "The target is the resident think-budget-np4 session (serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1, fragment q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1); the fragment's defaults ARE the lock form, so there is no cell-level thinking policy and no serving change. The chain keeps the swap call, which is a no-op while that session is recorded resident and swaps to it otherwise (the predecessor chain may have flown another geometry).",
+      "id": "resident-session-no-new-fragment",
+      "remedy": "none."
+    },
+    {
+      "finding": "A row costs one Perception contact plus 6 Solver contacts; every Solver contact is costed at the lock's measured Solver seconds (64.07 s), so the arm mix is 3.61 lock-row equivalents and the expected cost 33.3 GPU-h against the lock flight's 9.23 GPU-h. A sampling arm may reason for more or fewer tokens than the greedy lock (a sampling arm that does not loop stops earlier; one that wanders may run to the cap), so the cost is an estimate, not an envelope. Runs of 24 GPU-h or more are intended (owner).",
+      "id": "cost-is-an-estimate-from-the-lock-seconds",
+      "remedy": "the smoke measures the real mix; the machine sign-off refuses unless it is within 1.3x of the registered one."
+    },
+    {
+      "finding": "Ruling 303 A: one experiment in flight. This package is DRAFT / HELD until the predecessor chain named to the queue hook (the carrier base runs at the time of writing) has exited rc 0 (scripts/flights/batch/queue/queue_nxt4_after_chain.sh <exit-token> <chain-out> <start-stamp> waits for that line, then flips and starts the chain).",
+      "id": "serial-gpu-and-the-resident-session",
+      "remedy": "the coordinator registers (derive .. commit) while the predecessor flies; the hook does flip .. chain."
+    },
+    {
+      "finding": "As in the 268-B cells the model-free preflight counts the payload at 4 bytes per token (a placeholder); the cells defer to the registered exact per-contact context-fit gate (preflight_budget_mode defer-to-native-contact-fit), which runs on every arm's REAL request.",
+      "id": "preflight-defers-to-the-exact-gate",
+      "remedy": "none."
+    },
+    {
+      "finding": "The chain waits for the smoke's sign-off with chain_lib.sh wait_or_machine_signoff (reader nxt_r4_read.sh smoke, the conditions file the derive emits INSIDE this package, marker /home/chao/nxt4-decode-signoff.marker, veto window 20 minutes). A refused machine sign-off falls back to waiting for a coordinator marker (12 h).",
+      "id": "machine-signoff-with-a-veto-window",
+      "remedy": "the coordinator may veto by deleting the marker or creating /home/chao/batch-STOP during the window."
+    }
+  ],
+  "identity": {
+    "arm": {
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-nxt-r4-solver-decoding-fold-b-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-nxt-r4-solver-decoding-fold-b-baseline-v1",
+      "carrier_lock_key": "slurp",
+      "cell": "slurp-native-stage3-nxt-r4-solver-decoding-fold-b-v1",
+      "composed_config_hash": "658f4fb66698cd56d784608a1c97c6005cc26bc040f895ffecd39378a352ebcc",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "execution_plan": {
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 43.4,
+        "planned_model_calls": 15120,
+        "planned_speech_audio_seconds": 44168,
+        "split_role": "discovery"
+      },
+      "execution_profile": "bounded-discovery-probe",
+      "experiment": "slurp-native-stage3-nxt-r4-solver-decoding-fold-b-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 30240,
+        "generation_calls_cap": 15120,
+        "gpu_hours_fit_inclusive": 43.4,
+        "native_task_contract_calls_cap": 15120,
+        "official_complete_scoring_jobs": 1,
+        "repeated_speech_audio_seconds_cap": 44168
+      },
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-nxt-r4-solver-decoding-fold-b-fit-v1",
+        "contact_cap": 30240,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-STAGE3-NXT-R4-SOLVER-DECODING-FOLD-B-FIT-V1"
+      },
+      "fit_attempt_id": "attempt-slurp-native-stage3-nxt-r4-solver-decoding-fold-b-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-NXT-R4-SOLVER-DECODING-FOLD-B-FIT-V1",
+      "key": "arm",
+      "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
+      "program": "phase-native-module-v1-c7",
+      "protocol_hash": "af592a451fa71a474872553c4eea3438c85ede764734a096a31fc10d75ee6407",
+      "roster_receipt": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-NXT-R4-SOLVER-DECODING-FOLD-B-V1",
+      "session": "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
+      "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
+    },
+    "smoke": {
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-nxt-r4-solver-decoding-fold-b-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-nxt-r4-solver-decoding-fold-b-smoke-4-baseline-v1",
+      "carrier_lock_key": "slurp",
+      "cell": "slurp-native-stage3-nxt-r4-solver-decoding-fold-b-smoke-4-v1",
+      "composed_config_hash": "aab6054b47b58ed20d1acbce880b446e936ab6e9cde60e12288b80403ff4046f",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "execution_plan": {
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 0.5,
+        "planned_model_calls": 56,
+        "planned_speech_audio_seconds": 143,
+        "split_role": "discovery"
+      },
+      "execution_profile": "bounded-discovery-probe",
+      "experiment": "slurp-native-stage3-nxt-r4-solver-decoding-fold-b-smoke-4-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 112,
+        "generation_calls_cap": 56,
+        "gpu_hours_fit_inclusive": 0.5,
+        "native_task_contract_calls_cap": 56,
+        "official_complete_scoring_jobs": 0,
+        "repeated_speech_audio_seconds_cap": 143
+      },
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-nxt-r4-solver-decoding-fold-b-smoke-4-fit-v1",
+        "contact_cap": 112,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-STAGE3-NXT-R4-SOLVER-DECODING-FOLD-B-SMOKE-4-FIT-V1"
+      },
+      "fit_attempt_id": "attempt-slurp-native-stage3-nxt-r4-solver-decoding-fold-b-smoke-4-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-NXT-R4-SOLVER-DECODING-FOLD-B-SMOKE-4-FIT-V1",
+      "key": "smoke",
+      "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
+      "program": "phase-native-module-v1-c7",
+      "protocol_hash": "8f307bcf266f1e0267d4412aa6449b4e3d05d9d6c5fa046c958b2309fcc9c35a",
+      "roster_receipt": "docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-smoke-4-v1.json",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-NXT-R4-SOLVER-DECODING-FOLD-B-SMOKE-4-V1",
+      "session": "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
+      "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32"
+    }
+  },
+  "locked_decoding": {
+    "seed": 20260913,
+    "temperature": 0
+  },
+  "no_think_node": null,
+  "pins": {
+    "locked_template": {
+      "relpath": "configs/probes/slurp_native_role_solver_v2.txt",
+      "sha256": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+    },
+    "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
+    "serving_session": "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
+    "signoff_conditions": {
+      "path": "docs/readiness/2026-10-18-slurp-nxt-r4-solver-decoding-fold-b-v1/signoff-conditions-v1.json",
+      "sha256": "7643fb267ea4108ec6b4638032e5c25b08385b1ef4595cfdaa64af3296b2db0d"
+    },
+    "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6/EVO-FOLD-B-V2-promotion.json",
+    "speech_packet_promotion_receipt_sha256": "ef409ef458be0dc2e21bc6a736abc498b0ef71e01a6b0c590ece54ce0cc54f61",
+    "speech_packet_root": "/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6",
+    "swap_target": "think-budget-np4"
+  },
+  "prohibitions": [
+    "No test-split, DEV or Fold A contact (TRAIN Fold B only).",
+    "No supply arm, no thinking column, no tool schema on any role; no Reviewer or Planner visit; max_revisions 0.",
+    "The system is the 268-B Thinking lock: the knowledge supply, the module graph, the post-processing, the Solver instruction template, the per-node thinking budget and cap, the request seed and the roster are not changed. The Solver's SAMPLING parameters (temperature, top_p, top_k, presence_penalty) are the ONLY varied factor.",
+    "Every Solver arm contact carries the lock's thinking fields (budget 3072, cap 4096) and the lock's request seed; no arm may set a seed, a cap, a response format, a thinking switch or a tool (refused by name at config load).",
+    "arm_visits is first: the fan-out happens at the one Solver visit; the delivering arm's request is the locked plan's request, byte for byte (invariant I7v), and so is the twin's.",
+    "No reasoning text is ever delivered, scored or carried to another node (reasoning_context_policy drop-reasoning-v1); a delivered reasoning marker stops the flight.",
+    "No benefit claim and no admission: claims_benefit is false; a NOMINATED or EFFICIENT-NO-LOSS arm goes to a 2-arm Fold A confirm (not built here).",
+    "No flight before the coordinator countersigns the DRAFT rows, mints the decision receipt, the harness commit is on master, the predecessor chain named to the queue hook has exited rc 0 and the cells are flipped.",
+    "No session is started by this registration. No paper-scale profile. No system-level claim."
+  ],
+  "read_rule": {
+    "delivering": "lock",
+    "efficient_seconds_ratio": 0.85,
+    "floors_pp": {
+      "intent": 0.65,
+      "slu": 1.49
+    },
+    "intent_guard_pp": -0.65,
+    "reader": "scripts/analysis/slurp_nxt_r4_solver_decoding_column_read.py",
+    "twin": "aa",
+    "word_order": [
+      "NOMINATED",
+      "EFFICIENT-NO-LOSS",
+      "HARM",
+      "NEUTRAL"
+    ],
+    "words": {
+      "EFFICIENT-NO-LOSS": "neither the SLU nor the intent delta shows a resolved loss (the NX-T R1 NO-RESOLVED-LOSS rule: SLU delta CI95 upper bound >= -|o|; intent delta CI95 upper bound >= -0.65 pp, the decision-190 intent floor) AND the Solver seconds per contact of the arm <= 0.85 x the lock arm's",
+      "HARM": "SLU delta CI95 upper bound < 0",
+      "NEUTRAL": "none of the above",
+      "NOMINATED": "SLU delta CI95 lower bound > 0 AND intent delta point >= -0.65 pp AND the SLU delta point is not below the twin bar (the SLU delta point is >= |o|, the absolute SLU delta point of the twin aa against lock)"
+    }
+  },
+  "registered_at_utc": "2026-10-18T16:29:27.000000+00:00",
+  "registration_basis": "owner rulings 329 A and 332 A (2026-10-18), 326 A and 327 A (2026-10-17), 313 A (2026-10-14) and 304/307 (2026-10-13), coordinator approval of the NX-T R4 design; docs/superpowers/specs/2026-10-12-thinking-core-engineering-base-design.md. DRAFT: nothing here authorises a flip or a flight.",
+  "roster": {
+    "arm": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+    "roster_id": "SLURP-EVO-FOLD-B-V2",
+    "smoke": "docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-smoke-4-v1.json",
+    "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
+  },
+  "rows": 1080,
+  "schema": "saea-registered-facts-v1",
+  "stage3_measurement": {
+    "SAEA-SLURP-STAGE3-NXT-R4-SOLVER-DECODING-FOLD-B-SMOKE-4-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "form-proof",
+      "note": "Four Fold B rows prove FORM only: the phase-native-module-v1-c7 module program with 6 Solver arms loads on the resident Thinking session, each arm's request carries the lock's thinking fields and its own sampling parameters, no node hits its cap, the live phase fit passes and the v6 receipt seals. Scored by no one; four rows claim nothing under instrument rule 5.",
+      "primary_metric": "none (structural form, per-arm Solver decode cost and the forced-close behaviour only)",
+      "read_roster": "SLURP-EVO-FOLD-B-V2",
+      "rows": 4,
+      "tuning_roster": "none"
+    },
+    "SAEA-SLURP-STAGE3-NXT-R4-SOLVER-DECODING-FOLD-B-V1": {
+      "aa_arm_id": "aa",
+      "claim": "nominated",
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "same-flight-node-column",
+      "note": "A per-arm nomination, not a benefit claim: the round maps four Solver sampling policies on the Thinking core, so no effect is assumed (0.0 pp SLU-F1) and the deliverable is the paired contrast with its cost. The null is the in-flight twin aa; the design resolves a per-arm contrast of 1.49 pp SLU / 0.65 pp intent at n = 1,080 (decision 190 node-column floors). The summary key template_variants names the node-column summary of the effect-floor gate, not the template axis.",
+      "primary_metric": "official SLURP pooled SLU-F1 (micro; scorer slurp-slu-official-train, the pinned official evaluate.py), natural-mixture weighting, with intent accuracy (scenario_action) beside it",
+      "primary_metric_key": "slu",
+      "read_roster": "SLURP-EVO-FOLD-B-V2",
+      "rows": 1080,
+      "template_variants": {
+        "candidate_arms": 4,
+        "node": "solver",
+        "twin": true
+      },
+      "tuning_roster": "none",
+      "variant_cost": {
+        "extra_audio_seconds": 15773.99,
+        "extra_contacts_per_row": 5
+      },
+      "variant_kind": "solver-decoding"
+    }
+  },
+  "status": "DRAFT-HELD",
+  "study_commit_at_registration": "32f81ade5417c0954849eb1259f30cf183f66dd1",
+  "thinking_knobs": {
+    "answer_fallback": {
+      "enable_thinking": false,
+      "id": "saea-thinking-answer-fallback-v1",
+      "max_tokens": 1024,
+      "mode": "answer-only re-ask",
+      "per_node": 1
+    },
+    "answer_reserve_tokens": 1024,
+    "budget_message": "Considering the limited time by the user, I have to give the solution based on the thinking directly now.",
+    "completion_cap": 4096,
+    "decoding": {
+      "seed": 20260913,
+      "temperature": 0
+    },
+    "node_modes": {
+      "perception": "think",
+      "solver": "think"
+    },
+    "reasoning_context_policy": "drop-reasoning-v1",
+    "reasoning_format": "deepseek",
+    "thinking_budget_tokens": 3072
+  }
+}

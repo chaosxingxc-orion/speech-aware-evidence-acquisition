@@ -1,0 +1,174 @@
+{
+  "arm_order": [
+    "d1-qwen-sampling",
+    "d2-qwen-sampling-presence",
+    "d3-temp-0.3",
+    "d4-greedy-presence",
+    "aa",
+    "lock"
+  ],
+  "arm_visits": "first",
+  "cell": "slurp-native-stage3-nxt-r4-solver-decoding-fold-b-v1",
+  "composed_config_hash": "658f4fb66698cd56d784608a1c97c6005cc26bc040f895ffecd39378a352ebcc",
+  "context_fit": {
+    "checks": {
+      "bound_is_positive": true,
+      "estimate_at_bound_fits_every_arm": true,
+      "observed_solver_prompt_max_fits": true,
+      "slot_holds_prompt_plus_cap": true
+    },
+    "completion_cap": 4096,
+    "estimate_at_bound_tokens": 15248,
+    "estimate_headroom_tokens": 2158,
+    "fit_estimate": {
+      "base_prompt_tokens": 2000,
+      "completion_ceiling": 4096,
+      "slot_tokens": 24576,
+      "tokens_per_supplied_item": 235
+    },
+    "longest_added_tokens_over_lock": 0,
+    "max_supplied_items": 55,
+    "note": "The Solver prompt mean is about 8,500 tokens against the 4,096 cap (prompt limit 17,406). Every arm renders the lock's template and the lock's evidence; a sampling parameter adds no prompt token, so the sealed Fold B Solver prompt maximum is the bound of every arm. The context-fit policy is compact-or-abstain, and the exact per-contact gate runs on every arm's REAL request.",
+    "observations": {
+      "268b-thinking-system-lock-fold-b": {
+        "id": "268b-thinking-system-lock-fold-b",
+        "solver_contacts": 1080,
+        "solver_prompt_tokens_max": 13465,
+        "solver_prompt_tokens_p99": 12486
+      },
+      "nxt-r1-fold-b-all-five-arms": {
+        "id": "nxt-r1-fold-b-all-five-arms",
+        "solver_contacts": 5400,
+        "solver_prompt_tokens_max": 13918,
+        "solver_prompt_tokens_p99": 13443
+      }
+    },
+    "observed_headroom_tokens": 3488,
+    "observed_solver_prompt_tokens_max": 13918,
+    "ok": true,
+    "prompt_limit_tokens": 17406,
+    "reserve_tokens": 3072,
+    "slot_tokens": 24576,
+    "slots": 4,
+    "special_reserve_tokens": 2,
+    "template_token_method": "ceil(bytes / 3.5); no tokenizer contact (the NX R1 estimate method)",
+    "template_tokens": 323
+  },
+  "decoding_arms": {
+    "aa": {
+      "decoding": null,
+      "role": "twin (replicate_of lock)"
+    },
+    "d1-qwen-sampling": {
+      "decoding": {
+        "temperature": 0.6,
+        "top_k": 20,
+        "top_p": 0.95
+      },
+      "role": "candidate"
+    },
+    "d2-qwen-sampling-presence": {
+      "decoding": {
+        "presence_penalty": 1.5,
+        "temperature": 0.6,
+        "top_k": 20,
+        "top_p": 0.95
+      },
+      "role": "candidate"
+    },
+    "d3-temp-0.3": {
+      "decoding": {
+        "temperature": 0.3,
+        "top_k": 20,
+        "top_p": 0.95
+      },
+      "role": "candidate"
+    },
+    "d4-greedy-presence": {
+      "decoding": {
+        "presence_penalty": 1.5,
+        "temperature": 0
+      },
+      "role": "candidate"
+    },
+    "lock": {
+      "decoding": null,
+      "role": "delivering"
+    }
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-nxt-r4-solver-decoding-fold-b-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 43.4,
+    "planned_model_calls": 30240,
+    "planned_speech_audio_seconds": 44168,
+    "protocol_hash": "af592a451fa71a474872553c4eea3438c85ede764734a096a31fc10d75ee6407",
+    "run_id": "SAEA-SLURP-STAGE3-NXT-R4-SOLVER-DECODING-FOLD-B-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "The shared core.flight.cli FIT path under this cell's own native_contact_fit ids; request envelopes only, no generation.",
+  "expected_session_id": "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
+  "experiment": "slurp-native-stage3-nxt-r4-solver-decoding-fold-b-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 30240,
+    "generation_calls_cap": 15120,
+    "gpu_hours_fit_inclusive": 43.4,
+    "native_task_contract_calls_cap": 15120,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 44168
+  },
+  "no_think_node": null,
+  "one_factor": "The Solver's sampling parameters (roles.solver.decoding_variants): each candidate overrides only temperature / top_p / top_k / presence_penalty of its own contact; every arm renders the locked template configs/probes/slurp_native_role_solver_v2.txt. The system, the knowledge supply, the sealed query vectors, the request seed, the per-node thinking budget and cap and the roster are the 268-B lock's.",
+  "plan_kind": "fit",
+  "preparation_base_commit": "32f81ade5417c0954849eb1259f30cf183f66dd1",
+  "prepared_phase_supply": {
+    "note": "the flip mints this cell's own first-phase supply under its own run id (item E16)",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-NXT-R4-SOLVER-DECODING-FOLD-B-V1/phase-supply-v1.json",
+    "sha256": "MINTED_AT_THE_FLIP"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-10-18-slurp-nxt-r4-solver-decoding-fold-b-v1/protocol-registered-v1.json",
+    "sha256": "c3a51d315f7242baf3fac6dc9d8cac307ab5890f8ce1c78cb241d2ac671e6a52"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-NXT-R4-SOLVER-DECODING-FOLD-B-FIT-V1: request envelopes only; reads nothing.",
+  "registered_at_utc": "2026-10-18T16:29:27.000000+00:00",
+  "schema": "saea-registered-fit-plan-v1",
+  "serving": {
+    "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
+    "server_geometry": "-c 98304 -np 4 (the resident session, unchanged)",
+    "session": "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
+    "swap_target": "think-budget-np4"
+  },
+  "status": "DRAFT-HELD-REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_COUNTERSIGN_AND_READINESS_FLIP",
+  "thinking_knobs": {
+    "answer_fallback": {
+      "enable_thinking": false,
+      "id": "saea-thinking-answer-fallback-v1",
+      "max_tokens": 1024,
+      "mode": "answer-only re-ask",
+      "per_node": 1
+    },
+    "answer_reserve_tokens": 1024,
+    "budget_message": "Considering the limited time by the user, I have to give the solution based on the thinking directly now.",
+    "completion_cap": 4096,
+    "decoding": {
+      "seed": 20260913,
+      "temperature": 0
+    },
+    "node_modes": {
+      "perception": "think",
+      "solver": "think"
+    },
+    "reasoning_context_policy": "drop-reasoning-v1",
+    "reasoning_format": "deepseek",
+    "thinking_budget_tokens": 3072
+  },
+  "unused_budget_is_not_attempt_authority": true
+}
