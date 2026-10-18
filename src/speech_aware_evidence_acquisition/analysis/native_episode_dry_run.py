@@ -672,6 +672,16 @@ def dry_run_native_episode(
         folded = fold_into_decoding(binding["values"]) or binding["values"]
         decoding_values = folded.get("decoding_params")
         thinking_base = dict(decoding_values) if isinstance(decoding_values, Mapping) else {}
+    elif template_group is not None:
+        # NX-T R3: a Solver template group on a THINKING fragment. The arms differ in the instruction only; the walk reports each arm's resolved per-node wire
+        # fields (no arm policy exists, so every arm resolves to the node's own role-level decoding) so a dry run shows that an arm contact carries the lock's
+        # thinking fields. Nothing is reported for a non-thinking fragment (``fold_into_decoding`` returns None), which leaves every Instruct walk unchanged.
+        from ..core.reasoning_knobs import fold_into_decoding
+
+        folded = fold_into_decoding(binding["values"]) if binding.get("values") is not None else None
+        if folded:
+            decoding_values = folded.get("decoding_params")
+            thinking_base = dict(decoding_values) if isinstance(decoding_values, Mapping) else {}
 
     def _arm_node_decoding(arm_id: str) -> dict[str, dict[str, object]] | None:
         if thinking_base is None:
