@@ -20,4 +20,11 @@ say "serving_swap think-budget-np4 rc=$src"
 bash scripts/flights/diag/solver_reasoning_diag.sh >> "$LOG" 2>&1; say "diagnostic rc=$?"
 [ "$(git status --porcelain | wc -l)" = 0 ] || { say "master dirty after the diagnostic; R3 NOT launched"; git status --porcelain >> "$LOG"; exit 9; }
 bash scripts/flights/batch/queue/queue_nxt3_after_nxt2.sh 2026-10-18T14:36:38Z; qrc=$?
-say "R3 queue hook rc=$qrc (log /home/chao/nxt3-queue.out)"; exit $qrc
+say "R3 queue hook rc=$qrc (log /home/chao/nxt3-queue.out)"
+[ $qrc -eq 0 ] || exit $qrc
+# owner ruling 333 B: arm the carrier hooks now (a hook armed before the shutdown would have died with it). Start-only: no re-registration.
+PS1W='D:\chao_workspace\exploring-l4-intelligence\studies\speech-aware-evidence-acquisition\scripts\flights\batch\saea_task.ps1'
+for t in SAEA-Queue-CARRIERPKT SAEA-Queue-CARRIERBASE; do
+  /mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -NoProfile -NonInteractive -File "$PS1W" -Name "$t" -Start >> "$LOG" 2>&1; say "start $t rc=$?"
+done
+exit 0
