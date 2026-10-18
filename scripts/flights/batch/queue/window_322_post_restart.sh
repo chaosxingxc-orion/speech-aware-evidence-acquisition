@@ -1,0 +1,23 @@
+#!/bin/bash
+# Post-restart step of the 322 window (owner rulings 322 A / 331 A, 2026-10-18), run by window_322_orchestrator.ps1 after `wsl --shutdown`
+# applied the new .wslconfig: (1) close the NX-T R2 rec2 exposure rows (chain_lib close_rows_after_seal, commits the ledger alone);
+# (2) start the resident Thinking session through the swap (the only sanctioned path; no flight is open); (3) the 330 A Solver reasoning
+# diagnostic (< 1 GPU-h; its failure is logged and does not block R3); (4) the NX-T R3 queue hook, which sees the R2 exit line at once and
+# flips + chains R3. Log /home/chao/w322-window.out.
+set -u
+M=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition; LOG=/home/chao/w322-window.out
+say() { echo "$(date -u +%FT%TZ) post: $*" >> "$LOG"; }
+cd "$M" || exit 9
+source /home/chao/.venvs/speechrl/bin/activate
+export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$M/src SPEECHRL_DATA_DIR=/home/chao/saea-data/speechrl-data DATA=/home/chao/saea-data/speechrl-data MAIN=$M PY=python
+say "start; VM memory $(free -g | awk '/Mem:/{print $2}') GB total"
+[ "$(git status --porcelain | wc -l)" = 0 ] || { say "master dirty; NOT continuing"; exit 9; }
+LOG_SAVE=$LOG; source scripts/flights/batch/chain_lib.sh; LOG=$LOG_SAVE
+close_rows_after_seal SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1 SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-FIT-V1; say "close rows rc=$?"
+bash scripts/flights/batch/serving_swap.sh think-budget-np4 >> "$LOG" 2>&1; src=$?
+say "serving_swap think-budget-np4 rc=$src"
+[ $src -eq 0 ] || { say "swap failed; diagnostic and R3 NOT launched"; exit 9; }
+bash scripts/flights/diag/solver_reasoning_diag.sh >> "$LOG" 2>&1; say "diagnostic rc=$?"
+[ "$(git status --porcelain | wc -l)" = 0 ] || { say "master dirty after the diagnostic; R3 NOT launched"; git status --porcelain >> "$LOG"; exit 9; }
+bash scripts/flights/batch/queue/queue_nxt3_after_nxt2.sh 2026-10-18T14:36:38Z; qrc=$?
+say "R3 queue hook rc=$qrc (log /home/chao/nxt3-queue.out)"; exit $qrc
