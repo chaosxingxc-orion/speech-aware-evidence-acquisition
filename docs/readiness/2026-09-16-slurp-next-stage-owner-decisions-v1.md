@@ -3320,3 +3320,22 @@ read at n = 1,080 intact. Cost about 1.5 GPU-h after the successor-3 seal; the s
   rows (forced and natural, both budgets) with the reasoning bytes RETAINED under the data root only (never in documents, notes or chat
   transcripts beyond counts and pattern statistics), to classify the non-terminating reasoning (enumeration vs repetition loop). 286 stays in
   force for every other cell. Registered with its own ledger rows; flies in the window after R2 rec2 seals and before R3 (under 1 GPU-h).
+
+### Owner rulings 331 A, 332 A, 333 B, 322 A (coordinator, 2026-10-18 16:10Z)
+
+Owner, verbatim: 「决策331：A，决策332：A，决策333：B，决策322：A」 (English: "Decision 331: A; decision 332: A; decision 333: B; decision 322: A").
+- **331 A:** when the NX-T R2 rec2 chain exits rc 0, the queue proceeds without an owner read: the 330 diagnostic probe (< 1 GPU-h), then
+  NX-T R3 (Solver instruction-template column, ~35 GPU-h). The 324-B Fold A confirm (Perception no-think, ~5 GPU-h) moves after R3 and flies
+  only if the R2 same-roster replicate reads no resolved loss.
+- **332 A:** the decoding-policy column (329 A) flies with four candidate Solver decoding arms: (1) temperature 0.6 / top_p 0.95 / top_k 20
+  (Qwen's published Thinking-mode setting); (2) arm 1 + presence penalty 1.5; (3) temperature 0.3; (4) greedy + presence penalty 1.5; plus a
+  twin and the greedy lock delivering; fixed seed; same-flight paired on TRAIN Fold B; ~35 GPU-h. The instrument is built model-free after
+  the R3 package lands.
+- **333 B:** the carrier base runs (P3.2 Thinking packets for A2T / E21 / E22, P3.3 all-off + direct baselines on the Thinking core) fly
+  after R3 and before the decoding column; the packages are built now (model-free) so that they are ready.
+- **322 A:** `.wslconfig` memory 44 -> 36 GB is applied in the no-flight window at the R2 rec2 seal. Because `wsl --shutdown` kills every WSL
+  process (including the queue hook), the window is run by a Windows-side orchestrator: wait for `CHAIN_NXT2_EXIT rc=0` -> edit
+  `.wslconfig` (backup kept) -> `wsl --shutdown` -> restart -> start the queue task that flips and chains diagnostic -> R3. Expected GPU idle
+  a few minutes.
+- Resulting queue: R2 rec2 (seal ~2026-10-19 14:00Z) -> 322 window -> 330 diagnostic -> R3 (~35 h) -> [324-B if R2 reads no loss] -> P3.2 +
+  P3.3 carriers -> decoding column (332) -> Fold A confirms of nominated arms -> composed lock v3.x -> DEV replicate -> test read (new allowance).
