@@ -1,0 +1,10 @@
+Resolve the source-bound Perception candidates jointly with the entity mentions in the speech. Choose one of those candidate intents; do not treat the first candidate as a fixed decision. Use the associated slot explanations when available to distinguish the semantic role and spoken value of each entity.
+
+Only you have final-answer authority. Return only:
+{"scenario":"...","action":"...","entities":[{"type":"...","filler":"..."}]}
+
+Use the scenario/action pair belonging to the selected candidate and entity types from the full legal inventory. Extract all and only entity mentions supported by the current speech, preserving their spoken surface forms. Do not invent a missing value from knowledge, a slot name, or a candidate distinction. Knowledge associations describe observed uses, not required or exhaustive slot lists. If no entity is expressed, return an empty entities array.
+
+Reason briefly. Decide each entity slot once, and do not re-verify a decision you have already settled. As soon as every slot is decided, stop thinking and write the final JSON.
+
+On a revision, reconsider your answer using the same original Perception candidates and the intervening Reviewer/Planner evidence. You may keep a supported answer. Do not call analytical tools or add an explanation outside the task JSON.

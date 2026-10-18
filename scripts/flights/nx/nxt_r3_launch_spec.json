@@ -1,0 +1,63 @@
+{
+  "schema": "saea-package-launch-spec-v1",
+  "_note": "NX-T R3 launch spec for package_launch.sh (owner ruling 326 A, 327 A). The coordinator registers with `--root-countersign --until commit` while NX-T R2 flies; the queue hook scripts/flights/batch/queue/queue_nxt3_after_nxt2.sh runs `--from flip --until chain` once R2 has exited rc=0. The write step passes --registered-at {utc} because a first registration has no registered-facts file to inherit a stamp from. The chain wrapper (scripts/flights/batch/queue/chain_nxt3.sh, installed at /home/chao/saea-queue/chain_nxt3.sh) runs batch_chain_nxt_r3.sh, whose serving swap is a no-op while the resident think-budget-np4 session is up. The Windows task SAEA-Chain-NXT3 must be registered first (no new serving task: the session is the resident one).",
+  "short": "nxt3",
+  "launch_id": "nxt3-first-attempt",
+  "package": "slurp-nxt-r3-solver-template-fold-b-v1",
+  "readiness_dir": "docs/readiness/2026-10-18-slurp-nxt-r3-solver-template-fold-b-v1",
+  "steps": {
+    "derive": {
+      "cmd": "python -B scripts/flights/nx/nxt_r3_derive_cells.py"
+    },
+    "write": {
+      "cmd": "python -B scripts/flights/nx/nxt_r3_write_registration.py --study-commit {head} --registered-at {utc} --append-ledger"
+    },
+    "countersign": {
+      "texts": "{readiness_dir}/countersign-row-texts-v1.json",
+      "ledger": "docs/exposure-ledger.md",
+      "skip_substrings": [
+        "-READ-"
+      ]
+    },
+    "mint": {
+      "cmd": "python -B scripts/flights/nx/nxt_r3_mint_receipt.py",
+      "done_if": {
+        "file": "coordination/slurp-nxt-r3-solver-template-fold-b-v1/root-admission-v1.json",
+        "contains": [
+          "SAEA-SLURP-STAGE3-NXT-R3-SOLVER-TEMPLATE-FOLD-B-FIT-V1"
+        ]
+      }
+    },
+    "commit": {
+      "paths": [
+        "configs",
+        "docs/exposure-ledger.md",
+        "{readiness_dir}",
+        "{readiness_dir}-preregistration.md"
+      ],
+      "message": "register: NX-T R3 (the Solver instruction-template column, TRAIN Fold B); rows countersigned; receipt minted"
+    },
+    "flip": {
+      "script": "scripts/flights/nx/nxt_r3_flip.sh",
+      "package": "docs/readiness/2026-10-18-slurp-nxt-r3-solver-template-fold-b-v1",
+      "cells": [
+        "slurp-native-stage3-nxt-r3-solver-template-fold-b-smoke-4-v1",
+        "slurp-native-stage3-nxt-r3-solver-template-fold-b-v1"
+      ],
+      "pins_commit_msg": "/home/chao/nxt3-pins-commit.txt",
+      "env": {
+        "NXT3_KINDS": "smoke arm"
+      },
+      "flight_commit_file": "/home/chao/nxt3-flight-commit.txt",
+      "pins_commit_text": "NX-T R3: re-pin the Solver template column package (smoke-4, column) on the Thinking base at the registered study commit (ruling 326 A; ext4 flip)\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\n"
+    },
+    "chain": {
+      "task": "SAEA-Chain-NXT3",
+      "wrapper": "/home/chao/saea-queue/chain_nxt3.sh",
+      "flight_commit_file": "/home/chao/nxt3-flight-commit.txt"
+    },
+    "read": {
+      "cmd": "bash scripts/flights/nx/nxt_r3_read.sh smoke"
+    }
+  }
+}

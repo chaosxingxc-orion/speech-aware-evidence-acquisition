@@ -1,0 +1,22 @@
+{
+  "_note": "Numbers only, reduced from sealed bytes by read-only passes (no model, server, tokenizer, encoder or GPU contact; no text, transcript, gold or model output). Registered 2026-10-18 for NX-T R3.",
+  "r2b_measured": {
+    "source": "the NX-T R2b column flight of TRAIN Fold B, delivering arm throughput, as reported in the coordinator brief of 2026-10-18 (model-free read of the sealed R2b column)",
+    "slots": 4,
+    "gpu_hours_per_1080_row_lock_flight": 9.23,
+    "perception_seconds_per_contact_mean": 59.0,
+    "solver_seconds_per_contact_mean": 64.07,
+    "seconds_per_row_lock": 123.07,
+    "derivation": "seconds_per_row_lock = 9.23 GPU-h x 4 slots x 3600 / 1080 rows = 123.07 s; solver_seconds_per_contact_mean = 123.07 - 59.0 = 64.07 (the brief states Solver about 64 s and Perception about 59 s)",
+    "note": "every R3 Solver contact (candidates, twin, lock) is costed at the lock's Solver seconds: a conservative envelope, because t1 and t4 are meant to shorten the reasoning"
+  },
+  "fit_observations": {
+    "method": "COST-channel prompt_tokens of every Solver contact in the sealed Thinking Fold B traces, read once, model-free (2026-10-17, NX-T R2b registration)",
+    "limit_basis": "slot 24,576 - operational reserve 3,072 - completion ceiling 4,096 - special reserve 2 (rails.context_budget.serving_bound_reserve_tokens)",
+    "sets": [
+      {"id": "268b-thinking-system-lock-fold-b", "solver_contacts": 1080, "solver_prompt_tokens_max": 13465, "solver_prompt_tokens_p99": 12486},
+      {"id": "nxt-r1-fold-b-all-five-arms", "solver_contacts": 5400, "solver_prompt_tokens_max": 13918, "solver_prompt_tokens_p99": 13443}
+    ],
+    "solver_prompt_tokens_mean_approx": 8500
+  }
+}

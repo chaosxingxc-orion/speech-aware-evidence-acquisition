@@ -1,0 +1,36 @@
+{
+  "_note": "The NX-T R3 arm table (data-driven; owner ruling 326 A of 2026-10-17: the USE-node round, a Solver instruction-template column on the Thinking core). Each candidate arm renders ONE hash-pinned Solver instruction template that is the locked template configs/probes/slurp_native_role_solver_v2.txt with exactly one short paragraph added before the revision paragraph (t4 adds the t1 and t2 paragraphs). Everything else is byte-identical to the lock. Perception, the evidence, the QueryState, the decoding and the per-node thinking budget (3,072 / cap 4,096) are the lock's for every arm. The twin aa (replicate_of lock) and the delivering arm lock (the locked template, untemplated) are added by the compiler, aa then lock LAST.",
+  "arms": [
+    {
+      "arm_id": "t1-decide-once",
+      "evidence": "NX-T R2b raised the Solver budget 3,072 -> 6,144 and forced closes stayed 40.1 % -> 37.8 % with SLU -0.81: the Solver's reasoning does not terminate on about 40 % of rows regardless of budget.",
+      "relpath": "configs/probes/nx/solver/thinking/t1-decide-once.txt",
+      "sha256": "c62991891a8b7a76b036ee611b2d05ceb292d6838bf859365fb25a3b488ff046"
+    },
+    {
+      "arm_id": "t2-grounded-or-empty",
+      "evidence": "NX-T R1 Solver no-think loss was mostly precision (FP +280); owner decision 199: an empty entity list is legal.",
+      "relpath": "configs/probes/nx/solver/thinking/t2-grounded-or-empty.txt",
+      "sha256": "eda1c311238bd0c61c92c2ba18be7415fa4d0d28fde9af10e6409e672c125df9"
+    },
+    {
+      "arm_id": "t3-supply-focus",
+      "evidence": "Row-level analysis of the sealed R2b column: the Solver forced-close share rises with the supply it must work through (supplied items 30-39: 33 %, 40+: 61 %; Solver prompt over 9k tokens: 60-68 %; Perception candidates 1/2/3: 38/45/65 %); on empty-gold rows forced rows false-fill 46 % against 10 % natural; within a row a forced close adds about +0.10 slot FP with no TP/FN/intent change.",
+      "relpath": "configs/probes/nx/solver/thinking/t3-supply-focus.txt",
+      "sha256": "67e5044d5b5eb1264c22ef72a3df86133a4305f854ac515e11d41d803b561fe9"
+    },
+    {
+      "arm_id": "t4-decide-once-grounded",
+      "evidence": "t1 and t2 paragraphs together (termination and precision).",
+      "relpath": "configs/probes/nx/solver/thinking/t4-decide-once-grounded.txt",
+      "sha256": "c31397b4e1d659d5bc1d8f17255d76b5b1d9969121b2f413881da6734e609c7b"
+    }
+  ],
+  "delivering": "lock",
+  "locked_template": {
+    "relpath": "configs/probes/slurp_native_role_solver_v2.txt",
+    "sha256": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+  },
+  "schema": "saea-nxt-r3-arm-table-v1",
+  "twin": "aa"
+}

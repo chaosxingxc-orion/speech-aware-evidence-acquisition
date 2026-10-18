@@ -1,0 +1,192 @@
+{
+  "arm_order": [
+    "t1-decide-once",
+    "t2-grounded-or-empty",
+    "t3-supply-focus",
+    "t4-decide-once-grounded",
+    "aa",
+    "lock"
+  ],
+  "arm_visits": "first",
+  "cell": "slurp-native-stage3-nxt-r3-solver-template-fold-b-v1",
+  "composed_config_hash": "71f2784088fae204d720d9494718f8dbd42f43858b4048169c024b7509693ec3",
+  "context_fit": {
+    "checks": {
+      "bound_is_positive": true,
+      "estimate_at_bound_fits_every_arm": true,
+      "observed_solver_prompt_max_plus_longest_added_fits": true,
+      "slot_holds_prompt_plus_cap": true
+    },
+    "completion_cap": 4096,
+    "estimate_at_bound_tokens": 15371,
+    "estimate_headroom_tokens": 2035,
+    "fit_estimate": {
+      "base_prompt_tokens": 2000,
+      "completion_ceiling": 4096,
+      "slot_tokens": 24576,
+      "tokens_per_supplied_item": 235
+    },
+    "longest_added_tokens_over_lock": 123,
+    "longest_template_tokens": 446,
+    "max_supplied_items": 55,
+    "note": "The Solver prompt mean is about 8,500 tokens against the 4,096 cap (prompt limit 17,406). A candidate template adds at most the longest template's extra paragraph(s) to the lock's; the sealed Fold B Solver prompt maximum plus that addition still fits the limit and the slot. The context-fit policy is compact-or-abstain, and the exact per-contact gate runs on every arm's REAL request.",
+    "observations": {
+      "268b-thinking-system-lock-fold-b": {
+        "id": "268b-thinking-system-lock-fold-b",
+        "solver_contacts": 1080,
+        "solver_prompt_tokens_max": 13465,
+        "solver_prompt_tokens_p99": 12486
+      },
+      "nxt-r1-fold-b-all-five-arms": {
+        "id": "nxt-r1-fold-b-all-five-arms",
+        "solver_contacts": 5400,
+        "solver_prompt_tokens_max": 13918,
+        "solver_prompt_tokens_p99": 13443
+      }
+    },
+    "observed_headroom_tokens": 3365,
+    "observed_solver_prompt_tokens_max": 13918,
+    "ok": true,
+    "prompt_limit_tokens": 17406,
+    "reserve_tokens": 3072,
+    "slot_tokens": 24576,
+    "slots": 4,
+    "special_reserve_tokens": 2,
+    "template_token_method": "ceil(bytes / 3.5); no tokenizer contact (the NX R1 estimate method)",
+    "template_tokens": {
+      "lock": 323,
+      "t1-decide-once": 374,
+      "t2-grounded-or-empty": 394,
+      "t3-supply-focus": 387,
+      "t4-decide-once-grounded": 446
+    }
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-nxt-r3-solver-template-fold-b-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 43.4,
+    "planned_model_calls": 30240,
+    "planned_speech_audio_seconds": 44168,
+    "protocol_hash": "cd770c7bf9a7caf27d8764a795d8076938645127975cbb01521c6d3dafbad6c2",
+    "run_id": "SAEA-SLURP-STAGE3-NXT-R3-SOLVER-TEMPLATE-FOLD-B-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "The shared core.flight.cli FIT path under this cell's own native_contact_fit ids; request envelopes only, no generation.",
+  "expected_session_id": "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
+  "experiment": "slurp-native-stage3-nxt-r3-solver-template-fold-b-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 30240,
+    "generation_calls_cap": 15120,
+    "gpu_hours_fit_inclusive": 43.4,
+    "native_task_contract_calls_cap": 15120,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 44168
+  },
+  "no_think_node": null,
+  "one_factor": "The Solver's instruction template (roles.solver.template_variants): each candidate is the locked template configs/probes/slurp_native_role_solver_v2.txt plus one short paragraph. The system, the knowledge supply, the sealed query vectors, the decoding, the per-node thinking budget and cap and the roster are the 268-B lock's.",
+  "plan_kind": "fit",
+  "preparation_base_commit": "310e23ae09989da91f9aec476cc58735012e418f",
+  "prepared_phase_supply": {
+    "note": "the flip mints this cell's own first-phase supply under its own run id (item E16)",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-NXT-R3-SOLVER-TEMPLATE-FOLD-B-V1/phase-supply-v1.json",
+    "sha256": "MINTED_AT_THE_FLIP"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-10-18-slurp-nxt-r3-solver-template-fold-b-v1/protocol-registered-v1.json",
+    "sha256": "fc01bf59744f57638b96d5e1931055f830c0184fd67c6f6c0b8979055c2aa3b0"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-NXT-R3-SOLVER-TEMPLATE-FOLD-B-FIT-V1: request envelopes only; reads nothing.",
+  "registered_at_utc": "2026-10-18T14:00:00.000000+00:00",
+  "schema": "saea-registered-fit-plan-v1",
+  "serving": {
+    "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
+    "server_geometry": "-c 98304 -np 4 (the resident session, unchanged)",
+    "session": "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
+    "swap_target": "think-budget-np4"
+  },
+  "status": "DRAFT-HELD-REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_COUNTERSIGN_AND_READINESS_FLIP",
+  "template_arms": {
+    "aa": {
+      "added_paragraphs": [],
+      "role": "twin (replicate_of lock)",
+      "sha256": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd",
+      "template": "configs/probes/slurp_native_role_solver_v2.txt",
+      "template_tokens": 323
+    },
+    "lock": {
+      "added_paragraphs": [],
+      "role": "delivering",
+      "sha256": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd",
+      "template": "configs/probes/slurp_native_role_solver_v2.txt",
+      "template_tokens": 323
+    },
+    "t1-decide-once": {
+      "added_paragraphs": [
+        "Reason briefly. Decide each entity slot once, and do not re-verify a decision you have already settled. As soon as every slot is decided, stop thinking and write the final JSON."
+      ],
+      "role": "candidate",
+      "sha256": "c62991891a8b7a76b036ee611b2d05ceb292d6838bf859365fb25a3b488ff046",
+      "template": "configs/probes/nx/solver/thinking/t1-decide-once.txt",
+      "template_tokens": 374
+    },
+    "t2-grounded-or-empty": {
+      "added_paragraphs": [
+        "Output an entity only when its value is heard in the speech. An empty entities array is a correct and complete answer when no specific value is heard; do not add an entity merely because the selected candidate or the knowledge suggests a slot type."
+      ],
+      "role": "candidate",
+      "sha256": "eda1c311238bd0c61c92c2ba18be7415fa4d0d28fde9af10e6409e672c125df9",
+      "template": "configs/probes/nx/solver/thinking/t2-grounded-or-empty.txt",
+      "template_tokens": 394
+    },
+    "t3-supply-focus": {
+      "added_paragraphs": [
+        "First fix the one intent you will answer. Then consult only the supplied evidence items that belong to that intent, and ignore the cards and examples of the other candidate intents; do not walk through every supplied item."
+      ],
+      "role": "candidate",
+      "sha256": "67e5044d5b5eb1264c22ef72a3df86133a4305f854ac515e11d41d803b561fe9",
+      "template": "configs/probes/nx/solver/thinking/t3-supply-focus.txt",
+      "template_tokens": 387
+    },
+    "t4-decide-once-grounded": {
+      "added_paragraphs": [
+        "Reason briefly. Decide each entity slot once, and do not re-verify a decision you have already settled. As soon as every slot is decided, stop thinking and write the final JSON.",
+        "Output an entity only when its value is heard in the speech. An empty entities array is a correct and complete answer when no specific value is heard; do not add an entity merely because the selected candidate or the knowledge suggests a slot type."
+      ],
+      "role": "candidate",
+      "sha256": "c31397b4e1d659d5bc1d8f17255d76b5b1d9969121b2f413881da6734e609c7b",
+      "template": "configs/probes/nx/solver/thinking/t4-decide-once-grounded.txt",
+      "template_tokens": 446
+    }
+  },
+  "thinking_knobs": {
+    "answer_fallback": {
+      "enable_thinking": false,
+      "id": "saea-thinking-answer-fallback-v1",
+      "max_tokens": 1024,
+      "mode": "answer-only re-ask",
+      "per_node": 1
+    },
+    "answer_reserve_tokens": 1024,
+    "budget_message": "Considering the limited time by the user, I have to give the solution based on the thinking directly now.",
+    "completion_cap": 4096,
+    "decoding": {
+      "seed": 20260913,
+      "temperature": 0
+    },
+    "node_modes": {
+      "perception": "think",
+      "solver": "think"
+    },
+    "reasoning_context_policy": "drop-reasoning-v1",
+    "reasoning_format": "deepseek",
+    "thinking_budget_tokens": 3072
+  },
+  "unused_budget_is_not_attempt_authority": true
+}
