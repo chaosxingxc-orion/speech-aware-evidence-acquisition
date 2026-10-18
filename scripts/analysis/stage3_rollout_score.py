@@ -1984,9 +1984,14 @@ def parse_solver_arm_group(values: Mapping[str, Any], solver: Mapping[str, Any],
     declares_supply = "supply_variants" in solver
     declares_template = "template_variants" in solver
     declares_decoding = "decoding_variants" in solver
-    if sum((declares_supply, declares_template, declares_decoding)) > 1:
+    if declares_supply and declares_template:
         raise Stage3ScoreError(
-            "the Solver role declares more than one of supply_variants, template_variants and decoding_variants; "
+            "the Solver role declares both supply_variants and template_variants; "
+            "one fan-out mechanism per node"
+        )
+    if declares_decoding and (declares_supply or declares_template):
+        raise Stage3ScoreError(
+            "the Solver role declares decoding_variants beside supply_variants or template_variants; "
             "one fan-out mechanism per node"
         )
     try:
@@ -2019,7 +2024,7 @@ def parse_solver_arm_group(values: Mapping[str, Any], solver: Mapping[str, Any],
             )
     except SupplyVariantError as error:
         raise Stage3ScoreError(f"the declared Solver arm group is invalid: {error}") from error
-    raise Stage3ScoreError("the Solver role declares none of supply_variants, template_variants or decoding_variants")
+    raise Stage3ScoreError("the Solver role declares neither supply_variants nor template_variants nor decoding_variants")
 
 
 def supply_variant_main(args, repo_root: Path, root: Path, lock) -> int:
