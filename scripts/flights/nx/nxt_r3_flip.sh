@@ -21,7 +21,7 @@ SLUG=nxt-r3-solver-template-fold-b
 PKGN=slurp-nxt-r3-solver-template-fold-b-v1
 SHORT=nxt3
 LABEL=NXT-R3
-RD=docs/readiness/2026-10-17-$PKGN
+RD=docs/readiness/2026-10-18-$PKGN
 KINDS=${NXT3_KINDS:-"smoke arm"}
 case "$(realpath -m "$MAIN")" in /mnt/*) [ "$SAEA_ALLOW_9P_FLIP" = 1 ] || { echo "refusing: repo root $MAIN is on /mnt (9p); run via scripts/flights/batch/flip_package_ext4.sh or set SAEA_ALLOW_9P_FLIP=1"; exit 64; } ;; esac
 cd "$MAIN" || exit 1

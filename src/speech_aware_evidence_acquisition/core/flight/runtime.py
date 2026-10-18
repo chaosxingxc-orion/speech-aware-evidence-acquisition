@@ -3611,10 +3611,12 @@ class FlightRuntime:
 
         if native_config is None or native_config.supply_variant_group is None:
             return None
-        if native_config.supply_variant_group.is_template:
+        if native_config.supply_variant_group.unvaried_evidence:
             # NX programme E1: a node-template group varies the instruction and
             # never the supply, so there is no per-arm router to build; its
-            # arms are bound by :meth:`_template_variant_materials`.
+            # arms are bound by :meth:`_template_variant_materials`. NX-T R4: a
+            # node-decoding group varies the sampling of its contact only, so
+            # it has no router and no material either.
             return None
         group = native_config.supply_variant_group
         store_binding = getattr(self, "_knowledge_store_binding", None)
@@ -11833,6 +11835,7 @@ class FlightRuntime:
                     # kind's block, and a cell declaring both is refused.
                     from ...rails.native_episode_receipt import (  # noqa: PLC0415
                         SUPPLY_VARIANT_RECEIPT_SCHEMA_V4,
+                        SUPPLY_VARIANT_RECEIPT_SCHEMA_V6,
                     )
                     from ...rails.supply_variants import (  # noqa: PLC0415
                         SUPPLY_VARIANT_ARM_VISITS_INSTRUMENT,
@@ -11844,26 +11847,43 @@ class FlightRuntime:
                     declares_template = isinstance(
                         raw_solver_role, Mapping
                     ) and "template_variants" in raw_solver_role
-                    if declares_supply and declares_template:
+                    # NX-T R4: a node-DECODING group is declared under
+                    # ``decoding_variants`` and sealed as the v6 receipt.
+                    declares_decoding = isinstance(
+                        raw_solver_role, Mapping
+                    ) and "decoding_variants" in raw_solver_role
+                    if sum((declares_supply, declares_template, declares_decoding)) > 1:
                         raise FlightRuntimeError(
-                            "supply-variant delivery: a Solver role declares both "
-                            "supply_variants and template_variants"
+                            "supply-variant delivery: a Solver role declares both (or more) of "
+                            "supply_variants, template_variants and decoding_variants"
                         )
                     receipt_is_template = (
                         isinstance(supply_variants, Mapping)
                         and supply_variants.get("schema")
                         == SUPPLY_VARIANT_RECEIPT_SCHEMA_V4
                     )
-                    if receipt_is_template != declares_template:
+                    receipt_is_decoding = (
+                        isinstance(supply_variants, Mapping)
+                        and supply_variants.get("schema")
+                        == SUPPLY_VARIANT_RECEIPT_SCHEMA_V6
+                    )
+                    if (
+                        receipt_is_template != declares_template
+                        or receipt_is_decoding != declares_decoding
+                    ):
                         raise FlightRuntimeError(
                             "supply-variant delivery: the sealed arm receipt kind "
                             "does not match the declared arm group kind "
                             f"(receipt template={receipt_is_template}, declared "
-                            f"template_variants={declares_template})"
+                            f"template_variants={declares_template}; receipt "
+                            f"decoding={receipt_is_decoding}, declared "
+                            f"decoding_variants={declares_decoding})"
                         )
                     raw_variants = (
                         raw_solver_role.get(
-                            "template_variants" if declares_template else "supply_variants"
+                            "template_variants" if declares_template
+                            else "decoding_variants" if declares_decoding
+                            else "supply_variants"
                         )
                         if isinstance(raw_solver_role, Mapping) else None
                     )
@@ -11902,11 +11922,22 @@ class FlightRuntime:
                         # fan-out is the instrument constant, exactly as
                         # ``parse_template_variants`` fixes it.
                         arm_visits=(
-                            SUPPLY_VARIANT_ARM_VISITS_INSTRUMENT if declares_template
+                            SUPPLY_VARIANT_ARM_VISITS_INSTRUMENT
+                            if declares_template or declares_decoding
                             else raw_variants.get("arm_visits", "every")
                         ),
                         error_type=FlightRuntimeError,
                     )
+                    if declares_decoding and [
+                        row.get("decoding_override") for row in supply_variants["arms"]
+                    ] != [entry.get("decoding") for entry in raw_arms]:
+                        # NX-T R4: the sealed per-arm sampling overrides are exactly the ones
+                        # the cell's own fragment declares (a sealed row can never describe a
+                        # sampling policy other than the declared one).
+                        raise FlightRuntimeError(
+                            "supply-variant delivery: the sealed decoding overrides differ "
+                            "from the ones roles.solver.decoding_variants declares"
+                        )
                 if delivery.kind == "abstention":
                     from ..delivery import (
                         native_abstention_records, native_seal_refusal_abstention_records,

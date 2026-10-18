@@ -170,6 +170,9 @@ class DryRunArm(object):
     #: resolved from the composed fragment by ``core.reasoning_knobs.resolve_node_decoding``. ``None`` for every other kind.
     thinking_policy: Mapping[str, Mapping[str, object]] | None = None
     node_decoding: Mapping[str, Mapping[str, object]] | None = None
+    #: NX-T R4 (node-decoding arms): the arm's declared sampling override ``{name: value}`` applied to its Solver contact, or
+    #: ``None`` (every other kind, the delivering arm and the twin).
+    decoding_override: Mapping[str, object] | None = None
 
     def as_json(self) -> dict[str, object]:
         row: dict[str, object] = {
@@ -193,6 +196,8 @@ class DryRunArm(object):
                 kind: dict(entry) for kind, entry in self.thinking_policy.items()
             }
             row["node_decoding"] = {kind: dict(fields) for kind, fields in self.node_decoding.items()}
+        if self.instruction_sha256 is not None and self.decoding_override is not None:
+            row["decoding_override"] = dict(self.decoding_override)
         return row
 
 
@@ -635,7 +640,7 @@ def dry_run_native_episode(
     # at the node itself, against the node's own material inputs.
     template_group = (
         supply_variant_group
-        if supply_variant_group is not None and supply_variant_group.is_template
+        if supply_variant_group is not None and supply_variant_group.unvaried_evidence
         else None
     )
     template_materials = binding.get("template_variant_materials") or {}
@@ -846,6 +851,10 @@ def dry_run_native_episode(
                     instruction_chars=len(instruction),
                     thinking_policy=thinking_policy_by_arm.get(arm_id),
                     node_decoding=_arm_node_decoding(arm_id),
+                    decoding_override=(
+                        template_group.arm(arm_id).decoding
+                        if template_group is not None and template_group.is_decoding else None
+                    ),
                 ))
             template_arms = tuple(walked_template)
         text = answer(phase, visits[phase])

@@ -1,0 +1,82 @@
+{
+  "_draft_note": "A DRAFT for the coordinator to mint on the data root with scripts/flights/nx/nxt_r4_mint_receipt.py. It authorises nothing while its status is not 'decided'.",
+  "antecedents": {
+    "analysis_recipe": {
+      "path": "docs/readiness/2026-10-18-slurp-nxt-r4-solver-decoding-fold-b-v1/analysis-recipe-v1.json",
+      "sha256": "c2688e4b35180332ea9dba9632e13ba24de09ea1c9159d13622347ec4c9fba4f"
+    },
+    "protocol": {
+      "path": "docs/readiness/2026-10-18-slurp-nxt-r4-solver-decoding-fold-b-v1/protocol-registered-v1.json",
+      "sha256": "c3a51d315f7242baf3fac6dc9d8cac307ab5890f8ce1c78cb241d2ac671e6a52"
+    },
+    "registered_facts": {
+      "path": "docs/readiness/2026-10-18-slurp-nxt-r4-solver-decoding-fold-b-v1/registered-facts-v1.json",
+      "sha256": "024e77b33292d5caa32a29ec9f03a018755c41d2018d230377df044f5a3dae28"
+    },
+    "registration_base_commit": "32f81ade5417c0954849eb1259f30cf183f66dd1"
+  },
+  "authorization_basis": "owner rulings 329 A and 332 A (2026-10-18), 326 A and 327 A (2026-10-17), 313 A (2026-10-14) and 304/307 (2026-10-13), coordinator approval of the NX-T R4 design; docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md; docs/superpowers/specs/2026-10-12-thinking-core-engineering-base-design.md.",
+  "budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 30240,
+    "generation_calls_cap": 15120,
+    "gpu_hours_fit_inclusive": 43.4,
+    "native_task_contract_calls_cap": 15120,
+    "official_complete_scoring_jobs": 1,
+    "paid_api_calls": 0,
+    "plan_budget_is_run_cumulative": true,
+    "repeated_speech_audio_seconds_cap": 44168,
+    "smoke": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 112,
+      "generation_calls_cap": 56,
+      "gpu_hours_fit_inclusive": 0.5,
+      "native_task_contract_calls_cap": 56,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 143
+    }
+  },
+  "claim_boundary": "No benefit, system-level, superiority, generalisation, held-out, confirmatory or paper-scale claim.",
+  "decision": "Fly the Solver decoding-policy column on the Thinking core on TRAIN Fold B: four-row smoke, then the 6-arm column flight (with the twin).",
+  "decision_id": "slurp-nxt-r4-solver-decoding-fold-b-admission-v1",
+  "eligible_attempt_ids": [
+    "attempt-slurp-native-stage3-nxt-r4-solver-decoding-fold-b-smoke-4-generation-v1",
+    "attempt-slurp-native-stage3-nxt-r4-solver-decoding-fold-b-smoke-4-fit-v1",
+    "attempt-slurp-native-stage3-nxt-r4-solver-decoding-fold-b-generation-v1",
+    "attempt-slurp-native-stage3-nxt-r4-solver-decoding-fold-b-fit-v1"
+  ],
+  "eligible_run_ids": [
+    "SAEA-SLURP-STAGE3-NXT-R4-SOLVER-DECODING-FOLD-B-SMOKE-4-V1",
+    "SAEA-SLURP-STAGE3-NXT-R4-SOLVER-DECODING-FOLD-B-SMOKE-4-FIT-V1",
+    "SAEA-SLURP-STAGE3-NXT-R4-SOLVER-DECODING-FOLD-B-V1",
+    "SAEA-SLURP-STAGE3-NXT-R4-SOLVER-DECODING-FOLD-B-FIT-V1"
+  ],
+  "not_authorized": [
+    "any flight before the cells are flipped and the receipt is minted",
+    "starting or touching any serving session outside the registered swap",
+    "any ASR, transcript, encoder or paid-API contact",
+    "--allow-output-change on the re-pin tool",
+    "any change beyond the registered Solver sampling parameters",
+    "Fold A, DEV or test-split contact"
+  ],
+  "owner": "root",
+  "population": {
+    "count": 1080,
+    "fold_a_contact_authorized": false,
+    "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
+    "split_role": "discovery",
+    "test_contact_authorized": false
+  },
+  "recorded_at_utc": null,
+  "schema": "saea-campaign-decision-v1",
+  "service": {
+    "expected_session_id": "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
+    "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
+    "no_child_start_stop": true
+  },
+  "status": "DRAFT-NOT-MINTED"
+}

@@ -140,3 +140,71 @@ declared config to exactly the compiled block.
 See the README. In short: the candidate bound (6 plus lock plus twin) is the programme's C0.5 read as "candidates";
 the Reviewer and Planner wiring is config-only for the parser but not yet for the node class; the borrowed floor is
 provisional; `flight_registration_check.py` has no node-column registration findings yet.
+
+## 10. The decoding kind (NX-T R4, owner rulings 329 A and 332 A, 2026-10-18)
+
+A sibling kind of the template kind: a same-flight column whose arms differ ONLY in the sampling parameters of the Solver's
+own contact. Everything section 1 says the template kind reuses, the decoding kind reuses with the template axis removed.
+
+**Declaration.** `roles.solver.decoding_variants`, exactly `{node, arms, max_supplied_items, fit_estimate, template_tokens}`
+(`template_tokens` is the node's LOCKED template token count, shared by every arm; it enters only the fit estimate). An arm is
+`{arm_id, deliver?, replicate_of?, decoding?}`. A candidate arm carries `decoding`, a non-empty object over the closed set
+`rails.native_episode_receipt.DECODING_VARIANT_KNOBS`:
+
+| parameter | kind | bounds |
+| --- | --- | --- |
+| `temperature` | number | [0, 1.5] |
+| `top_p` | number | (0, 1] |
+| `top_k` | integer | [1, 200] |
+| `presence_penalty` | number | [0, 2] |
+
+`min_p` and `frequency_penalty` are deliberately NOT admitted (add one to the table only when a round needs it). The delivering
+arm is LAST and the twin (`replicate_of` the delivering arm) is optional; both declare no `decoding`, so their requests are the
+locked plan's byte for byte. Candidates 1..6 (plus the delivering arm and at most one twin), `arm_visits` fixed `first`.
+
+**Refusals (before any contact, by name).** Everything in section 3 that is not about a template, plus: an arm naming a
+parameter another axis owns -- the request `seed` ("the request seed is the lock's for every arm"), `max_tokens`,
+`thinking_budget_tokens`, `chat_template_kwargs` (the thinking-budget axis), `response_format`, `tool_choice`,
+`parallel_tool_calls` (the node's own), `id_slot` (serving geometry), `min_p`, `frequency_penalty`, `logprobs` -- is refused
+with the owning axis in the message; an unknown parameter, a mistyped value (boolean, string, non-integer `top_k`), a
+non-finite value, an out-of-bounds value, an empty or non-object `decoding`; a template or supply knob on an arm
+(`instruction_template`, `template_tokens`, `overrides`, `release_swap`, `knobs`, a per-arm `max_supplied_items`); an override
+that sets every named parameter to the lock's own value (compared with the cell's effective request decoding, so such an arm
+would be a second spelling of the delivering arm); two arms with the same override; the fit overrun of section 3 (its
+estimate has no template term beyond the shared locked-template count).
+
+**Runtime contract.** The runner treats the decoding group in template mode (`SupplyVariantGroup.unvaried_evidence`): every
+arm's two messages come from the one `base_messages(ctx)`, no per-arm supply is resolved, no per-arm material builder exists
+(`binding.template_variant_materials` must be empty). The override is applied at ONE seam,
+`MeteredNativeSpeechRequest.prepare`: after the role-level completion cap and thinking policy and before the answer-only
+re-ask, on the contacts of the Solver role whose `variant_arm_id` names a candidate arm, as `decoding.update(override)`. The
+template, evidence, response format, thinking budget and cap, seed and tool authority are not touched. The delivering arm and
+the twin have no map entry, so an armed adapter's requests for them (and for every Perception contact) are byte-identical to an
+unarmed adapter's (unit-tested at the request level and in the live harness against an UNARMED run). The answer-only fallback
+re-ask of a candidate contact (decision 278) is derived from the arm's own decoding, so it keeps the arm's sampling.
+
+**Wire.** `core.model.request_types.ALLOWED_DECODING_KEYS` already admits `temperature`, `top_p`, `top_k` and
+`presence_penalty`; `core.model.transport` moves every `decoding_params` key it does not own to the top level of the
+OpenAI-compatible request body unchanged, which is where llama.cpp's server reads each of them (read from source; no server
+was contacted). Stochastic sampling at a fixed request `seed` is reproducible only up to the serving geometry's batching
+nondeterminism (the R2b analysis measured 25 % forced-status flips between two greedy arms at 4 slots), so a sampling arm's
+discordance against the delivering arm is reported beside the twin's.
+
+**Custody.** `decoding_params` is part of the request payload, so the override is covered by the trace's `payload_sha256`; the
+arm identity (`variant_arm_id`) is already in the role custody document; the receipt `saea-supply-variant-arms-v6` (v3 arm rows
+plus `decoding_override`, `None` for the delivering arm and the twin, the declared `{name: value}` for every other arm) states
+each arm's override and the runner and the flight re-check the sealed rows against the declaration. A v6 receipt requires
+every arm to supply exactly the delivering arm's ids and distinct overrides, and validates under the same
+`validate_supply_variant_receipt`. Receipts v1 to v5 validate unchanged. The effect-floor gate keeps the
+`same-flight-node-column` design and its `template_variants` summary key `{node, candidate_arms, twin}` for this kind (the key
+names the node-column summary, not the template axis).
+
+**Consumption module.** A column of kind `decoding` is one arm of the block:
+`{column_id, kind: "decoding", node: "solver", decoding: {...}}`, with one block-level `decoding_frame`
+`{max_supplied_items, template_tokens, twin, fit_estimate}`; the carrier hook `decoding_variant_frame` names the block path,
+the node and the delivering (`lock`) and twin (`aa`) arm ids. The compiler builds the block, parses it with
+`parse_decoding_variants`, adds K - 1 to the ceiling and selects `phase-native-module-v1-c<ceiling>`. Decoding columns are
+admitted under the review-off profile and refused beside any other column kind.
+
+**Tests.** `tests/unit/test_decoding_variants.py` (parser, receipt, loader, compiler) and
+`tests/unit/test_decoding_variants_live.py` (request seam, live harness).

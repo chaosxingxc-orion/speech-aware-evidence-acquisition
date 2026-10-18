@@ -301,7 +301,7 @@ def test_the_v5_validator_refuses_a_twin_with_swaps():
 def test_an_unregistered_schema_is_still_refused_and_v3_rows_cannot_carry_release_swaps():
     group, receipt = _v5_receipt()
     bad = copy.deepcopy(receipt)
-    bad["schema"] = "saea-supply-variant-arms-v6"
+    bad["schema"] = "saea-supply-variant-arms-v9"
     with pytest.raises(ValueError, match="unregistered schema"):
         _validate(bad, group)
     v3 = copy.deepcopy(receipt)

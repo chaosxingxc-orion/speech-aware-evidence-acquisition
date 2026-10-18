@@ -98,6 +98,7 @@ from .context_budget import (
 )
 from .errors import RailsError
 from .native_episode_receipt import (
+    DECODING_VARIANT_KNOBS,
     PERCEPTION_BRANCH_RECEIPT_SCHEMA as _RECEIPT_PERCEPTION_BRANCH_RECEIPT_SCHEMA,
     PERCEPTION_BRANCH_KEY_SOURCE_FIELDS,
     PERCEPTION_BRANCH_NOTE_FIELD_SCHEMAS,
@@ -226,6 +227,54 @@ SUPPLY_VARIANT_RECEIPT_SCHEMA_V4 = "saea-supply-variant-arms-v4"
 #: programme; ``"template"`` is the node-template kind.
 SUPPLY_VARIANT_KIND_SUPPLY = "supply"
 SUPPLY_VARIANT_KIND_TEMPLATE = "template"
+#: The node-DECODING kind (NX-T R4, owner rulings 329 A / 332 A, 2026-10-18): a
+#: sibling of the template kind. Every arm renders the delivering arm's own
+#: evidence AND the node's own locked instruction template; the only thing a
+#: candidate arm overrides is the SAMPLING parameters of its Solver contact.
+SUPPLY_VARIANT_KIND_DECODING = "decoding"
+
+#: The receipt schema a NODE-DECODING group seals under: v3's arm rows plus
+#: ``decoding_override`` -- ``None`` for the delivering arm and the twin, the
+#: declared (canonical, sorted-key) sampling override for every other arm.
+#: Older receipts (v1-v5) validate unchanged.
+SUPPLY_VARIANT_RECEIPT_SCHEMA_V6 = "saea-supply-variant-arms-v6"
+
+#: The closed set of sampling parameters a decoding arm may override, with the
+#: bounds each must satisfy (inclusive unless noted). Everything else on a
+#: Solver contact -- the template, the evidence, the response format, the
+#: thinking budget and completion cap, the request seed and the tool
+#: authority -- is the lock's and is refused BY NAME if an arm names it.
+#: ``min_p`` is intentionally absent (admit it only if a round needs it).
+#: The table itself is owned by ``rails.native_episode_receipt`` (imported
+#: above) so the parser and the receipt validator share it.
+#:
+#: Names an arm might try to override that belong to another axis, named so the
+#: refusal says which axis owns them.
+DECODING_VARIANT_REFUSED_KNOBS: Mapping[str, str] = {
+    "seed": "the request seed is the lock's for every arm (a fixed seed is part of the registered design)",
+    "max_tokens": "the completion cap belongs to the thinking-budget axis",
+    "thinking_budget_tokens": "the thinking budget belongs to the thinking-budget axis",
+    "chat_template_kwargs": "the thinking switch belongs to the thinking-budget axis",
+    "response_format": "the response format is the node's own",
+    "tool_choice": "tool authority is the node's own",
+    "parallel_tool_calls": "tool authority is the node's own",
+    "id_slot": "slot pinning is serving geometry",
+    "min_p": "min_p is not admitted to the closed decoding set",
+    "frequency_penalty": "frequency_penalty is not admitted to the closed decoding set",
+    "logprobs": "logprobs is not a sampling parameter",
+    "top_logprobs": "logprobs is not a sampling parameter",
+}
+#: Keys the ``decoding_variants`` block carries, exactly. ``template_tokens`` is
+#: the locked template's token count, shared by every arm (all arms render it);
+#: it enters only the fit estimate.
+DECODING_VARIANT_BLOCK_KEYS = frozenset({
+    "node", "arms", "max_supplied_items", "fit_estimate", "template_tokens",
+})
+#: Keys one decoding arm row may carry.
+DECODING_VARIANT_ARM_KEYS = frozenset({"arm_id", "deliver", "replicate_of", "decoding"})
+DECODING_VARIANT_NODES: tuple[str, ...] = ("solver",)
+MIN_DECODING_CANDIDATE_ARMS = 1
+MAX_DECODING_CANDIDATE_ARMS = 6
 
 #: The nodes a template group may sit at. Solver first (NX round R1); the
 #: parser, the materials builder and the arm record are keyed on the node's
@@ -381,6 +430,19 @@ class SupplyVariantArm:
     # so a one-store swap spelled either way is the same arm. Declared LAST,
     # so every arm parsed before this field existed composes byte-identically.
     release_swaps: tuple[SupplyVariantReleaseSwap, ...] = ()
+    # NX-T R4 (2026-10-18): this arm's SAMPLING override -- a tuple of
+    # ``(name, value)`` pairs sorted by name, drawn from
+    # :data:`DECODING_VARIANT_KNOBS` -- or ``None`` for every arm of the other
+    # kinds, the delivering arm and the twin. Declared LAST, so every arm
+    # parsed before this field existed composes byte-identically
+    # (``as_json`` omits the key while it is ``None``).
+    decoding_override: tuple[tuple[str, float | int], ...] | None = None
+
+    @property
+    def decoding(self) -> dict[str, float | int] | None:
+        """The override as the mapping applied to the Solver contact's request."""
+
+        return None if self.decoding_override is None else dict(self.decoding_override)
 
     def __post_init__(self) -> None:
         swaps = tuple(self.release_swaps)
@@ -425,6 +487,8 @@ class SupplyVariantArm:
             row["release_swaps"] = [swap.as_json() for swap in self.release_swaps]
         if self.instruction_template is not None:
             row["instruction_template"] = self.instruction_template.as_json()
+        if self.decoding_override is not None:
+            row["decoding"] = dict(self.decoding_override)
         return row
 
 
@@ -502,14 +566,30 @@ class SupplyVariantGroup:
         return self.kind == SUPPLY_VARIANT_KIND_TEMPLATE
 
     @property
+    def is_decoding(self) -> bool:
+        return self.kind == SUPPLY_VARIANT_KIND_DECODING
+
+    @property
+    def unvaried_evidence(self) -> bool:
+        """True for the kinds whose every arm renders the delivering arm's own
+        evidence (template and decoding): the runner takes the arms' messages
+        from the one ``base_messages`` and resolves no per-arm supply."""
+
+        return self.kind in (SUPPLY_VARIANT_KIND_TEMPLATE, SUPPLY_VARIANT_KIND_DECODING)
+
+    @property
     def uses_release_swaps(self) -> bool:
         """True when some arm repoints two or more stores (E-T6): the group
         then seals the v5 receipt. False for every group written before."""
 
-        return not self.is_template and any(arm.release_swaps for arm in self.arms)
+        return (
+            not self.unvaried_evidence and any(arm.release_swaps for arm in self.arms)
+        )
 
     @property
     def receipt_schema(self) -> str:
+        if self.is_decoding:
+            return SUPPLY_VARIANT_RECEIPT_SCHEMA_V6
         if self.is_template:
             return SUPPLY_VARIANT_RECEIPT_SCHEMA_V4
         if self.uses_release_swaps:
@@ -549,7 +629,7 @@ class SupplyVariantGroup:
             "fit_estimate": self.fit_estimate.as_json(),
             "arm_visits": self.arm_visits,
         }
-        if self.is_template:
+        if self.is_template or self.is_decoding:
             document["kind"] = self.kind
         return document
 
@@ -1211,6 +1291,237 @@ def parse_template_variants(
     )
 
 
+def _decoding_override(
+    value: object, *, field: str, locked_decoding: Mapping[str, object] | None,
+) -> tuple[tuple[str, float | int], ...]:
+    """Parse one arm's ``decoding`` object into its canonical override, fail-closed.
+
+    The object is non-empty and every key is in :data:`DECODING_VARIANT_KNOBS`;
+    every value is a finite non-boolean number of the knob's kind inside its
+    bounds. A key another axis owns (the seed, the completion cap, the thinking
+    budget and switch, the response format, tool authority, slot pinning) is
+    refused BY NAME with the axis that owns it. When ``locked_decoding`` is
+    given (the node's own request decoding), an override that sets every key to
+    the lock's own value is refused: it would be a second spelling of the
+    delivering arm.
+    """
+
+    if not isinstance(value, Mapping) or not value:
+        raise SupplyVariantError(
+            f"{field} must be a non-empty object of sampling parameters "
+            f"{sorted(DECODING_VARIANT_KNOBS)}"
+        )
+    for name in sorted(value, key=str):
+        if name in DECODING_VARIANT_REFUSED_KNOBS:
+            raise SupplyVariantError(
+                f"{field} names {name!r}: {DECODING_VARIANT_REFUSED_KNOBS[name]}; a "
+                f"decoding arm overrides only {sorted(DECODING_VARIANT_KNOBS)}"
+            )
+        if name not in DECODING_VARIANT_KNOBS:
+            raise SupplyVariantError(
+                f"{field} names the unknown sampling parameter {name!r}; the closed "
+                f"set is {sorted(DECODING_VARIANT_KNOBS)}"
+            )
+    out: dict[str, float | int] = {}
+    for name in sorted(value):
+        number = value[name]
+        kind, low, high, low_exclusive = DECODING_VARIANT_KNOBS[name]
+        if isinstance(number, bool) or not isinstance(number, (int, float)):
+            raise SupplyVariantError(f"{field}.{name} must be a number, got {number!r}")
+        if kind == "integer" and not isinstance(number, int):
+            raise SupplyVariantError(f"{field}.{name} must be an integer, got {number!r}")
+        if isinstance(number, float) and not math.isfinite(number):
+            raise SupplyVariantError(f"{field}.{name} must be finite")
+        below = number <= low if low_exclusive else number < low
+        if below or number > high:
+            raise SupplyVariantError(
+                f"{field}.{name} is {number!r}, outside "
+                f"{'(' if low_exclusive else '['}{low}, {high}]"
+            )
+        out[name] = number
+    if locked_decoding is not None and all(
+        name in locked_decoding and locked_decoding[name] == number
+        and not isinstance(locked_decoding[name], bool)
+        for name, number in out.items()
+    ):
+        raise SupplyVariantError(
+            f"{field} sets every named parameter to the node's own locked value; that "
+            "arm is a second spelling of the delivering arm"
+        )
+    return tuple(sorted(out.items()))
+
+
+def parse_decoding_variants(
+    block: object,
+    *,
+    role_kind: str,
+    phase_id: str,
+    locked_decoding: Mapping[str, object] | None = None,
+) -> SupplyVariantGroup:
+    """Parse ``roles.<role>.decoding_variants`` into a decoding-kind group,
+    fail-closed (NX-T R4, owner rulings 329 A / 332 A).
+
+    The sibling of :func:`parse_template_variants`: every arm renders the
+    delivering arm's own supplied evidence and the node's own locked
+    instruction template; a candidate arm differs ONLY in the sampling
+    parameters of its own contact. The refusals, each raised by name BEFORE any
+    contact:
+
+    1. a block that is not an object with exactly ``node``, ``arms``,
+       ``max_supplied_items``, ``fit_estimate`` and ``template_tokens``;
+    2. a ``node`` other than the role the block sits on, or a role outside
+       :data:`DECODING_VARIANT_NODES`;
+    3. a candidate count outside 1..:data:`MAX_DECODING_CANDIDATE_ARMS` (plus the
+       delivering arm and at most one twin);
+    4. an arm row with an unknown key, or a supply/template knob named as such
+       (``overrides``, ``release_swap``, ``knobs``, ``max_supplied_items``,
+       ``instruction_template``, ``template_tokens``): the ONLY thing an arm
+       overrides is its ``decoding``;
+    5. an arm id collision, zero or several delivering arms, a delivering arm
+       that is not LAST or that carries a ``decoding`` override, several twins,
+       or a twin that is not the delivering arm's;
+    6. a candidate arm with a missing, empty, out-of-bounds, mistyped or
+       non-closed-set ``decoding`` (see :func:`_decoding_override`), a sampling
+       parameter another axis owns, an override equal to the lock's own decoding
+       (``locked_decoding``), or two arms with the same override;
+    7. an arm whose estimated prompt exceeds the live slot with the registered
+       reserve (:class:`SupplyVariantFitEstimate`).
+    """
+
+    keys = set(block) if isinstance(block, Mapping) else set()
+    if not isinstance(block, Mapping) or keys != DECODING_VARIANT_BLOCK_KEYS:
+        raise SupplyVariantError(
+            "roles.<role>.decoding_variants must be an object with exactly "
+            f"{sorted(DECODING_VARIANT_BLOCK_KEYS)}"
+        )
+    if role_kind not in DECODING_VARIANT_NODES:
+        raise SupplyVariantError(
+            f"decoding_variants may sit only at {list(DECODING_VARIANT_NODES)}, "
+            f"not the {role_kind!r} role"
+        )
+    if block["node"] != role_kind:
+        raise SupplyVariantError(
+            f"decoding_variants names node {block['node']!r} but sits on the "
+            f"{role_kind!r} role; a variant is declared on exactly the node it names"
+        )
+    max_items = _positive_int(
+        block["max_supplied_items"], field="decoding_variants.max_supplied_items"
+    )
+    template_tokens = _positive_int(
+        block["template_tokens"], field="decoding_variants.template_tokens"
+    )
+    rows = block["arms"]
+    if (
+        not isinstance(rows, Sequence) or isinstance(rows, (str, bytes))
+        or not all(isinstance(row, Mapping) for row in rows)
+    ):
+        raise SupplyVariantError("decoding_variants.arms must be an ordered list of arm objects")
+    twins = [row for row in rows if row.get("replicate_of") is not None]
+    candidates = len(rows) - len(twins) - 1
+    if len(twins) > 1:
+        raise SupplyVariantError("decoding_variants admits at most one replicate_of twin")
+    if not MIN_DECODING_CANDIDATE_ARMS <= candidates <= MAX_DECODING_CANDIDATE_ARMS:
+        raise SupplyVariantError(
+            "decoding_variants must declare between "
+            f"{MIN_DECODING_CANDIDATE_ARMS} and {MAX_DECODING_CANDIDATE_ARMS} "
+            "candidate decoding arms (plus the delivering arm and at most one "
+            f"twin); this block declares {max(candidates, 0)}"
+        )
+    fit_estimate = parse_supply_variant_fit_estimate(block["fit_estimate"])
+    arms: list[SupplyVariantArm] = []
+    for position, row in enumerate(rows):
+        where = f"decoding_variants.arms[{position}]"
+        refused = sorted(
+            set(row) & (TEMPLATE_VARIANT_REFUSED_KNOB_KEYS | {"instruction_template", "template_tokens"})
+        )
+        if refused:
+            raise SupplyVariantError(
+                f"{where} names {refused}: a decoding arm overrides exactly its "
+                "sampling parameters and nothing else (no template, no supply knob, "
+                "no release swap, no bound of its own)"
+            )
+        unknown = sorted(set(row) - DECODING_VARIANT_ARM_KEYS)
+        if unknown or "arm_id" not in row:
+            raise SupplyVariantError(
+                f"{where} must carry arm_id plus optional "
+                f"{sorted(DECODING_VARIANT_ARM_KEYS - {'arm_id'})}; unknown keys: {unknown}"
+            )
+        arm_id = _nonempty_str(row["arm_id"], field=f"{where}.arm_id")
+        deliver = row.get("deliver", False)
+        if not isinstance(deliver, bool):
+            raise SupplyVariantError(f"{where}.deliver must be a bool")
+        raw_replicate = row.get("replicate_of")
+        replicate_of = (
+            None if raw_replicate is None
+            else _nonempty_str(raw_replicate, field=f"{where}.replicate_of")
+        )
+        if deliver and replicate_of is not None:
+            raise SupplyVariantError(f"{where} declares both deliver: true and replicate_of")
+        override = None
+        if "decoding" in row:
+            if deliver or replicate_of is not None:
+                raise SupplyVariantError(
+                    f"{where} is the delivering arm or the twin and must declare no "
+                    "decoding: it samples exactly as the node's own locked request does, "
+                    "so its request is the locked plan's byte for byte"
+                )
+            override = _decoding_override(
+                row["decoding"], field=f"{where}.decoding", locked_decoding=locked_decoding,
+            )
+        elif not deliver and replicate_of is None:
+            raise SupplyVariantError(
+                f"{where} is a candidate arm and must declare a decoding override"
+            )
+        arms.append(SupplyVariantArm(
+            arm_id=arm_id, deliver=deliver, knobs=(), max_supplied_items=max_items,
+            replicate_of=replicate_of, template_tokens=template_tokens,
+            decoding_override=override,
+        ))
+    ids = [arm.arm_id for arm in arms]
+    if len(set(ids)) != len(ids):
+        raise SupplyVariantError("decoding_variants arm ids must be distinct")
+    delivering = [arm.arm_id for arm in arms if arm.deliver]
+    if len(delivering) != 1:
+        raise SupplyVariantError(
+            "decoding_variants must declare exactly one arm with deliver: true; "
+            f"this block declares {len(delivering)}"
+        )
+    if not arms[-1].deliver:
+        raise SupplyVariantError(
+            f"decoding_variants delivering arm {delivering[0]!r} must be the LAST arm: "
+            "the delivered text is then the group's final contact's own response, so "
+            "invariant I7 holds with no new exception"
+        )
+    for arm in arms:
+        if arm.replicate_of is not None and arm.replicate_of != arms[-1].arm_id:
+            raise SupplyVariantError(
+                f"decoding_variants arm {arm.arm_id!r} names replicate_of "
+                f"{arm.replicate_of!r}, which is not the delivering arm {arms[-1].arm_id!r}"
+            )
+    overrides = [arm.decoding_override for arm in arms if arm.decoding_override is not None]
+    if len(set(overrides)) != len(overrides):
+        raise SupplyVariantError(
+            "two decoding_variants arms declare the same sampling override; two "
+            "spellings of one construction spend a contact per row and measure nothing"
+        )
+    for arm in arms:
+        estimated = fit_estimate.estimated_prompt_tokens(arm)
+        if estimated > fit_estimate.prompt_limit_tokens:
+            raise SupplyVariantError(
+                f"decoding_variants arm {arm.arm_id!r} estimates {estimated} prompt "
+                f"tokens, which exceeds the {fit_estimate.prompt_limit_tokens}-token "
+                f"limit of a {fit_estimate.slot_tokens}-token slot with its "
+                f"registered {fit_estimate.reserve_tokens}-token reserve, the "
+                f"{fit_estimate.completion_ceiling}-token completion ceiling and "
+                f"the {REGISTERED_SPECIAL_TOKEN_RESERVE}-token special reserve"
+            )
+    return SupplyVariantGroup(
+        arms=tuple(arms), fit_estimate=fit_estimate,
+        arm_visits=SUPPLY_VARIANT_ARM_VISITS_INSTRUMENT,
+        kind=SUPPLY_VARIANT_KIND_DECODING,
+    )
+
+
 def accumulate_arm_selection(
     previous: Sequence[str], resolved: Sequence[str],
 ) -> tuple[str, ...]:
@@ -1296,12 +1607,17 @@ def supply_variant_arm_record(
     resolved_knobs: Mapping[str, int] | None = None,
     template_group: bool = False,
     release_swaps_group: bool = False,
+    decoding_group: bool = False,
 ) -> dict[str, object]:
     """One arm's receipt row: labels, ids and counts, never supplied text.
 
     ``template_group`` (NX programme E1) selects the v4 row shape: the same
     row plus ``instruction_template`` -- ``None`` for the delivering arm and
     the twin, the declared ``{relpath, sha256}`` for every other arm.
+
+    ``decoding_group`` (NX-T R4) selects the v6 row shape: the v3 row plus
+    ``decoding_override`` -- ``None`` for the delivering arm and the twin, the
+    declared sampling override (``{name: value}``) for every other arm.
 
     ``release_swaps_group`` (loop item E-T6) selects the v5 row shape: the v3
     row with ``release_swap`` replaced by ``release_swaps`` -- every declared
@@ -1364,6 +1680,8 @@ def supply_variant_arm_record(
     if release_swaps_group:
         del row["release_swap"]
         row["release_swaps"] = [swap.as_json() for swap in arm.all_release_swaps]
+    if decoding_group:
+        row["decoding_override"] = arm.decoding
     return row
 
 
@@ -3097,6 +3415,14 @@ __all__ = [
     "SUPPLY_VARIANT_RECEIPT_SCHEMA_V4",
     "SUPPLY_VARIANT_KIND_SUPPLY",
     "SUPPLY_VARIANT_KIND_TEMPLATE",
+    "SUPPLY_VARIANT_KIND_DECODING",
+    "SUPPLY_VARIANT_RECEIPT_SCHEMA_V6",
+    "DECODING_VARIANT_KNOBS",
+    "DECODING_VARIANT_REFUSED_KNOBS",
+    "DECODING_VARIANT_NODES",
+    "MIN_DECODING_CANDIDATE_ARMS",
+    "MAX_DECODING_CANDIDATE_ARMS",
+    "parse_decoding_variants",
     "TEMPLATE_VARIANT_NODES",
     "TEMPLATE_VARIANT_ROOTS",
     "MIN_TEMPLATE_CANDIDATE_ARMS",

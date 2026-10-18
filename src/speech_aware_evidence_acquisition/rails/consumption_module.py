@@ -87,7 +87,7 @@ COMPONENT_STATES: tuple[str, ...] = (STATE_ON, STATE_OFF, STATE_SHADOW, STATE_CO
 _BLOCK_REQUIRED = frozenset({"module_id", "profile", "components"})
 _BLOCK_OPTIONAL = frozenset({
     "columns", "lock", "review_loop", "solver_tool_access", "template_frame", "supply_frame", "construction_roster",
-    "thinking_frame",
+    "thinking_frame", "decoding_frame",
 })
 #: A lock-version name a block may declare (migration step 6, owner decision
 #: 204): ``v<major>.<minor>``, resolved through the carrier's ``lock_versions``.
@@ -104,6 +104,7 @@ NODE_RECEIPT_SCHEMAS = frozenset({
     "saea-supply-variant-arms-v3",
     "saea-supply-variant-arms-v4",
     "saea-supply-variant-arms-v5",
+    "saea-supply-variant-arms-v6",
     "saea-solver-citations-v1",
     "saea-deliver-normaliser-v1",
     "saea-relisten-v1",
@@ -180,6 +181,17 @@ _THINKING_FRAME_KEYS = frozenset({"max_supplied_items", "twin", "fit_estimate"})
 #: NX-T R2 (2026-10-15): the frame may OPTIONALLY name the delivering arm itself (``delivering_arm_id``), overriding the carrier hook's default id, so a
 #: budget round can call its delivering arm ``budget-3072``. Absent, the compiled block is byte-identical to NX-T R1's.
 _THINKING_FRAME_OPTIONAL_KEYS = frozenset({"delivering_arm_id"})
+#: NX-T R4 (2026-10-18, owner rulings 329 A / 332 A): the node-DECODING column. It IS one non-delivering arm of the Solver's
+#: ``decoding_variants`` block: the arm named ``column_id``, whose own Solver contact carries the declared SAMPLING override
+#: (``{temperature | top_p | top_k | presence_penalty: value}``, the closed set of ``rails.native_episode_receipt.
+#: DECODING_VARIANT_KNOBS``) over the SAME evidence, locked template and QueryState the delivering arm renders. It toggles no
+#: component and carries no template.
+COLUMN_KIND_DECODING = "decoding"
+_DECODING_COLUMN_KEYS = frozenset({"column_id", "kind", "node", "decoding"})
+#: The block-level frame every decoding column set shares: ``twin`` adds the request-identical A/A arm the carrier's hook names;
+#: ``max_supplied_items`` bounds the evidence every arm renders; ``template_tokens`` is the locked template's measured token
+#: count (every arm renders it); ``fit_estimate`` is the measured fail-closed fit estimate.
+_DECODING_FRAME_KEYS = frozenset({"max_supplied_items", "template_tokens", "twin", "fit_estimate"})
 #: Loop engineering item E-S1 (2026-10-11): the node-SUPPLY column. It IS one
 #: non-delivering arm of the Solver's ``supply_variants`` block (the E42
 #: mechanism): the arm named ``column_id``, resolving its own supply -- knob-tail
@@ -406,6 +418,10 @@ class CarrierHooks:
     #: The carrier's construction variants of its lock (:class:`ConstructionHooks`). ``None``: no variant on this carrier, so a
     #: block naming ``construction_roster`` refuses. Declared LAST.
     construction: "ConstructionHooks | None" = None
+    #: NX-T R4 (2026-10-18): where decoding columns compile -- ``{"block_path": the key path of the Solver role's
+    #: ``decoding_variants`` block, "node": "solver", "delivering_arm_id", "twin_arm_id"}``. ``None``: no analogue on this
+    #: carrier, so a decoding column refuses. Declared LAST.
+    decoding_variant_frame: Mapping[str, object] | None = None
 
 
 @dataclass(frozen=True)
@@ -538,6 +554,12 @@ class ColumnDecl:
     supply_json: str | None = None
     #: NX-T R1: a ``thinking`` column's canonical ``thinking_policy`` (``None`` for every other kind). Declared LAST.
     thinking_json: str | None = None
+    #: NX-T R4: a ``decoding`` column's canonical sampling override (``None`` for every other kind). Declared LAST.
+    decoding_json: str | None = None
+
+    @property
+    def decoding(self) -> dict[str, object] | None:
+        return None if self.decoding_json is None else json.loads(self.decoding_json)
 
     @property
     def thinking_policy(self) -> dict[str, object] | None:
@@ -580,6 +602,16 @@ class ConsumptionModuleBlock:
     thinking_frame_json: str | None = None
     #: The construction variant of the lock the block composes onto (``ConstructionHooks.variants``), or ``None``.
     construction_roster: str | None = None
+    #: NX-T R4: the decoding columns' shared frame (canonical JSON), or ``None`` when the block declares no decoding column.
+    decoding_frame_json: str | None = None
+
+    @property
+    def decoding_columns(self) -> tuple[ColumnDecl, ...]:
+        return tuple(c for c in self.columns if c.kind == COLUMN_KIND_DECODING)
+
+    @property
+    def decoding_frame(self) -> dict[str, object] | None:
+        return None if self.decoding_frame_json is None else json.loads(self.decoding_frame_json)
 
     @property
     def branch_columns(self) -> tuple[ColumnDecl, ...]:
@@ -694,7 +726,9 @@ def parse_consumption_module_block(
     if "solver_tool_access" in raw and (solver_access != "bounded-slot-lookup-v1" or review_loop != "off"):
         raise ConsumptionModuleConfigError("Solver tool access requires the explicit review-off profile")
     if review_loop == "off" and any(
-        not (isinstance(c, Mapping) and c.get("kind") in (COLUMN_KIND_TEMPLATE, COLUMN_KIND_SUPPLY, COLUMN_KIND_THINKING))
+        not (isinstance(c, Mapping) and c.get("kind") in (
+            COLUMN_KIND_TEMPLATE, COLUMN_KIND_SUPPLY, COLUMN_KIND_THINKING, COLUMN_KIND_DECODING,
+        ))
         for c in columns
     ):
         raise ConsumptionModuleConfigError("review-off profile does not support branch columns")
@@ -789,6 +823,10 @@ def parse_consumption_module_block(
         raw.get("thinking_frame"),
         has_thinking_columns=any(c.kind == COLUMN_KIND_THINKING for c in column_decls),
     )
+    decoding_frame_json = _parse_decoding_frame(
+        raw.get("decoding_frame"),
+        has_decoding_columns=any(c.kind == COLUMN_KIND_DECODING for c in column_decls),
+    )
     block_json = _canonical(dict(raw))
     identity = dict(raw)
     if "columns" in identity:
@@ -809,7 +847,35 @@ def parse_consumption_module_block(
         supply_frame_json=supply_frame_json,
         thinking_frame_json=thinking_frame_json,
         construction_roster=construction_roster,
+        decoding_frame_json=decoding_frame_json,
     )
+
+
+def _parse_decoding_frame(raw: object, *, has_decoding_columns: bool) -> str | None:
+    """The decoding columns' shared frame, fail-closed: present exactly when a decoding column is, with exactly the frame's
+    keys. The fit numbers are CHECKED by ``rails.supply_variants.parse_decoding_variants`` at compile time."""
+
+    if raw is None:
+        if has_decoding_columns:
+            raise ConsumptionModuleConfigError(
+                "consumption_module.decoding_frame is required beside a decoding column: it carries the measured fit "
+                "estimate and supply bound the arms share"
+            )
+        return None
+    if not has_decoding_columns:
+        raise ConsumptionModuleConfigError("consumption_module.decoding_frame is declared but no decoding column is")
+    if not isinstance(raw, Mapping) or set(raw) != _DECODING_FRAME_KEYS:
+        raise ConsumptionModuleConfigError(
+            f"consumption_module.decoding_frame keys must be exactly {sorted(_DECODING_FRAME_KEYS)}"
+        )
+    for key in ("max_supplied_items", "template_tokens"):
+        if isinstance(raw[key], bool) or not isinstance(raw[key], int) or raw[key] < 1:
+            raise ConsumptionModuleConfigError(f"consumption_module.decoding_frame.{key} must be a positive integer")
+    if not isinstance(raw["twin"], bool):
+        raise ConsumptionModuleConfigError("consumption_module.decoding_frame.twin must be a bool")
+    if not isinstance(raw["fit_estimate"], Mapping):
+        raise ConsumptionModuleConfigError("consumption_module.decoding_frame.fit_estimate must be an object")
+    return _canonical(dict(raw))
 
 
 def _parse_thinking_frame(raw: object, *, has_thinking_columns: bool) -> str | None:
@@ -990,6 +1056,9 @@ def _parse_columns(columns: list, decls: list[ComponentDecl]) -> tuple[ColumnDec
         if entry.get("kind") == COLUMN_KIND_THINKING:
             out.append(_parse_thinking_column(entry, field=field))
             continue
+        if entry.get("kind") == COLUMN_KIND_DECODING:
+            out.append(_parse_decoding_column(entry, field=field))
+            continue
         if entry.get("kind") is not None:
             out.append(_parse_template_column(entry, field=field))
             continue
@@ -1052,7 +1121,16 @@ def _parse_columns(columns: list, decls: list[ComponentDecl]) -> tuple[ColumnDec
         raise ConsumptionModuleConfigError(
             "consumption_module thinking columns must all name one node (one thinking_variants block per flight)"
         )
+    if len({c.node for c in out if c.kind == COLUMN_KIND_DECODING}) > 1:
+        raise ConsumptionModuleConfigError(
+            "consumption_module decoding columns must all name one node (one decoding_variants block per flight)"
+        )
     kinds = {c.kind for c in out}
+    if COLUMN_KIND_DECODING in kinds and len(kinds) > 1:
+        raise ConsumptionModuleConfigError(
+            "decoding columns cannot be declared beside template, supply, thinking or Perception-branch columns: one fan-out "
+            "mechanism per episode"
+        )
     if COLUMN_KIND_THINKING in kinds and len(kinds) > 1:
         raise ConsumptionModuleConfigError(
             "thinking columns cannot be declared beside template, supply or Perception-branch columns: one fan-out "
@@ -1166,6 +1244,35 @@ def _parse_thinking_column(entry: Mapping, *, field: str) -> ColumnDecl:
         raise ConsumptionModuleConfigError(f"{field}.thinking_policy: {reason or 'a thinking column must declare a policy'}")
     return ColumnDecl(
         column_id, "", STATE_ON, 0, None, kind=COLUMN_KIND_THINKING, node=node, thinking_json=_canonical(dict(policy)),
+    )
+
+
+def _parse_decoding_column(entry: Mapping, *, field: str) -> ColumnDecl:
+    """One ``kind: decoding`` column, fail-closed on SHAPE: exactly its keys and a well-formed sampling override (the closed
+    set and bounds of ``rails.native_episode_receipt.DECODING_VARIANT_KNOBS``). The by-name refusals of a knob another axis owns,
+    the lock-equal and duplicate refusals and the fit refusal are ``rails.supply_variants``' own, applied at compile time."""
+
+    from .native_episode_receipt import decoding_override_error  # noqa: PLC0415
+
+    if set(entry) != _DECODING_COLUMN_KEYS:
+        raise ConsumptionModuleConfigError(
+            f"{field} keys must be exactly {sorted(_DECODING_COLUMN_KEYS)} for a decoding column, got {sorted(entry)}; a "
+            "decoding column overrides the sampling parameters and nothing else"
+        )
+    column_id = _require_text(entry["column_id"], field=f"{field}.column_id")
+    node = _require_text(entry["node"], field=f"{field}.node")
+    override = entry["decoding"]
+    reason = decoding_override_error(override)
+    if reason is not None:
+        # a knob another axis owns is named by the compile-time parser; here only the SHAPE is checked
+        from .supply_variants import DECODING_VARIANT_REFUSED_KNOBS  # noqa: PLC0415
+
+        owned = sorted(set(override) & set(DECODING_VARIANT_REFUSED_KNOBS)) if isinstance(override, Mapping) else []
+        if not owned:
+            raise ConsumptionModuleConfigError(f"{field}.decoding {reason}")
+    return ColumnDecl(
+        column_id, "", STATE_ON, 0, None, kind=COLUMN_KIND_DECODING, node=node,
+        decoding_json=_canonical(dict(override)) if isinstance(override, Mapping) else None,
     )
 
 
@@ -1642,6 +1749,8 @@ def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPoli
         ceiling += _compile_supply_columns(block, hooks, writer, layer)
     if block.thinking_columns:
         ceiling += _compile_thinking_columns(block, hooks, writer, layer)
+    if block.decoding_columns:
+        ceiling += _compile_decoding_columns(block, hooks, writer, layer)
     level = _compile_perception_branches(block, hooks, writer)
     if level is not None:
         from .supply_variants import perception_branch_ceiling  # noqa: PLC0415
@@ -1838,6 +1947,50 @@ def _compile_template_columns(
     # Perception (level-2) block adds one extra Perception contact AND one extra
     # Solver contact per non-delivering arm.
     return (len(rows) - 1) * (2 if at_perception else 1)
+
+
+def _compile_decoding_columns(
+    block: ConsumptionModuleBlock, hooks: CarrierHooks, writer: _Writer, layer: Mapping,
+) -> int:
+    """Compile the decoding columns into ONE ``decoding_variants`` block at the Solver node (NX-T R4): one arm per column in
+    column order, the twin when the frame asks for one, then the delivering arm -- LAST, with no override, so its request is
+    the lock's own. Returns the extra contacts the block adds to the ceiling, ``K - 1`` (one extra Solver contact per
+    non-delivering arm).
+
+    The compiled block is parsed by the rails' own ``parse_decoding_variants`` HERE, so a knob outside the closed set, a knob
+    another axis owns, an out-of-bounds value, an override equal to the lock's, two identical overrides or a fit overrun is
+    refused at compile time, by that parser's name, before any config is written."""
+
+    from .supply_variants import SupplyVariantError, parse_decoding_variants  # noqa: PLC0415
+
+    df = block.decoding_frame
+    frame = _require_hook(hooks, "decoding_variant_frame", "decoding-columns")
+    nodes = {c.node for c in block.decoding_columns}
+    if nodes != {frame["node"]}:
+        raise ConsumptionModuleConfigError(
+            f"decoding columns name node(s) {sorted(nodes)}, but profile {hooks.profile!r} admits decoding variants only at "
+            f"{frame['node']!r}"
+        )
+    rows: list[dict[str, object]] = [
+        {"arm_id": c.column_id, "decoding": c.decoding} for c in block.decoding_columns
+    ]
+    if df["twin"]:
+        if frame.get("twin_arm_id") is None:
+            raise ConsumptionModuleConfigError(f"profile {hooks.profile!r} names no twin arm id for decoding columns")
+        rows.append({"arm_id": frame["twin_arm_id"], "replicate_of": frame["delivering_arm_id"]})
+    rows.append({"arm_id": frame["delivering_arm_id"], "deliver": True})
+    decoding_block = {
+        "node": frame["node"], "arms": rows, "max_supplied_items": df["max_supplied_items"],
+        "fit_estimate": dict(df["fit_estimate"]), "template_tokens": df["template_tokens"],
+    }
+    path = tuple(frame["block_path"])
+    role = _node(layer, path[:-1], field="decoding-columns")
+    try:
+        parse_decoding_variants(decoding_block, role_kind=frame["node"], phase_id=str(role.get("phase_id")))
+    except SupplyVariantError as error:
+        raise ConsumptionModuleConfigError(f"decoding columns are invalid: {error}") from error
+    writer.set(path, decoding_block, component_id="decoding-columns", replace_only=False)
+    return len(rows) - 1
 
 
 def _compile_thinking_columns(
@@ -2161,6 +2314,7 @@ def validate_module_header_receipt(receipt: object) -> Mapping[str, object]:
 __all__ = [
     "AGREE_VOTE_SEED",
     "CENTROID_BOUNDARY_KEY",
+    "COLUMN_KIND_DECODING",
     "COLUMN_KIND_SUPPLY",
     "COLUMN_KIND_TEMPLATE",
     "COLUMN_KIND_THINKING",
