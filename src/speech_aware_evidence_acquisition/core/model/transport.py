@@ -85,8 +85,12 @@ from . import FrozenCoreContextSizeError, FrozenCoreError
 from . import native_evidence_projection as _native_evidence_projection_registration  # noqa: F401
 from . import native_slot_binding_view as _native_slot_binding_view_registration  # noqa: F401
 from ..reasoning_knobs import (
+    RETAIN_DIAGNOSTIC_POLICY,
+    REASONING_BYTES_POLICIES,
+    REASONING_BYTES_POLICY,
     REASONING_WIRE_KEYS,
     ReasoningKnobError,
+    ReasoningRetention,
     budget_message_from_server_args,
     project_reasoning_out_of_wire,
     reasoning_summary,
@@ -543,7 +547,24 @@ class LlamaServerTransport:
         reasoning_content_guard: str | None = None,
         reasoning_telemetry: bool = False,
         forced_close_message: str | None = None,
+        reasoning_bytes_policy: str | None = None,
+        reasoning_retention: ReasoningRetention | None = None,
     ) -> None:
+        # Owner ruling 330 A (2026-10-18): the default is decision 286's projection (``hash-and-stats-only-v1``). The ONE exception,
+        # ``retain-diagnostic-v1``, needs a ``ReasoningRetention`` -- which only a plan naming the diagnostic run id can build -- and a
+        # reasoning-guarded transport; a retention object under any other policy, or the policy without it, is refused.
+        if reasoning_bytes_policy is None:
+            reasoning_bytes_policy = REASONING_BYTES_POLICY
+        if reasoning_bytes_policy not in REASONING_BYTES_POLICIES:
+            raise SessionError(f"reasoning_bytes_policy must be one of {sorted(REASONING_BYTES_POLICIES)}")
+        if (reasoning_bytes_policy == RETAIN_DIAGNOSTIC_POLICY) != (reasoning_retention is not None):
+            raise SessionError("reasoning_bytes_policy retain-diagnostic-v1 and a ReasoningRetention are required together")
+        if reasoning_retention is not None and not isinstance(reasoning_retention, ReasoningRetention):
+            raise SessionError("reasoning_retention must be a ReasoningRetention built from the diagnostic plan")
+        if reasoning_retention is not None and reasoning_content_guard is None:
+            raise SessionError("reasoning retention requires a reasoning_content_guard transport")
+        self._reasoning_bytes_policy = reasoning_bytes_policy
+        self._reasoning_retention = reasoning_retention
         # Prompt ordering is part of the request's identity: the bytes the
         # model sees change with it, so it is a MODEL-CONFIG field (inside the
         # config hash), never a code default silently applied to existing
@@ -1487,6 +1508,19 @@ class LlamaServerTransport:
             # carries ``message.reasoning_content`` is re-serialized without it (a ``reasoning`` object replaces it) BEFORE any
             # further read; everything sealed downstream, including ``wire_response_sha256``, is defined over this stored
             # projection. A response without the key is untouched byte for byte.
+            retained_receipt: dict[str, object] | None = None
+            if getattr(self, "_reasoning_retention", None) is not None:
+                # Ruling 330 A: the bytes go to the diagnostic directory BEFORE the projection removes them from ``parsed``;
+                # the projection below is unchanged, so the stored wire response and the envelope still carry no bytes.
+                held = message.get("reasoning_content") if isinstance(message, Mapping) else None
+                if isinstance(held, str):
+                    sent = json.loads(request_bytes)
+                    params = sent.get("decoding_params") if isinstance(sent, Mapping) else None
+                    retained_receipt = self._reasoning_retention.retain(
+                        sent.get("sample_id") if isinstance(sent, Mapping) else None,
+                        params.get("thinking_budget_tokens") if isinstance(params, Mapping) else None,
+                        held,
+                    )
             stored_raw, reasoning_summary_stored = project_reasoning_out_of_wire(
                 parsed, raw, getattr(self, "_forced_close_message", None),
             )
@@ -1577,6 +1611,8 @@ class LlamaServerTransport:
         if reasoning_summary_stored is not None:
             # Decision 286: hash and statistics of the dropped reasoning bytes -- on every path, whatever the knobs.
             envelope["reasoning"] = reasoning_summary_stored
+            if retained_receipt is not None:
+                envelope["reasoning_retention"] = retained_receipt
         elif getattr(self, "_reasoning_telemetry", False):
             # Decision 283 A: a reasoning fragment whose response carried no reasoning channel still reports zero counts.
             raw_usage = parsed.get("usage") if isinstance(parsed, Mapping) else None
@@ -1629,7 +1665,11 @@ def _llama_server_factory(
     runtime_receipt: Mapping[str, object],
     runtime_root: Path,
     feature_cache_guard: PreparedFeatureCacheGuard | None = None,
+    reasoning_retention: ReasoningRetention | None = None,
 ):
+    if "reasoning_bytes_policy" in values:
+        # Ruling 330 A: the retention exception is never declarable in a model fragment; only a diagnostic plan builds it.
+        raise SessionError("reasoning_bytes_policy cannot be declared in a model fragment")
     projection_id = values.get("native_evidence_projection")
     params_present = "native_evidence_projection_params" in values
     if params_present and not isinstance(
@@ -1715,6 +1755,8 @@ def _llama_server_factory(
             & set(values)
         ),
         forced_close_message=budget_message_from_server_args(values.get("server_args")),
+        reasoning_bytes_policy=RETAIN_DIAGNOSTIC_POLICY if reasoning_retention is not None else None,
+        reasoning_retention=reasoning_retention,
     )
 
 

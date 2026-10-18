@@ -24,6 +24,7 @@ import hashlib
 import json
 import re
 from collections.abc import Mapping, Sequence
+from pathlib import Path
 
 REASONING_CONTEXT_POLICIES = frozenset({"drop-reasoning-v1"})
 #: The guard value that marks a fragment as a reasoning (Thinking) fragment. Mirrors
@@ -408,6 +409,80 @@ def knobs_sha256(values: Mapping[str, object]) -> str:
 #: bytes are never part of the sealed trace. The trace keeps only the hash of the exact bytes as received plus statistics. Recorded in
 #: the transport envelope, the stored wire message and the COST record so a sealed trace says which policy produced it.
 REASONING_BYTES_POLICY = "hash-and-stats-only-v1"
+
+#: Owner ruling 330 A (2026-10-18): the ONE bounded diagnostic exception to decision 286. A transport armed with a
+#: :class:`ReasoningRetention` writes the reasoning bytes of each response to a file under the data root and nowhere else; the
+#: stored wire response, the envelope ``reasoning`` object and every trace record are still the decision-286 projection. The
+#: exception is a constructor argument that only a plan naming :data:`DIAGNOSTIC_RUN_ID` can build; a model fragment cannot declare it.
+RETAIN_DIAGNOSTIC_POLICY = "retain-diagnostic-v1"
+REASONING_BYTES_POLICIES = frozenset({REASONING_BYTES_POLICY, RETAIN_DIAGNOSTIC_POLICY})
+DIAGNOSTIC_RUN_ID = "SAEA-SLURP-SOLVER-REASONING-DIAGNOSTIC-V1"
+DIAGNOSTIC_PROFILE = "bounded-discovery-probe"
+DIAGNOSTIC_ROOT_PARTS = ("diagnostics", DIAGNOSTIC_RUN_ID)
+_SAMPLE_FILE_UNSAFE = re.compile(r"[^A-Za-z0-9._-]")
+
+
+class ReasoningRetention:
+    """Where the diagnostic run's reasoning bytes go, and the only way to obtain a writer for it.
+
+    ``from_plan`` refuses any plan whose run id is not :data:`DIAGNOSTIC_RUN_ID` (or whose profile is not the bounded probe), and a
+    data root that is not an existing directory. Files are created exclusively (one attempt per sample and budget: an existing file is
+    never overwritten) under ``<data root>/diagnostics/<run id>/reasoning/``. The returned receipt carries the path relative to the
+    diagnostic root, the sha256 of the exact UTF-8 bytes written and their counts -- never the text.
+    """
+
+    def __init__(self, *, _token: object, run_id: str, directory: Path) -> None:
+        if _token is not _CONSTRUCTION_TOKEN:
+            raise ReasoningKnobError("a ReasoningRetention is built only by ReasoningRetention.from_plan")
+        self.run_id = run_id
+        self.directory = Path(directory)
+
+    @classmethod
+    def from_plan(cls, plan: object, data_root: Path) -> "ReasoningRetention":
+        run_id = getattr(plan, "run_id", None)
+        if run_id != DIAGNOSTIC_RUN_ID:
+            raise ReasoningKnobError(
+                f"reasoning retention is refused: the plan names run id {run_id!r}, not the diagnostic run {DIAGNOSTIC_RUN_ID!r} (ruling 330 A)"
+            )
+        if getattr(plan, "execution_profile", None) != DIAGNOSTIC_PROFILE:
+            raise ReasoningKnobError(f"reasoning retention requires execution profile {DIAGNOSTIC_PROFILE!r}")
+        root = Path(data_root)
+        if not root.is_dir():
+            raise ReasoningKnobError(f"reasoning retention requires an existing data root directory, got {str(root)!r}")
+        return cls(_token=_CONSTRUCTION_TOKEN, run_id=run_id, directory=root.joinpath(*DIAGNOSTIC_ROOT_PARTS, "reasoning"))
+
+    @property
+    def diagnostic_root(self) -> Path:
+        return self.directory.parent
+
+    @staticmethod
+    def file_name(sample_id: str, budget: object) -> str:
+        if not isinstance(sample_id, str) or not sample_id:
+            raise ReasoningKnobError("reasoning retention requires a non-empty sample id")
+        stem = _SAMPLE_FILE_UNSAFE.sub("_", sample_id).strip(".") or "sample"
+        if isinstance(budget, bool) or not isinstance(budget, int) or budget == 3072:
+            return f"{stem}.txt"
+        return f"{stem}.b{budget}.txt"
+
+    def retain(self, sample_id: str, budget: object, reasoning_text: str) -> dict[str, object]:
+        if not isinstance(reasoning_text, str):
+            raise ReasoningKnobError("reasoning retention writes only string reasoning bytes")
+        data = reasoning_text.encode("utf-8", "surrogatepass")
+        self.directory.mkdir(parents=True, exist_ok=True)
+        name = self.file_name(sample_id, budget)
+        target = self.directory / name
+        if target.resolve().parent != self.directory.resolve():
+            raise ReasoningKnobError("reasoning retention path escaped its directory")
+        digest = hashlib.sha256(data).hexdigest()
+        with open(target, "xb") as handle:       # exclusive: one attempt per sample and budget
+            handle.write(data)
+        return {
+            "policy": RETAIN_DIAGNOSTIC_POLICY, "run_id": self.run_id,
+            "relpath": f"reasoning/{name}", "sha256": digest, "bytes": len(data), "chars": len(reasoning_text),
+        }
+
+
+_CONSTRUCTION_TOKEN = object()
 
 
 def reasoning_summary(

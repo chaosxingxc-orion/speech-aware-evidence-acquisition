@@ -1,0 +1,43 @@
+{
+  "budget": {
+    "audio_ceiling_basis": "48 calls x the longest roster utterance (4.73 s), rounded up to 10",
+    "call_ceiling": 48,
+    "ceilings_are_not_targets": true,
+    "gpu_hours_ceiling": 0.9,
+    "re_issues": 40,
+    "roster_audio_seconds": 107.698
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-solver-reasoning-diagnostic-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.9,
+    "planned_model_calls": 48,
+    "planned_speech_audio_seconds": 230,
+    "protocol_hash": "dfdac86c4fa48658a051702f68f4a18d311fea909f37e6dfcd76319e5dcc24a1",
+    "run_id": "SAEA-SLURP-SOLVER-REASONING-DIAGNOSTIC-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
+  "launcher": "scripts/flights/diag/solver_reasoning_diag.sh",
+  "needs": [
+    "root countersignature of the two draft ledger rows (the gate refuses a model touch without the pre-registered row)",
+    "no flight lock and no flight process",
+    "the resident serving session is think-budget-np4 (after the R2 rec2 flight seals)"
+  ],
+  "plan_kind": "generation",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-10-18-slurp-solver-reasoning-diagnostic-v1/protocol-v1.json",
+    "sha256": "dfdac86c4fa48658a051702f68f4a18d311fea909f37e6dfcd76319e5dcc24a1"
+  },
+  "registered_at_utc": "2026-10-18T00:00:00Z",
+  "roster": {
+    "relpath": "docs/readiness/2026-10-18-slurp-solver-reasoning-diagnostic-v1/roster-v1.json",
+    "rows": 40,
+    "sha256": "fada60547d26c037ec7189f055fcd0f101bc35b6a7067549a8a9d75e40069e82"
+  },
+  "schema": "saea-registered-diagnostic-plan-v1"
+}
