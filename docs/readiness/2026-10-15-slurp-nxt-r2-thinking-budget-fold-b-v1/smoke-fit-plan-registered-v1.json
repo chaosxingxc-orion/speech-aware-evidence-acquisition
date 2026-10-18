@@ -64,7 +64,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-15-slurp-nxt-r2-thinking-budget-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "b0f6e37aada62b28ce753d2c898d52d7288abeac68431191ee36b84af02b5965"
+    "sha256": "be41988b3245b477d379e39afce5da4878298e7e9696936c62d4f773b34dd8c6"
   },
   "purpose": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-SMOKE-4-FIT-V1: request envelopes only; reads nothing.",
   "registered_at_utc": "2026-10-15T14:46:49.000000+00:00",

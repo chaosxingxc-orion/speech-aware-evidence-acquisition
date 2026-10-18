@@ -18,11 +18,11 @@
     "arm": {
       "attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-generation-rec2-v1",
       "cell": "slurp-native-stage3-nxt-r2-thinking-budget-fold-b-v1",
-      "composed_config_hash": "8f5ab47caf2cea8801fab0068cf9efb9ff8e64f186154088ca512963e0d00ac4",
+      "composed_config_hash": "2ac21f2cb1b805ca52e55f831227335b1d5af73fe28c3be8231ee5f14076cfb6",
       "experiment": "slurp-native-stage3-nxt-r2-thinking-budget-fold-b-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-nxt-r2-thinking-budget-fold-b-fit-rec2-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-FIT-REC2-V1",
-      "protocol_hash": "36edb46545a44f65b2a71d738502396cc80f5aa1ac42c92bdf74c7e2ea52cc9b",
+      "protocol_hash": "dd64ef46482089004ff011c8915fde72136d025b4a8899c861649785d21570ae",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1",
       "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"

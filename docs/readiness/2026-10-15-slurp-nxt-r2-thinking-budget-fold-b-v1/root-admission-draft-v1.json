@@ -19,7 +19,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-10-15-slurp-nxt-r2-thinking-budget-fold-b-v1/protocol-registered-v1.json",
-      "sha256": "b0f6e37aada62b28ce753d2c898d52d7288abeac68431191ee36b84af02b5965"
+      "sha256": "be41988b3245b477d379e39afce5da4878298e7e9696936c62d4f773b34dd8c6"
     },
     "recovery_plans": {
       "arm": {
