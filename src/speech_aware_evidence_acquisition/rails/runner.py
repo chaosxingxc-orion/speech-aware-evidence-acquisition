@@ -2611,8 +2611,19 @@ async def _invoke_native_role_episode(
     # kind -- every arm renders the delivering arm's own evidence and differs
     # only in its pinned instruction template. False (and every branch keyed on
     # it unreachable) for every config written before the programme.
+    # NX-T R4 (2026-10-18): the node-DECODING kind shares this mode -- every arm
+    # renders the delivering arm's own evidence; only the contact's sampling
+    # parameters differ (``solver_arm_decoding`` below) and no arm carries a
+    # template, so ``declared_template_arms`` is empty for it.
     template_variant_mode = bool(
-        supply_variant_group is not None and supply_variant_group.is_template
+        supply_variant_group is not None and supply_variant_group.unvaried_evidence
+    )
+    # ``{arm id: {sampling parameter: value}}`` for the decoding kind's candidate arms,
+    # applied at request composition (``MeteredNativeSpeechRequest``); empty for every
+    # other config, which leaves every composed request byte-identical.
+    solver_arm_decoding = (
+        {arm.arm_id: arm.decoding for arm in supply_variant_group.arms if arm.decoding is not None}
+        if supply_variant_group is not None and supply_variant_group.is_decoding else {}
     )
     # The ``(plan, completion, slot_id)`` of the arms of the visit in flight, in
     # arm order, so the visit's ONE wave can name every one of its K contacts.
@@ -3018,7 +3029,8 @@ async def _invoke_native_role_episode(
                 arm_index=supply_variant_group.arm_ids.index(arm.arm_id),
                 contact_id=plan.contact_id,
                 supplied_value_ids=tuple(ctx.query_state.retrieved_value_ids),
-                template_group=True,
+                template_group=not supply_variant_group.is_decoding,
+                decoding_group=supply_variant_group.is_decoding,
             )
         except SupplyVariantError as error:
             raise RailsRunnerError(str(error)) from error
@@ -4900,6 +4912,10 @@ async def _invoke_native_role_episode(
         # NX-T R1: the per-branch thinking override map of a thinking-policy column, ``{branch id: {role phase id: override}}``.
         # None for every config that declares no ``roles.perception.thinking_variants`` -- byte-identical requests.
         branch_thinking_policy=_branch_thinking_policy(config, perception_branch_group),
+        # NX-T R4: the per-arm SAMPLING override of a decoding column, ``{arm id: {name: value}}`` bound to the Solver's
+        # phase id. None for every config that declares no ``roles.solver.decoding_variants`` -- byte-identical requests.
+        solver_arm_decoding=solver_arm_decoding or None,
+        solver_arm_decoding_role_id=(supply_variant_phase_id if solver_arm_decoding else None),
     )
     # E8b: the SAME request composer, bound to the cleaning contact's own
     # binding provider and to a completion sink that settles nothing. It is a
@@ -6210,7 +6226,7 @@ async def _invoke_native_role_episode(
                 phase_id=solver_role_config.phase_id,
                 error_type=RailsRunnerError,
             )
-            if template_variant_mode and [
+            if template_variant_mode and not supply_variant_group.is_decoding and [
                 row.get("instruction_template") for row in supply_variants["arms"]
             ] != [
                 None if arm.instruction_template is None
@@ -6220,6 +6236,13 @@ async def _invoke_native_role_episode(
                 raise RailsRunnerError(
                     "the sealed template-variant receipt names templates other "
                     "than the ones roles.solver.template_variants declared"
+                )
+            if supply_variant_group.is_decoding and [
+                row.get("decoding_override") for row in supply_variants["arms"]
+            ] != [arm.decoding for arm in supply_variant_group.arms]:
+                raise RailsRunnerError(
+                    "the sealed decoding-variant receipt names sampling overrides other "
+                    "than the ones roles.solver.decoding_variants declared"
                 )
         if supply_variant_records:
             raise RailsRunnerError(

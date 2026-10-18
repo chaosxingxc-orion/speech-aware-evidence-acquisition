@@ -312,6 +312,8 @@ class MeteredNativeSpeechRequest:
         role_completion_caps: Mapping[str, int] | None = None,
         role_thinking_policy: Mapping[str, Mapping[str, object]] | None = None,
         branch_thinking_policy: Mapping[str, Mapping[str, Mapping[str, object]]] | None = None,
+        solver_arm_decoding: Mapping[str, Mapping[str, object]] | None = None,
+        solver_arm_decoding_role_id: str | None = None,
     ):
         if not isinstance(client, FrozenCoreClient):
             raise NativeSpeechRequestError("use the flight's existing FrozenCoreClient")
@@ -369,6 +371,23 @@ class MeteredNativeSpeechRequest:
                 "branch_thinking_policy must map branch ids to {role id: override mapping} maps"
             )
         self._branch_thinking_policy = branch_policy
+        # NX-T R4 (2026-10-18): ``{Solver arm id: {sampling parameter: value}}`` -- the per-ARM sampling override of a decoding
+        # column, composed at this same seam and only on the Solver role's contacts. Closed set and bounds are the receipt
+        # module's table; None or empty (every adapter written before NX-T R4) leaves every composed request as before.
+        from ...rails.native_episode_receipt import decoding_override_error  # noqa: PLC0415
+
+        arm_decoding = {str(arm_id): dict(entry) for arm_id, entry in dict(solver_arm_decoding or {}).items()}
+        for arm_id, entry in arm_decoding.items():
+            reason = decoding_override_error(entry)
+            if not arm_id or reason is not None:
+                raise NativeSpeechRequestError(f"solver_arm_decoding[{arm_id!r}] is invalid: {reason or 'empty arm id'}")
+        if bool(arm_decoding) != (solver_arm_decoding_role_id is not None) or (
+            solver_arm_decoding_role_id is not None
+            and (not isinstance(solver_arm_decoding_role_id, str) or not solver_arm_decoding_role_id)
+        ):
+            raise NativeSpeechRequestError("solver_arm_decoding requires exactly one non-empty solver_arm_decoding_role_id")
+        self._solver_arm_decoding = arm_decoding
+        self._solver_arm_decoding_role_id = solver_arm_decoding_role_id
         self._owner = object()
         self._client = client
         self._binding_provider = binding_provider
@@ -487,6 +506,16 @@ class MeteredNativeSpeechRequest:
                     decoding = resolve_node_decoding(decoding, arm_policy, request.role_id)
                 except ReasoningKnobError as error:
                     raise NativeSpeechRequestError(str(error)) from error
+        # NX-T R4: this Solver contact's ARM sampling override (a decoding column's candidate arm), composed after every
+        # role-level field and BEFORE the answer-only re-ask, so the re-ask of an arm's contact keeps the arm's sampling. The
+        # delivering arm and the twin have no entry: their requests are the locked plan's, byte for byte.
+        solver_arm = getattr(request.context, "variant_arm_id", None)
+        if (
+            solver_arm is not None
+            and request.role_id == self._solver_arm_decoding_role_id
+            and solver_arm in self._solver_arm_decoding
+        ):
+            decoding.update(self._solver_arm_decoding[solver_arm])
         if answer_only:
             # The one receipted answer-only re-ask (decision 278): thinking off, max_tokens = the reserve.
             try:

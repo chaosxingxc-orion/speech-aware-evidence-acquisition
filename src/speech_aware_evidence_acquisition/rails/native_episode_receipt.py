@@ -1262,6 +1262,49 @@ SUPPLY_VARIANT_RECEIPT_SCHEMA_V5 = "saea-supply-variant-arms-v5"
 _SUPPLY_VARIANT_ARM_FIELDS_V5 = (
     _SUPPLY_VARIANT_ARM_FIELDS_V2 | {"release_swaps"}
 )
+#: NX-T R4 (2026-10-18, owner rulings 329 A / 332 A): the node-DECODING kind.
+#: v6 = v3 plus ``decoding_override`` on every arm row -- ``None`` for the
+#: delivering arm and the twin, the declared ``{name: value}`` sampling override
+#: for every other arm. A v1-v5 receipt validates unchanged.
+SUPPLY_VARIANT_RECEIPT_SCHEMA_V6 = "saea-supply-variant-arms-v6"
+_SUPPLY_VARIANT_ARM_FIELDS_V6 = _SUPPLY_VARIANT_ARM_FIELDS_V3 | {"decoding_override"}
+#: The closed set of sampling parameters a decoding arm may override and the
+#: bounds each must satisfy: ``name -> (kind, low, high, low_exclusive)``. Owned
+#: HERE (the lower layer) so the parser (``rails.supply_variants``) and the
+#: receipt validator share one table.
+DECODING_VARIANT_KNOBS = {
+    "temperature": ("number", 0.0, 1.5, False),
+    "top_p": ("number", 0.0, 1.0, True),
+    "top_k": ("integer", 1, 200, False),
+    "presence_penalty": ("number", 0.0, 2.0, False),
+}
+
+
+def decoding_override_error(value: object) -> str | None:
+    """Why ``value`` is not a well-formed sampling override, or ``None``.
+
+    A non-empty mapping whose every key is in :data:`DECODING_VARIANT_KNOBS` and
+    whose every value is a finite non-boolean number of the knob's kind inside its
+    bounds."""
+
+    if not isinstance(value, Mapping) or not value:
+        return "must be a non-empty object of sampling parameters"
+    for name, number in value.items():
+        spec = DECODING_VARIANT_KNOBS.get(name) if isinstance(name, str) else None
+        if spec is None:
+            return f"names {name!r}, which is not in the closed set {sorted(DECODING_VARIANT_KNOBS)}"
+        kind, low, high, low_exclusive = spec
+        if isinstance(number, bool) or not isinstance(number, (int, float)):
+            return f"{name} must be a number"
+        if kind == "integer" and not isinstance(number, int):
+            return f"{name} must be an integer"
+        if isinstance(number, float) and number != number or number in (float("inf"), float("-inf")):
+            return f"{name} must be finite"
+        if (number <= low if low_exclusive else number < low) or number > high:
+            return f"{name} is outside its bounds"
+    return None
+
+
 _SUPPLY_VARIANT_FIT_FIELDS = frozenset(
     {
         "slot_tokens", "completion_ceiling", "base_prompt_tokens",
@@ -1371,6 +1414,7 @@ def validate_supply_variant_receipt(
     schema = supply_variants.get("schema")
     is_v4 = False
     is_v5 = False
+    is_v6 = False
     if schema == SUPPLY_VARIANT_RECEIPT_SCHEMA_V1:
         is_v2_or_later = False
         is_v3 = False
@@ -1398,6 +1442,12 @@ def validate_supply_variant_receipt(
         is_v5 = True
         expected_fields = _SUPPLY_VARIANT_FIELDS_V2
         arm_fields = _SUPPLY_VARIANT_ARM_FIELDS_V5
+    elif schema == SUPPLY_VARIANT_RECEIPT_SCHEMA_V6:
+        is_v2_or_later = True
+        is_v3 = True
+        is_v6 = True
+        expected_fields = _SUPPLY_VARIANT_FIELDS_V2
+        arm_fields = _SUPPLY_VARIANT_ARM_FIELDS_V6
     else:
         _raise(error_type, "supply variant receipt has an unregistered schema")
     if set(supply_variants) != expected_fields:
@@ -1441,6 +1491,7 @@ def validate_supply_variant_receipt(
     twin_checks: list[tuple[str, tuple[str, ...]]] = []
     arm_id_lists: list[tuple[str, tuple[str, ...]]] = []
     template_pins: list[tuple[str, str]] = []
+    decoding_pins: list[str] = []
     for index, row in enumerate(rows):
         if not isinstance(row, Mapping) or set(row) != arm_fields:
             _raise(error_type, "supply variant arm record has an invalid shape")
@@ -1638,6 +1689,37 @@ def validate_supply_variant_receipt(
                         "{relpath, sha256} instruction_template",
                     )
                 template_pins.append((template["relpath"], template["sha256"]))
+        elif is_v6:
+            if paths:
+                _raise(
+                    error_type,
+                    "a node-decoding supply variant arm must resolve no knobs: "
+                    "the only thing it varies is its sampling override",
+                )
+            if release_swap is not None:
+                _raise(
+                    error_type,
+                    "a node-decoding supply variant arm must declare no "
+                    "release_swap: the supply is unvaried",
+                )
+            override = row["decoding_override"]
+            if deliver or replicate_of is not None:
+                if override is not None:
+                    _raise(
+                        error_type,
+                        "the delivering arm and the twin of a node-decoding "
+                        "receipt must declare no decoding_override: they sample "
+                        "exactly as the node's own locked request does",
+                    )
+            else:
+                reason = decoding_override_error(override)
+                if reason is not None:
+                    _raise(
+                        error_type,
+                        "a candidate node-decoding arm must carry one well-formed "
+                        f"decoding_override: {reason}",
+                    )
+                decoding_pins.append(json.dumps(dict(override), sort_keys=True))
         elif not deliver and not paths and replicate_of is None and release_swap is None:
             _raise(
                 error_type,
@@ -1694,13 +1776,23 @@ def validate_supply_variant_receipt(
                 error_type,
                 "node-template supply variant arms must name distinct templates",
             )
+    if is_v6 and len(set(decoding_pins)) != len(decoding_pins):
+        _raise(
+            error_type,
+            "node-decoding supply variant arms must declare distinct sampling overrides",
+        )
+    if is_v4 or is_v6:
         for arm_id, arm_ids_seen in arm_id_lists:
             if delivering_ids is None or arm_ids_seen != delivering_ids:
                 _raise(
                     error_type,
                     f"node-template supply variant arm {arm_id!r} does not "
                     "supply exactly the delivering arm's ids: a template arm "
-                    "varies the instruction, never the evidence",
+                    "varies the instruction, never the evidence"
+                    if is_v4 else
+                    f"node-decoding supply variant arm {arm_id!r} does not "
+                    "supply exactly the delivering arm's ids: a decoding arm "
+                    "varies the sampling, never the evidence",
                 )
     if len(set(contact_ids)) != len(contact_ids):
         _raise(error_type, "supply variant arms must have distinct contact ids")
@@ -2439,6 +2531,9 @@ __all__ = [
     "validate_supply_variant_receipt",
     "SUPPLY_VARIANT_RECEIPT_SCHEMA_V4",
     "SUPPLY_VARIANT_RECEIPT_SCHEMA_V5",
+    "SUPPLY_VARIANT_RECEIPT_SCHEMA_V6",
+    "DECODING_VARIANT_KNOBS",
+    "decoding_override_error",
     "supply_variant_arm_release_swaps",
     "PERCEPTION_BRANCH_ABSENT_FIELDS",
     "PERCEPTION_BRANCH_ABSENT_REASONS",

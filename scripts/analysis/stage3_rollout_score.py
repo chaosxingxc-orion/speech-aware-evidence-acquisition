@@ -923,7 +923,7 @@ def render_supply_variant_first_visit(
     Revision visits are counted separately and never enter these copies.
     """
     from speech_aware_evidence_acquisition.rails.native_episode_receipt import (
-        SUPPLY_VARIANT_RECEIPT_SCHEMA_V4, supply_variant_arm_release_swaps,
+        SUPPLY_VARIANT_RECEIPT_SCHEMA_V4, SUPPLY_VARIANT_RECEIPT_SCHEMA_V6, supply_variant_arm_release_swaps,
         validate_native_episode_delivery_receipt,
         validate_supply_variant_receipt,
     )
@@ -950,6 +950,8 @@ def render_supply_variant_first_visit(
     if bundle.manifest.get("config", {}).get("config_hash") != config_hash:
         raise Stage3ScoreError("composed config hash differs from sealed manifest")
     is_template = bool(getattr(group, "is_template", False))
+    is_decoding = bool(getattr(group, "is_decoding", False))        # NX-T R4: the node-decoding kind (receipt v6)
+    unvaried = is_template or is_decoding
     arms = tuple(group.arms)
     if not arms or not arms[-1].deliver:
         raise Stage3ScoreError("declared supply arms lack a final delivering arm")
@@ -999,11 +1001,13 @@ def render_supply_variant_first_visit(
         final = row.get("supply_variants")
         if not isinstance(final, Mapping):
             raise Stage3ScoreError(f"{sid}: Solver visit has no final supply-variant custody")
-        if (final.get("schema") == SUPPLY_VARIANT_RECEIPT_SCHEMA_V4) != is_template:
+        if (final.get("schema") == SUPPLY_VARIANT_RECEIPT_SCHEMA_V4) != is_template or (
+            final.get("schema") == SUPPLY_VARIANT_RECEIPT_SCHEMA_V6
+        ) != is_decoding:
             raise Stage3ScoreError(
                 f"{sid}: the sealed arm receipt kind does not match the declared arm group kind "
                 f"(receipt {final.get('schema')!r}, declared "
-                f"{'template_variants' if is_template else 'supply_variants'})"
+                f"{'template_variants' if is_template else 'decoding_variants' if is_decoding else 'supply_variants'})"
             )
         validate_supply_variant_receipt(
             final, arm_ids=names, delivered_arm_id=names[-1],
@@ -1025,8 +1029,10 @@ def render_supply_variant_first_visit(
                 single = getattr(arm, "release_swap", None)
                 arm_swaps = () if single is None else (single,)
             declared_swaps = [swap.as_json() for swap in arm_swaps]
-            if not is_template and supply_variant_arm_release_swaps(sealed) != declared_swaps:
+            if not unvaried and supply_variant_arm_release_swaps(sealed) != declared_swaps:
                 raise Stage3ScoreError(f"{sid}: arm release swap differs from declaration")
+            if is_decoding and sealed.get("decoding_override") != arm.decoding:
+                raise Stage3ScoreError(f"{sid}: arm sampling override differs from declaration")
         first = solver[0].get("execution_receipt")
         contacts = first.get("contacts") if isinstance(first, Mapping) else None
         if not isinstance(contacts, list) or len(contacts) != len(arms):
@@ -1115,10 +1121,11 @@ def render_supply_variant_first_visit(
              "max_supplied_items": arm.max_supplied_items,
              **({"instruction_template": (None if arm.instruction_template is None
                                           else arm.instruction_template.as_json())}
-                if is_template else {})}
+                if is_template else {}),
+             **({"decoding_override": arm.decoding} if is_decoding else {})}
             for arm in arms
         ],
-        **({"arm_group_kind": group.kind} if is_template else {}),
+        **({"arm_group_kind": group.kind} if unvaried else {}),
         "no_solver_visit_rows": absent, "malformed_first_visit_by_arm": malformed,
         "later_solver_visit_count": revisions,
         "meaning": "first Solver visit local arm outputs; not full-system returns",
@@ -1971,17 +1978,22 @@ def parse_solver_arm_group(values: Mapping[str, Any], solver: Mapping[str, Any],
     """
 
     from speech_aware_evidence_acquisition.rails.supply_variants import (
-        SupplyVariantError, parse_supply_variants, parse_template_variants,
+        SupplyVariantError, parse_decoding_variants, parse_supply_variants, parse_template_variants,
     )
 
     declares_supply = "supply_variants" in solver
     declares_template = "template_variants" in solver
-    if declares_supply and declares_template:
+    declares_decoding = "decoding_variants" in solver
+    if sum((declares_supply, declares_template, declares_decoding)) > 1:
         raise Stage3ScoreError(
-            "the Solver role declares both supply_variants and template_variants; "
+            "the Solver role declares more than one of supply_variants, template_variants and decoding_variants; "
             "one fan-out mechanism per node"
         )
     try:
+        if declares_decoding:
+            return parse_decoding_variants(
+                solver["decoding_variants"], role_kind="solver", phase_id=solver.get("phase_id"),
+            )
         if declares_template:
             phase_id = solver.get("phase_id")
             material = values.get("phase_material")
@@ -2007,7 +2019,7 @@ def parse_solver_arm_group(values: Mapping[str, Any], solver: Mapping[str, Any],
             )
     except SupplyVariantError as error:
         raise Stage3ScoreError(f"the declared Solver arm group is invalid: {error}") from error
-    raise Stage3ScoreError("the Solver role declares neither supply_variants nor template_variants")
+    raise Stage3ScoreError("the Solver role declares none of supply_variants, template_variants or decoding_variants")
 
 
 def supply_variant_main(args, repo_root: Path, root: Path, lock) -> int:

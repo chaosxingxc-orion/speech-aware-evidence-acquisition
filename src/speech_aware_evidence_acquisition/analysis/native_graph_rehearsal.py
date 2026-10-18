@@ -56,7 +56,7 @@ def rehearsal_profile(values, profile):
             # rehearsal admits it; a SUPPLY-kind group (per-arm routers) stays
             # outside this profile.
             or (config.role("solver").supply_variants is not None
-                and not config.role("solver").supply_variants.is_template)
+                and not config.role("solver").supply_variants.unvaried_evidence)
             or config.acquisition_enabled or config.refresh_action is not None or config.relisten_json is not None
             or config.role("solver").max_iterations != (2 if config.solver_tool_access else 1)
             or any(r.tool_names for r in config.roles if r.role_kind != "solver")):

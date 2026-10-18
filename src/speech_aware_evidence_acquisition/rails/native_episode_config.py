@@ -1453,7 +1453,7 @@ def load_native_episode_config(
         # NX-T R1 (2026-10-13): ``thinking_variants`` is a Perception-only fan-out of the per-node thinking policy; it is one
         # of the branch group's kinds, so it cannot combine with the other fan-out declarations of the node.
         if isinstance(row, Mapping) and "thinking_variants" in row:
-            for other in ("branches", "template_variants", "supply_variants"):
+            for other in ("branches", "template_variants", "supply_variants", "decoding_variants"):
                 if other in row:
                     raise ValueError(
                         f"roles.{kind}.thinking_variants cannot combine with roles.{kind}.{other}: one fan-out mechanism per node"
@@ -1481,6 +1481,24 @@ def load_native_episode_config(
                     f"roles.{kind}.branches: one fan-out mechanism per node"
                 )
             solver_fields = solver_fields | {"template_variants"}
+        # NX-T R4 (2026-10-18): ``decoding_variants`` -- the Solver-only node-DECODING arm
+        # group (a sibling of ``template_variants``). Declared on any other node, or beside
+        # another fan-out declaration, it is refused BY NAME.
+        if isinstance(row, Mapping) and "decoding_variants" in row:
+            from .supply_variants import DECODING_VARIANT_NODES  # noqa: PLC0415
+
+            if kind not in DECODING_VARIANT_NODES:
+                raise ValueError(
+                    f"roles.{kind}.decoding_variants is refused: a node-decoding "
+                    f"arm group may sit only at {list(DECODING_VARIANT_NODES)}"
+                )
+            for other in ("supply_variants", "template_variants", "branches", "thinking_variants"):
+                if other in row:
+                    raise ValueError(
+                        f"roles.{kind}.decoding_variants cannot combine with "
+                        f"roles.{kind}.{other}: one fan-out mechanism per node"
+                    )
+            solver_fields = solver_fields | {"decoding_variants"}
         if (
             not isinstance(row, Mapping)
             or not {"phase_id", "max_iterations"} <= set(row)
@@ -1642,6 +1660,38 @@ def load_native_episode_config(
         if knowledge_index_armed:
             raise ValueError(
                 "roles.solver.template_variants cannot combine with "
+                "native_episode.knowledge_index: the index appends to the system "
+                "message every arm shares and has no per-arm custody form"
+            )
+    # NX-T R4 (2026-10-18, owner rulings 329 A / 332 A): the Solver's NODE-DECODING arm
+    # group, parsed HERE -- before any contact -- into the SAME group slot (kind
+    # ``decoding``). Every arm renders the delivering arm's own evidence and the node's own
+    # locked template; a candidate arm overrides only the sampling parameters of its own
+    # contact (applied at request composition, ``reproduction.ojw.native_request``).
+    if "decoding_variants" in raw_roles["solver"]:
+        from .supply_variants import SupplyVariantError, parse_decoding_variants
+
+        locked_decoding = None
+        try:
+            from ..core.config import ConfigError, effective_request_decoding_params
+
+            effective = effective_request_decoding_params(values)
+            locked_decoding = dict(effective) if isinstance(effective, Mapping) else None
+        except ConfigError:
+            locked_decoding = None  # a config that cannot resolve its own decoding has none to compare
+        try:
+            supply_variant_group = parse_decoding_variants(
+                raw_roles["solver"]["decoding_variants"],
+                role_kind="solver", phase_id=raw_roles["solver"]["phase_id"],
+                locked_decoding=locked_decoding,
+            )
+        except SupplyVariantError as error:
+            raise ValueError(
+                f"roles.solver.decoding_variants is invalid: {error}"
+            ) from error
+        if knowledge_index_armed:
+            raise ValueError(
+                "roles.solver.decoding_variants cannot combine with "
                 "native_episode.knowledge_index: the index appends to the system "
                 "message every arm shares and has no per-arm custody form"
             )
