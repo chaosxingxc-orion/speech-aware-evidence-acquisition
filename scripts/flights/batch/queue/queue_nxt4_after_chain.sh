@@ -2,12 +2,12 @@
 # Queue hook (NX-T R4, unattended hand-over): launch NX-T R4 (the Solver decoding-policy column, owner rulings 329 A and 332 A) the moment a NAMED predecessor chain has
 # finished cleanly. The predecessor is an ARGUMENT (the carrier base-run chain at the time of writing), so the hook is not tied to one chain:
 #
-#   bash queue_nxt4_after_chain.sh <exit-token> <chain-out> <start-stamp>
-#       e.g. bash queue_nxt4_after_chain.sh CHAIN_CARRIERS_EXIT /home/chao/carriers-chain.out 2026-10-19T14:00:00Z
+#   bash queue_nxt4_after_chain.sh <chain-out> <exit-token> <start-stamp>      (the argument order of queue_carriers_after.sh)
+#       e.g. bash queue_nxt4_after_chain.sh /home/chao/carrierthink-chain.out CHAIN_CARRIERTHINK_EXIT 2026-10-19T14:00:00Z
 #
+#   <chain-out>    the log file the predecessor chain writes its exit line to
 #   <exit-token>   the first field of the predecessor chain's exit line; the line is `<exit-token> rc=<N> <UTC timestamp>` (the form every chain wrapper writes:
-#                  CHAIN_NXT2_EXIT, CHAIN_NXT3_EXIT, ...)
-#   <chain-out>    the log file that line is written to
+#                  CHAIN_NXT2_EXIT, CHAIN_CARRIERTHINK_EXIT, ...)
 #   <start-stamp>  UTC ISO stamp (the same form the wrapper writes); only an exit line LATER than it counts, so the lines of earlier attempts are ignored
 #
 # NOT installed by the package: the coordinator copies this file to /home/chao/saea-queue/ and starts it. The register steps of the package (derive .. commit, with
@@ -26,11 +26,11 @@
 # launcher's own code.
 #
 # Test hooks (environment): NXT4_HOOK_OUT, NXT4_HOOK_MAIN, NXT4_HOOK_POLL_SECONDS, NXT4_HOOK_MAX_WAIT_SECONDS, NXT4_HOOK_LAUNCH_CMD.
-TOKEN=${1:-}
-CHAIN_OUT=${2:-}
+CHAIN_OUT=${1:-}
+TOKEN=${2:-}
 STAMP=${3:-}
 if [ -z "$TOKEN" ] || [ -z "$CHAIN_OUT" ] || [ -z "$STAMP" ]; then
-  echo "usage: queue_nxt4_after_chain.sh <predecessor-exit-token> <predecessor-chain-out> <start-stamp, UTC ISO e.g. 2026-10-19T14:00:00Z>" >&2
+  echo "usage: queue_nxt4_after_chain.sh <predecessor-chain-out> <predecessor-exit-token> <start-stamp, UTC ISO e.g. 2026-10-19T14:00:00Z>" >&2
   exit 64
 fi
 OUT=${NXT4_HOOK_OUT:-/home/chao/nxt4-queue.out}

@@ -717,7 +717,7 @@ def test_the_flip_read_and_repin_scripts_consume_the_family_record():
     assert f"RD={fam.PACKAGE}".replace("slurp-nxt-r4-solver-decoding-fold-b-v1", "$PKGN") in flip, "the flip's readiness directory must be the package's own (date included)"
 
 
-TOKEN = "CHAIN_CARRIERS_EXIT"
+TOKEN = "CHAIN_CARRIERTHINK_EXIT"
 
 
 def _hook(tmp_path, chain_lines, *, stamp="2026-10-18T12:40:00Z", wait="3", poll="0.2", launch=None, token=TOKEN, args=True):
@@ -727,7 +727,7 @@ def _hook(tmp_path, chain_lines, *, stamp="2026-10-18T12:40:00Z", wait="3", poll
     launch = launch or f"echo launched-from $(pwd) > {ran}"
     env = dict(os.environ, NXT4_HOOK_OUT=str(out), NXT4_HOOK_MAIN=str(tmp_path), NXT4_HOOK_POLL_SECONDS=poll,
                NXT4_HOOK_MAX_WAIT_SECONDS=wait, NXT4_HOOK_LAUNCH_CMD=launch, TMPDIR=str(tmp_path))
-    argv = [token, str(chain), stamp] if args else []
+    argv = [str(chain), token, stamp] if args else []
     done = subprocess.run(["bash", str(REPO / "scripts/flights/batch/queue/queue_nxt4_after_chain.sh"), *argv], capture_output=True, text=True, env=env, timeout=60)
     return done, out.read_text(encoding="utf-8") if out.exists() else "", ran
 
@@ -781,7 +781,7 @@ def test_the_queue_hook_sees_a_line_that_appears_while_it_polls(tmp_path):
     ran = tmp_path / "ran.txt"
     env = dict(os.environ, NXT4_HOOK_OUT=str(tmp_path / "q.out"), NXT4_HOOK_MAIN=str(tmp_path), NXT4_HOOK_POLL_SECONDS="0.2",
                NXT4_HOOK_MAX_WAIT_SECONDS="30", NXT4_HOOK_LAUNCH_CMD=f"echo ok > {ran}", TMPDIR=str(tmp_path))
-    proc = subprocess.Popen(["bash", str(REPO / "scripts/flights/batch/queue/queue_nxt4_after_chain.sh"), TOKEN, str(chain), "2026-10-18T12:40:00Z"], env=env,
+    proc = subprocess.Popen(["bash", str(REPO / "scripts/flights/batch/queue/queue_nxt4_after_chain.sh"), str(chain), TOKEN, "2026-10-18T12:40:00Z"], env=env,
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     import time
 
@@ -800,7 +800,7 @@ def test_the_launch_spec_is_the_r2b_form_with_the_r4_names():
     steps = spec["steps"]
     assert steps["derive"]["cmd"].endswith("nxt_r4_derive_cells.py") and "nxt_r4_write_registration.py --study-commit {head}" in steps["write"]["cmd"]
     assert "--registered-at {utc}" in steps["write"]["cmd"] and "--append-ledger" in steps["write"]["cmd"]
-    assert "queue_nxt4_after_chain.sh" in spec["_note"] and "<exit-token> <chain-out> <start-stamp>" in spec["_note"]
+    assert "queue_nxt4_after_chain.sh" in spec["_note"] and "<chain-out> <exit-token> <start-stamp>" in spec["_note"]
     assert steps["mint"]["cmd"].endswith("nxt_r4_mint_receipt.py") and steps["mint"]["done_if"]["contains"] == [fam.CELLS["arm"]["fit_run"]] and steps["mint"]["done_if"]["file"] == fam.DECISION_RELPATH
     assert steps["countersign"]["texts"] == "{readiness_dir}/countersign-row-texts-v1.json" and steps["countersign"]["skip_substrings"] == ["-READ-"]
     assert set(steps["commit"]["paths"]) == {"configs", "docs/exposure-ledger.md", "{readiness_dir}", "{readiness_dir}-preregistration.md"}
