@@ -1,0 +1,72 @@
+{
+  "authority": {
+    "exception_to": "owner ruling 286 (reasoning bytes are projected out at the transport on every path; policy hash-and-stats-only-v1)",
+    "owner_rulings": "owner rulings 329 A and 330 A (2026-10-18, the R2b READ section of docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md)",
+    "owner_words_english": "Decision 329: A. Decision 330: A. (Decision 330 A: a bounded diagnostic exception to ruling 286 -- one small registered probe re-issues the sealed Solver requests of about 40 R2b rows, forced and natural, both budgets, with the reasoning bytes RETAINED under the data root only, to classify the non-terminating reasoning as enumeration or a repetition loop; 286 stays in force for every other cell.)"
+  },
+  "claims_benefit": false,
+  "non_claims": "A diagnostic of reasoning shape on TRAIN Fold B development rows. It claims no score, no benefit and no change to the lock.",
+  "question": "Is the Solver reasoning that fails to terminate at the 3,072-token budget an ENUMERATION (the model verifies every supplied item and candidate intent once or twice, in supply order, with no stopping rule) or a REPETITION LOOP (a small block restated over and over)?",
+  "read": {
+    "groups": [
+      "forced-3072-only",
+      "forced-6144-only",
+      "forced-both",
+      "natural-both",
+      "forced-both@6144"
+    ],
+    "pairs": "forced-both rows: the 3072 reasoning against the 6144 reasoning of the same row (common prefix up to the forced close, repeat onset offsets)",
+    "prints": "statistics only (no sentence, no quote)",
+    "script": "scripts/analysis/solver_reasoning_diag_read.py"
+  },
+  "read_run_id": "SAEA-SLURP-SOLVER-REASONING-DIAGNOSTIC-READ-V1",
+  "registered_at_utc": "2026-10-18T00:00:00Z",
+  "reissue": {
+    "arm": "budget-3072",
+    "raised_arm_requests": "RE-ISSUED (coordinator decision 2, ruling 330 A 'both budgets'): the solver-6144 requests of the 16 forced-both rows. The resident np4 server admits them (max_tokens is a request parameter; no -n cap in the server arguments). Retained as <sample>.b6144.txt.",
+    "reconstruction_proof": "sha256 of the adapter's canonical serialisation of the sealed payload equals the sealed payload_sha256 and the first-visit request_sha256; verified offline for all 56 contacts by `solver_reasoning_diag.py verify` (and the exact wire body rendered by the transport's own renderer)",
+    "reproduction_caveat": "np4 batching is not deterministic: the re-issued reasoning may differ from the sealed one; the hash match or mismatch is recorded per row.",
+    "what": "the sealed Solver MODEL_REQUEST payload of each roster row's budget-3072 first-visit contact (40 contacts) and, for the forced-both rows, of the solver-6144 contact (16 contacts), rebuilt from the sealed trace and sent through the registered llama-server transport unchanged (decoding: temperature 0, seed 20260913, the sealed id_slot; thinking_budget_tokens 3072 / max_tokens 4096 for the first 40, 6144 / 7168 for the last 16)",
+    "workers": "one sequential worker per sealed id_slot, so every sent payload is the sealed payload byte for byte; within a slot the budget-3072 requests come first and the budget-6144 requests after them"
+  },
+  "retention": {
+    "directory": "<data root>/diagnostics/SAEA-SLURP-SOLVER-REASONING-DIAGNOSTIC-V1/reasoning/<sample>.txt",
+    "hash_check": "sha256 of the retained bytes versus the sealed reasoning_content_sha256: match or mismatch recorded per row (results.jsonl)",
+    "mechanism": "core.reasoning_knobs.ReasoningRetention, buildable only from a plan whose run id is the diagnostic run id and whose profile is bounded-discovery-probe; an explicit constructor argument of the transport, never a model-fragment key; the stored wire message, the envelope reasoning object and every trace record remain the decision-286 projection",
+    "policy": "retain-diagnostic-v1",
+    "text_policy": "reasoning text never enters a document, a note, a commit, a ledger row or a chat transcript; only counts and pattern statistics do"
+  },
+  "roster": {
+    "counts": {
+      "forced-3072-only": 8,
+      "forced-6144-only": 8,
+      "forced-both": 16,
+      "natural-both": 8
+    },
+    "file": "roster-v1.json",
+    "rows": 40,
+    "seed": 20261018,
+    "selection_rule": "per group the quota is split evenly over supplied bin (<40, >=40 items of the budget-3072 arm's Solver request) x empty gold; rank = sha256(seed|group|sample_id); a short stratum is backfilled from the group in the same rank order"
+  },
+  "roster_sha256": "4c7de1afb7ae6ea3583c616fcd5de9e5ec6576ae145cea2f9cc4b50c69b695b6",
+  "run_id": "SAEA-SLURP-SOLVER-REASONING-DIAGNOSTIC-V1",
+  "schema": "saea-solver-reasoning-diag-protocol-v1",
+  "source": {
+    "attempt_id": "attempt-slurp-native-stage3-nxt-r2b-solver-budget-fold-b-generation-v1",
+    "config_hash": "2965d3926a9c9edc30e5fb25c8269dfffbbdc682f07cbcedd6b2d5af4283e312",
+    "first_visit_rows_sha256": "96e74c4d928388e8fc12a63f53c93a7ddc0816a5555df9505f6871dc2e7b4b9f",
+    "manifest_sha256": "00380c2f6128c4f0aa521fddf3726838e1d3994dca3c4bbeaba22a98852a4588",
+    "run_id": "SAEA-SLURP-STAGE3-NXT-R2B-SOLVER-BUDGET-FOLD-B-V1",
+    "scores_sha256": {
+      "budget-3072": "e7dc5acd1d74a183d17204b9c0ff7b0c29a71a7f629cb67d6b7cbd902a36b3d2",
+      "solver-6144": "35a637102864696accfc19c5de7bd3d0023695a5b6a64dd46a8ae8690935deae"
+    },
+    "trace_sha256": "62603d0272d5b2010240777a2e9e3de026dc8124a94db4fff11a84ca1de0349d"
+  },
+  "stop_rules": [
+    "the first failure stops every worker; nothing is retried",
+    "one attempt: an existing diagnostic directory refuses the launch",
+    "the call ceiling is a hard stop",
+    "a flight lock, a flight process or a resident session other than think-budget-np4 refuses the launch"
+  ]
+}

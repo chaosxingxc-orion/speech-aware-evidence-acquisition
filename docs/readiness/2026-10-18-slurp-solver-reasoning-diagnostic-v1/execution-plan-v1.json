@@ -1,0 +1,46 @@
+{
+  "budget": {
+    "audio_ceiling_basis": "56 calls x the longest roster utterance (4.73 s), rounded up to 10",
+    "call_ceiling": 56,
+    "ceilings_are_not_targets": true,
+    "gpu_hours_basis": "sealed completion tokens of the roster contacts: 93996 (40 x budget 3072) + 99099 (16 x budget 6144) = 193095 tokens; at 100 tokens per second aggregate on np4 that is about 0.54 h of decode, ceiling 0.9 h with a 40 percent allowance for prefill and tail imbalance",
+    "gpu_hours_ceiling": 0.9,
+    "re_issues": 56,
+    "re_issues_budget_3072": 40,
+    "re_issues_budget_6144": 16,
+    "roster_audio_seconds": 153.134
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-solver-reasoning-diagnostic-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.9,
+    "planned_model_calls": 56,
+    "planned_speech_audio_seconds": 270,
+    "protocol_hash": "0ca0626cca8e5e8426360e6da0c9ae11405bc2c72be3ebc2ee7df04f8a4a5271",
+    "run_id": "SAEA-SLURP-SOLVER-REASONING-DIAGNOSTIC-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
+  "launcher": "scripts/flights/diag/solver_reasoning_diag.sh",
+  "needs": [
+    "root countersignature of the two draft ledger rows (the gate refuses a model touch without the pre-registered row)",
+    "no flight lock and no flight process",
+    "the resident serving session is think-budget-np4 (after the R2 rec2 flight seals)"
+  ],
+  "plan_kind": "generation",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-10-18-slurp-solver-reasoning-diagnostic-v1/protocol-v1.json",
+    "sha256": "0ca0626cca8e5e8426360e6da0c9ae11405bc2c72be3ebc2ee7df04f8a4a5271"
+  },
+  "registered_at_utc": "2026-10-18T00:00:00Z",
+  "roster": {
+    "relpath": "docs/readiness/2026-10-18-slurp-solver-reasoning-diagnostic-v1/roster-v1.json",
+    "rows": 40,
+    "sha256": "4c7de1afb7ae6ea3583c616fcd5de9e5ec6576ae145cea2f9cc4b50c69b695b6"
+  },
+  "schema": "saea-registered-diagnostic-plan-v1"
+}
