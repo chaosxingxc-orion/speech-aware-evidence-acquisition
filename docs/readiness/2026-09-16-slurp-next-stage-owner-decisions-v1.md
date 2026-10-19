@@ -3437,3 +3437,15 @@ this class of methods.")
   transcript path is barred by the 2026-09-06 owner ruling): A = keep the constraint and report the measured method-class ceiling honestly
   (recommended for now); B = admit a pinned frozen speech front-end tool (e.g. a stronger ASR as a tool the core may call, answer authority
   stays with the core), which re-opens the barred transcript path and needs its own owner amendment.
+
+### Owner ruling 340: test-sample error analysis allowed, no tuning on it (coordinator, 2026-10-19 02:50Z)
+
+Owner, verbatim: 「面向测试集的分析也可以开展，我们不基于测试集调优就好了」 (English: "Analysis aimed at the test set may also be carried out;
+we just must not tune on the test set.")
+- **340:** a model-free error analysis of the SEALED successor-3 run on the 3,010-row test sample (v3.0) is allowed: the same decomposition as
+  the DEV / Fold B note, plus a transfer check (does the test decomposition match DEV / Fold B). Guards: (1) no model, server or GPU contact; no
+  new test generation; (2) aggregates only in documents (no utterance, transcript or output text); (3) no lever, arm, prompt, threshold,
+  knowledge entry or roster is selected or changed on a test-only finding -- every design choice keeps resting on DEV / TRAIN-fold evidence,
+  and the recommendations of decisions 338 / 339 stand as written at 347973d56, before this read; (4) every later test-sample claim lists this
+  analysis as inherited exposure; (5) the closure roster SLURP-TEST-CLOSURE-10068-V1 stays untouched. Ledger row
+  SAEA-SLURP-TEST-SAMPLE-3010-V3-GAP-ANALYSIS-V1 is registered before any per-row test number is read.
