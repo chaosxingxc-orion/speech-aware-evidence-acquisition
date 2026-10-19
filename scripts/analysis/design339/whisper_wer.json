@@ -1,0 +1,14 @@
+{
+ "fold-b": {
+  "rows": 1080,
+  "ref_tokens": 7175,
+  "canon_wer": 0.1519,
+  "sentence_exact_rate": 0.5278
+ },
+ "fold-a": {
+  "rows": 1080,
+  "ref_tokens": 7200,
+  "canon_wer": 0.1436,
+  "sentence_exact_rate": 0.5389
+ }
+}
