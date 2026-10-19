@@ -3400,7 +3400,7 @@ the items that need my decision in detail and explain them to me; also give a de
   direct call of our own core. The comparator table is redone on the Thinking base after P3.3 (A2T paper column, Earnings WER).
 - Owner action (no decision): delete the stray `C:\Program Files\Git\commit14.txt` (needs administrator rights).
 
-### Owner rulings 334 B, 335 B, 336 A, 337 (= 285) fine-tuned target (coordinator, 2026-10-19 02:40Z)
+### Owner rulings 334 B, 335 B, 336 A, 337 (= 285) fine-tuned target (coordinator, 2026-10-19 02:20Z)
 
 Owner, verbatim: 「决策334：B，决策335：B，决策336：A，决策337：还是要把目标靶放到训练的对比上，虽然我们叫training free RL，但也是在针对任务做training，只是不调参数而已，我们要摸一下这类方法的天花板」
 (English: "Decision 334: B; decision 335: B; decision 336: A; decision 337: the target must still be set against the trained systems --

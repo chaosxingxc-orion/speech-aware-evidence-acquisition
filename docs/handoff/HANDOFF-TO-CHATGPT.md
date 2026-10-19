@@ -1,6 +1,6 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-18T14:56:47Z
+Last refreshed: 2026-10-19T02:25:33Z
 
 
 
@@ -9,6 +9,18 @@ Last refreshed: 2026-10-18T14:56:47Z
 
 
 
+
+## Owner rulings 334 B / 335 B / 336 A / 337 (target = FINE-TUNED SOTA); v3.0 gap decomposition landed; R2 rec2 FLYING (seal ~2026-10-19 15:30Z); full queue armed (2026-10-19T02:25:33Z, Fable 5.1 root)
+
+337 (= 285): the comparator is the fine-tuned class; training-free RL = task training without parameter updates; find the method-class ceiling.
+SLURP tiers vs v3.0 (test sample 73.05 / 86.33): LauraGPT 73.45 / 87.87, SFT Qwen2-Audio 76.75 / 88.13, UniverSLU-14 79.5 / 90.3. Gap
+decomposition (docs/results/2026-10-19-slurp-v3-gap-to-finetuned-sota-decomposition.md; DEV + Fold B only): 75-78 % of intent errors = gold
+absent from Perception's shortlist (Perception commits to one candidate on 81-85 % of rows); slot mass = missed slots (+5.7) and false fills
+(+6.3); estimated method-class ceiling SLU ~74.5-77.0, intent ~86.3-88.0 (below UniverSLU on both). 334 B: 324-B confirm in the post-R4 Fold A
+batch; 335 B: one composed Fold A column; 336 A: v3.x test allowance signed conditional on DEV. Queue: R2 rec2 -> 322 window -> diagnostic ->
+R3 -> P3.2 -> P3.3 -> R4 (all hooks armed). Registry f8a2e026b.
+
+Superseded stamp: 2026-10-18T14:56:47Z
 
 ## R2b READ = NEEDS-NO-MORE-BUDGET (note d90c24f8b); R2 rec2 FLYING since 14:37Z (seal ~2026-10-19 14:00Z); forced-close root cause; rulings 329 A / 330 A; decisions 331-333 + 322 pending (2026-10-18T14:56:47Z, Fable 5.1 root)
 

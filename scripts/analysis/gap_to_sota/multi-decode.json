@@ -1,0 +1,88 @@
+{
+ "all_7": {
+  "acc_on_split_rows_delivering": 48.717948717948715,
+  "acc_on_unanimous_rows": 93.44632768361582,
+  "arms": [
+   "r1.both-on",
+   "r1.both-on-twin",
+   "r1.perception-off",
+   "r1.solver-off",
+   "r1.both-off",
+   "r2b.budget-3072",
+   "r2b.solver-6144"
+  ],
+  "intent_all_correct": 76.57407407407408,
+  "intent_any_correct_oracle": 90.74074074074075,
+  "intent_plurality_vote": 85.74074074074075,
+  "slu_best_of_arms_oracle": 82.32328725799933,
+  "unanimous_rows": 885
+ },
+ "arms": {
+  "r1.both-off": {
+   "intent": 82.03703703703704,
+   "slu": 63.163684252481644
+  },
+  "r1.both-on": {
+   "intent": 85.74074074074075,
+   "slu": 72.34813004654058
+  },
+  "r1.both-on-twin": {
+   "intent": 85.74074074074075,
+   "slu": 72.22742622415947
+  },
+  "r1.perception-off": {
+   "intent": 85.27777777777777,
+   "slu": 72.15822235211797
+  },
+  "r1.solver-off": {
+   "intent": 83.79629629629629,
+   "slu": 65.24139226637604
+  },
+  "r2b.budget-3072": {
+   "intent": 85.37037037037037,
+   "slu": 72.73642423980169
+  },
+  "r2b.solver-6144": {
+   "intent": 84.81481481481481,
+   "slu": 71.9297279170073
+  }
+ },
+ "intent_pass_at_k_lock_like": {
+  "1": 85.38888888888889,
+  "2": 87.54629629629629,
+  "3": 88.51851851851852,
+  "4": 89.16666666666666,
+  "5": 89.62962962962963
+ },
+ "lock_like_5": {
+  "acc_on_split_rows_delivering": 42.857142857142854,
+  "acc_on_unanimous_rows": 91.7634635691658,
+  "arms": [
+   "r1.both-on",
+   "r1.both-on-twin",
+   "r2b.budget-3072",
+   "r2b.solver-6144",
+   "r1.perception-off"
+  ],
+  "intent_all_correct": 80.46296296296296,
+  "intent_any_correct_oracle": 89.62962962962963,
+  "intent_plurality_vote": 85.74074074074075,
+  "slu_best_of_arms_oracle": 80.61821440850537,
+  "unanimous_rows": 947
+ },
+ "n": 1080,
+ "pairs_twin": {
+  "acc_on_split_rows_delivering": 30.0,
+  "acc_on_unanimous_rows": 87.88461538461539,
+  "arms": [
+   "r1.both-on",
+   "r1.both-on-twin"
+  ],
+  "intent_all_correct": 84.62962962962963,
+  "intent_any_correct_oracle": 86.85185185185185,
+  "intent_plurality_vote": 85.74074074074075,
+  "slu_best_of_arms_oracle": 76.13549610692978,
+  "unanimous_rows": 1040
+ },
+ "population": "TRAIN Fold B (SLURP-EVO-FOLD-B-V2)"
+}

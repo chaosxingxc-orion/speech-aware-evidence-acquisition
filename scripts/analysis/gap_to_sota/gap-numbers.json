@@ -1,0 +1,1686 @@
+{
+ "ours_test_aggregate": {
+  "intent": 86.33,
+  "slu": 73.05
+ },
+ "populations": {
+  "DEV": {
+   "bootstrap_ci95": {
+    "ii_intent": [
+     9.530010172939981,
+     13.722925604269122
+    ],
+    "ii_slu": [
+     1.5796205818771085,
+     3.3906470590689963
+    ],
+    "iii_slu": [
+     2.3008803735436345,
+     3.7652541344939436
+    ],
+    "iv_slu": [
+     3.6339889828662706,
+     5.206224225260399
+    ],
+    "v_intent": [
+     3.4351331840595236,
+     8.100816570496946
+    ]
+   },
+   "bootstrap_note": "utterance-cluster bootstrap, 2,000 draws, seed 20261019; v_intent is the natural-row minus pooled accuracy (upper bound of oracle v, scaled by the forced share in the point estimate)",
+   "branch": null,
+   "checks": {
+    "cands_receipt_equals_state": 1000,
+    "forced_close_known": 1000,
+    "intent_parse_agrees_sealed": 1000,
+    "rescore_matches_sealed": 1000,
+    "rows": 1000
+   },
+   "forced_close": {
+    "any_fc": {
+     "intent": 79.39508506616257,
+     "intent_classes": {
+      "a1_absent_from_shortlist_in_block": 51,
+      "a2_absent_from_shortlist_and_block": 29,
+      "b_in_shortlist_solver_wrong": 29
+     },
+     "intent_errors": 109,
+     "n": 529,
+     "slu_f1": 69.73830780636135
+    },
+    "no_fc": {
+     "intent": 90.23354564755839,
+     "intent_classes": {
+      "a1_absent_from_shortlist_in_block": 34,
+      "a2_absent_from_shortlist_and_block": 7,
+      "b_in_shortlist_solver_wrong": 5
+     },
+     "intent_errors": 46,
+     "n": 471,
+     "slu_f1": 82.40158131919965
+    },
+    "perception_fc": {
+     "intent": 66.0919540229885,
+     "intent_classes": {
+      "a1_absent_from_shortlist_in_block": 23,
+      "a2_absent_from_shortlist_and_block": 20,
+      "b_in_shortlist_solver_wrong": 16
+     },
+     "intent_errors": 59,
+     "n": 174,
+     "slu_f1": 66.58055162351293
+    },
+    "solver_fc": {
+     "intent": 80.74398249452955,
+     "intent_classes": {
+      "a1_absent_from_shortlist_in_block": 42,
+      "a2_absent_from_shortlist_and_block": 23,
+      "b_in_shortlist_solver_wrong": 23
+     },
+     "intent_errors": 88,
+     "n": 457,
+     "slu_f1": 69.56548264942526
+    }
+   },
+   "intent": 84.5,
+   "intent_classes": {
+    "a1_absent_from_shortlist_in_block": 85,
+    "a2_absent_from_shortlist_and_block": 36,
+    "b_in_shortlist_solver_wrong": 34,
+    "correct": 845
+   },
+   "intent_subclasses": {
+    "a1_absent_from_shortlist_in_block::cross_scenario": 61,
+    "a1_absent_from_shortlist_in_block::same_scenario": 24,
+    "a2_absent_from_shortlist_and_block::cross_scenario": 31,
+    "a2_absent_from_shortlist_and_block::same_scenario": 5,
+    "b_in_shortlist_solver_wrong::cross_scenario": 24,
+    "b_in_shortlist_solver_wrong::same_scenario": 10,
+    "gold_rank_1": 12,
+    "gold_rank_2": 17,
+    "gold_rank_3": 5,
+    "solver_pick_in_shortlist": 27,
+    "solver_pick_outside_shortlist": 7
+   },
+   "n": 1000,
+   "oracles": {
+    "combo_ii_iii_iv": {
+     "intent": 96.09644087256028,
+     "slu_additive_estimate": 82.10599253948298,
+     "slu_iii_iv_joint": 82.4788356974437
+    },
+    "i_intent_perfect": {
+     "intent": 100.0,
+     "intent_gain_pp": 15.5,
+     "slu_gain_pp_central": 3.182475775162544,
+     "slu_if_wrong_intent_rows_at_correct_row_rate": 77.87600556196256,
+     "slu_if_wrong_intent_rows_slots_repaired": 79.87139900700582,
+     "slu_lower_unchanged": 74.69352978680001
+    },
+    "ii_b_gold_always_in_boundary_block": {
+     "intent": 87.76150627615063,
+     "intent_gain_pp": 3.2615062761506266,
+     "rows": 956
+    },
+    "ii_gold_always_in_shortlist": {
+     "intent": 96.09644087256028,
+     "intent_gain_pp": 11.59644087256028,
+     "rows_gold_in_shortlist": 871,
+     "slu": 77.15262918269823,
+     "slu_gain_pp": 2.459099395898221
+    },
+    "iii_empty_gold_false_fills_removed": {
+     "gain_pp": 2.998139203634267,
+     "slu_f1": 77.69166899043428
+    },
+    "iv_values_normalised_where_type_and_span_overlap": {
+     "gain_pp": 4.414323549048703,
+     "slu_f1": 79.10785333584872
+    },
+    "v_b_solver_forced_rows_at_natural_rates": {
+     "intent_gain_pp": 3.1611418047882154,
+     "rows_forced": 457
+    },
+    "v_forced_close_rows_at_natural_rates": {
+     "intent": 90.23354564755839,
+     "intent_gain_pp": 5.733545647558387,
+     "rows_forced": 529,
+     "slu": 82.40158131919965,
+     "slu_gain_pp": 7.708051532399637
+    }
+   },
+   "per_scenario": {
+    "calendar": {
+     "absent_from_shortlist": 24,
+     "intent": 84.16289592760181,
+     "intent_errors": 35,
+     "n": 221,
+     "slot_items": {
+      "BOUNDARY": 26,
+      "FORMAT": 5,
+      "FP_EMPTY_GOLD": 8,
+      "FP_NONEMPTY_GOLD": 32,
+      "MISSING": 25,
+      "NEAR": 16,
+      "WRONG-TYPE": 19,
+      "WRONG-VALUE": 9
+     },
+     "slu_f1": 80.11189534116694,
+     "slu_gain_if_scenario_slots_perfect_pp": 6.375267915990037,
+     "solver_wrong_in_shortlist": 11
+    },
+    "datetime": {
+     "absent_from_shortlist": 2,
+     "intent": 77.77777777777777,
+     "intent_errors": 2,
+     "n": 9,
+     "slot_items": {
+      "MISSING": 1
+     },
+     "slu_f1": 88.88888888888889,
+     "slu_gain_if_scenario_slots_perfect_pp": 0.05370591894771337,
+     "solver_wrong_in_shortlist": 0
+    },
+    "email": {
+     "absent_from_shortlist": 7,
+     "intent": 91.66666666666667,
+     "intent_errors": 8,
+     "n": 96,
+     "slot_items": {
+      "BOUNDARY": 4,
+      "FORMAT": 1,
+      "FP_EMPTY_GOLD": 7,
+      "FP_NONEMPTY_GOLD": 9,
+      "MISSING": 10,
+      "NEAR": 7,
+      "WRONG-TYPE": 5,
+      "WRONG-VALUE": 4
+     },
+     "slu_f1": 67.17156011139144,
+     "slu_gain_if_scenario_slots_perfect_pp": 2.133431118950398,
+     "solver_wrong_in_shortlist": 1
+    },
+    "general": {
+     "absent_from_shortlist": 32,
+     "intent": 43.54838709677419,
+     "intent_errors": 35,
+     "n": 62,
+     "slot_items": {
+      "FORMAT": 1,
+      "FP_EMPTY_GOLD": 13,
+      "FP_NONEMPTY_GOLD": 3,
+      "MISSING": 6,
+      "NEAR": 1,
+      "WRONG-VALUE": 1
+     },
+     "slu_f1": 49.91273996509597,
+     "slu_gain_if_scenario_slots_perfect_pp": 0.9716984421564376,
+     "solver_wrong_in_shortlist": 3
+    },
+    "iot": {
+     "absent_from_shortlist": 0,
+     "intent": 96.49122807017544,
+     "intent_errors": 2,
+     "n": 57,
+     "slot_items": {
+      "BOUNDARY": 3,
+      "FP_EMPTY_GOLD": 2,
+      "FP_NONEMPTY_GOLD": 3,
+      "MISSING": 7,
+      "NEAR": 4,
+      "WRONG-TYPE": 1,
+      "WRONG-VALUE": 1
+     },
+     "slu_f1": 75.43458273642796,
+     "slu_gain_if_scenario_slots_perfect_pp": 0.906333980692267,
+     "solver_wrong_in_shortlist": 2
+    },
+    "lists": {
+     "absent_from_shortlist": 3,
+     "intent": 92.3076923076923,
+     "intent_errors": 4,
+     "n": 52,
+     "slot_items": {
+      "BOUNDARY": 1,
+      "FORMAT": 1,
+      "FP_EMPTY_GOLD": 2,
+      "FP_NONEMPTY_GOLD": 1,
+      "MISSING": 2,
+      "WRONG-TYPE": 2
+     },
+     "slu_f1": 74.44616177228232,
+     "slu_gain_if_scenario_slots_perfect_pp": 0.4613086402550408,
+     "solver_wrong_in_shortlist": 1
+    },
+    "news": {
+     "absent_from_shortlist": 0,
+     "intent": 100.0,
+     "intent_errors": 0,
+     "n": 20,
+     "slot_items": {
+      "BOUNDARY": 1,
+      "FP_EMPTY_GOLD": 1,
+      "FP_NONEMPTY_GOLD": 2,
+      "MISSING": 1,
+      "NEAR": 1
+     },
+     "slu_f1": 85.69933728636204,
+     "slu_gain_if_scenario_slots_perfect_pp": 0.2144676634289766,
+     "solver_wrong_in_shortlist": 0
+    },
+    "play": {
+     "absent_from_shortlist": 23,
+     "intent": 84.23645320197045,
+     "intent_errors": 32,
+     "n": 203,
+     "slot_items": {
+      "BOUNDARY": 12,
+      "FP_EMPTY_GOLD": 23,
+      "FP_NONEMPTY_GOLD": 26,
+      "MISSING": 32,
+      "NEAR": 10,
+      "WRONG-TYPE": 13,
+      "WRONG-VALUE": 10
+     },
+     "slu_f1": 65.2397878284412,
+     "slu_gain_if_scenario_slots_perfect_pp": 6.093788986131202,
+     "solver_wrong_in_shortlist": 9
+    },
+    "qa": {
+     "absent_from_shortlist": 27,
+     "intent": 79.61783439490446,
+     "intent_errors": 32,
+     "n": 157,
+     "slot_items": {
+      "BOUNDARY": 3,
+      "FORMAT": 1,
+      "FP_EMPTY_GOLD": 28,
+      "FP_NONEMPTY_GOLD": 9,
+      "MISSING": 17,
+      "NEAR": 7,
+      "WRONG-TYPE": 3,
+      "WRONG-VALUE": 9
+     },
+     "slu_f1": 72.30580233086631,
+     "slu_gain_if_scenario_slots_perfect_pp": 3.2455435064800753,
+     "solver_wrong_in_shortlist": 5
+    },
+    "recommendation": {
+     "absent_from_shortlist": 0,
+     "intent": 100.0,
+     "intent_errors": 0,
+     "n": 6,
+     "slot_items": {
+      "FP_EMPTY_GOLD": 3
+     },
+     "slu_f1": 0.0,
+     "slu_gain_if_scenario_slots_perfect_pp": 0.09620509684751255,
+     "solver_wrong_in_shortlist": 0
+    },
+    "social": {
+     "absent_from_shortlist": 1,
+     "intent": 50.0,
+     "intent_errors": 2,
+     "n": 4,
+     "slot_items": {
+      "FP_NONEMPTY_GOLD": 1
+     },
+     "slu_f1": 88.88888888888889,
+     "slu_gain_if_scenario_slots_perfect_pp": 0.032040853251658064,
+     "solver_wrong_in_shortlist": 1
+    },
+    "transport": {
+     "absent_from_shortlist": 1,
+     "intent": 95.83333333333333,
+     "intent_errors": 2,
+     "n": 48,
+     "slot_items": {
+      "BOUNDARY": 2,
+      "FP_NONEMPTY_GOLD": 5,
+      "MISSING": 6,
+      "NEAR": 3,
+      "WRONG-TYPE": 1,
+      "WRONG-VALUE": 3
+     },
+     "slu_f1": 81.58058949969578,
+     "slu_gain_if_scenario_slots_perfect_pp": 1.0401529699774983,
+     "solver_wrong_in_shortlist": 1
+    },
+    "weather": {
+     "absent_from_shortlist": 1,
+     "intent": 98.46153846153847,
+     "intent_errors": 1,
+     "n": 65,
+     "slot_items": {
+      "BOUNDARY": 6,
+      "FP_EMPTY_GOLD": 3,
+      "FP_NONEMPTY_GOLD": 4,
+      "MISSING": 5,
+      "NEAR": 4,
+      "WRONG-VALUE": 4
+     },
+     "slu_f1": 82.70316373146946,
+     "slu_gain_if_scenario_slots_perfect_pp": 1.1510023767016548,
+     "solver_wrong_in_shortlist": 0
+    }
+   },
+   "run": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-DEV2000-ADDED-LOCK-V1",
+   "shortlist": {
+    "acc_given_gold_absent": 6.2015503875969,
+    "acc_given_gold_in_shortlist": 96.09644087256028,
+    "acc_size1_gold_top1": null,
+    "gold_in_block": 956,
+    "gold_in_shortlist": 871,
+    "shortlist_size": {
+     "1": 852,
+     "2": 114,
+     "3": 34
+    }
+   },
+   "slot_items": {
+    "all": {
+     "BOUNDARY": 58,
+     "FORMAT": 9,
+     "FP_EMPTY_GOLD": 90,
+     "FP_NONEMPTY_GOLD": 95,
+     "MISSING": 112,
+     "NEAR": 53,
+     "WRONG-TYPE": 44,
+     "WRONG-VALUE": 41
+    },
+    "empty_gold_rows": 314,
+    "empty_gold_rows_with_false_fill": 80,
+    "gold_entities": 1027,
+    "nonempty_gold_rows_predicted_empty": 38,
+    "on_forced_close_rows": {
+     "BOUNDARY": 41,
+     "FORMAT": 5,
+     "FP_EMPTY_GOLD": 67,
+     "FP_NONEMPTY_GOLD": 78,
+     "MISSING": 78,
+     "NEAR": 35,
+     "WRONG-TYPE": 35,
+     "WRONG-VALUE": 27
+    },
+    "on_wrong_intent_rows": {
+     "BOUNDARY": 3,
+     "FP_EMPTY_GOLD": 36,
+     "FP_NONEMPTY_GOLD": 17,
+     "MISSING": 35,
+     "NEAR": 3,
+     "WRONG-TYPE": 15,
+     "WRONG-VALUE": 1
+    },
+    "pred_entities": 1100,
+    "wrong_type_sub": {
+     "related-value": 21,
+     "same-value": 23
+    }
+   },
+   "slu_f1": 74.69352978680001,
+   "slu_repair_oracles": {
+    "ALL slot items": {
+     "gain_pp": 25.306470213199987,
+     "slu_f1": 100.0
+    },
+    "FN (MISSING)": {
+     "gain_pp": 5.741896692185136,
+     "slu_f1": 80.43542647898515
+    },
+    "FP_EMPTY_GOLD (false fill, gold empty)": {
+     "gain_pp": 2.998139203634267,
+     "slu_f1": 77.69166899043428
+    },
+    "FP_NONEMPTY_GOLD (extra slot)": {
+     "gain_pp": 3.276330181908392,
+     "slu_f1": 77.9698599687084
+    },
+    "ORACLE iv: value normalised where type+span overlap (FORMAT+BOUNDARY+NEAR)": {
+     "gain_pp": 4.414323549048703,
+     "slu_f1": 79.10785333584872
+    },
+    "VALUE BOUNDARY": {
+     "gain_pp": 2.226989863209056,
+     "slu_f1": 76.92051965000907
+    },
+    "VALUE FORMAT": {
+     "gain_pp": 0.2536368694139526,
+     "slu_f1": 74.94716665621397
+    },
+    "VALUE NEAR": {
+     "gain_pp": 1.7948214884514329,
+     "slu_f1": 76.48835127525145
+    },
+    "VALUE WRONG-VALUE": {
+     "gain_pp": 2.3813526466345536,
+     "slu_f1": 77.07488243343457
+    },
+    "WRONG-TYPE": {
+     "gain_pp": 3.7732667171288057,
+     "slu_f1": 78.46679650392882
+    },
+    "slot items on forced-close rows": {
+     "gain_pp": 17.76143800895312,
+     "slu_f1": 92.45496779575313
+    },
+    "slot items on wrong-intent rows": {
+     "gain_pp": 5.177869220205807,
+     "slu_f1": 79.87139900700582
+    }
+   },
+   "slu_totals": [
+    1742.0,
+    663.1966507303151,
+    517.1966507303151
+   ],
+   "top_confusions": [
+    {
+     "count": 11,
+     "gold": "general_quirky",
+     "pred": "qa_factoid"
+    },
+    {
+     "count": 9,
+     "gold": "calendar_query",
+     "pred": "recommendation_events"
+    },
+    {
+     "count": 5,
+     "gold": "calendar_query",
+     "pred": "calendar_set"
+    },
+    {
+     "count": 5,
+     "gold": "calendar_set",
+     "pred": "calendar_query"
+    },
+    {
+     "count": 5,
+     "gold": "general_quirky",
+     "pred": "qa_definition"
+    },
+    {
+     "count": 5,
+     "gold": "play_music",
+     "pred": "music_likeness"
+    },
+    {
+     "count": 4,
+     "gold": "qa_factoid",
+     "pred": "news_query"
+    },
+    {
+     "count": 3,
+     "gold": "calendar_query",
+     "pred": "news_query"
+    },
+    {
+     "count": 3,
+     "gold": "general_quirky",
+     "pred": "calendar_set"
+    },
+    {
+     "count": 3,
+     "gold": "general_quirky",
+     "pred": "datetime_query"
+    }
+   ],
+   "top_error_slot_types": {
+    "BOUNDARY": [
+     [
+      "event_name",
+      11
+     ],
+     [
+      "date",
+      10
+     ],
+     [
+      "time",
+      5
+     ],
+     [
+      "person",
+      5
+     ],
+     [
+      "weather_descriptor",
+      4
+     ],
+     [
+      "playlist_name",
+      2
+     ]
+    ],
+    "FORMAT": [
+     [
+      "date",
+      4
+     ],
+     [
+      "joke_type",
+      1
+     ],
+     [
+      "event_name",
+      1
+     ],
+     [
+      "list_name",
+      1
+     ],
+     [
+      "business_name",
+      1
+     ],
+     [
+      "person",
+      1
+     ]
+    ],
+    "MISSING": [
+     [
+      "date",
+      10
+     ],
+     [
+      "event_name",
+      9
+     ],
+     [
+      "player_setting",
+      8
+     ],
+     [
+      "artist_name",
+      7
+     ],
+     [
+      "place_name",
+      7
+     ],
+     [
+      "media_type",
+      7
+     ]
+    ],
+    "NEAR": [
+     [
+      "person",
+      15
+     ],
+     [
+      "place_name",
+      7
+     ],
+     [
+      "artist_name",
+      6
+     ],
+     [
+      "date",
+      3
+     ],
+     [
+      "event_name",
+      3
+     ],
+     [
+      "house_place",
+      2
+     ]
+    ],
+    "SPURIOUS": [
+     [
+      "event_name",
+      22
+     ],
+     [
+      "place_name",
+      20
+     ],
+     [
+      "person",
+      17
+     ],
+     [
+      "date",
+      13
+     ],
+     [
+      "playlist_name",
+      10
+     ],
+     [
+      "definition_word",
+      9
+     ]
+    ],
+    "WRONG-TYPE": [
+     [
+      "time",
+      7
+     ],
+     [
+      "relation",
+      4
+     ],
+     [
+      "person",
+      4
+     ],
+     [
+      "date",
+      3
+     ],
+     [
+      "event_name",
+      3
+     ],
+     [
+      "place_name",
+      3
+     ]
+    ],
+    "WRONG-VALUE": [
+     [
+      "person",
+      8
+     ],
+     [
+      "place_name",
+      5
+     ],
+     [
+      "date",
+      5
+     ],
+     [
+      "currency_name",
+      4
+     ],
+     [
+      "song_name",
+      3
+     ],
+     [
+      "weather_descriptor",
+      2
+     ]
+    ]
+   },
+   "top_intent_error_owners": [
+    {
+     "absent_from_shortlist": 32,
+     "errors": 35,
+     "gold_intent": "general_quirky",
+     "n": 51
+    },
+    {
+     "absent_from_shortlist": 14,
+     "errors": 23,
+     "gold_intent": "calendar_query",
+     "n": 80
+    },
+    {
+     "absent_from_shortlist": 17,
+     "errors": 20,
+     "gold_intent": "qa_factoid",
+     "n": 67
+    },
+    {
+     "absent_from_shortlist": 10,
+     "errors": 15,
+     "gold_intent": "play_music",
+     "n": 99
+    },
+    {
+     "absent_from_shortlist": 8,
+     "errors": 10,
+     "gold_intent": "calendar_set",
+     "n": 107
+    },
+    {
+     "absent_from_shortlist": 5,
+     "errors": 7,
+     "gold_intent": "play_audiobook",
+     "n": 31
+    },
+    {
+     "absent_from_shortlist": 6,
+     "errors": 7,
+     "gold_intent": "qa_definition",
+     "n": 43
+    },
+    {
+     "absent_from_shortlist": 4,
+     "errors": 4,
+     "gold_intent": "email_sendemail",
+     "n": 37
+    },
+    {
+     "absent_from_shortlist": 3,
+     "errors": 4,
+     "gold_intent": "play_radio",
+     "n": 34
+    },
+    {
+     "absent_from_shortlist": 2,
+     "errors": 3,
+     "gold_intent": "play_game",
+     "n": 16
+    },
+    {
+     "absent_from_shortlist": 3,
+     "errors": 3,
+     "gold_intent": "play_podcasts",
+     "n": 23
+    },
+    {
+     "absent_from_shortlist": 2,
+     "errors": 2,
+     "gold_intent": "calendar_remove",
+     "n": 34
+    }
+   ]
+  },
+  "FOLDB": {
+   "bootstrap_ci95": {
+    "ii_intent": [
+     8.63168724279835,
+     12.170207264192229
+    ],
+    "ii_slu": [
+     1.3453291426142755,
+     3.248252023854647
+    ],
+    "iii_slu": [
+     2.49824511724195,
+     4.000156193613876
+    ],
+    "iv_slu": [
+     4.183364861538223,
+     6.037361748891527
+    ],
+    "v_intent": [
+     2.457264957264954,
+     6.623970263210765
+    ]
+   },
+   "bootstrap_note": "utterance-cluster bootstrap, 2,000 draws, seed 20261019; v_intent is the natural-row minus pooled accuracy (upper bound of oracle v, scaled by the forced share in the point estimate)",
+   "branch": "budget-3072",
+   "checks": {
+    "cands_receipt_equals_state": 1077,
+    "forced_close_known": 1080,
+    "intent_parse_agrees_sealed": 1080,
+    "rescore_matches_sealed": 1080,
+    "rows": 1080
+   },
+   "forced_close": {
+    "any_fc": {
+     "intent": 80.57142857142857,
+     "intent_classes": {
+      "a1_absent_from_shortlist_in_block": 48,
+      "a2_absent_from_shortlist_and_block": 28,
+      "b_in_shortlist_solver_wrong": 26
+     },
+     "intent_errors": 102,
+     "n": 525,
+     "slu_f1": 66.88729041199404
+    },
+    "no_fc": {
+     "intent": 89.90990990990991,
+     "intent_classes": {
+      "a1_absent_from_shortlist_in_block": 30,
+      "a2_absent_from_shortlist_and_block": 12,
+      "b_in_shortlist_solver_wrong": 14
+     },
+     "intent_errors": 56,
+     "n": 555,
+     "slu_f1": 81.14174148677752
+    },
+    "perception_fc": {
+     "intent": 69.34673366834171,
+     "intent_classes": {
+      "a1_absent_from_shortlist_in_block": 25,
+      "a2_absent_from_shortlist_and_block": 18,
+      "b_in_shortlist_solver_wrong": 18
+     },
+     "intent_errors": 61,
+     "n": 199,
+     "slu_f1": 63.183158128999274
+    },
+    "solver_fc": {
+     "intent": 80.13856812933025,
+     "intent_classes": {
+      "a1_absent_from_shortlist_in_block": 42,
+      "a2_absent_from_shortlist_and_block": 22,
+      "b_in_shortlist_solver_wrong": 22
+     },
+     "intent_errors": 86,
+     "n": 433,
+     "slu_f1": 65.97668716707649
+    }
+   },
+   "intent": 85.37037037037037,
+   "intent_classes": {
+    "a1_absent_from_shortlist_in_block": 78,
+    "a2_absent_from_shortlist_and_block": 40,
+    "b_in_shortlist_solver_wrong": 40,
+    "correct": 922
+   },
+   "intent_subclasses": {
+    "a1_absent_from_shortlist_in_block::cross_scenario": 56,
+    "a1_absent_from_shortlist_in_block::same_scenario": 22,
+    "a2_absent_from_shortlist_and_block::cross_scenario": 36,
+    "a2_absent_from_shortlist_and_block::same_scenario": 4,
+    "b_in_shortlist_solver_wrong::cross_scenario": 26,
+    "b_in_shortlist_solver_wrong::same_scenario": 14,
+    "gold_rank_1": 19,
+    "gold_rank_2": 17,
+    "gold_rank_3": 4,
+    "solver_pick_in_shortlist": 33,
+    "solver_pick_outside_shortlist": 7
+   },
+   "n": 1080,
+   "oracles": {
+    "combo_ii_iii_iv": {
+     "intent": 95.7983193277311,
+     "slu_additive_estimate": 81.03779483245837,
+     "slu_iii_iv_joint": 81.51397109321387
+    },
+    "i_intent_perfect": {
+     "intent": 100.0,
+     "intent_gain_pp": 14.629629629629633,
+     "slu_gain_pp_central": 3.1587053315485747,
+     "slu_if_wrong_intent_rows_at_correct_row_rate": 75.89512957135027,
+     "slu_if_wrong_intent_rows_slots_repaired": 78.24134658382494,
+     "slu_lower_unchanged": 72.73642423980169
+    },
+    "ii_b_gold_always_in_boundary_block": {
+     "intent": 88.60759493670886,
+     "intent_gain_pp": 3.2372245663384973,
+     "rows": 1027
+    },
+    "ii_gold_always_in_shortlist": {
+     "intent": 95.7983193277311,
+     "intent_gain_pp": 10.427948957360726,
+     "rows_gold_in_shortlist": 952,
+     "slu": 74.9698451774416,
+     "slu_gain_pp": 2.233420937639906
+    },
+    "iii_empty_gold_false_fills_removed": {
+     "gain_pp": 3.204131738270661,
+     "slu_f1": 75.94055597807235
+    },
+    "iv_values_normalised_where_type_and_span_overlap": {
+     "gain_pp": 5.0972388543860205,
+     "slu_f1": 77.83366309418771
+    },
+    "v_b_solver_forced_rows_at_natural_rates": {
+     "intent_gain_pp": 3.5013452401396705,
+     "rows_forced": 433
+    },
+    "v_forced_close_rows_at_natural_rates": {
+     "intent": 89.90990990990991,
+     "intent_gain_pp": 4.539539539539547,
+     "rows_forced": 525,
+     "slu": 81.14174148677752,
+     "slu_gain_pp": 8.405317246975827
+    }
+   },
+   "per_scenario": {
+    "alarm": {
+     "absent_from_shortlist": 5,
+     "intent": 88.33333333333333,
+     "intent_errors": 7,
+     "n": 60,
+     "slot_items": {
+      "BOUNDARY": 6,
+      "FP_EMPTY_GOLD": 6,
+      "FP_NONEMPTY_GOLD": 6,
+      "MISSING": 1,
+      "NEAR": 1,
+      "WRONG-TYPE": 1,
+      "WRONG-VALUE": 1
+     },
+     "slu_f1": 75.32979889053037,
+     "slu_gain_if_scenario_slots_perfect_pp": 0.7995881635605571,
+     "solver_wrong_in_shortlist": 2
+    },
+    "audio": {
+     "absent_from_shortlist": 6,
+     "intent": 86.66666666666667,
+     "intent_errors": 8,
+     "n": 60,
+     "slot_items": {
+      "BOUNDARY": 1,
+      "FP_EMPTY_GOLD": 4,
+      "FP_NONEMPTY_GOLD": 1,
+      "MISSING": 3,
+      "NEAR": 1
+     },
+     "slu_f1": 75.9585242343863,
+     "slu_gain_if_scenario_slots_perfect_pp": 0.392392658480901,
+     "solver_wrong_in_shortlist": 2
+    },
+    "calendar": {
+     "absent_from_shortlist": 9,
+     "intent": 80.0,
+     "intent_errors": 12,
+     "n": 60,
+     "slot_items": {
+      "BOUNDARY": 8,
+      "FORMAT": 2,
+      "FP_EMPTY_GOLD": 3,
+      "FP_NONEMPTY_GOLD": 12,
+      "MISSING": 16,
+      "NEAR": 7,
+      "WRONG-TYPE": 4
+     },
+     "slu_f1": 72.81937198225468,
+     "slu_gain_if_scenario_slots_perfect_pp": 2.51508966409844,
+     "solver_wrong_in_shortlist": 3
+    },
+    "cooking": {
+     "absent_from_shortlist": 4,
+     "intent": 90.0,
+     "intent_errors": 6,
+     "n": 60,
+     "slot_items": {
+      "BOUNDARY": 4,
+      "FP_EMPTY_GOLD": 2,
+      "FP_NONEMPTY_GOLD": 2,
+      "MISSING": 2,
+      "NEAR": 3,
+      "WRONG-TYPE": 5
+     },
+     "slu_f1": 76.47064025047632,
+     "slu_gain_if_scenario_slots_perfect_pp": 1.147718664362614,
+     "solver_wrong_in_shortlist": 2
+    },
+    "datetime": {
+     "absent_from_shortlist": 1,
+     "intent": 95.0,
+     "intent_errors": 3,
+     "n": 60,
+     "slot_items": {
+      "BOUNDARY": 4,
+      "FORMAT": 1,
+      "FP_EMPTY_GOLD": 1,
+      "FP_NONEMPTY_GOLD": 2,
+      "MISSING": 3,
+      "NEAR": 3,
+      "WRONG-TYPE": 2,
+      "WRONG-VALUE": 1
+     },
+     "slu_f1": 80.70542971667939,
+     "slu_gain_if_scenario_slots_perfect_pp": 0.8310459485642951,
+     "solver_wrong_in_shortlist": 2
+    },
+    "email": {
+     "absent_from_shortlist": 4,
+     "intent": 93.33333333333333,
+     "intent_errors": 4,
+     "n": 60,
+     "slot_items": {
+      "FORMAT": 1,
+      "FP_EMPTY_GOLD": 4,
+      "FP_NONEMPTY_GOLD": 3,
+      "MISSING": 4,
+      "NEAR": 4,
+      "WRONG-VALUE": 4
+     },
+     "slu_f1": 73.07659280988172,
+     "slu_gain_if_scenario_slots_perfect_pp": 1.0184870826520722,
+     "solver_wrong_in_shortlist": 0
+    },
+    "general": {
+     "absent_from_shortlist": 30,
+     "intent": 38.333333333333336,
+     "intent_errors": 37,
+     "n": 60,
+     "slot_items": {
+      "BOUNDARY": 1,
+      "FP_EMPTY_GOLD": 11,
+      "FP_NONEMPTY_GOLD": 4,
+      "MISSING": 5,
+      "NEAR": 1
+     },
+     "slu_f1": 58.896312793862904,
+     "slu_gain_if_scenario_slots_perfect_pp": 0.9223814074958767,
+     "solver_wrong_in_shortlist": 7
+    },
+    "iot": {
+     "absent_from_shortlist": 2,
+     "intent": 91.66666666666667,
+     "intent_errors": 5,
+     "n": 60,
+     "slot_items": {
+      "BOUNDARY": 2,
+      "FP_EMPTY_GOLD": 3,
+      "FP_NONEMPTY_GOLD": 1,
+      "MISSING": 9,
+      "NEAR": 2,
+      "WRONG-TYPE": 2,
+      "WRONG-VALUE": 3
+     },
+     "slu_f1": 75.2510233790795,
+     "slu_gain_if_scenario_slots_perfect_pp": 1.1997353046643155,
+     "solver_wrong_in_shortlist": 3
+    },
+    "lists": {
+     "absent_from_shortlist": 6,
+     "intent": 88.33333333333333,
+     "intent_errors": 7,
+     "n": 60,
+     "slot_items": {
+      "BOUNDARY": 4,
+      "FORMAT": 1,
+      "FP_EMPTY_GOLD": 8,
+      "FP_NONEMPTY_GOLD": 9,
+      "MISSING": 4
+     },
+     "slu_f1": 64.45125222722658,
+     "slu_gain_if_scenario_slots_perfect_pp": 0.9539812367707583,
+     "solver_wrong_in_shortlist": 1
+    },
+    "music": {
+     "absent_from_shortlist": 9,
+     "intent": 80.0,
+     "intent_errors": 12,
+     "n": 60,
+     "slot_items": {
+      "BOUNDARY": 1,
+      "FP_EMPTY_GOLD": 10,
+      "MISSING": 4,
+      "NEAR": 1,
+      "WRONG-TYPE": 1
+     },
+     "slu_f1": 58.9378238341969,
+     "slu_gain_if_scenario_slots_perfect_pp": 0.7320164009603758,
+     "solver_wrong_in_shortlist": 3
+    },
+    "news": {
+     "absent_from_shortlist": 4,
+     "intent": 88.33333333333333,
+     "intent_errors": 7,
+     "n": 60,
+     "slot_items": {
+      "BOUNDARY": 2,
+      "FP_EMPTY_GOLD": 3,
+      "FP_NONEMPTY_GOLD": 4,
+      "MISSING": 4,
+      "NEAR": 4,
+      "WRONG-TYPE": 7,
+      "WRONG-VALUE": 1
+     },
+     "slu_f1": 71.84936723136637,
+     "slu_gain_if_scenario_slots_perfect_pp": 1.4602322238842191,
+     "solver_wrong_in_shortlist": 3
+    },
+    "play": {
+     "absent_from_shortlist": 8,
+     "intent": 80.0,
+     "intent_errors": 12,
+     "n": 60,
+     "slot_items": {
+      "BOUNDARY": 2,
+      "FORMAT": 4,
+      "FP_EMPTY_GOLD": 8,
+      "FP_NONEMPTY_GOLD": 10,
+      "MISSING": 10,
+      "NEAR": 3,
+      "WRONG-TYPE": 5,
+      "WRONG-VALUE": 2
+     },
+     "slu_f1": 59.361477302402314,
+     "slu_gain_if_scenario_slots_perfect_pp": 2.1322383065879364,
+     "solver_wrong_in_shortlist": 4
+    },
+    "qa": {
+     "absent_from_shortlist": 6,
+     "intent": 86.66666666666667,
+     "intent_errors": 8,
+     "n": 60,
+     "slot_items": {
+      "BOUNDARY": 1,
+      "FP_EMPTY_GOLD": 6,
+      "FP_NONEMPTY_GOLD": 1,
+      "MISSING": 3,
+      "NEAR": 4,
+      "WRONG-VALUE": 5
+     },
+     "slu_f1": 77.53285395575676,
+     "slu_gain_if_scenario_slots_perfect_pp": 0.815657923942652,
+     "solver_wrong_in_shortlist": 2
+    },
+    "recommendation": {
+     "absent_from_shortlist": 7,
+     "intent": 85.0,
+     "intent_errors": 9,
+     "n": 60,
+     "slot_items": {
+      "BOUNDARY": 2,
+      "FP_EMPTY_GOLD": 10,
+      "FP_NONEMPTY_GOLD": 6,
+      "MISSING": 9,
+      "NEAR": 5,
+      "WRONG-TYPE": 4,
+      "WRONG-VALUE": 2
+     },
+     "slu_f1": 62.46911728729835,
+     "slu_gain_if_scenario_slots_perfect_pp": 1.8235784140182574,
+     "solver_wrong_in_shortlist": 2
+    },
+    "social": {
+     "absent_from_shortlist": 4,
+     "intent": 90.0,
+     "intent_errors": 6,
+     "n": 60,
+     "slot_items": {
+      "BOUNDARY": 3,
+      "FORMAT": 3,
+      "FP_EMPTY_GOLD": 4,
+      "FP_NONEMPTY_GOLD": 12,
+      "MISSING": 6,
+      "NEAR": 3,
+      "WRONG-TYPE": 2,
+      "WRONG-VALUE": 6
+     },
+     "slu_f1": 73.41583102197568,
+     "slu_gain_if_scenario_slots_perfect_pp": 1.7206691219444963,
+     "solver_wrong_in_shortlist": 2
+    },
+    "takeaway": {
+     "absent_from_shortlist": 6,
+     "intent": 86.66666666666667,
+     "intent_errors": 8,
+     "n": 60,
+     "slot_items": {
+      "BOUNDARY": 7,
+      "FORMAT": 5,
+      "FP_EMPTY_GOLD": 1,
+      "FP_NONEMPTY_GOLD": 7,
+      "MISSING": 13,
+      "NEAR": 10,
+      "WRONG-TYPE": 3,
+      "WRONG-VALUE": 3
+     },
+     "slu_f1": 72.28648623934376,
+     "slu_gain_if_scenario_slots_perfect_pp": 2.21255894680543,
+     "solver_wrong_in_shortlist": 2
+    },
+    "transport": {
+     "absent_from_shortlist": 6,
+     "intent": 90.0,
+     "intent_errors": 6,
+     "n": 60,
+     "slot_items": {
+      "BOUNDARY": 5,
+      "FP_EMPTY_GOLD": 7,
+      "FP_NONEMPTY_GOLD": 11,
+      "MISSING": 10,
+      "NEAR": 5,
+      "WRONG-TYPE": 2,
+      "WRONG-VALUE": 4
+     },
+     "slu_f1": 75.0799080467385,
+     "slu_gain_if_scenario_slots_perfect_pp": 2.1458448351279458,
+     "solver_wrong_in_shortlist": 0
+    },
+    "weather": {
+     "absent_from_shortlist": 1,
+     "intent": 98.33333333333333,
+     "intent_errors": 1,
+     "n": 60,
+     "slot_items": {
+      "BOUNDARY": 5,
+      "FP_EMPTY_GOLD": 1,
+      "FP_NONEMPTY_GOLD": 6,
+      "MISSING": 6,
+      "NEAR": 2,
+      "WRONG-TYPE": 1
+     },
+     "slu_f1": 85.11089928374616,
+     "slu_gain_if_scenario_slots_perfect_pp": 0.9849399384266206,
+     "solver_wrong_in_shortlist": 0
+    }
+   },
+   "run": "SAEA-SLURP-STAGE3-NXT-R2B-SOLVER-BUDGET-FOLD-B-V1",
+   "shortlist": {
+    "acc_given_gold_absent": 7.8125,
+    "acc_given_gold_in_shortlist": 95.7983193277311,
+    "acc_size1_gold_top1": null,
+    "gold_in_block": 1027,
+    "gold_in_shortlist": 952,
+    "shortlist_size": {
+     "1": 872,
+     "2": 165,
+     "3": 43
+    }
+   },
+   "slot_items": {
+    "all": {
+     "BOUNDARY": 58,
+     "FORMAT": 17,
+     "FP_EMPTY_GOLD": 92,
+     "FP_NONEMPTY_GOLD": 97,
+     "MISSING": 112,
+     "NEAR": 59,
+     "WRONG-TYPE": 39,
+     "WRONG-VALUE": 32
+    },
+    "empty_gold_rows": 392,
+    "empty_gold_rows_with_false_fill": 81,
+    "gold_entities": 944,
+    "nonempty_gold_rows_predicted_empty": 33,
+    "on_forced_close_rows": {
+     "BOUNDARY": 43,
+     "FORMAT": 14,
+     "FP_EMPTY_GOLD": 69,
+     "FP_NONEMPTY_GOLD": 70,
+     "MISSING": 79,
+     "NEAR": 35,
+     "WRONG-TYPE": 30,
+     "WRONG-VALUE": 22
+    },
+    "on_wrong_intent_rows": {
+     "BOUNDARY": 5,
+     "FP_EMPTY_GOLD": 32,
+     "FP_NONEMPTY_GOLD": 18,
+     "MISSING": 28,
+     "NEAR": 6,
+     "WRONG-TYPE": 15,
+     "WRONG-VALUE": 3
+    },
+    "pred_entities": 1021,
+    "wrong_type_sub": {
+     "related-value": 16,
+     "same-value": 23
+    }
+   },
+   "slu_f1": 72.73642423980169,
+   "slu_repair_oracles": {
+    "ALL slot items": {
+     "gain_pp": 27.263575760198307,
+     "slu_f1": 100.0
+    },
+    "FN (MISSING)": {
+     "gain_pp": 6.217523248073306,
+     "slu_f1": 78.953947487875
+    },
+    "FP_EMPTY_GOLD (false fill, gold empty)": {
+     "gain_pp": 3.204131738270661,
+     "slu_f1": 75.94055597807235
+    },
+    "FP_NONEMPTY_GOLD (extra slot)": {
+     "gain_pp": 3.6135711303252975,
+     "slu_f1": 76.34999537012699
+    },
+    "ORACLE iv: value normalised where type+span overlap (FORMAT+BOUNDARY+NEAR)": {
+     "gain_pp": 5.0972388543860205,
+     "slu_f1": 77.83366309418771
+    },
+    "VALUE BOUNDARY": {
+     "gain_pp": 2.3524089058641238,
+     "slu_f1": 75.08883314566582
+    },
+    "VALUE FORMAT": {
+     "gain_pp": 0.4948552540908224,
+     "slu_f1": 73.23127949389252
+    },
+    "VALUE NEAR": {
+     "gain_pp": 2.0493621671273274,
+     "slu_f1": 74.78578640692902
+    },
+    "VALUE WRONG-VALUE": {
+     "gain_pp": 2.138788296976429,
+     "slu_f1": 74.87521253677812
+    },
+    "WRONG-TYPE": {
+     "gain_pp": 3.577201192121379,
+     "slu_f1": 76.31362543192307
+    },
+    "slot items on forced-close rows": {
+     "gain_pp": 18.71042558565736,
+     "slu_f1": 91.44684982545905
+    },
+    "slot items on wrong-intent rows": {
+     "gain_pp": 5.504922344023242,
+     "slu_f1": 78.24134658382494
+    }
+   },
+   "slu_totals": [
+    1586.0,
+    671.4756235626634,
+    517.4756235626634
+   ],
+   "top_confusions": [
+    {
+     "count": 9,
+     "gold": "general_quirky",
+     "pred": "qa_factoid"
+    },
+    {
+     "count": 5,
+     "gold": "general_quirky",
+     "pred": "recommendation_locations"
+    },
+    {
+     "count": 4,
+     "gold": "general_quirky",
+     "pred": "calendar_query"
+    },
+    {
+     "count": 4,
+     "gold": "takeaway_order",
+     "pred": "recommendation_locations"
+    },
+    {
+     "count": 3,
+     "gold": "calendar_query",
+     "pred": "recommendation_events"
+    },
+    {
+     "count": 3,
+     "gold": "cooking_recipe",
+     "pred": "cooking_query"
+    },
+    {
+     "count": 3,
+     "gold": "qa_factoid",
+     "pred": "transport_query"
+    },
+    {
+     "count": 3,
+     "gold": "transport_query",
+     "pred": "transport_ticket"
+    },
+    {
+     "count": 2,
+     "gold": "alarm_set",
+     "pred": "calendar_set"
+    },
+    {
+     "count": 2,
+     "gold": "calendar_query",
+     "pred": "calendar_set"
+    }
+   ],
+   "top_error_slot_types": {
+    "BOUNDARY": [
+     [
+      "food_type",
+      8
+     ],
+     [
+      "date",
+      8
+     ],
+     [
+      "time",
+      7
+     ],
+     [
+      "place_name",
+      6
+     ],
+     [
+      "event_name",
+      4
+     ],
+     [
+      "business_name",
+      3
+     ]
+    ],
+    "FORMAT": [
+     [
+      "business_name",
+      8
+     ],
+     [
+      "date",
+      3
+     ],
+     [
+      "radio_name",
+      2
+     ],
+     [
+      "audiobook_name",
+      2
+     ],
+     [
+      "list_name",
+      1
+     ],
+     [
+      "email_address",
+      1
+     ]
+    ],
+    "MISSING": [
+     [
+      "date",
+      10
+     ],
+     [
+      "media_type",
+      9
+     ],
+     [
+      "event_name",
+      8
+     ],
+     [
+      "business_type",
+      7
+     ],
+     [
+      "place_name",
+      7
+     ],
+     [
+      "time",
+      6
+     ]
+    ],
+    "NEAR": [
+     [
+      "business_name",
+      12
+     ],
+     [
+      "person",
+      8
+     ],
+     [
+      "place_name",
+      7
+     ],
+     [
+      "date",
+      6
+     ],
+     [
+      "time",
+      4
+     ],
+     [
+      "event_name",
+      4
+     ]
+    ],
+    "SPURIOUS": [
+     [
+      "place_name",
+      27
+     ],
+     [
+      "event_name",
+      16
+     ],
+     [
+      "person",
+      14
+     ],
+     [
+      "date",
+      12
+     ],
+     [
+      "business_name",
+      12
+     ],
+     [
+      "list_name",
+      10
+     ]
+    ],
+    "WRONG-TYPE": [
+     [
+      "time",
+      5
+     ],
+     [
+      "media_type",
+      4
+     ],
+     [
+      "date",
+      3
+     ],
+     [
+      "place_name",
+      3
+     ],
+     [
+      "device_type",
+      2
+     ],
+     [
+      "news_topic",
+      2
+     ]
+    ],
+    "WRONG-VALUE": [
+     [
+      "place_name",
+      7
+     ],
+     [
+      "business_name",
+      5
+     ],
+     [
+      "media_type",
+      4
+     ],
+     [
+      "person",
+      4
+     ],
+     [
+      "house_place",
+      1
+     ],
+     [
+      "color_type",
+      1
+     ]
+    ]
+   },
+   "top_intent_error_owners": [
+    {
+     "absent_from_shortlist": 30,
+     "errors": 35,
+     "gold_intent": "general_quirky",
+     "n": 54
+    },
+    {
+     "absent_from_shortlist": 6,
+     "errors": 9,
+     "gold_intent": "calendar_query",
+     "n": 28
+    },
+    {
+     "absent_from_shortlist": 4,
+     "errors": 7,
+     "gold_intent": "news_query",
+     "n": 60
+    },
+    {
+     "absent_from_shortlist": 4,
+     "errors": 6,
+     "gold_intent": "cooking_recipe",
+     "n": 60
+    },
+    {
+     "absent_from_shortlist": 5,
+     "errors": 6,
+     "gold_intent": "qa_factoid",
+     "n": 33
+    },
+    {
+     "absent_from_shortlist": 5,
+     "errors": 6,
+     "gold_intent": "takeaway_order",
+     "n": 31
+    },
+    {
+     "absent_from_shortlist": 4,
+     "errors": 5,
+     "gold_intent": "audio_volume_mute",
+     "n": 26
+    },
+    {
+     "absent_from_shortlist": 3,
+     "errors": 5,
+     "gold_intent": "play_music",
+     "n": 30
+    },
+    {
+     "absent_from_shortlist": 3,
+     "errors": 4,
+     "gold_intent": "music_likeness",
+     "n": 19
+    },
+    {
+     "absent_from_shortlist": 3,
+     "errors": 4,
+     "gold_intent": "music_query",
+     "n": 25
+    },
+    {
+     "absent_from_shortlist": 3,
+     "errors": 4,
+     "gold_intent": "recommendation_events",
+     "n": 36
+    },
+    {
+     "absent_from_shortlist": 2,
+     "errors": 4,
+     "gold_intent": "social_query",
+     "n": 21
+    }
+   ]
+  }
+ },
+ "schema": "saea-slurp-v30-gap-decomposition-v1",
+ "tiers": {
+  "LauraGPT": {
+   "intent": 87.87,
+   "slu": 73.45
+  },
+  "SFT-Qwen2-Audio-7B": {
+   "intent": 88.13,
+   "slu": 76.75
+  },
+  "UniverSLU-14": {
+   "intent": 90.3,
+   "slu": 79.5
+  }
+ }
+}
