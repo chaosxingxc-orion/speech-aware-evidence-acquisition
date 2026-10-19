@@ -3507,3 +3507,23 @@ transcription, but no default transcription: the transcription must be triggered
 - **342 (PROPOSED)** the 339 tool: A = build the tool model-free now, owner GO to acquire the three stronger ASR candidates (lock entries,
   one CPU/GPU transcription pass each on Fold B, no core contact), probe after the 338 column with the best ASR if it passes the +1.0 pp test
   (recommended); B = build and probe with the pinned Whisper only (no download; probe bound +1.19 to +2.59); C = drop the line.
+
+### Owner rulings 341 A and 342 A (Qwen3-ASR only; VRAM-bounded) (coordinator, 2026-10-19 03:45Z)
+
+Owner, verbatim: 「决策341：A，决策342：A，工具的话，你考虑下qwen3-ASR系列的模型其他的都不用太关注了，而且要考虑下我们的显存容量限制」
+(English: "Decision 341: A; decision 342: A. For the tool, consider the Qwen3-ASR series of models and do not pay much attention to the
+others; also take our GPU-memory capacity limit into account.")
+- **341 A:** the 338 lever column is built now (model-free, Sonnet worktree, from `docs/superpowers/specs/2026-10-19-slurp-338-lever-column-design.md`)
+  and flies after R4: `l1-support`, `l2-union`, `aa`, `lock`; L1 subject to the free check over R4's sealed decodes (drop below +0.67 pp).
+- **342 A, amended to the Qwen3-ASR series:** the tool is built now (model-free) from
+  `docs/superpowers/specs/2026-10-19-slurp-triggered-asr-tool-design.md`; the ASR candidates are ONLY the open Qwen3-ASR models (Qwen3-ASR-0.6B
+  and Qwen3-ASR-1.7B, Transformers format `-hf`; released 2026-01-29, native Transformers support 2026-06-26; package `qwen-asr`). Parakeet /
+  Canary are dropped. Acquisition = owner GO under this ruling: umbrella `docs/datasets.lock.json` entries + fetch to the data root; an
+  isolated venv (never `speechrl`).
+- VRAM constraint recorded: the GPU reports 24,463 MiB total with 22,976 MiB held by the resident Thinking server (np4 x 24,576 slots), i.e.
+  about 1.4 GB free while a flight is open. Consequences: (1) the runtime tool transcribes on CPU by default (bf16/fp32 Transformers, one
+  clip per call; SLURP clips are a few seconds), GPU only when a swap window has freed the memory; (2) the Fold B transcription pass that
+  qualifies each candidate (>= +1.0 pp over Whisper's containment ceiling at WER < 0.152) runs on CPU beside the flight, or on GPU in the
+  next no-flight window, and is ledgered as a tool contact before any number is read; (3) the serving geometry is never shrunk for the tool.
+- Model-free follow-ups queued after these two builds: mode-B checkpoint fix (protocol hash without the attempt id), `saea_task.ps1 -NoStart`,
+  the serving-entry reaper scope, the stale Instruct carrier tests, the E21 seal-path gap (no longer urgent: carriers deferred by 338).
