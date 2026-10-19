@@ -21,7 +21,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 REPO = Path("/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition")
-GAP = Path(__file__).resolve().parent.parent / "gap" / "gap_decomposition.py"
+GAP = Path(__file__).resolve().parent.parent / "gap_to_sota" / "gap_decomposition.py"
 sys.path.insert(0, str(REPO / "src"))
 sys.dont_write_bytecode = True
 
@@ -65,6 +65,8 @@ def auc(scores, labels):
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", type=Path, required=True)
+    ap.add_argument("--asr", type=Path, default=None, help="transcripts.jsonl of another pinned ASR (saea-asr339-transcript-row-v1); replaces the Whisper tokens")
+    ap.add_argument("--union", action="store_true", help="with --asr: containment over Whisper OR the other ASR (two-tool ceiling)")
     args = ap.parse_args()
     lock = G.load_lock(G.LOCK)
     spec = G.POPS["FOLDB"]
@@ -107,6 +109,17 @@ def main() -> int:
     wtx, wfacts = E5.load_catalog(G.DATA, "fold-b")
     if set(wtx) != set(ids):
         raise SystemExit(f"roster mismatch: catalog {len(wtx)} vs run {len(ids)}; overlap {len(set(wtx) & set(ids))}")
+    if args.asr is not None:
+        alt = {}
+        for ln in args.asr.read_text(encoding="utf-8").splitlines():
+            if ln.strip():
+                r = json.loads(ln)
+                alt[str(r["sample_id"])] = E5.canon_tokens(r.get("transcript") or "") if r.get("status") == "ok" else []
+        if set(alt) != set(ids):
+            raise SystemExit(f"--asr roster mismatch: {len(alt)} vs {len(ids)}")
+        wfacts = {"whisper": wfacts, "asr": str(args.asr), "union": bool(args.union)}
+        for s in ids:
+            wtx[s] = {"canon": (wtx[s]["canon"] + ["<SEP>"] + alt[s]) if args.union else alt[s]}
     sent, _ = S2.load_reference_sentences(G.LOCK, G.DATA)
     rtx = {s: {"canon": E5.canon_tokens(sent[s])} for s in ids}
     del sent

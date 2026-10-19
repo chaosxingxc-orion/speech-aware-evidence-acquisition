@@ -1,6 +1,6 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-19T02:48:48Z
+Last refreshed: 2026-10-19T10:34:49Z
 
 
 
@@ -9,6 +9,15 @@ Last refreshed: 2026-10-19T02:48:48Z
 
 
 
+
+## 339 part 1 merged (Qwen3-ASR llama.cpp CPU sidecar + Fold B qualification); ASR339 READ: no candidate beats Whisper on the missed values; 343 proposed; 341 A / 342 A (2026-10-19T10:34:49Z, Fable 5.1 root)
+
+Qwen3-ASR 0.6B / 1.7B (ggml-org bf16 GGUF + mmproj, umbrella lock 70b4bb5) run on the pinned build 04ccc72a2 CPU-only (port 8190, reaper-safe
+argv). Fold B: WER 0.144 / 0.120 (Whisper 0.152) but missed-slot containment 66 / 65 of 112 (Whisper 70); ceiling +4.57 / +4.64 pp perfect
+(Whisper +5.07; union +5.19). Gate (+1.0 pp over Whisper) not met -> 343 A recommended: close the line, report the bound. 338 column
+instrument (part 1) in Sonnet build; package follows. Registry 10:45Z section.
+
+Superseded stamp: 2026-10-19T02:48:48Z
 
 ## Owner rulings 338 (SLURP lock first, carriers deferred, R4 directly after R3), 339 (triggered ASR tool admitted), 340 (test-sample analysis, no tuning); test-sample decomposition TRANSFERS (2026-10-19T02:48:25Z, Fable 5.1 root)
 

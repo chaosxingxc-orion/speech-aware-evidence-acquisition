@@ -3538,3 +3538,26 @@ others; also take our GPU-memory capacity limit into account.")
 - Qualification pass SAEA-SLURP-ASR339-FOLD-B-V1 registered and countersigned (2026-10-19T09:44:25Z); runs now on CPU beside the R2 flight (host 34 GB free,
   needs ~6 GB; ~9 + ~21 min). Gate for 343: canonical WER < 0.152 and missed-slot containment ceiling >= Whisper's +1.0 pp.
 - Known: the Windows tool_catalog_check needs `more_itertools` (passes in WSL); 338 part 1 (instrument) in progress.
+
+### ASR339 qualification READ: no Qwen3-ASR candidate clears the gate; decision 343 PROPOSED (coordinator, 2026-10-19 10:45Z)
+
+Fold B (n = 1,080), CPU passes sealed (ledger row consumed). Canonical WER / sentence-exact; containment of the v3.0 lock's error items
+(R2b budget-3072 column); ceilings from `scripts/analysis/design339/asr_trigger_bound.py --asr [--union]` (bound339-*.json):
+
+| ASR | WER | missed-slot values contained | distinguishable value errors | ceiling SLU pp, perfect conversion | at measured conversion 0.457 |
+|---|---|---|---|---|---|
+| Whisper large-v3 (E5, pinned) | 0.152 | 70 / 112 | 23 / 166 | +5.07 [+4.09, +6.14] | +2.34 |
+| Qwen3-ASR-0.6B | 0.144 | 66 / 112 | 18 / 166 | +4.57 [+3.61, +5.59] | +2.11 |
+| Qwen3-ASR-1.7B | 0.120 | 65 / 112 | 22 / 166 | +4.64 [+3.66, +5.70] | +2.14 |
+| Whisper OR 1.7B (two-tool union) | -- | 73 / 112 | 23 / 166 | +5.19 [+4.18, +6.33] | +2.40 |
+
+- Both Qwen3-ASR models beat Whisper on WER (1.7B: 0.120, sentence-exact 59 %) and on all-gold containment (0.789 vs 0.761), yet neither
+  recovers more of the values the lock MISSES (65-66 vs 70 of 112): the missed values are the hard ones for every ASR. The union adds +0.12 pp.
+  Gate (>= Whisper + 1.0 pp) NOT met by any candidate. The trigger bound is unchanged (best signal AUC ~0.71): +1.2 to +2.6 pp at a 30 % call
+  rate; clearing the 1.49 floor needs conversion >= 0.58 at 30 % calls, never observed (0.457).
+- Cost (CPU): 0.6B 0.56 s/clip, 2.7-10.9 GB RSS; 1.7B 1.39 s/clip, 5.4-13.7 GB RSS (peak RSS grows with the server's slot cache).
+- **343 (PROPOSED)** A = close the triggered-ASR line now: the measured ceiling of the line (+4.6 to +5.2 pp perfect, +2.1 to +2.4 realistic,
+  +1.2 to +2.6 after the trigger) is reported as a bound in the paper; the sidecar + instrument stay as sealed infrastructure; the part-2 tool
+  contract is NOT built (recommended); B = build part 2 and fly the single-arm probe with Qwen3-ASR-1.7B after the 338 column (11-15 GPU-h,
+  stop rules as designed) as the ceiling probe under the 337 mandate; C = B with the two-tool union (Whisper + 1.7B; +0.12 pp more ceiling,
+  two sidecars, not worth its complexity).
