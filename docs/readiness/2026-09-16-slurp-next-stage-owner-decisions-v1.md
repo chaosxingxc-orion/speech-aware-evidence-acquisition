@@ -3420,3 +3420,20 @@ this class of methods.")
   A like-for-like claim needs the full official test split: a separate allowance, proposed when a lock reaches a tier on the sample.
   Zero-shot rows stay in every table as the secondary column. Consequence for planning: a ceiling (gap-to-SOTA) decomposition on the sealed
   DEV / TRAIN-fold rows of v3.0 (never test rows) is commissioned model-free to rank the remaining levers by the headroom they can reach.
+
+### v3.0 gap decomposition landed (1bfe62ffd); decisions 338-339 PROPOSED (coordinator, 2026-10-19 02:35Z)
+
+- Note `docs/results/2026-10-19-slurp-v3-gap-to-finetuned-sota-decomposition.md` (Opus, model-free, DEV n = 1,000 + Fold B n = 1,080, no test
+  row read). Intent: 75-78 % of errors have gold absent from Perception's shortlist; Perception commits to one candidate on 81-85 % of rows;
+  gold off the list -> 6-8 % accuracy, sole gold -> 99 %. Slots: missed +5.7 / +6.2 SLU, false fills +6.3 / +6.8, value errors +4.4 / +5.1,
+  wrong type +3.8 / +3.6. Selection over five sealed Fold B decodes would reach intent 89.6 / SLU 80.6 but a plurality vote adds nothing.
+  Estimated method-class ceiling with the current components: SLU ~74.5-77.0, intent ~86.3-88.0 (judgement from past conversions, mostly on
+  the Instruct core) -- LauraGPT reachable, SFT Qwen2-Audio at the top of the band, UniverSLU-14 below the ceiling on both metrics.
+- **338 (PROPOSED)** a lever column after R4 on Fold B (same-flight paired, twin + lock): A = (1) false-fill suppression on the Thinking core
+  (multi-sample support filter + gated empty decision; never tested on Thinking) and (2) a Perception multi-sample candidate UNION (k sampled
+  Perception decodes, union of their candidates as the shortlist; attacks the 75-78 % intent mass, untested shape) (recommended); B = (1) only;
+  C = none until R3 / R4 read.
+- **339 (PROPOSED)** the structural constraint behind the UniverSLU gap (missed slots: training-free proposer recall ceiling 0.086; the
+  transcript path is barred by the 2026-09-06 owner ruling): A = keep the constraint and report the measured method-class ceiling honestly
+  (recommended for now); B = admit a pinned frozen speech front-end tool (e.g. a stronger ASR as a tool the core may call, answer authority
+  stays with the core), which re-opens the barred transcript path and needs its own owner amendment.
