@@ -3467,3 +3467,15 @@ transcription, but no default transcription: the transcription must be triggered
   is recorded in the receipt, the transcript never enters the intent decision (DEV-1000 E5 finding), answer authority stays with the core.
   Known constraint (S2a.1, E5): pinned Whisper recovers only half of the missed slot values and the lexicon ranker loses more; a stronger
   pinned ASR candidate and the trigger signal are designed model-free first (offline, on sealed Fold B rows + existing E5 transcripts).
+
+### Owner decision brief 2026-10-19 03:00Z (Fable 5.1 root, on the owner's request after the model switch): nothing open now; 341-342 announced
+
+- State: R2 rec2 515 / 1,054 flown rows at 02:47Z (GPU 92 %), seal ~15:30Z; master clean at 23c7033f4; queue after 338: R2 -> 322 window ->
+  330 diagnostic -> R3 -> R4 (SAEA-Queue-NXT4 waits CHAIN_NXT3_EXIT); carriers deferred. Three model-free Opus jobs run: the 340 test-sample
+  decomposition (transfer check), the 338 lever-column design, the 339 triggered-ASR design.
+- No decision blocks the queue. Announced for when the designs land: **341** approve the 338 lever-column arms (L1 false-fill suppression on
+  Thinking, L2 Perception multi-sample candidate union, twin, lock; ~1.5 days GPU after R4); **342** go / no-go on the 339 triggered-ASR
+  experiment from its offline bounds, including whether a stronger pinned ASR needs an acquisition entry (owner GO for any download).
+- Plan: R4 seal ~10-22 13:00Z -> 338 column -> 335 B composed Fold A column (nominated R1 / R3 / R4 / 338 arms + composed + twin + v3.0) ->
+  DEV replicate of the composed arm -> test-sample read under the 336 A allowance -> SOTA table on the fine-tuned target (337) -> then the
+  deferred carriers (P3.2 / P3.3) -> full-test allowance proposal if a tier is reached.
