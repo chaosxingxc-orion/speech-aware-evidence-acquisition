@@ -3479,3 +3479,31 @@ transcription, but no default transcription: the transcription must be triggered
 - Plan: R4 seal ~10-22 13:00Z -> 338 column -> 335 B composed Fold A column (nominated R1 / R3 / R4 / 338 arms + composed + twin + v3.0) ->
   DEV replicate of the composed arm -> test-sample read under the 336 A allowance -> SOTA table on the fine-tuned target (337) -> then the
   deferred carriers (P3.2 / P3.3) -> full-test allowance proposal if a tier is reached.
+
+### 338 lever column and 339 triggered-ASR designs landed; decisions 341 and 342 PROPOSED (coordinator, 2026-10-19 03:40Z)
+
+- Specs: `docs/superpowers/specs/2026-10-19-slurp-338-lever-column-design.md`, `docs/superpowers/specs/2026-10-19-slurp-triggered-asr-tool-design.md`
+  (Opus, model-free, Fold B sealed rows + E5 transcripts; bound scripts under `scripts/analysis/design338/`, `scripts/analysis/design339/`).
+- 338 column (after R4): `l1-support` (1 Perception + 5 Solver samples, VER-1 support filter n5-s2 + N1-gated empty, 6 contacts/row),
+  `l2-union` (4 Perception samples, union shortlist capped at 3, 5 contacts/row), `aa`, `lock`; ~69.4 GPU-h (L1 ~28.4, L2 ~22.5, twin + lock
+  ~18.5), ceiling 90.3. Offline bounds on sealed greedy decodes: L1 +1.09 [+0.53, +1.63] SLU (n5-s3 +1.77), expected +0.8 to +1.8 vs the 1.49
+  floor; L2 union recall 88.15 -> 89.81 % (gold newly listed on 18 rows), rank-2/3 conversion 44-59 %, expected intent 0 to +1.0 vs the
+  0.65 floor (likely NEUTRAL). New code: two branch axes `perception_samples` / `solver_samples` in `rails/supply_variants.py` compiling into the
+  existing PerceptionBranchGroup, commit policy, merge-policy registry, receipt +1, reader, family, tests, 4-row smoke (~9 touch points).
+  Free checks before signing: rerun the L1 rule over R4's sealed decodes (drop L1 if < +0.67); if R3 t2 is nominated, L1 re-bases on it in 335 B.
+  Composed L1+L2 goes to the 335 B column.
+- 339 tool: one tool offered only in the Solver call, at most once per row, transcription (CPU) only when called; intent locked to the
+  committed one; every new/changed slot must cite a transcript span; replacement only when the old value is absent from the transcript;
+  receipt records the call decision. Bounds (Fold B, Whisper large-v3 token WER 0.152): 88 rows (8.15 %) where a call can help; +5.07 SLU
+  [+4.09, +6.14] at perfect conversion, +2.34 at the measured 0.457; best trigger signal AUC 0.71 (Solver reasoning length), combined 0.68
+  (precision 0.14 / recall 0.51 at a 30 % call rate) -> +1.19 to +2.59 at 30 % calls; harm margin < 1.5 broken slots per 100 calls; perfect ASR
+  adds at most +5.53 more. Stronger ASR candidates (Parakeet-TDT-0.6B-v2, Canary-1B-flash, Canary-Qwen-2.5B) need acquisition entries;
+  keep one only if its Fold B transcription pass (~0.15 GPU-h, no core contact) beats Whisper's ceiling by >= +1.0 pp at WER < 0.152.
+  Verdict: effectiveness flight NO-GO on the bounds; engineering + stronger-ASR pass GO; single-arm probe (11-15 GPU-h, stop rules: call
+  rate 5-60 %, precision >= 0.18, gain vs in-call draft >= +1.49 with CI > 0, no intent change) conditional after R3 / R4.
+- **341 (PROPOSED)** the 338 column: A = build both arms now (model-free), fly after R4 with L1 subject to the free R4 check and L2 kept
+  as the ceiling probe of the shortlist lever (recommended under the 337 ceiling mandate; ~69 GPU-h); B = L1 only (~47 GPU-h); C = build,
+  decide the arms after the R3 / R4 reads.
+- **342 (PROPOSED)** the 339 tool: A = build the tool model-free now, owner GO to acquire the three stronger ASR candidates (lock entries,
+  one CPU/GPU transcription pass each on Fold B, no core contact), probe after the 338 column with the best ASR if it passes the +1.0 pp test
+  (recommended); B = build and probe with the pinned Whisper only (no download; probe bound +1.19 to +2.59); C = drop the line.
