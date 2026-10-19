@@ -3379,3 +3379,23 @@ Owner, verbatim: 「决策331：A，决策332：A，决策333：B，决策322：
   discordance equals the twin's) -- the read will show it.
 - Full queue (all hooks start-only from the 322 post step): R2 rec2 -> 322 window -> diagnostic -> R3 (SAEA-Chain-NXT3) -> P3.2 packets
   (SAEA-Queue-CARRIERPKT) -> P3.3 carriers registered by the hook (SAEA-Queue-CARRIERBASE) -> R4 (SAEA-Queue-NXT4, waits up to 5 days).
+
+### Owner decision brief 2026-10-19 02:15Z: open decisions 334-337, stage, plan (coordinator, on the owner's request)
+
+Owner, verbatim: 「把需要我决策的事项，详细的梳理出来并解释给我听，同时把当前的工作阶段和在之后的工作计划也列一个详细的方案出来！」 (English: "Lay out
+the items that need my decision in detail and explain them to me; also give a detailed plan of the current work stage and the work after it.")
+- State: R2 rec2 487 / 1,054 flown rows checkpointed at 02:05Z (~42 rows/h, GPU 93 %); seal re-estimated ~2026-10-19 15:30Z (was 14:00Z);
+  projected spend ~25 GPU-h under the 31.3 ceiling. SAEA-Queue-W322 Running (armed); carrier / NXT4 hooks Ready; master clean. No decision
+  blocks the queue.
+- **334 (PROPOSED)** the slot of the 324-B Fold A confirm (Perception no-think), if the R2 replicate reads no resolved loss: A = insert it
+  after the carriers, before R4 (rewires the armed NXT4 hook); B = after R4, inside the Fold A confirm batch of the R3 / R4 nominated arms
+  (recommended: no change to the armed queue, one batch).
+- **335 (PROPOSED)** how nominated arms compose into lock v3.x: A = one Fold A confirm flight per nominated arm, then compose and run one DEV
+  replicate; B = one Fold A column holding each nominated single arm, the composed arm, a twin and the v3.0 lock (recommended: same-flight
+  paired, measures interaction, about the cost of A), then the DEV replicate of the composed arm only.
+- **336 (PROPOSED)** the test-sample allowance for v3.x (one attempt, 3,010 rows): A = sign now, conditional on the DEV replicate reading no
+  resolved loss with the gain reported beside the word (recommended: no idle wait for a signature); B = sign after the DEV read.
+- **337 (= 285, deferred since 2026-10-12, now due)** the claim class of "at or above SOTA": A = published training-free / zero-shot systems
+  per task (recommended); B = fine-tuned SOTA (SLURP gap after v3.0 on the test sample: SLU 73.05 vs 79.5, intent 86.33 vs 90.3); C = only the
+  direct call of our own core. The comparator table is redone on the Thinking base after P3.3 (A2T paper column, Earnings WER).
+- Owner action (no decision): delete the stray `C:\Program Files\Git\commit14.txt` (needs administrator rights).
