@@ -3527,3 +3527,14 @@ others; also take our GPU-memory capacity limit into account.")
   next no-flight window, and is ledgered as a tool contact before any number is read; (3) the serving geometry is never shrunk for the tool.
 - Model-free follow-ups queued after these two builds: mode-B checkpoint fix (protocol hash without the attempt id), `saea_task.ps1 -NoStart`,
   the serving-entry reaper scope, the stale Instruct carrier tests, the E21 seal-path gap (no longer urgent: carriers deferred by 338).
+
+### 339 part 1 merged (sidecar + Fold B qualification instrument + CPU smoke); qualification pass registered (coordinator, 2026-10-19 09:45Z)
+
+- Merged sonnet/asr339 (0a2a206b9, ff) and umbrella sonnet/asr339-lock (70b4bb5: Qwen3-ASR-0.6B / 1.7B ggml-org bf16 GGUF + mmproj pinned,
+  6.2 GB under $SPEECHRL_DATA_DIR/models/qwen3-asr-gguf/). Sidecar `scripts/flights/direct/asr_sidecar.sh` (CPU, port 8190, argv
+  `--port` before `--host` so the core serving entry's reaper pattern does not match; GPU hidden; lock-verified hashes; receipt
+  saea-asr-sidecar-session-v1). Both GGUFs load on the pinned build 04ccc72a2 (upstream #19441 present). 4-row CPU smoke: 0.6B WER 0.35 at
+  0.52 s/clip, 2.7 GB RSS; 1.7B WER 0.50 at 1.20 s/clip, 5.4 GB RSS -- four clips, no verdict; output well-formed (no #22357 sign).
+- Qualification pass SAEA-SLURP-ASR339-FOLD-B-V1 registered and countersigned (2026-10-19T09:44:25Z); runs now on CPU beside the R2 flight (host 34 GB free,
+  needs ~6 GB; ~9 + ~21 min). Gate for 343: canonical WER < 0.152 and missed-slot containment ceiling >= Whisper's +1.0 pp.
+- Known: the Windows tool_catalog_check needs `more_itertools` (passes in WSL); 338 part 1 (instrument) in progress.
