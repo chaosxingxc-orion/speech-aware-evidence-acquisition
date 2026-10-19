@@ -1449,7 +1449,15 @@ def load_native_episode_config(
         # Same-flight instrument, PHASE 2 (merge set C): ``branches`` joins the
         # Perception-only row fields for the same reason -- it forks the FIRST
         # phase's own visit and nothing else may declare it.
-        perception_fields = {"branches", "thinking_variants"} if kind == "perception" else set()
+        perception_fields = {"branches", "thinking_variants", "sampling_variants"} if kind == "perception" else set()
+        # Decision 338 (2026-10-19): ``sampling_variants`` is the Perception-only SAMPLING fan-out (Perception and/or Solver
+        # samples per branch); one fan-out mechanism per node, so it cannot combine with the other declarations.
+        if isinstance(row, Mapping) and "sampling_variants" in row:
+            for other in ("branches", "template_variants", "supply_variants", "decoding_variants", "thinking_variants"):
+                if other in row:
+                    raise ValueError(
+                        f"roles.{kind}.sampling_variants cannot combine with roles.{kind}.{other}: one fan-out mechanism per node"
+                    )
         # NX-T R1 (2026-10-13): ``thinking_variants`` is a Perception-only fan-out of the per-node thinking policy; it is one
         # of the branch group's kinds, so it cannot combine with the other fan-out declarations of the node.
         if isinstance(row, Mapping) and "thinking_variants" in row:
@@ -1772,6 +1780,38 @@ def load_native_episode_config(
         if knowledge_index_armed:
             raise ValueError(
                 "roles.perception.thinking_variants cannot combine with native_episode.knowledge_index: the index appends to "
+                "the system message every arm shares and has no per-arm custody form"
+            )
+    # Decision 338 (2026-10-19): the SAMPLING column, parsed HERE -- before any contact -- into the same level-2 branch group
+    # slot. A branch fans out Perception samples (merged into its shortlist) and/or Solver samples (committed into its answer);
+    # the delivering branch and the twin declare neither, so the delivery-time v4g rule below stays scoped to the delivering
+    # branch (it is refused only beside a role-wide grouped visit, ``roles.solver.samples >= 2``, which this column never sets).
+    if "sampling_variants" in raw_roles["perception"]:
+        from .supply_variants import PerceptionBranchError, parse_perception_sampling_variants
+
+        try:
+            perception_branch_group = parse_perception_sampling_variants(
+                raw_roles["perception"]["sampling_variants"],
+                phase_id=raw_roles["perception"]["phase_id"],
+            )
+        except PerceptionBranchError as error:
+            raise ValueError(f"roles.perception.sampling_variants is invalid: {error}") from error
+        shortlist_cap = _carrier_max_decision_candidates(values)
+        for branch in perception_branch_group.branches:
+            axis = branch.perception_samples
+            if axis is not None and axis.cap != shortlist_cap:
+                raise ValueError(
+                    f"roles.perception.sampling_variants arm {branch.branch_id!r} perception_samples.cap {axis.cap} must "
+                    f"equal the Solver's own candidate_supply.max_candidates {shortlist_cap}: the merge adds no supply knob"
+                )
+        if supply_variant_group is not None:
+            raise ValueError(
+                "roles.perception.sampling_variants cannot combine with a Solver supply_variants or template_variants group: "
+                "two fan-out mechanisms in one episode make the ceiling's extra-contact term ambiguous"
+            )
+        if knowledge_index_armed:
+            raise ValueError(
+                "roles.perception.sampling_variants cannot combine with native_episode.knowledge_index: the index appends to "
                 "the system message every arm shares and has no per-arm custody form"
             )
     if "branches" in raw_roles["perception"]:
@@ -2458,13 +2498,15 @@ def load_native_episode_config(
     # (``NativeEpisodeRole.__post_init__`` / the parse-time check above), so
     # this and the ``variant_fans_out_once`` term above are never both taken.
     if roles[0].perception_branches is not None:
-        from .supply_variants import perception_branch_ceiling  # noqa: PLC0415
+        from .supply_variants import perception_branch_ceiling, sampling_extra_contacts  # noqa: PLC0415
 
         ceiling = perception_branch_ceiling(
             base_ceiling=ceiling,
             branch_count=roles[0].perception_branches.branch_count,
             level=roles[0].perception_branches.level,
         )
+        # Decision 338: plus the sampling column's extra contacts ((k - 1) Perception and (n - 1) Solver per sampling branch).
+        ceiling += sampling_extra_contacts(roles[0].perception_branches)
     # E18 (2026-09-19, owner decisions 43-44): plus the contacts the
     # Acquisition node's own visits may spend. Zero for every model-free kind
     # and for every config that declares no acquisition at all, which reduces
