@@ -90,6 +90,13 @@ def build_argv(binary: str, assets: dict, port: int, threads: int = THREADS) -> 
     return argv
 
 
+def server_env() -> dict:
+    """CPU only: the GPU is hidden from the sidecar process (the core holds it)."""
+    env = dict(os.environ)
+    env["CUDA_VISIBLE_DEVICES"] = ""
+    return env
+
+
 def build_commit(binary: str) -> str:
     src = Path(binary).resolve().parents[2]
     out = subprocess.run(["git", "-C", str(src), "rev-parse", "--short=9", "HEAD"], capture_output=True, text=True)
@@ -137,7 +144,7 @@ def cmd_start(a) -> int:
     argv = build_argv(a.binary, assets, a.port)
     sdir.mkdir(parents=True, exist_ok=True)
     log = (sdir / "server.log").open("ab")
-    proc = subprocess.Popen(argv, stdout=log, stderr=log, stdin=subprocess.DEVNULL)
+    proc = subprocess.Popen(argv, stdout=log, stderr=log, stdin=subprocess.DEVNULL, env=server_env())
     receipt = make_receipt(a.model_id, assets, argv, a.port, proc.pid, a.binary, build_commit(a.binary))
     (sdir / "session.json").write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     stop = {"flag": False}
