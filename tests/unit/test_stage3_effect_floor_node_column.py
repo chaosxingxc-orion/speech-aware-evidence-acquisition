@@ -135,3 +135,23 @@ def test_explain_lists_the_new_design(tmp_path: Path, capsys):
     _build(tmp_path, declaration=_node_column(), registered_date="2026-10-10")
     gate.main(["--repo-root", str(tmp_path), "--explain"])
     assert "same-flight-node-column" in capsys.readouterr().out
+
+
+# Decision 338: the sampling column's ``variant_kind``.
+def test_the_sampling_variant_kinds_are_accepted_with_a_twin(tmp_path: Path):
+    for kind in ("perception-sampling", "solver-sampling"):
+        _build(tmp_path / kind, declaration=_node_column(variant_kind=kind), registered_date="2026-10-19")
+        data = gate.evaluate(tmp_path / kind)
+        assert data["findings"] == [] and data["passed"] is True
+        assert data["in_scope_cells"][0]["declaration"]["variant_kind"] == kind
+
+
+def test_a_sampling_kind_without_a_twin_and_an_unknown_kind_are_refused(tmp_path: Path):
+    no_twin = _declaration(
+        measurement_design="same-flight-node-column", expected_effect_pp=2.0, rows=1080, primary_metric_key="slu",
+        template_variants={"node": "perception", "candidate_arms": 2, "twin": False}, variant_kind="perception-sampling",
+    )
+    _build(tmp_path / "a", declaration=no_twin, registered_date="2026-10-19")
+    assert gate.evaluate(tmp_path / "a")["passed"] is False
+    _build(tmp_path / "b", declaration=_node_column(variant_kind="made-up-kind"), registered_date="2026-10-19")
+    assert gate.evaluate(tmp_path / "b")["passed"] is False

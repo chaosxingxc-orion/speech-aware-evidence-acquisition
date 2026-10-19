@@ -785,6 +785,15 @@ NODE_COLUMN_DESIGN = "same-flight-node-column"
 TEMPLATE_VARIANT_NODES: tuple[str, ...] = ("solver", "perception")
 MIN_TEMPLATE_CANDIDATE_ARMS, MAX_TEMPLATE_CANDIDATE_ARMS = 1, 6
 
+#: The closed set of ``variant_kind`` values a node-column cell may declare (the axis its arms vary). The last two are decision
+#: 338's SAMPLING column (``rails.supply_variants.SAMPLING_VARIANT_KINDS``, which a unit test compares). A sampling column
+#: requires its in-flight A/A twin: its estimand is read against the twin's offset.
+VARIANT_KINDS: tuple[str, ...] = (
+    "solver-template", "solver-decoding", "thinking-budget", "thinking-policy",
+    "perception-sampling", "solver-sampling",
+)
+SAMPLING_VARIANT_KINDS: tuple[str, ...] = ("perception-sampling", "solver-sampling")
+
 #: Owner decision 190 (2026-09-29): the closed set ``primary_metric_key`` may name. ``intent``
 #: and ``slu`` each resolve a design's own ``sampling_by_metric`` anchor (:data:`FLOOR_TABLE`);
 #: ``present`` (gold-on-list, e.g. P-SV-2's level-1 read) carries no numeric floor at all.
@@ -810,6 +819,8 @@ class Declaration:
     #: NX programme E1: the node-template summary a ``same-flight-node-column``
     #: cell declares (``node``, ``candidate_arms``, ``twin``); ``None`` otherwise.
     template_variants: dict[str, Any] | None = None
+    #: The axis a node-column cell's arms vary (:data:`VARIANT_KINDS`), or ``None`` when undeclared.
+    variant_kind: str | None = None
     problems: list[str] = field(default_factory=list)
 
 
@@ -908,6 +919,27 @@ def _parse_declaration(
         )
     elif template_variants is not None:
         parsed.template_variants = _parse_template_variants_summary(template_variants, parsed)
+
+    variant_kind = block.get("variant_kind")
+    if variant_kind is not None:
+        if not isinstance(variant_kind, str) or variant_kind not in VARIANT_KINDS:
+            parsed.problems.append(
+                f"variant_kind is {variant_kind!r}; it must be one of {list(VARIANT_KINDS)}"
+            )
+        elif parsed.design != NODE_COLUMN_DESIGN:
+            parsed.problems.append(
+                f"variant_kind is declared but measurement_design is {parsed.design!r}; a variant kind belongs to "
+                f"a {NODE_COLUMN_DESIGN!r} cell"
+            )
+        else:
+            parsed.variant_kind = variant_kind
+            if variant_kind in SAMPLING_VARIANT_KINDS and not (
+                isinstance(parsed.template_variants, dict) and parsed.template_variants.get("twin") is True
+            ):
+                parsed.problems.append(
+                    f"variant_kind {variant_kind!r} requires template_variants.twin true: a sampling column is read "
+                    "against its in-flight A/A twin"
+                )
 
     for key in ("primary_metric", "note"):
         value = block.get(key)
@@ -1364,6 +1396,7 @@ def evaluate(
                         {} if parsed.template_variants is None
                         else {"template_variants": parsed.template_variants}
                     ),
+                    **({} if parsed.variant_kind is None else {"variant_kind": parsed.variant_kind}),
                 }
             )
             cell_findings = _findings_for(record, parsed)
