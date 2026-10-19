@@ -116,7 +116,7 @@ def check_ledger(repo: Path) -> None:
 def cmd_transcribe(a) -> int:
     data = Path(os.environ["SPEECHRL_DATA_DIR"])
     out = Path(a.out)
-    smoke_root = data / "diagnostics" / "ASR339-SMOKE"
+    smoke_root = (data / "diagnostics" / "ASR339-SMOKE").resolve()
     doc, items = roster_items()
     if a.smoke == a.full:
         raise InstrumentError("choose exactly one of --smoke and --full")
