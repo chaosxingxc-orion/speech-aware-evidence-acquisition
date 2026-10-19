@@ -3561,3 +3561,19 @@ Fold B (n = 1,080), CPU passes sealed (ledger row consumed). Canonical WER / sen
   contract is NOT built (recommended); B = build part 2 and fly the single-arm probe with Qwen3-ASR-1.7B after the 338 column (11-15 GPU-h,
   stop rules as designed) as the ceiling probe under the 337 mandate; C = B with the two-tool union (Whisper + 1.7B; +0.12 pp more ceiling,
   two sidecars, not worth its complexity).
+
+### Owner direction 2026-10-19 ~11:00Z: proper-noun-enhanced ASR decoding; single-module optimisation continues; decision 344 PROPOSED (coordinator, 11:10Z)
+
+Owner, verbatim: 「我在想这部分你是不是可以考虑做一些专有名词强化的ASR解码，来提升下模型的表现？像qwen-ASR这种模式，我们是否能够对他做一些优化，提升和改进呗」
+(English: "I am thinking: for this part, could you consider proper-noun-enhanced ASR decoding to raise the model's performance? For a model
+of the Qwen-ASR kind, can we optimise, raise and improve it?") and 「要注意我们之前讨论的内容，单模块的优化还是要进行的！」 (English: "Mind
+what we discussed before: the single-module optimisation must still go on!").
+- Reading: 343 is HELD (not closed) pending a biasing study; the ASR line is pursued as contextual biasing of the pinned Qwen3-ASR (in scope:
+  "contextual biasing" is a named boundary task), training-free: Qwen3-ASR accepts context terms in its text prompt (hf card hotword example;
+  arXiv 2608.05759), plus llama-server `logit_bias` and n-best union. Knowledge source = the TRAIN folds view excluding Fold A / B; scope per
+  row = the lock's own committed intent -> slot types -> value lexicon (never the row's gold). Measured on the Fold B instrument (CPU, tool
+  contacts only; ledger row SAEA-SLURP-ASRBIAS-FOLD-B-V1 registered before the pass). Same gate: missed-value ceiling >= Whisper + 1.0 pp.
+- Single-module optimisation is unchanged and has priority on the GPU: R2 rec2 flying, R3 / R4 queued, the 338 column being built (Sonnet,
+  part 1 instrument in progress). The ASR biasing work is CPU-side and runs beside it.
+- **344 (PROPOSED)** the biasing column: A = V1 type vocabulary, V2 intent-scoped lexicon (N = 30 / 100), V3 = V2 + logit_bias, V4 n-best
+  union, on Qwen3-ASR-1.7B (CPU, ~25 min per variant; recommended); B = V2 only; C = none (then 343 as proposed).
