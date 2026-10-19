@@ -22,9 +22,9 @@ bash scripts/flights/diag/solver_reasoning_diag.sh >> "$LOG" 2>&1; say "diagnost
 bash scripts/flights/batch/queue/queue_nxt3_after_nxt2.sh 2026-10-18T14:36:38Z; qrc=$?
 say "R3 queue hook rc=$qrc (log /home/chao/nxt3-queue.out)"
 [ $qrc -eq 0 ] || exit $qrc
-# owner ruling 333 B: arm the carrier hooks now (a hook armed before the shutdown would have died with it). Start-only: no re-registration.
+# owner ruling 338 (2026-10-19): SLURP lock first, carriers deferred -> arm only the NX-T R4 hook (it waits for CHAIN_NXT3_EXIT). A hook armed before the shutdown would have died with it. Start-only.
 PS1W='D:\chao_workspace\exploring-l4-intelligence\studies\speech-aware-evidence-acquisition\scripts\flights\batch\saea_task.ps1'
-for t in SAEA-Queue-CARRIERPKT SAEA-Queue-CARRIERBASE SAEA-Queue-NXT4; do
+for t in SAEA-Queue-NXT4; do
   /mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -NoProfile -NonInteractive -File "$PS1W" -Name "$t" -Start >> "$LOG" 2>&1; say "start $t rc=$?"
 done
 exit 0

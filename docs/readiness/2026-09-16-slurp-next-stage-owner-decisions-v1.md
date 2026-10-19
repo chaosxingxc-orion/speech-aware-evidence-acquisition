@@ -3449,3 +3449,21 @@ we just must not tune on the test set.")
   and the recommendations of decisions 338 / 339 stand as written at 347973d56, before this read; (4) every later test-sample claim lists this
   analysis as inherited exposure; (5) the closure roster SLURP-TEST-CLOSURE-10068-V1 stays untouched. Ledger row
   SAEA-SLURP-TEST-SAMPLE-3010-V3-GAP-ANALYSIS-V1 is registered before any per-row test number is read.
+
+### Owner rulings 338 and 339 (coordinator, 2026-10-19 02:55Z)
+
+Owner, verbatim: 「决策338：如果我们当前没有锁定SLURP的完整技术方案，就先去锁定SLURP的方案，其他数据集上的实验都可以推迟；决策339：之前就放开过啊，我们是接受主动调用ASR工具进行转写的，但是不要做默认转写，要进行触发式转写」
+(English: "Decision 338: if we have not yet locked the complete SLURP technical scheme, lock the SLURP scheme first; the experiments on the
+other datasets can all be postponed. Decision 339: that was already opened before -- we accept a model-initiated call of an ASR tool for
+transcription, but no default transcription: the transcription must be triggered.")
+- **338:** SLURP lock first. The P3.2 / P3.3 carrier runs (A2T / E21 / E22) are DEFERRED until the composed SLURP lock v3.x is sealed (their
+  packages stay registered / built, unflown). The queue is rewired (02:55Z): `window_322_post_restart.sh` starts only SAEA-Queue-NXT4, and the
+  installed wrapper `/home/chao/saea-queue/queue_nxt4.sh` now waits for `CHAIN_NXT3_EXIT rc=0` in `/home/chao/nxt3-chain.out` (backup
+  `queue_nxt4.sh.bak-20261019-338`). SAEA-Queue-CARRIERPKT / -CARRIERBASE stay registered, not started. The 338 lever column (false-fill
+  suppression on Thinking + Perception multi-sample candidate union) is part of the SLURP lock work and is built for after R4.
+- **339:** CORRECTION of the coordinator's 02:35Z framing: the 2026-09-06 transcript ban was superseded in scope by the 2026-09-29 direction
+  (decisions 200-205) and the model-initiated tool directive (row 206); a pinned ASR tool that the core CALLS is admitted. Ruled: the ASR tool is
+  TRIGGERED, never a default transcript -- the core decides per row to call it (tool offer scoped to the slot-value step), the call decision
+  is recorded in the receipt, the transcript never enters the intent decision (DEV-1000 E5 finding), answer authority stays with the core.
+  Known constraint (S2a.1, E5): pinned Whisper recovers only half of the missed slot values and the lexicon ranker loses more; a stronger
+  pinned ASR candidate and the trigger signal are designed model-free first (offline, on sealed Fold B rows + existing E5 transcripts).
