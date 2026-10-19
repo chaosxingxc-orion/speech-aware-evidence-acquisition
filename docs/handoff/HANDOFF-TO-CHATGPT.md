@@ -1,6 +1,6 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-19T02:25:59Z
+Last refreshed: 2026-10-19T02:48:25Z
 
 
 
@@ -9,6 +9,17 @@ Last refreshed: 2026-10-19T02:25:59Z
 
 
 
+
+## Owner rulings 338 (SLURP lock first, carriers deferred, R4 directly after R3), 339 (triggered ASR tool admitted), 340 (test-sample analysis, no tuning); test-sample decomposition TRANSFERS (2026-10-19T02:48:25Z, Fable 5.1 root)
+
+Test-sample (3,010, sealed successor-3 v3.0) decomposition reproduces 73.05 / 86.33 exactly and matches DEV / Fold B on 38 of 39 tracked
+quantities (docs/results/2026-10-19-slurp-v3-test-sample-gap-decomposition-transfer.md): shortlist-absent gold = 74 % of intent errors; missed
+slots +7.0, empty-gold false fills +3.8, (iii)+(iv) joint +9.0 SLU. Ceiling estimate unchanged (SLU ~74.5-77.0, intent ~86.3-88.0); UniverSLU-14
+above it. Queue rewired: R2 rec2 -> 322 window -> diagnostic -> R3 -> R4 (NXT4 hook waits CHAIN_NXT3_EXIT); P3.2 / P3.3 deferred past lock v3.x.
+Opus designs in flight: 338 lever column (false-fill suppression on Thinking + Perception multi-sample union), 339 triggered-ASR tool.
+Decisions 341 / 342 announced. Registry 9e5a2d0d2.
+
+Superseded stamp: 2026-10-19T02:25:59Z
 
 ## Owner rulings 334 B / 335 B / 336 A / 337 (target = FINE-TUNED SOTA); v3.0 gap decomposition landed; R2 rec2 FLYING (seal ~2026-10-19 15:30Z); full queue armed (2026-10-19T02:25:33Z, Fable 5.1 root)
 
