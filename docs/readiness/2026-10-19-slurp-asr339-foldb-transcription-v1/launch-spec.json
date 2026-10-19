@@ -1,0 +1,39 @@
+{
+  "schema": "saea-asr339-launch-spec-v1",
+  "package_id": "slurp-asr339-foldb-transcription-v1",
+  "date": "2026-10-19",
+  "owner_rulings": ["339", "342 A"],
+  "profile": "bounded-discovery-probe",
+  "split_role": "discovery",
+  "roster": {
+    "dataset": "configs/dataset/slurp-speech-native-evo-fold-b-1080.json",
+    "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
+    "rows": 1080,
+    "planned_audio_seconds": 3155
+  },
+  "models": ["qwen3-asr-0.6b", "qwen3-asr-1.7b"],
+  "lock_entries": ["qwen3-asr-0.6b-gguf", "qwen3-asr-1.7b-gguf"],
+  "runtime": {
+    "build_commit": "04ccc72a2",
+    "binary": "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+    "device": "cpu",
+    "port": 8190,
+    "argv_rule": "--port precedes --host; never matches pgrep -f 'llama-server --host'"
+  },
+  "decoding": {"temperature": 0, "max_tokens": 256, "endpoint": "/v1/chat/completions", "audio_part": "input_audio"},
+  "ledger_row_id": "SAEA-SLURP-ASR339-FOLD-B-V1",
+  "contacts": {"core_calls": 0, "asr_calls": 2160},
+  "drivers": {
+    "sidecar": "scripts/flights/direct/asr_sidecar.sh",
+    "instrument": "scripts/analysis/asr339/foldb_transcription.py"
+  },
+  "outputs_root": "prepared/SAEA-SLURP-ASR339-TRANSCRIPTS-V1/<model-id>/",
+  "comparators_whisper_large_v3_fold_b": {
+    "canon_wer": 0.152,
+    "gold_span_containment": 0.7606,
+    "missed_slot_containment": 0.625,
+    "value_error_containment": 0.367
+  },
+  "keep_rule": "canonical WER below 0.152 and missval_disc_W ceiling above Whisper's +5.07 pp by at least +1.0 pp at perfect conversion",
+  "status": "prepared-not-run"
+}
