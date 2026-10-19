@@ -3399,3 +3399,24 @@ the items that need my decision in detail and explain them to me; also give a de
   per task (recommended); B = fine-tuned SOTA (SLURP gap after v3.0 on the test sample: SLU 73.05 vs 79.5, intent 86.33 vs 90.3); C = only the
   direct call of our own core. The comparator table is redone on the Thinking base after P3.3 (A2T paper column, Earnings WER).
 - Owner action (no decision): delete the stray `C:\Program Files\Git\commit14.txt` (needs administrator rights).
+
+### Owner rulings 334 B, 335 B, 336 A, 337 (= 285) fine-tuned target (coordinator, 2026-10-19 02:40Z)
+
+Owner, verbatim: 「决策334：B，决策335：B，决策336：A，决策337：还是要把目标靶放到训练的对比上，虽然我们叫training free RL，但也是在针对任务做training，只是不调参数而已，我们要摸一下这类方法的天花板」
+(English: "Decision 334: B; decision 335: B; decision 336: A; decision 337: the target must still be set against the trained systems --
+although we call it training-free RL, it is still training on the task, only without changing parameters; we want to find the ceiling of
+this class of methods.")
+- **334 B:** the 324-B Fold A confirm of Perception no-think (only if the R2 replicate reads no resolved loss) flies after R4, inside the Fold A
+  confirm batch; the armed queue is unchanged.
+- **335 B:** one Fold A column holds each nominated single arm (R1 Perception no-think, R3 template, R4 decoding), the composed arm, a twin and
+  the v3.0 lock (same-flight paired); then the DEV replicate of the composed arm only.
+- **336 A:** the owner signs now the test-sample allowance for the composed lock v3.x (one attempt, the 3,010-row sample), conditional on the
+  DEV replicate reading no resolved loss; the gain is reported beside the registered word. The allowance document is minted with the v3.x
+  package and carries these owner words verbatim.
+- **337 = 285 B:** the comparator of the programme goal is the FINE-TUNED class (class C of the 2026-10-12 table). Training-free RL is
+  framed as task training without parameter updates; the programme measures the ceiling of that method class against trained systems.
+  Tiers on SLURP (published rows on the full 13,078 test; ours on the 3,010 sample, v3.0 73.05 SLU / 86.33 intent): LauraGPT 87.87 / 73.45
+  (SLU matched, intent -1.5); SFT Qwen2-Audio-7B 88.13 / 76.75 (-1.8 / -3.7); UniverSLU-14 90.3 / 79.5 and TCPGen 88.9 / 79.5 (-4.0 / -6.45).
+  A like-for-like claim needs the full official test split: a separate allowance, proposed when a lock reaches a tier on the sample.
+  Zero-shot rows stay in every table as the secondary column. Consequence for planning: a ceiling (gap-to-SOTA) decomposition on the sealed
+  DEV / TRAIN-fold rows of v3.0 (never test rows) is commissioned model-free to rank the remaining levers by the headroom they can reach.
