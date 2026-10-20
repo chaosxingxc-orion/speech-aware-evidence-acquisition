@@ -11,6 +11,15 @@ cd "$M" || exit 9
 source /home/chao/.venvs/speechrl/bin/activate
 export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$M/src SPEECHRL_DATA_DIR=/home/chao/saea-data/speechrl-data DATA=/home/chao/saea-data/speechrl-data MAIN=$M PY=python
 say "start; VM memory $(free -g | awk '/Mem:/{print $2}') GB total"
+# 2026-10-20 incident: after `wsl --shutdown` the data VHDX (/mnt/saea-data-1, mounted by the Windows task SAEA-Mount-Data1 at boot only) is
+# detached, so the data root is absent and both the ledger closure and the serving swap refuse. Re-run the mount task from here and wait for it.
+if [ ! -d "$SPEECHRL_DATA_DIR/runs" ]; then
+  say "data root absent ($SPEECHRL_DATA_DIR/runs); starting SAEA-Mount-Data1 and waiting (up to 600 s)"
+  /mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -NoProfile -NonInteractive -Command "Start-ScheduledTask -TaskName SAEA-Mount-Data1" >> "$LOG" 2>&1
+  for i in $(seq 1 60); do [ -d "$SPEECHRL_DATA_DIR/runs" ] && break; sleep 10; done
+  [ -d "$SPEECHRL_DATA_DIR/runs" ] || { say "data root still absent; NOT continuing"; exit 9; }
+  say "data root mounted"
+fi
 [ "$(git status --porcelain | wc -l)" = 0 ] || { say "master dirty; NOT continuing"; exit 9; }
 LOG_SAVE=$LOG; source scripts/flights/batch/chain_lib.sh; LOG=$LOG_SAVE
 close_rows_after_seal SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-V1 SAEA-SLURP-STAGE3-NXT-R2-THINKING-BUDGET-FOLD-B-FIT-V1; say "close rows rc=$?"
