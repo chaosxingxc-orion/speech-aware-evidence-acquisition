@@ -4,6 +4,7 @@
   "types": {
     "alarm_type": "kind of alarm",
     "app_name": "name of an app",
+    "artist_name": "name of a music artist or band",
     "audiobook_author": "author of an audiobook",
     "audiobook_name": "title of an audiobook",
     "business_name": "name of a business or shop",
@@ -32,7 +33,6 @@
     "media_type": "kind of media",
     "movie_name": "title of a movie",
     "movie_type": "genre of a movie",
-    "music_album": "title of a music album",
     "music_descriptor": "descriptor of music",
     "music_genre": "genre of music",
     "news_topic": "topic of the news",
@@ -48,7 +48,6 @@
     "relation": "family or social relation of a person",
     "song_name": "title of a song",
     "sport_type": "name of a sport",
-    "study_type": "kind of study",
     "time": "clock time",
     "time_zone": "name of a time zone",
     "timeofday": "part of the day",

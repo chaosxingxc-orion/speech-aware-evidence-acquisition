@@ -261,10 +261,10 @@ def check_ledger(repo: Path) -> None:
     if len(rows) != 1:
         raise InstrumentError(f"--full refused: exposure ledger must carry {LEDGER_ROW_ID} exactly once ({len(rows)})")
     row = rows[0].lower()
-    if "consumed" in row and "| no" not in row and "consumed = no" not in row:
-        raise InstrumentError("--full refused: the ledger row is not unconsumed")
-    if "countersign" not in row:
-        raise InstrumentError("--full refused: the ledger row carries no root countersignature")
+    if "consumed = no" not in row:
+        raise InstrumentError("--full refused: the ledger row is not unconsumed (it must read consumed = no)")
+    if "countersigned" not in row:
+        raise InstrumentError("--full refused: the ledger row is not countersigned by the root")
 
 
 def row_record(item: dict, variant: dict, status: str, text: str, seconds: float, usage: dict, ctx: dict,
@@ -351,6 +351,7 @@ def cmd_transcribe(a) -> int:
                "variant_config": {k: v for k, v in variant.items() if not k.startswith("_")},
                "variant_config_sha256": variant["_sha256"],
                "lexicon_sha256": sha256_file(Path(a.lexicon)) if lex else None,
+               "type_descriptions_sha256": sha256_file(CONFIG_DIR / "slot-type-descriptions-v1.json"),
                "lock_entry": session["lock_entry"], "lock_revision": session["lock_revision"],
                "model_sha256": session["model"]["sha256"], "mmproj_sha256": session["mmproj"]["sha256"],
                "build_commit": session["build_commit"], "device": "cpu", "sidecar_argv": session["argv"],
@@ -383,8 +384,8 @@ def cmd_build_lexicon(a) -> int:
     gold_all = {}
     for r in train:
         G.guard(r.sample_id)
-        gold_all[r.sample_id] = {"intent": f"{r.scenario}_{r.action}", "utt": r.utterance_id,
-                                 "ents": [(e.type, e.filler) for e in r.entities]}
+        gold_all[r.sample_id] = {"intent": f"{r.scenario}_{r.action}", "scenario": r.scenario, "utt": r.utterance_id,
+                                 "ents": tuple(G.SlotEntity(type=e.type, filler=e.filler) for e in r.entities)}
     pop = G.load_pop("FOLDB", G.POPS["FOLDB"], gold_all)
     fold_b = sorted(pop["rows"])
     fold_a, _ = E5.load_catalog(data, "fold-a")
@@ -403,9 +404,9 @@ def cmd_build_lexicon(a) -> int:
         hit = tot = 0
         for s in fold_b:
             vals = set(compose_values(lex["row_intent"].get(s), lex, n))
-            for _, filler in gold_all[s]["ents"]:
+            for entity in gold_all[s]["ents"]:
                 tot += 1
-                hit += int(" ".join(str(filler).split()).lower() in vals)
+                hit += int(" ".join(str(entity.filler).split()).lower() in vals)
         recall[str(n)] = {"gold_items": tot, "in_lexicon": hit, "rate": round(hit / tot, 4) if tot else None}
     lex["gold_value_in_lexicon_aggregate"] = recall
     Path(a.out).parent.mkdir(parents=True, exist_ok=True)
