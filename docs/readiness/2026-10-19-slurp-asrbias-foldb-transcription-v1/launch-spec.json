@@ -1,0 +1,93 @@
+{
+  "schema": "saea-asrbias-launch-spec-v1",
+  "package_id": "slurp-asrbias-foldb-transcription-v1",
+  "date": "2026-10-19",
+  "owner_rulings": [
+    "339",
+    "342 A",
+    "owner direction 2026-10-19 (contextual biasing)"
+  ],
+  "profile": "bounded-discovery-probe",
+  "split_role": "discovery",
+  "roster": {
+    "dataset": "configs/dataset/slurp-speech-native-evo-fold-b-1080.json",
+    "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
+    "rows": 1080,
+    "planned_audio_seconds_per_decode": 3155
+  },
+  "models": {
+    "primary": "qwen3-asr-1.7b",
+    "optional_after_read": "qwen3-asr-0.6b"
+  },
+  "variants": [
+    "v1",
+    "v2-n30",
+    "v2-n100",
+    "v3-n30",
+    "v3-n100",
+    "v4-none",
+    "v4-n100"
+  ],
+  "variant_fragments": "configs/asr_bias/variant-<id>.json",
+  "control_sealed": "v0 (SAEA-SLURP-ASR339-FOLD-B-V1 outputs)",
+  "runtime": {
+    "build_commit": "04ccc72a2",
+    "binary": "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+    "device": "cpu",
+    "port": 8190,
+    "context_placement": "system message (ChatML turn); user turn audio only",
+    "argv_rule": "--port precedes --host; never matches pgrep -f 'llama-server --host'"
+  },
+  "context": {
+    "token_budget": 768,
+    "counter": "sidecar /tokenize",
+    "lexicon": "TRAIN fillers over utterances excluding Fold A and Fold B; intent = NX-T R2b budget-3072 Fold B committed intent (v3.0 lock column)",
+    "lexicon_top_per_type": 100,
+    "min_type_prior": 0.02,
+    "first_token_bias": 2.0,
+    "max_bias_tokens": 400
+  },
+  "decoding": {
+    "greedy_temperature": 0,
+    "nbest": {
+      "samples": 5,
+      "temperature": 0.6,
+      "seeds": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ]
+    },
+    "max_tokens": 256,
+    "endpoint": "/v1/chat/completions"
+  },
+  "ledger_row_id": "SAEA-SLURP-ASRBIAS-FOLD-B-V1",
+  "contacts": {
+    "core_calls": 0,
+    "asr_calls_1_7b": 17280
+  },
+  "drivers": {
+    "sidecar": "scripts/flights/direct/asr_sidecar.sh",
+    "instrument": "scripts/analysis/asr339/foldb_bias_transcription.py",
+    "score": "scripts/analysis/asr339/foldb_transcription.py score (unchanged, via the instrument's score subcommand)"
+  },
+  "outputs_root": "prepared/SAEA-SLURP-ASRBIAS-TRANSCRIPTS-V1/<model-id>/<variant>/",
+  "lexicon_path": "prepared/SAEA-SLURP-ASRBIAS-TRANSCRIPTS-V1/lexicon/lexicon-v1.json",
+  "cost_estimate_1_7b": {
+    "wall_minutes": 265,
+    "basis": "4-row smoke, +-30 %"
+  },
+  "comparators_whisper_large_v3_fold_b": {
+    "canon_wer": 0.152,
+    "gold_span_containment": 0.7606,
+    "missed_slot_containment": 0.625,
+    "value_error_containment": 0.367
+  },
+  "comparator_v0_qwen3_asr_1_7b": {
+    "canon_wer": 0.12,
+    "missed_slot_contained": "65/112"
+  },
+  "status": "prepared-not-run"
+}
