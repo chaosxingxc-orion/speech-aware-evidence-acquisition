@@ -1,0 +1,12 @@
+{
+  "context": "intent-lexicon",
+  "decode": {
+    "samples": 1,
+    "seeds": [],
+    "temperature": 0
+  },
+  "first_token_bias": 0.0,
+  "lexicon_n": 30,
+  "schema": "saea-asrbias-variant-v1",
+  "variant_id": "v2-n30"
+}

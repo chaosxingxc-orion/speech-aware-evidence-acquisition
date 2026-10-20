@@ -1,0 +1,18 @@
+{
+  "context": "none",
+  "decode": {
+    "samples": 5,
+    "seeds": [
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "temperature": 0.6
+  },
+  "first_token_bias": 0.0,
+  "lexicon_n": null,
+  "schema": "saea-asrbias-variant-v1",
+  "variant_id": "v4-none"
+}
