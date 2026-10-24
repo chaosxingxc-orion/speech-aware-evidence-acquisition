@@ -9,7 +9,7 @@
   ],
   "arm_visits": "first",
   "cell": "slurp-native-stage3-nxt-r3-solver-template-fold-b-v1",
-  "composed_config_hash": "71f2784088fae204d720d9494718f8dbd42f43858b4048169c024b7509693ec3",
+  "composed_config_hash": "23d1e1d7b122481f5e7b4938709ec95118c11ebb39a780ac1fe5ee498c9ff82e",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-nxt-r3-solver-template-fold-b-generation-v1",
     "carrier_lock_key": "slurp",
@@ -17,7 +17,7 @@
     "planned_gpu_hours": 43.4,
     "planned_model_calls": 15120,
     "planned_speech_audio_seconds": 44168,
-    "protocol_hash": "cd770c7bf9a7caf27d8764a795d8076938645127975cbb01521c6d3dafbad6c2",
+    "protocol_hash": "81ec59b0b960e6316a63edee497668a8cfcefcd570eef8a04bb67a8d14b522c3",
     "run_id": "SAEA-SLURP-STAGE3-NXT-R3-SOLVER-TEMPLATE-FOLD-B-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
@@ -49,7 +49,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-18-slurp-nxt-r3-solver-template-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "cc7f621ee2673107b9fbf780a4d6b3902e5306bacc5c4ea8bff04d178ae4d265"
+    "sha256": "ee40e6382bd7e6dcc4928075f178ad9bb7548151ef11e493bd76d7aeaa3e1363"
   },
   "purpose": "SAEA-SLURP-STAGE3-NXT-R3-SOLVER-TEMPLATE-FOLD-B-V1: Solver instruction-template column flight (6 arms in one flight) of NX-T R3.",
   "registered_at_utc": "2026-10-18T15:51:41Z",
