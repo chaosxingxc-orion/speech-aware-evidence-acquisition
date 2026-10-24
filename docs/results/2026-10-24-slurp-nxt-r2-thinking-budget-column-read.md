@@ -1,21 +1,8 @@
 # NX-T R2, the per-node reasoning-budget column on the Thinking core (TRAIN Fold B, n = 1,080, rec2 mode-A resume): perception-off-solver-3072 UNRESOLVED (SLU-F1 -1.49 [-2.83, -0.11]); solver-2048 UNRESOLVED (-0.94 [-2.32, +0.45]); R1's Perception no-think NO-RESOLVED-LOSS does not replicate; development numbers, claims_benefit false
 
-Read 2026-10-24 by Claude Opus 5.5 (results-note agent, on the coordinator's brief) in the ext4 worktree branch `opus/nxt-r2-note`
-(base master `e28a95a66`). Model-free: this note opened no model, server, encoder, embedder, tokenizer, scorer or GPU, and wrote
-nothing under the data root. It reads the aggregate files of the registered read `SAEA-SLURP-NXT-R2-THINKING-BUDGET-FOLD-B-READ-V1`
-(`read.json`, `README.md`, `columns/score-summary.json`), the package `docs/readiness/2026-10-15-slurp-nxt-r2-thinking-budget-fold-b-v1/`
-(README with the rec1 / rec2 sections, `analysis-recipe-v1.json`, `resume-replay-proof-rec2-v1.json`), its preregistration, the
-exposure-ledger blocks of cell NXT-R2 and the registry sections named in section 9. For sections 3 and 5 it opened the `per_sample`
-arrays of the official column score files of this read, of the NX-T R1 read and of the R2b read, and counted rows by `sample_id` and
-numeric score flags only. No utterance text, transcript, gold value, slot filler, model output or reasoning text was read, printed or
-persisted. Numbers marked "derived" are ratios, sums or differences of numbers printed in those files.
+Read 2026-10-24 by Claude Opus 5.5 (results-note agent, on the coordinator's brief) in the ext4 worktree branch `opus/nxt-r2-note` (base master `e28a95a66`). Model-free: this note opened no model, server, encoder, embedder, tokenizer, scorer or GPU, and wrote nothing under the data root. It reads the aggregate files of the registered read `SAEA-SLURP-NXT-R2-THINKING-BUDGET-FOLD-B-READ-V1` (`read.json`, `README.md`, `columns/score-summary.json`), the package `docs/readiness/2026-10-15-slurp-nxt-r2-thinking-budget-fold-b-v1/` (README with the rec1 / rec2 sections, `analysis-recipe-v1.json`, `resume-replay-proof-rec2-v1.json`), its preregistration, the exposure-ledger blocks of cell NXT-R2 and the registry sections named in section 9. For sections 3 and 5 it opened the `per_sample` arrays of the official column score files of this read, of the NX-T R1 read and of the R2b read, and counted rows by `sample_id` and numeric score flags only. No utterance text, transcript, gold value, slot filler, model output or reasoning text was read, printed or persisted. Numbers marked "derived" are ratios, sums or differences of numbers printed in those files.
 
-**Status: DESCRIPTIVE, development numbers on TRAIN Fold B (`SLURP-EVO-FOLD-B-V2`, n = 1,080, discovery role; owner decisions 28
-and 86). Never a test claim. `claims_benefit` is false.** `read.json` `status` verbatim: "PREREGISTERED-READ (development numbers;
-never a test claim; claims_benefit false)". A per-node cost attribution on the selection fold (owner rulings 304/307, 313 A, 318 A),
-not an admission, a lock or a benefit claim (`analysis-recipe-v1.json` `claim_boundary`: "No benefit, system-level, superiority,
-generalisation, held-out, confirmatory or paper-scale claim."). The node words are the reader's, fixed at registration: **GAIN /
-NEEDS-FULL-BUDGET / CHEAPER-AT-NO-RESOLVED-LOSS / UNRESOLVED** (first that applies).
+**Status: DESCRIPTIVE, development numbers on TRAIN Fold B (`SLURP-EVO-FOLD-B-V2`, n = 1,080, discovery role; owner decisions 28 and 86). Never a test claim. `claims_benefit` is false.** `read.json` `status` verbatim: "PREREGISTERED-READ (development numbers; never a test claim; claims_benefit false)". A per-node cost attribution on the selection fold (owner rulings 304/307, 313 A, 318 A), not an admission, a lock or a benefit claim (`analysis-recipe-v1.json` `claim_boundary`: "No benefit, system-level, superiority, generalisation, held-out, confirmatory or paper-scale claim."). The node words are the reader's, fixed at registration: **GAIN / NEEDS-FULL-BUDGET / CHEAPER-AT-NO-RESOLVED-LOSS / UNRESOLVED** (first that applies).
 
 ## 0. Answer in six lines
 
@@ -49,17 +36,9 @@ NEEDS-FULL-BUDGET / CHEAPER-AT-NO-RESOLVED-LOSS / UNRESOLVED** (first that appli
 | perception-off-solver-3072 | no-think / 3,072 | 70.72 | **-1.49 [-2.83, -0.11]** | 85.56 | **+0.65 [-0.65, +2.04]** | 32 / 25 / 1,023 | 0 | **UNRESOLVED** |
 | solver-2048 | 3,072 / **2,048** | 71.27 | **-0.94 [-2.32, +0.45]** | 85.37 | **+0.46 [-0.56, +1.48]** | 19 / 14 / 1,047 | 0 | **UNRESOLVED** |
 
-Full precision (`contrast.versus_delivering`): perception-off SLU -1.4883 [-2.8325, -0.1100] (half-width 1.36), intent +0.6481
-[-0.6481, +2.0370]; solver-2048 SLU -0.9375 [-2.3234, +0.4508] (1.39), intent +0.4630 [-0.5556, +1.4815]. Official counts
-(`score-summary.json` `official.raw`): SLU-F1 TP / FP / FN 1,590 / 692.97 / 530.97 (delivering), 1,560 / 750.89 / 540.89
-(perception-off), 1,570 / 725.87 / 539.87 (solver-2048); exact entities 617 / 408 / 327, 618 / 431 / 326, 618 / 419 / 326; intent
-correct 917, 924, 922. Derived, arm minus delivering: perception-off TP **-30**, FP **+57.92**, FN +9.92; solver-2048 TP -20, FP +32.90,
-FN +8.90. Both cheaper arms lose slot precision and some recall; intent moves the other way by 7 and 5 rows.
+Full precision (`contrast.versus_delivering`): perception-off SLU -1.4883 [-2.8325, -0.1100] (half-width 1.36), intent +0.6481 [-0.6481, +2.0370]; solver-2048 SLU -0.9375 [-2.3234, +0.4508] (1.39), intent +0.4630 [-0.5556, +1.4815]. Official counts (`score-summary.json` `official.raw`): SLU-F1 TP / FP / FN 1,590 / 692.97 / 530.97 (delivering), 1,560 / 750.89 / 540.89 (perception-off), 1,570 / 725.87 / 539.87 (solver-2048); exact entities 617 / 408 / 327, 618 / 431 / 326, 618 / 419 / 326; intent correct 917, 924, 922. Derived, arm minus delivering: perception-off TP **-30**, FP **+57.92**, FN +9.92; solver-2048 TP -20, FP +32.90, FN +8.90. Both cheaper arms lose slot precision and some recall; intent moves the other way by 7 and 5 rows.
 
-**Applying the word rule** (`analysis-recipe-v1.json` `word_rules`). GAIN needs the SLU lower bound > +1.15: no for both.
-NEEDS-FULL-BUDGET needs the SLU upper bound < -1.15: -0.11 and +0.45, no. CHEAPER-AT-NO-RESOLVED-LOSS needs SLU lower bound >= -1.49
-and intent lower bound >= -0.65: SLU -2.83 and -2.32 fail (the intent clauses hold, perception-off's -0.648 by 0.002 pp, under one row).
--> **UNRESOLVED** for both, as `node_words.words.*.word` states. The perception-off point -1.4883 equals the 1.49 floor magnitude.
+**Applying the word rule** (`analysis-recipe-v1.json` `word_rules`). GAIN needs the SLU lower bound > +1.15: no for both. NEEDS-FULL-BUDGET needs the SLU upper bound < -1.15: -0.11 and +0.45, no. CHEAPER-AT-NO-RESOLVED-LOSS needs SLU lower bound >= -1.49 and intent lower bound >= -0.65: SLU -2.83 and -2.32 fail (the intent clauses hold, perception-off's -0.648 by 0.002 pp, under one row). -> **UNRESOLVED** for both, as `node_words.words.*.word` states. The perception-off point -1.4883 equals the 1.49 floor magnitude.
 
 ## 3. R1 against R2: the same Perception no-think form, read twice on the same roster
 
@@ -90,9 +69,7 @@ Why the two reads differ (derived; stated, not claimed):
 | solver-2048 | perception | think 3,072 (4,096) | 1,054 | 2,051.7 / 1,988.0 / 3,142.2 / 3,194.5 | **190 (0.180)** | 3,589.1 | 9,100 | **62.28** / 59.52 / 112.59 |
 | solver-2048 | solver | think **2,048** (4,096) | 1,054 | 1,573.0 / 2,038.0 / 2,108.0 / 2,123.5 | **522 (0.495)** | 8,594.7 | 6,508 | **52.10** / 58.42 / 84.99 |
 
-Every node: finish `stop` 1,054, 0 cap hits, 0 empty, 0 no-JSON, 0 think markers in content; every thinking node 1,054 contacts with
-reasoning characters, every no-think node 0; `reasoning_marker_total` 0; 0 reasoning leaks in 1,080 delivered answers; 0 unattributed
-contacts. The 26 kept rows' contacts live in the rec1 trace, which these tables do not read. Reading it (derived):
+Every node: finish `stop` 1,054, 0 cap hits, 0 empty, 0 no-JSON, 0 think markers in content; every thinking node 1,054 contacts with reasoning characters, every no-think node 0; `reasoning_marker_total` 0; 0 reasoning leaks in 1,080 delivered answers; 0 unattributed contacts. The 26 kept rows' contacts live in the rec1 trace, which these tables do not read. Reading it (derived):
 - **Perception no-think removes 58.7 of 62.1 s per row's Perception contact** and lengthens the Solver prompt by 1,897 tokens (10,519 vs 8,622): the no-think note is longer after `drop-reasoning-v1`, as in R1 (+2,225). Its Solver then forced-closes slightly more (0.462 vs 0.450).
 - **The Solver at 2,048 runs to its budget on about half the contacts** (p50 2,038 of 2,048; forced 0.495 vs 0.450); mean completion -24 %, seconds -23 %.
 - **Same-form A/A-like readout:** the Perception requests of `budget-3072` and `solver-2048` share their form; they differ by 20 forced closes (210 vs 190), 11.8 mean tokens and 0.2 s. The Solver's forced share at 3,072 reads 0.450 here against 0.401 in R2b (same form, cross-flight).
@@ -103,8 +80,7 @@ contacts. The 26 kept rows' contacts live in the rec1 trace, which these tables 
 | perception-off-solver-3072 | 74.0 | 3.25 | 5.55 | 5.56 | 0.57 / 0.53 | 43.1 % |
 | solver-2048 | 114.4 | 2.10 | 8.58 | 8.60 | 0.88 / 0.93 | 12.0 % |
 
-Measured arm mix 2.45 delivering rows per row (registered 2.46); one flight 23.88 GPU-h (ceiling 31.3). These figures are call latency
-(slot-normalised), not wall time (section 7). Neither saving is adopted: no arm reads CHEAPER-AT-NO-RESOLVED-LOSS.
+Measured arm mix 2.45 delivering rows per row (registered 2.46); one flight 23.88 GPU-h (ceiling 31.3). These figures are call latency (slot-normalised), not wall time (section 7). Neither saving is adopted: no arm reads CHEAPER-AT-NO-RESOLVED-LOSS.
 
 ## 5. Per scenario (18 x 60 rows; point deltas, no scenario CI in the read; R1 column from the R1 `read.json`)
 
@@ -129,9 +105,7 @@ Measured arm mix 2.45 delivering rows per row (registered 2.46); one flight 23.8
 | transport | 75.94 | -2.16 | +1.13 | -2.70 | 88.33 | -1.67 | +1.67 |
 | weather | 85.34 | -2.14 | -3.04 | +0.10 | 98.33 | +0.00 | +0.00 |
 
-Weightings (`per_scenario`): natural mixture -1.49 (perception-off) / -0.94 (solver-2048); equal-scenario **-1.66 / -1.10**; same sign.
-Derived counts: perception-off SLU down in 13 of 18 scenarios, solver-2048 in 10. The largest perception-off losses (play -9.61, news
--8.05, audio -6.98, qa -5.64) are all far inside the 60-row scenario swing this core shows (R1's in-flight twin moved music +13.93).
+Weightings (`per_scenario`): natural mixture -1.49 (perception-off) / -0.94 (solver-2048); equal-scenario **-1.66 / -1.10**; same sign. Derived counts: perception-off SLU down in 13 of 18 scenarios, solver-2048 in 10. The largest perception-off losses (play -9.61, news -8.05, audio -6.98, qa -5.64) are all far inside the 60-row scenario swing this core shows (R1's in-flight twin moved music +13.93).
 
 ## 6. Resume accounting (rec2, mode A)
 
@@ -165,18 +139,8 @@ Derived counts: perception-off SLU down in 13 of 18 scenarios, solver-2048 in 10
 
 ## 9. Pointers (sha256)
 
-Analysis root `$SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-NXT-R2-THINKING-BUDGET-FOLD-B-READ-V1/`: `read.json`
-`3f72bde170e5816a33803c319d0301bb5365a26280a30746d21a9292f0306af6`; `README.md` `b6e45afb703dba9c5c4c65837eb388659106f908a4b6049219513d4051ab0d29`;
-`columns/score-summary.json` `bbb34b2f550c07bd523f36dacb3f3f7f2bfeb604aca4a97ba97f74e21e6d8ade`; column scores `budget-3072`
-`c504e277...`, `perception-off-solver-3072` `af859662...`, `solver-2048` `3df97a0c...`.
+Analysis root `$SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-NXT-R2-THINKING-BUDGET-FOLD-B-READ-V1/`: `read.json` `3f72bde170e5816a33803c319d0301bb5365a26280a30746d21a9292f0306af6`; `README.md` `b6e45afb703dba9c5c4c65837eb388659106f908a4b6049219513d4051ab0d29`; `columns/score-summary.json` `bbb34b2f550c07bd523f36dacb3f3f7f2bfeb604aca4a97ba97f74e21e6d8ade`; column scores `budget-3072` `c504e277...`, `perception-off-solver-3072` `af859662...`, `solver-2048` `3df97a0c...`.
 
-Repository (bytes at `e28a95a66`): package `README.md` `828a28ff40d698f320da858e9a63134411df44da5092e9a94ab96cb3bc0c6229`; `analysis-recipe-v1.json`
-`db28e3127c499ef706d54503b072a7aad8c41249b901e70726019f0a004092d8`; `registered-facts-v1.json` `0bf58804...`; `generation-plan-registered-rec2-v1.json`
-`8d651250...`; `protocol-registered-v1.json` `be41988b...`; `resume-replay-proof-rec2-v1.json` `665fee26...`; preregistration `088139a3...`;
-reader `scripts/analysis/slurp_nxt_thinking_budget_column_read.py` `0b88f152...`; arm table `scripts/flights/nx/nxt_r2_arms.json` `c3ee8c6b...`.
+Repository (bytes at `e28a95a66`): package `README.md` `828a28ff40d698f320da858e9a63134411df44da5092e9a94ab96cb3bc0c6229`; `analysis-recipe-v1.json` `db28e3127c499ef706d54503b072a7aad8c41249b901e70726019f0a004092d8`; `registered-facts-v1.json` `0bf58804...`; `generation-plan-registered-rec2-v1.json` `8d651250...`; `protocol-registered-v1.json` `be41988b...`; `resume-replay-proof-rec2-v1.json` `665fee26...`; preregistration `088139a3...`; reader `scripts/analysis/slurp_nxt_thinking_budget_column_read.py` `0b88f152...`; arm table `scripts/flights/nx/nxt_r2_arms.json` `c3ee8c6b...`.
 
-Registry `docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md`, sections "NX-T R1 READ" (2026-10-17 10:37Z) and its
-10:51Z correction, "Owner rulings 323 and 324", "Owner rulings 325-327", "R2b READ" (2026-10-18 15:30Z), "Owner rulings 331 A, 332 A,
-333 B, 322 A", "Owner rulings 334 B, 335 B, 336 A, 337", "Owner ruling 344 A; 322 window incident ..." (2026-10-24 13:30Z) and "NX-T R2
-rec2 READ" (15:35Z). Exposure ledger: blocks "Cell NXT-R2", "recovery rec1", "recovery rec2". Related notes:
-`docs/results/2026-10-17-slurp-nxt-r1-thinking-policy-column-read.md`, `docs/results/2026-10-18-slurp-nxt-r2b-solver-budget-column-read.md`.
+Registry `docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md`, sections "NX-T R1 READ" (2026-10-17 10:37Z) and its 10:51Z correction, "Owner rulings 323 and 324", "Owner rulings 325-327", "R2b READ" (2026-10-18 15:30Z), "Owner rulings 331 A, 332 A, 333 B, 322 A", "Owner rulings 334 B, 335 B, 336 A, 337", "Owner ruling 344 A; 322 window incident ..." (2026-10-24 13:30Z) and "NX-T R2 rec2 READ" (15:35Z). Exposure ledger: blocks "Cell NXT-R2", "recovery rec1", "recovery rec2". Related notes: `docs/results/2026-10-17-slurp-nxt-r1-thinking-policy-column-read.md`, `docs/results/2026-10-18-slurp-nxt-r2b-solver-budget-column-read.md`.
