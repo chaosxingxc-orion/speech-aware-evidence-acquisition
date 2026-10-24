@@ -314,6 +314,7 @@ class MeteredNativeSpeechRequest:
         branch_thinking_policy: Mapping[str, Mapping[str, Mapping[str, object]]] | None = None,
         solver_arm_decoding: Mapping[str, Mapping[str, object]] | None = None,
         solver_arm_decoding_role_id: str | None = None,
+        branch_sampling: Mapping[str, Mapping[str, Mapping[str, object]]] | None = None,
     ):
         if not isinstance(client, FrozenCoreClient):
             raise NativeSpeechRequestError("use the flight's existing FrozenCoreClient")
@@ -388,6 +389,33 @@ class MeteredNativeSpeechRequest:
             raise NativeSpeechRequestError("solver_arm_decoding requires exactly one non-empty solver_arm_decoding_role_id")
         self._solver_arm_decoding = arm_decoding
         self._solver_arm_decoding_role_id = solver_arm_decoding_role_id
+        # Decision 338 (2026-10-19): {Perception branch id: {role phase id: {"decoding": {...}, "seed_offsets": [...]}}} -- the
+        # per-BRANCH sampling axes of a sampling column (rails.supply_variants.sampling_decoding_table), composed at this same
+        # seam. A contact bound to such a branch and role carries a sample_index: sample 0 keeps the lock's greedy request
+        # (and its seed), sample i >= 1 gets the declared sampling parameters and seed = lock seed + offset i. None or empty
+        # (every adapter written before decision 338) leaves every composed request as before.
+        sampling_table: dict[str, dict[str, dict[str, object]]] = {}
+        for branch_id, per_role in dict(branch_sampling or {}).items():
+            if not isinstance(branch_id, str) or not branch_id or not isinstance(per_role, Mapping) or not per_role:
+                raise NativeSpeechRequestError("branch_sampling must map branch ids to non-empty {role id: axis} maps")
+            sampling_table[branch_id] = {}
+            for role_id, axis in per_role.items():
+                if (
+                    not isinstance(role_id, str) or not role_id or not isinstance(axis, Mapping)
+                    or set(axis) != {"decoding", "seed_offsets"}
+                    or decoding_override_error(axis["decoding"]) is not None
+                    or not isinstance(axis["seed_offsets"], Sequence) or isinstance(axis["seed_offsets"], (str, bytes))
+                    or any(isinstance(o, bool) or not isinstance(o, int) or o < 1 for o in axis["seed_offsets"])
+                ):
+                    raise NativeSpeechRequestError(f"branch_sampling[{branch_id!r}][{role_id!r}] is invalid")
+                sampling_table[branch_id][role_id] = {
+                    "decoding": dict(axis["decoding"]), "seed_offsets": [int(o) for o in axis["seed_offsets"]],
+                }
+        self._branch_sampling = sampling_table
+        # {agent contact id: the integer seed the composed request carried}, written for every contact bound to a sampling
+        # axis (sample 0 included, whose seed is the lock's own). The runner reads it to seal each sample's seed from the
+        # request that was actually composed, never from a recomputation.
+        self.branch_sample_seeds: dict[str, int] = {}
         self._owner = object()
         self._client = client
         self._binding_provider = binding_provider
@@ -476,7 +504,7 @@ class MeteredNativeSpeechRequest:
                 decoding_overrides=self._solver_sampling["decoding_overrides"],
                 sample_index=sample_index,
             )
-        elif sample_index is not None:
+        elif sample_index is not None and not self._binds_branch_sample(request):
             raise NativeSpeechRequestError(
                 "only the registered Solver role may bind a sample_index"
             )
@@ -506,6 +534,24 @@ class MeteredNativeSpeechRequest:
                     decoding = resolve_node_decoding(decoding, arm_policy, request.role_id)
                 except ReasoningKnobError as error:
                     raise NativeSpeechRequestError(str(error)) from error
+        # Decision 338: this contact's BRANCH sampling axis (a sampling column's Perception or Solver samples), composed after the
+        # role-level and thinking fields and before the answer-only re-ask, so a re-ask keeps the sample's own decoding.
+        if self._binds_branch_sample(request):
+            if sample_index is None:
+                raise NativeSpeechRequestError("a sampling-branch contact requires a bound sample_index")
+            axis = self._branch_sampling[arm_id][request.role_id]
+            if sample_index > len(axis["seed_offsets"]):
+                raise NativeSpeechRequestError("sampling-branch sample_index exceeds the declared sample count")
+            if sample_index >= 1:
+                lock_seed = decoding.get("seed")
+                if isinstance(lock_seed, bool) or not isinstance(lock_seed, int):
+                    raise NativeSpeechRequestError("a sampling-branch contact needs the fragment's integer lock seed")
+                decoding.update(axis["decoding"])
+                decoding["seed"] = lock_seed + axis["seed_offsets"][sample_index - 1]
+            composed_seed = decoding.get("seed")
+            if isinstance(composed_seed, bool) or not isinstance(composed_seed, int):
+                raise NativeSpeechRequestError("a sampling-branch contact needs the fragment's integer lock seed")
+            self.branch_sample_seeds[request.context.agent_contact_id] = composed_seed
         # NX-T R4: this Solver contact's ARM sampling override (a decoding column's candidate arm), composed after every
         # role-level field and BEFORE the answer-only re-ask, so the re-ask of an arm's contact keeps the arm's sampling. The
         # delivering arm and the twin have no entry: their requests are the locked plan's, byte for byte.
@@ -605,6 +651,10 @@ class MeteredNativeSpeechRequest:
             prepared, role_bytes, _bytes(body), self._owner, sample_index,
             binding.rendered_tool_names, binding,
         )
+
+    def _binds_branch_sample(self, request: NativeRoleModelRequest) -> bool:
+        branch_id = getattr(request.context, "perception_branch_id", None)
+        return branch_id is not None and request.role_id in self._branch_sampling.get(branch_id, {})
 
     def dispatch(self, prepared: PreparedNativeRoleContact) -> CoreCompletion:
         if not isinstance(prepared, PreparedNativeRoleContact) or prepared.owner is not self._owner:

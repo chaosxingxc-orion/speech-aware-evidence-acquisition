@@ -115,6 +115,8 @@ class CommitOutcome:
     intent_member_sample_indices: tuple[int, ...]
     intent_tie_break_sample_index: int | None
     entities: tuple[EntityCommitOutcome, ...]
+    #: Gate custody of a gated policy (decision 338); None for an ungated one.
+    gate: dict[str, object] | None = None
 
 
 def character_level_f1(a: str, b: str) -> float:
@@ -350,7 +352,114 @@ def commit_plurality_support_v1(
 COMMIT_POLICIES.register(PLURALITY_SUPPORT_V1, commit_plurality_support_v1)
 
 
+FIRST_SUPPORT_V1 = "saea-commit-first-support-v1"
+
+
+def commit_first_support_v1(
+    votes: Sequence[SolverSampleVote],
+    *,
+    min_support: int,
+    similarity_threshold: float,
+    n1: float | None = None,
+    n1_min: float | None = None,
+    empty_votes_min: int | None = None,
+) -> CommitOutcome:
+    """First-first support filter with an optional N1-gated empty decision.
+
+    Decision 338, lever L1. The base answer is the lowest-index VALID sample
+    (sample 0 when it parsed): its labels (scenario, action) are kept verbatim,
+    so intent never moves, and its entities are kept in order iff at least
+    ``min_support`` valid samples (the base counts) carry a same-type entity
+    whose normalised filler has character-level F1 >= ``similarity_threshold``
+    (the aggregation read's ``support_of_entity`` rule).
+
+    Optional gate (``n1_min`` and ``empty_votes_min`` given together): when
+    ``n1 >= n1_min`` AND at least ``empty_votes_min`` of the valid samples
+    OTHER than the base answered no entity, the delivered entity list is empty
+    (the NX R6 ``c3verdict x N1`` rule, samples as verdict). A malformed sample
+    casts no empty vote. ``n1`` is the entity-free share of the supplied
+    exemplars; when the gate is configured but ``n1`` is None the gate does not
+    fire and the outcome's ``gate`` records ``n1-unavailable``.
+    """
+
+    if isinstance(min_support, bool) or not isinstance(min_support, int) or min_support < 1:
+        raise CommitPolicyError("min_support must be a positive integer")
+    if (
+        isinstance(similarity_threshold, bool)
+        or not isinstance(similarity_threshold, (int, float))
+        or not 0 < similarity_threshold <= 1
+    ):
+        raise CommitPolicyError("similarity_threshold must be in (0, 1]")
+    gated = n1_min is not None or empty_votes_min is not None
+    if gated:
+        if (
+            isinstance(n1_min, bool) or not isinstance(n1_min, (int, float)) or not 0 <= n1_min <= 1
+            or isinstance(empty_votes_min, bool) or not isinstance(empty_votes_min, int)
+            or empty_votes_min < 1
+        ):
+            raise CommitPolicyError(
+                "the gate needs n1_min in [0, 1] and a positive integer empty_votes_min together"
+            )
+    if n1 is not None and (isinstance(n1, bool) or not isinstance(n1, (int, float)) or not 0 <= n1 <= 1):
+        raise CommitPolicyError("n1 must be in [0, 1]")
+    valid = _valid_votes(votes)
+    if not valid:
+        return CommitOutcome(
+            policy_id=FIRST_SUPPORT_V1,
+            answer=ParsedSlurpAnswer(scenario="", action="", entities=()),
+            intent_support=0, intent_member_sample_indices=(),
+            intent_tie_break_sample_index=None, entities=(),
+            gate={"configured": gated, "status": "all-malformed"} if gated else None,
+        )
+    base = valid[0]
+    target = base.parsed
+    kept: list[EntityCommitOutcome] = []
+    for entity in target.entities:
+        normal = normalize_text_v1(entity.filler)
+        members = []
+        for vote in valid:
+            if any(
+                other.type == entity.type
+                and character_level_f1(normal, normalize_text_v1(other.filler)) >= similarity_threshold
+                for other in vote.parsed.entities
+            ):
+                members.append(vote.sample_index)
+        if len(members) >= min_support:
+            kept.append(EntityCommitOutcome(
+                type=entity.type, filler=entity.filler, support=len(members),
+                member_sample_indices=tuple(members), tie_break_sample_index=None,
+            ))
+    gate: dict[str, object] | None = None
+    if gated:
+        others = [vote for vote in valid if vote is not base]
+        empty_votes = sum(1 for vote in others if not vote.parsed.entities)
+        if n1 is None:
+            status, fired = "n1-unavailable", False
+        else:
+            fired = n1 >= n1_min and empty_votes >= empty_votes_min
+            status = "fired" if fired else "not-fired"
+        gate = {
+            "configured": True, "status": status, "n1": n1, "n1_min": n1_min,
+            "empty_votes": empty_votes, "empty_votes_min": empty_votes_min,
+        }
+        if fired:
+            kept = []
+    return CommitOutcome(
+        policy_id=FIRST_SUPPORT_V1,
+        answer=ParsedSlurpAnswer(
+            scenario=target.scenario, action=target.action,
+            entities=tuple(SlotEntity(type=e.type, filler=e.filler) for e in kept),
+        ),
+        intent_support=1, intent_member_sample_indices=(base.sample_index,),
+        intent_tie_break_sample_index=None, entities=tuple(kept), gate=gate,
+    )
+
+
+COMMIT_POLICIES.register(FIRST_SUPPORT_V1, commit_first_support_v1)
+
+
 __all__ = [
+    "FIRST_SUPPORT_V1",
     "PLURALITY_SUPPORT_V1",
     "CommitOutcome",
     "CommitPolicyError",
@@ -358,5 +467,6 @@ __all__ = [
     "ParsedSlurpAnswer",
     "SolverSampleVote",
     "character_level_f1",
+    "commit_first_support_v1",
     "commit_plurality_support_v1",
 ]

@@ -95,6 +95,13 @@ def _default_parse_answer(text: str):
     )
 
 
+def parse_solver_answer_text(text: str):
+    """The structured answer of one Solver sample's raw text, or ``None`` when it does not parse -- the ONE parse the grouped
+    visit and the decision-338 sampling column both vote with."""
+
+    return _default_parse_answer(text)
+
+
 def _default_render_answer(answer) -> str:
     import json
 

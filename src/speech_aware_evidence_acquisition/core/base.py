@@ -159,6 +159,16 @@ NATIVE_EVIDENCE_PROJECTIONS = Registry("native evidence projection")
 # ``rails/commit_policies.py``, the canonical registration site.
 COMMIT_POLICIES = Registry("commit policy")
 
+# Decision 338 (2026-10-19, lever column L2): the Perception candidate-list MERGE
+# policies. A ``native_episode.roles.perception.sampling_variants`` branch that
+# declares ``perception_samples`` merges its k notes' candidate lists into the ONE
+# shortlist its branch Solver contact reads. An entry is a pure callable
+# ``(note_lists: Sequence[Sequence[str] | None], *, cap: int) ->
+# rails.perception_merge_policies.MergeOutcome`` (``None`` marks a sample whose
+# note carried no usable list). Same one-Registry discipline as
+# :data:`COMMIT_POLICIES`; populated from ``rails/perception_merge_policies.py``.
+PERCEPTION_MERGE_POLICIES = Registry("perception merge policy")
+
 
 # ---------------------------------------------------------------------------
 # Acquisition policies: the SIXTH node of the agent base (E18, 2026-09-19,

@@ -107,6 +107,9 @@ from .native_episode_receipt import (
     PERCEPTION_BRANCH_RECEIPT_SCHEMA_V2,
     PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4,
     PERCEPTION_BRANCH_RECEIPT_SCHEMA_V5,
+    PERCEPTION_BRANCH_RECEIPT_SCHEMA_V6,
+    SAMPLING_AXES,
+    perception_branch_sampling_error,
     parse_perception_branch_note,
     perception_branch_thinking_policy_error,
     perception_branch_key_source_error,
@@ -2079,6 +2082,10 @@ class PerceptionBranch:
     # and every branch of the other kinds. Written only by :func:`parse_perception_thinking_variants`. Declared LAST, so every
     # branch parsed before this field existed composes byte-identically.
     thinking_policy: "Mapping[str, Mapping[str, object]] | None" = None
+    # Decision 338 (2026-10-19): the SAMPLING axes -- ``None`` for A, the twin and every branch of the other kinds. Written only
+    # by :func:`parse_perception_sampling_variants`. Declared LAST, so every branch parsed before composes byte-identically.
+    perception_samples: "PerceptionSamplesAxis | None" = None
+    solver_samples: "SolverSamplesAxis | None" = None
 
     @property
     def is_twin(self) -> bool:
@@ -2118,6 +2125,14 @@ class PerceptionBranch:
                 {} if self.thinking_policy is None
                 else {"thinking_policy": canonical_thinking_policy(self.thinking_policy)}
             ),
+            **(
+                {} if self.perception_samples is None
+                else {"perception_samples": self.perception_samples.as_json()}
+            ),
+            **(
+                {} if self.solver_samples is None
+                else {"solver_samples": self.solver_samples.as_json()}
+            ),
         }
 
 
@@ -2145,11 +2160,20 @@ class PerceptionBranchGroup:
         return any(branch.thinking_policy is not None for branch in self.branches)
 
     @property
+    def is_sampling(self) -> bool:
+        """True for a group :func:`parse_perception_sampling_variants` built: every non-A, non-twin branch fans out Perception
+        and/or Solver samples and nothing else (the receipt then seals as schema v6)."""
+
+        return any(
+            branch.perception_samples is not None or branch.solver_samples is not None for branch in self.branches
+        )
+
+    @property
     def renders_unvaried_evidence(self) -> bool:
         """True when every branch renders the delivering branch's own evidence (a template or a thinking-policy group): no
         branch seed, no presentation, no contract item, and the Solver supply is re-resolved from each branch's own note."""
 
-        return self.is_template or self.is_thinking
+        return self.is_template or self.is_thinking or self.is_sampling
 
     @property
     def has_twin(self) -> bool:
@@ -2410,6 +2434,563 @@ def parse_perception_thinking_variants(block: object, *, phase_id: str) -> Perce
     return PerceptionBranchGroup(
         branches=tuple(branches), fit_estimate=fit_estimate, level=PERCEPTION_BRANCH_LEVEL_SOLVER,
     )
+
+
+#: Decision 338 (2026-10-19): the SAMPLING column. A branch of a ``roles.perception.sampling_variants`` group declares one or
+#: both of two fan-out axes -- ``perception_samples`` (k Perception contacts over the same packet, merged into the shortlist
+#: its branch Solver contact reads) and ``solver_samples`` (n Solver contacts committed into the branch's delivered answer).
+#: Sample 0 is greedy at the lock seed; samples 1..n-1 sample at the axis's ``decoding`` with seed = lock seed + offset. The
+#: delivering branch and the twin run the locked form and declare neither axis, so any delivery-time rule (the v4g
+#: normaliser) stays scoped to the delivering branch alone.
+SAMPLING_VARIANT_BLOCK_KEYS = frozenset({"node", "arms", "max_supplied_items", "fit_estimate"})
+SAMPLING_VARIANT_ARM_KEYS = frozenset({"arm_id", "deliver", "replicate_of", *SAMPLING_AXES})
+SAMPLING_VARIANT_KIND_PERCEPTION = "perception-sampling"
+SAMPLING_VARIANT_KIND_SOLVER = "solver-sampling"
+SAMPLING_VARIANT_KINDS = (SAMPLING_VARIANT_KIND_PERCEPTION, SAMPLING_VARIANT_KIND_SOLVER)
+#: The sampling parameters a sampling axis may set: ``DECODING_VARIANT_KNOBS`` narrowed to what the R4 ``decoding_variants``
+#: kind bounds for the Thinking core (``presence_penalty`` is refused by name).
+SAMPLING_DECODING_NAMES = frozenset({"temperature", "top_p", "top_k"})
+MIN_PERCEPTION_SAMPLES, MAX_PERCEPTION_SAMPLES = 2, 4
+MIN_SOLVER_SAMPLES, MAX_SOLVER_SAMPLES = 2, 8
+MAX_SAMPLING_SEED_OFFSET = 10_000
+MAX_SAMPLING_CAP = 8
+MIN_SAMPLING_CANDIDATE_ARMS, MAX_SAMPLING_CANDIDATE_ARMS = 1, 6
+PERCEPTION_SAMPLES_KEYS = frozenset({"k", "decoding", "merge_policy", "cap"})
+PERCEPTION_SAMPLES_OPTIONAL_KEYS = frozenset({"seed_offsets"})
+SOLVER_SAMPLES_KEYS = frozenset({"n", "decoding", "commit"})
+SOLVER_SAMPLES_OPTIONAL_KEYS = frozenset({"greedy_first", "seed_offsets"})
+SOLVER_COMMIT_REQUIRED_KEYS = frozenset({"policy", "min_support", "similarity_threshold"})
+SOLVER_COMMIT_GATE_KEYS = frozenset({"n1_min", "empty_votes_min"})
+
+
+def derive_sample_seeds(lock_seed: int, seed_offsets: Sequence[int]) -> tuple[int, ...]:
+    """The fixed per-sample seeds of a sampling axis: sample 0 runs greedy at the lock seed, sample i at lock seed + offset i."""
+
+    if isinstance(lock_seed, bool) or not isinstance(lock_seed, int) or lock_seed < 0:
+        raise PerceptionBranchError("the lock seed must be a non-negative integer")
+    return (lock_seed, *(lock_seed + int(offset) for offset in seed_offsets))
+
+
+def _sampling_decoding(value: object, *, field: str) -> tuple[tuple[str, float | int], ...]:
+    try:
+        override = _decoding_override(value, field=field, locked_decoding=None)
+    except PerceptionBranchError:
+        raise
+    except SupplyVariantError as error:
+        raise PerceptionBranchError(str(error)) from error
+    names = {name for name, _number in override}
+    extra = sorted(names - SAMPLING_DECODING_NAMES)
+    if extra:
+        raise PerceptionBranchError(
+            f"{field} names {extra}: a sampling axis sets only {sorted(SAMPLING_DECODING_NAMES)} (the bounds the R4 "
+            "decoding_variants kind admits)"
+        )
+    if dict(override).get("temperature", 0) <= 0:
+        raise PerceptionBranchError(f"{field} must set a positive temperature: samples 1..n-1 are drawn, not greedy")
+    return override
+
+
+def _sampling_seed_offsets(value: object, *, count: int, field: str) -> tuple[int, ...]:
+    if value is None:
+        return tuple(range(1, count))
+    if (
+        not isinstance(value, Sequence) or isinstance(value, (str, bytes)) or len(value) != count - 1
+        or any(isinstance(item, bool) or not isinstance(item, int) or not 1 <= item <= MAX_SAMPLING_SEED_OFFSET for item in value)
+        or len(set(value)) != len(value)
+    ):
+        raise PerceptionBranchError(
+            f"{field} must be {count - 1} distinct integers from 1 to {MAX_SAMPLING_SEED_OFFSET} (the offsets of samples "
+            "1..n-1; sample 0 runs at the lock seed)"
+        )
+    return tuple(int(item) for item in value)
+
+
+@dataclass(frozen=True)
+class PerceptionSamplesAxis:
+    """``perception_samples``: k Perception contacts merged by a registered merge policy."""
+
+    k: int
+    decoding: tuple[tuple[str, float | int], ...]
+    seed_offsets: tuple[int, ...]
+    merge_policy: str
+    cap: int
+
+    def as_json(self) -> dict[str, object]:
+        return {
+            "k": self.k, "decoding": dict(self.decoding), "seed_offsets": list(self.seed_offsets),
+            "merge_policy": self.merge_policy, "cap": self.cap,
+        }
+
+    @property
+    def extra_contacts(self) -> int:
+        return self.k - 1
+
+
+@dataclass(frozen=True)
+class SolverSamplesAxis:
+    """``solver_samples``: n Solver contacts committed by a registered commit policy."""
+
+    n: int
+    decoding: tuple[tuple[str, float | int], ...]
+    seed_offsets: tuple[int, ...]
+    commit_policy: str
+    min_support: int
+    similarity_threshold: float
+    n1_min: float | None = None
+    empty_votes_min: int | None = None
+    greedy_first: bool = True
+
+    def commit_json(self) -> dict[str, object]:
+        return {
+            "policy": self.commit_policy, "min_support": self.min_support,
+            "similarity_threshold": self.similarity_threshold, "n1_min": self.n1_min,
+            "empty_votes_min": self.empty_votes_min,
+        }
+
+    def as_json(self) -> dict[str, object]:
+        return {
+            "n": self.n, "greedy_first": self.greedy_first, "decoding": dict(self.decoding),
+            "seed_offsets": list(self.seed_offsets), "commit": self.commit_json(),
+        }
+
+    @property
+    def extra_contacts(self) -> int:
+        return self.n - 1
+
+
+def parse_perception_samples(value: object, *, field: str) -> PerceptionSamplesAxis:
+    """Parse one branch's ``perception_samples`` block, fail-closed."""
+
+    if (
+        not isinstance(value, Mapping)
+        or not PERCEPTION_SAMPLES_KEYS <= set(value)
+        or set(value) - PERCEPTION_SAMPLES_KEYS - PERCEPTION_SAMPLES_OPTIONAL_KEYS
+    ):
+        raise PerceptionBranchError(
+            f"{field} must be an object with {sorted(PERCEPTION_SAMPLES_KEYS)} and optionally "
+            f"{sorted(PERCEPTION_SAMPLES_OPTIONAL_KEYS)}"
+        )
+    k = value["k"]
+    if isinstance(k, bool) or not isinstance(k, int) or not MIN_PERCEPTION_SAMPLES <= k <= MAX_PERCEPTION_SAMPLES:
+        raise PerceptionBranchError(f"{field}.k must be an integer from {MIN_PERCEPTION_SAMPLES} to {MAX_PERCEPTION_SAMPLES}")
+    cap = value["cap"]
+    if isinstance(cap, bool) or not isinstance(cap, int) or not 1 <= cap <= MAX_SAMPLING_CAP:
+        raise PerceptionBranchError(f"{field}.cap must be an integer from 1 to {MAX_SAMPLING_CAP}")
+    policy_id = _nonempty_str(value["merge_policy"], field=f"{field}.merge_policy")
+    # Function-local: importing the registering module is what populates the registry.
+    from . import perception_merge_policies as _merge_policies  # noqa: PLC0415, F401
+    from ..core.base import PERCEPTION_MERGE_POLICIES, CoreError  # noqa: PLC0415
+
+    try:
+        PERCEPTION_MERGE_POLICIES.resolve(policy_id)
+    except CoreError as error:
+        raise PerceptionBranchError(f"{field}.merge_policy is invalid: {error}") from error
+    return PerceptionSamplesAxis(
+        k=k, decoding=_sampling_decoding(value["decoding"], field=f"{field}.decoding"),
+        seed_offsets=_sampling_seed_offsets(value.get("seed_offsets"), count=k, field=f"{field}.seed_offsets"),
+        merge_policy=policy_id, cap=cap,
+    )
+
+
+def parse_solver_samples(value: object, *, field: str) -> SolverSamplesAxis:
+    """Parse one branch's ``solver_samples`` block, fail-closed."""
+
+    if (
+        not isinstance(value, Mapping)
+        or not SOLVER_SAMPLES_KEYS <= set(value)
+        or set(value) - SOLVER_SAMPLES_KEYS - SOLVER_SAMPLES_OPTIONAL_KEYS
+    ):
+        raise PerceptionBranchError(
+            f"{field} must be an object with {sorted(SOLVER_SAMPLES_KEYS)} and optionally "
+            f"{sorted(SOLVER_SAMPLES_OPTIONAL_KEYS)}"
+        )
+    n = value["n"]
+    if isinstance(n, bool) or not isinstance(n, int) or not MIN_SOLVER_SAMPLES <= n <= MAX_SOLVER_SAMPLES:
+        raise PerceptionBranchError(f"{field}.n must be an integer from {MIN_SOLVER_SAMPLES} to {MAX_SOLVER_SAMPLES}")
+    if value.get("greedy_first", True) is not True:
+        raise PerceptionBranchError(
+            f"{field}.greedy_first must be true: the first-support commit keeps sample 0's labels, and sample 0 is the "
+            "greedy contact at the lock seed"
+        )
+    commit = value["commit"]
+    if (
+        not isinstance(commit, Mapping) or not SOLVER_COMMIT_REQUIRED_KEYS <= set(commit)
+        or set(commit) - SOLVER_COMMIT_REQUIRED_KEYS - SOLVER_COMMIT_GATE_KEYS
+    ):
+        raise PerceptionBranchError(
+            f"{field}.commit must carry {sorted(SOLVER_COMMIT_REQUIRED_KEYS)} and optionally the gate "
+            f"{sorted(SOLVER_COMMIT_GATE_KEYS)}"
+        )
+    policy_id = _nonempty_str(commit["policy"], field=f"{field}.commit.policy")
+    from . import commit_policies as _commit_policies  # noqa: PLC0415
+    from ..core.base import COMMIT_POLICIES, CoreError  # noqa: PLC0415
+
+    try:
+        COMMIT_POLICIES.resolve(policy_id)
+    except CoreError as error:
+        raise PerceptionBranchError(f"{field}.commit.policy is invalid: {error}") from error
+    min_support = commit["min_support"]
+    if isinstance(min_support, bool) or not isinstance(min_support, int) or not 1 <= min_support <= n:
+        raise PerceptionBranchError(f"{field}.commit.min_support must be an integer from 1 to n")
+    similarity = commit["similarity_threshold"]
+    if isinstance(similarity, bool) or not isinstance(similarity, (int, float)) or not 0 < similarity <= 1:
+        raise PerceptionBranchError(f"{field}.commit.similarity_threshold must be in (0, 1]")
+    gate_given = set(commit) & SOLVER_COMMIT_GATE_KEYS
+    n1_min = empty_votes_min = None
+    if gate_given:
+        if gate_given != SOLVER_COMMIT_GATE_KEYS:
+            raise PerceptionBranchError(f"{field}.commit declares half a gate: n1_min and empty_votes_min come together")
+        if policy_id != _commit_policies.FIRST_SUPPORT_V1:
+            raise PerceptionBranchError(
+                f"{field}.commit.policy {policy_id!r} takes no gate; only {_commit_policies.FIRST_SUPPORT_V1!r} does"
+            )
+        n1_min, empty_votes_min = commit["n1_min"], commit["empty_votes_min"]
+        if isinstance(n1_min, bool) or not isinstance(n1_min, (int, float)) or not 0 <= n1_min <= 1:
+            raise PerceptionBranchError(f"{field}.commit.n1_min must be in [0, 1]")
+        if isinstance(empty_votes_min, bool) or not isinstance(empty_votes_min, int) or not 1 <= empty_votes_min <= n - 1:
+            raise PerceptionBranchError(f"{field}.commit.empty_votes_min must be an integer from 1 to n - 1")
+    return SolverSamplesAxis(
+        n=n, decoding=_sampling_decoding(value["decoding"], field=f"{field}.decoding"),
+        seed_offsets=_sampling_seed_offsets(value.get("seed_offsets"), count=n, field=f"{field}.seed_offsets"),
+        commit_policy=policy_id, min_support=min_support, similarity_threshold=similarity,
+        n1_min=n1_min, empty_votes_min=empty_votes_min,
+    )
+
+
+def sampling_extra_contacts(group: PerceptionBranchGroup) -> int:
+    """The extra model contacts a sampling group spends per row beyond the level-2 base term: (k - 1) Perception contacts for
+    every ``perception_samples`` branch plus (n - 1) Solver contacts for every ``solver_samples`` branch. Zero otherwise."""
+
+    total = 0
+    for branch in group.branches:
+        if branch.perception_samples is not None:
+            total += branch.perception_samples.extra_contacts
+        if branch.solver_samples is not None:
+            total += branch.solver_samples.extra_contacts
+    return total
+
+
+def perception_contact_slots(group: PerceptionBranchGroup) -> tuple[tuple[int, int | None], ...]:
+    """The ordered Perception-phase contact slots of one visit: ``(branch_index, sample_index)``.
+
+    A branch without a ``perception_samples`` axis owns one slot whose sample index is ``None`` (the unsampled contact every
+    other branch group makes). A ``perception_samples`` branch owns ``k`` consecutive slots, sample indices ``0..k-1``. The
+    flat slot list is the order the Perception node invokes its contacts in, so a node-global contact index maps to its slot.
+    """
+
+    slots: list[tuple[int, int | None]] = []
+    for index, branch in enumerate(group.branches):
+        axis = branch.perception_samples
+        if axis is None:
+            slots.append((index, None))
+        else:
+            slots.extend((index, sample) for sample in range(axis.k))
+    return tuple(slots)
+
+
+def solver_contact_slots(group: PerceptionBranchGroup) -> tuple[tuple[int, int | None], ...]:
+    """The ordered first-visit Solver contact slots of a level-2 group: ``(branch_index, sample_index)``, ``n`` consecutive
+    slots for a ``solver_samples`` branch and one unsampled slot (``None``) for every other branch."""
+
+    slots: list[tuple[int, int | None]] = []
+    for index, branch in enumerate(group.branches):
+        axis = branch.solver_samples
+        if axis is None:
+            slots.append((index, None))
+        else:
+            slots.extend((index, sample) for sample in range(axis.n))
+    return tuple(slots)
+
+
+def sampling_decoding_table(group: PerceptionBranchGroup, *, perception_phase_id: str, solver_phase_id: str) -> dict[str, dict[str, dict[str, object]]]:
+    """``{branch_id: {role phase id: {"decoding": {...}, "seed_offsets": [...]}}}`` for the request adapter. Empty for a group
+    that declares no sampling axis (every adapter written before decision 338 then composes the requests it always did)."""
+
+    table: dict[str, dict[str, dict[str, object]]] = {}
+    for branch in group.branches:
+        entry: dict[str, dict[str, object]] = {}
+        if branch.perception_samples is not None:
+            axis = branch.perception_samples
+            entry[perception_phase_id] = {"decoding": dict(axis.decoding), "seed_offsets": list(axis.seed_offsets)}
+        if branch.solver_samples is not None:
+            axis = branch.solver_samples
+            entry[solver_phase_id] = {"decoding": dict(axis.decoding), "seed_offsets": list(axis.seed_offsets)}
+        if entry:
+            table[branch.branch_id] = entry
+    return table
+
+
+def parse_perception_sampling_variants(block: object, *, phase_id: str) -> PerceptionBranchGroup:
+    """Parse ``roles.perception.sampling_variants`` into a LEVEL-2 Perception branch group whose axes are the sampling fan-outs
+    (decision 338, levers L1 and L2).
+
+    The block mirrors ``thinking_variants``: ``node`` (``perception``), ``arms``, ``max_supplied_items``, ``fit_estimate``.
+    Every candidate arm declares ``perception_samples``, ``solver_samples`` or both (one fan-out per node, so each key at most
+    once). The delivering arm is LAST and declares no axis; exactly one twin ``replicate_of`` the delivering arm is REQUIRED (the
+    within-flight A/A every node-column read needs). 1..6 candidate arms; two arms with the same axes are refused.
+    """
+
+    if not isinstance(block, Mapping) or set(block) != SAMPLING_VARIANT_BLOCK_KEYS:
+        raise PerceptionBranchError(
+            "roles.perception.sampling_variants must be an object with exactly "
+            f"{sorted(SAMPLING_VARIANT_BLOCK_KEYS)}"
+        )
+    if block["node"] != "perception":
+        raise PerceptionBranchError(
+            f"sampling_variants names node {block['node']!r} but sits on the 'perception' role"
+        )
+    max_items = _positive_int(block["max_supplied_items"], field="sampling_variants.max_supplied_items")
+    rows = block["arms"]
+    if (
+        not isinstance(rows, Sequence) or isinstance(rows, (str, bytes))
+        or not all(isinstance(row, Mapping) for row in rows)
+    ):
+        raise PerceptionBranchError("sampling_variants.arms must be an ordered list of arm objects")
+    twins = [row for row in rows if row.get("replicate_of") is not None]
+    if len(twins) != 1:
+        raise PerceptionBranchError(
+            "sampling_variants must declare exactly one twin (replicate_of the delivering arm): the within-flight A/A "
+            f"null the column read requires; this block declares {len(twins)}"
+        )
+    candidates = len(rows) - len(twins) - 1
+    if not MIN_SAMPLING_CANDIDATE_ARMS <= candidates <= MAX_SAMPLING_CANDIDATE_ARMS:
+        raise PerceptionBranchError(
+            f"sampling_variants must declare between {MIN_SAMPLING_CANDIDATE_ARMS} and {MAX_SAMPLING_CANDIDATE_ARMS} "
+            f"candidate arms (plus the delivering arm and the twin); this block declares {max(candidates, 0)}"
+        )
+    fit_estimate = parse_supply_variant_fit_estimate(block["fit_estimate"])
+    branches: list[PerceptionBranch] = []
+    for position, row in enumerate(rows):
+        where = f"sampling_variants.arms[{position}]"
+        unknown = sorted(set(row) - SAMPLING_VARIANT_ARM_KEYS)
+        if unknown or "arm_id" not in row:
+            raise PerceptionBranchError(
+                f"{where} must carry arm_id plus optional {sorted(SAMPLING_VARIANT_ARM_KEYS - {'arm_id'})}; unknown keys: "
+                f"{unknown}; a sampling arm declares the sampling axes and no other axis"
+            )
+        arm_id = _nonempty_str(row["arm_id"], field=f"{where}.arm_id")
+        deliver = row.get("deliver", False)
+        if not isinstance(deliver, bool):
+            raise PerceptionBranchError(f"{where}.deliver must be a bool")
+        raw_replicate = row.get("replicate_of")
+        replicate_of = None if raw_replicate is None else _nonempty_str(raw_replicate, field=f"{where}.replicate_of")
+        if deliver and replicate_of is not None:
+            raise PerceptionBranchError(f"{where} declares both deliver: true and replicate_of")
+        axes = [name for name in SAMPLING_AXES if name in row]
+        perception_axis = solver_axis = None
+        if deliver or replicate_of is not None:
+            if axes:
+                raise PerceptionBranchError(
+                    f"{where} is the delivering arm or the twin and must declare no sampling axis: it runs the locked "
+                    "form, so delivery-time rules apply to it alone"
+                )
+        else:
+            if not axes:
+                raise PerceptionBranchError(
+                    f"{where} is a candidate arm and must declare perception_samples, solver_samples or both"
+                )
+            if "perception_samples" in row:
+                perception_axis = parse_perception_samples(row["perception_samples"], field=f"{where}.perception_samples")
+            if "solver_samples" in row:
+                solver_axis = parse_solver_samples(row["solver_samples"], field=f"{where}.solver_samples")
+        branches.append(PerceptionBranch(
+            branch_id=arm_id, deliver=deliver, knobs=(), max_supplied_items=max_items,
+            replicate_of=replicate_of, perception_samples=perception_axis, solver_samples=solver_axis,
+        ))
+    ids = [branch.branch_id for branch in branches]
+    if len(set(ids)) != len(ids):
+        raise PerceptionBranchError("sampling_variants arm ids must be distinct")
+    delivering = [branch.branch_id for branch in branches if branch.deliver]
+    if len(delivering) != 1:
+        raise PerceptionBranchError(
+            f"sampling_variants must declare exactly one arm with deliver: true; this block declares {len(delivering)}"
+        )
+    if not branches[-1].deliver:
+        raise PerceptionBranchError(
+            f"sampling_variants delivering arm {delivering[0]!r} must be the LAST arm: the delivered text is then the "
+            "group's final contact's own response, so invariant I7 holds with no new exception"
+        )
+    for branch in branches:
+        if branch.replicate_of is not None and branch.replicate_of != branches[-1].branch_id:
+            raise PerceptionBranchError(
+                f"sampling_variants arm {branch.branch_id!r} names replicate_of {branch.replicate_of!r}, which is not the "
+                f"delivering arm {branches[-1].branch_id!r}"
+            )
+    signatures = [
+        json.dumps(
+            [None if b.perception_samples is None else b.perception_samples.as_json(),
+             None if b.solver_samples is None else b.solver_samples.as_json()],
+            sort_keys=True,
+        )
+        for b in branches if b.perception_samples is not None or b.solver_samples is not None
+    ]
+    if len(set(signatures)) != len(signatures):
+        raise PerceptionBranchError(
+            "two sampling_variants arms declare the same axes; two spellings of one configuration spend contacts per row "
+            "and measure nothing"
+        )
+    for branch in branches:
+        estimated = fit_estimate.base_prompt_tokens + branch.max_supplied_items * fit_estimate.tokens_per_supplied_item
+        if estimated > fit_estimate.prompt_limit_tokens:
+            raise PerceptionBranchError(
+                f"sampling_variants arm {branch.branch_id!r} estimates {estimated} prompt tokens, which exceeds the "
+                f"{fit_estimate.prompt_limit_tokens}-token limit of a {fit_estimate.slot_tokens}-token slot"
+            )
+    return PerceptionBranchGroup(
+        branches=tuple(branches), fit_estimate=fit_estimate, level=PERCEPTION_BRANCH_LEVEL_SOLVER,
+    )
+
+
+def sampling_stream_record(
+    axis: "PerceptionSamplesAxis | SolverSamplesAxis",
+    *,
+    lock_seed: int,
+    samples: Sequence[Mapping[str, object]],
+) -> list[dict[str, object]]:
+    """The per-sample rows of a sampling record: the caller supplies each contact's identity, hashes and parse result; this
+    adds the sample index, the derived seed and the override (``None`` for greedy sample 0)."""
+
+    seeds = derive_sample_seeds(lock_seed, axis.seed_offsets)
+    count = len(seeds)
+    if len(samples) != count:
+        raise PerceptionBranchError(f"a sampling record needs exactly {count} samples, got {len(samples)}")
+    rows: list[dict[str, object]] = []
+    for index, sample in enumerate(samples):
+        rows.append({
+            "sample_index": index, "seed": seeds[index],
+            "override": None if index == 0 else dict(axis.decoding),
+            **{key: sample[key] for key in sorted(sample)},
+        })
+    return rows
+
+
+def perception_samples_record(
+    axis: PerceptionSamplesAxis, *, lock_seed: int, samples: Sequence[Mapping[str, object]], outcome: object,
+) -> dict[str, object]:
+    """``sampling["perception_samples"]`` of a v6 row. ``samples`` carry ``contact_id``, ``request_sha256``,
+    ``response_text_sha256``, ``note_parse_status`` and ``candidate_intent_ids``; ``outcome`` is the
+    ``rails.perception_merge_policies.MergeOutcome`` of the merge."""
+
+    seeds = derive_sample_seeds(lock_seed, axis.seed_offsets)
+    return {
+        "k": axis.k, "decoding": dict(axis.decoding), "seed_offsets": list(axis.seed_offsets), "seeds": list(seeds),
+        "samples": sampling_stream_record(axis, lock_seed=lock_seed, samples=samples),
+        "merge_policy": axis.merge_policy, "cap": axis.cap,
+        "support_counts": [
+            {"intent_id": intent_id, "support": support, "best_rank": rank}
+            for (intent_id, support), (_same, rank) in zip(outcome.support_counts, outcome.best_ranks)
+        ],
+        "merged_candidate_ids": list(outcome.merged_candidate_ids),
+        "appended_candidate_ids": list(outcome.appended_candidate_ids),
+    }
+
+
+def solver_samples_record(
+    axis: SolverSamplesAxis, *, lock_seed: int, samples: Sequence[Mapping[str, object]], outcome: object,
+) -> dict[str, object]:
+    """``sampling["solver_samples"]`` of a v6 row. ``samples`` carry ``contact_id``, ``request_sha256``,
+    ``response_text_sha256`` and ``parse_status``; ``outcome`` is the ``rails.commit_policies.CommitOutcome``."""
+
+    seeds = derive_sample_seeds(lock_seed, axis.seed_offsets)
+    return {
+        "n": axis.n, "greedy_first": axis.greedy_first, "decoding": dict(axis.decoding),
+        "seed_offsets": list(axis.seed_offsets), "seeds": list(seeds),
+        "samples": sampling_stream_record(axis, lock_seed=lock_seed, samples=samples),
+        "commit": axis.commit_json(),
+        "outcome": {
+            "intent_support": outcome.intent_support,
+            "entity_supports": [{"type": e.type, "support": e.support} for e in outcome.entities],
+            "delivered_entity_count": len(outcome.entities),
+            "gate": None if outcome.gate is None else dict(outcome.gate),
+        },
+    }
+
+
+def merge_perception_samples(axis: PerceptionSamplesAxis, texts: Sequence[str | None]):
+    """The merge outcome of one branch's k Perception sample notes (``None`` = a sample that produced no note text).
+
+    The ONE derivation the live runner, the resume replay and the bundle verifier all apply, so a sealed merge can always be
+    re-derived from the trace's own recorded response texts.
+    """
+
+    from ..core.base import PERCEPTION_MERGE_POLICIES  # noqa: PLC0415
+    from . import perception_merge_policies as _merge_policies  # noqa: PLC0415, F401
+    from .native_episode_receipt import PERCEPTION_BRANCH_NOTE_MALFORMED  # noqa: PLC0415
+
+    if len(texts) != axis.k:
+        raise PerceptionBranchError(f"a perception_samples merge needs exactly {axis.k} sample notes, got {len(texts)}")
+    lists: list[list[str] | None] = []
+    for text in texts:
+        if text is None:
+            lists.append(None)
+            continue
+        status, ids, _raw = parse_perception_branch_note(text)
+        lists.append(None if status == PERCEPTION_BRANCH_NOTE_MALFORMED else list(ids))
+    return PERCEPTION_MERGE_POLICIES.resolve(axis.merge_policy)(lists, cap=axis.cap)
+
+
+def solver_sample_parse_status(text: str | None, *, finite_reason: str | None = None) -> str:
+    """``ok`` / ``malformed`` for a Solver sample's raw text; ``finite-completion:<reason>`` for a sample that ended on one."""
+
+    if finite_reason is not None:
+        return f"finite-completion:{finite_reason}"
+    from ..reproduction.ojw.native_group_solver import parse_solver_answer_text  # noqa: PLC0415
+
+    return "ok" if text is not None and parse_solver_answer_text(text) is not None else "malformed"
+
+
+def commit_solver_samples(axis: SolverSamplesAxis, texts: Sequence[str | None], *, n1: float | None = None):
+    """The commit outcome of one branch's n Solver samples (``None`` = no text: a sample that ended on a finite completion).
+
+    ``n1`` is the entity-free share of the supplied exemplars; it is unavailable in flight (the run declares no N1 source), so
+    a configured gate reports ``n1-unavailable`` and does not fire. The ONE derivation shared by the runner, the replay and the
+    bundle verifier.
+    """
+
+    from ..core.base import COMMIT_POLICIES  # noqa: PLC0415
+    from ..reproduction.ojw.native_group_solver import parse_solver_answer_text  # noqa: PLC0415
+    from . import commit_policies as _commit_policies  # noqa: PLC0415
+
+    if len(texts) != axis.n:
+        raise PerceptionBranchError(f"a solver_samples commit needs exactly {axis.n} sample answers, got {len(texts)}")
+    votes = [
+        _commit_policies.SolverSampleVote(
+            sample_index=index, parsed=None if text is None else parse_solver_answer_text(text),
+        )
+        for index, text in enumerate(texts)
+    ]
+    policy = COMMIT_POLICIES.resolve(axis.commit_policy)
+    kwargs: dict[str, object] = {
+        "min_support": axis.min_support, "similarity_threshold": axis.similarity_threshold,
+    }
+    if axis.commit_policy == _commit_policies.FIRST_SUPPORT_V1:
+        kwargs.update(n1=n1, n1_min=axis.n1_min, empty_votes_min=axis.empty_votes_min)
+    return policy(votes, **kwargs)
+
+
+def _sampling_record_matches_axes(branch: PerceptionBranch, sampling: Mapping[str, object]) -> str | None:
+    """Why a v6 ``sampling`` value disagrees with the axes ``branch`` declared, or ``None``."""
+
+    declared = {"perception_samples": branch.perception_samples, "solver_samples": branch.solver_samples}
+    for name, axis in declared.items():
+        record = sampling.get(name)
+        if (axis is None) != (record is None):
+            return f"the {name} record and the branch's declared {name} axis disagree"
+        if axis is None:
+            continue
+        count_key = "k" if name == "perception_samples" else "n"
+        if (
+            record[count_key] != getattr(axis, count_key) or record["decoding"] != dict(axis.decoding)
+            or record["seed_offsets"] != list(axis.seed_offsets)
+        ):
+            return f"the {name} record differs from the count, decoding or seed offsets the branch declared"
+        if name == "perception_samples" and (
+            record["merge_policy"] != axis.merge_policy or record["cap"] != axis.cap
+        ):
+            return "the perception_samples record differs from the merge policy or cap the branch declared"
+        if name == "solver_samples" and record["commit"] != axis.commit_json():
+            return "the solver_samples record differs from the commit the branch declared"
+    return None
 
 
 def parse_perception_branch_knob(
@@ -2920,6 +3501,9 @@ def perception_branch_record(
     candidate_intent_ids_raw_count: int | None = None,
     template_group: bool = False,
     thinking_group: bool = False,
+    sampling_group: bool = False,
+    sampling: Mapping[str, object] | None = None,
+    sampling_pending: bool = False,
     solver_absent: bool = False,
     absent_reason: str | None = None,
 ) -> dict[str, object]:
@@ -3127,6 +3711,30 @@ def perception_branch_record(
         raise PerceptionBranchError(
             f"perception branch {branch.branch_id!r} declares a thinking_policy but its row is not the thinking (v5) shape"
         )
+    declares_sampling = branch.perception_samples is not None or branch.solver_samples is not None
+    if sampling_group:
+        if template_group or thinking_group:
+            raise PerceptionBranchError("a perception branch row has one shape: template (v4), thinking (v5) or sampling (v6)")
+        if sampling_pending:
+            # The Perception-visit row of a level-2 sampling branch: its Solver samples (and, for the last Perception sample, the
+            # merge) do not exist yet. The runner re-seals the row through this same constructor at the episode's final receipt
+            # assembly, with the complete sampling value and sampling_pending False, so the pending form never survives.
+            if sampling is not None or has_level2:
+                raise PerceptionBranchError(
+                    f"perception branch {branch.branch_id!r}: a pending sampling row carries neither a sampling value nor level-2 fields"
+                )
+            record["sampling"] = None
+        else:
+            reason = perception_branch_sampling_error(sampling, is_b=branch.is_b)
+            if reason is None and branch.is_b:
+                reason = _sampling_record_matches_axes(branch, sampling)
+            if reason is not None:
+                raise PerceptionBranchError(f"perception branch {branch.branch_id!r}: {reason}")
+            record["sampling"] = None if sampling is None else json.loads(json.dumps(sampling))
+    elif declares_sampling or sampling is not None or sampling_pending:
+        raise PerceptionBranchError(
+            f"perception branch {branch.branch_id!r} declares sampling but its row is not the sampling (v6) shape"
+        )
     if has_level2:
         record["solver_contact_id"] = _nonempty_str(
             solver_contact_id,
@@ -3161,7 +3769,8 @@ def perception_branch_receipt(
 
     return {
         "schema": (
-            PERCEPTION_BRANCH_RECEIPT_SCHEMA_V5 if group.is_thinking
+            PERCEPTION_BRANCH_RECEIPT_SCHEMA_V6 if group.is_sampling
+            else PERCEPTION_BRANCH_RECEIPT_SCHEMA_V5 if group.is_thinking
             else PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4 if group.is_template
             else PERCEPTION_BRANCH_RECEIPT_SCHEMA
         ),
@@ -3199,6 +3808,82 @@ class PerceptionBranchReplayContact:
     response_text_sha256: str | None
     text: str | None
     presentation_block_sha256: Mapping[str, str] | None = None
+
+
+def _replay_sampling_value(sampling: object, *, contacts: Mapping[str, "PerceptionBranchReplayContact"], what: str) -> None:
+    """Decision 338: hold a recorded v6 ``sampling`` value to its recorded contacts.
+
+    Every sample contact must be one the row recorded, with the recorded request / response digests; the merge and the commit
+    must re-derive from the recorded response texts. A sample that ended on a finite completion has no text to re-derive from, so
+    its recorded status stands (the bundle verifier checks it against the wire ``finish_reason``). Raises
+    :class:`PerceptionBranchError` on any disagreement, which the caller turns into an INCOMPLETE (re-flown) row.
+    """
+
+    if sampling is None:
+        return
+    if not isinstance(sampling, Mapping):
+        raise PerceptionBranchError(f"{what} sampling record is not an object")
+
+    def texts_of(record: Mapping[str, object], label: str) -> list[str | None]:
+        texts: list[str | None] = []
+        for sample in record["samples"]:
+            found = contacts.get(sample.get("contact_id"))
+            if found is None:
+                raise PerceptionBranchError(f"{what} {label} sample names a contact this row did not record")
+            if (
+                found.request_sha256 != sample.get("request_sha256")
+                or found.response_text_sha256 != sample.get("response_text_sha256")
+            ):
+                raise PerceptionBranchError(f"{what} {label} sample digests differ from its recorded contact")
+            status = sample.get("parse_status")
+            if isinstance(status, str) and status.startswith("finite-completion:"):
+                texts.append(None)
+                continue
+            if not isinstance(found.text, str) or hashlib.sha256(found.text.encode("utf-8")).hexdigest() != sample.get(
+                "response_text_sha256"
+            ):
+                raise PerceptionBranchError(f"{what} {label} sample text does not hash to its recorded response")
+            texts.append(found.text)
+        return texts
+
+    record = sampling.get("perception_samples")
+    if isinstance(record, Mapping):
+        axis = PerceptionSamplesAxis(
+            k=record["k"], decoding=tuple(sorted(record["decoding"].items())), seed_offsets=tuple(record["seed_offsets"]),
+            merge_policy=record["merge_policy"], cap=record["cap"],
+        )
+        texts = texts_of(record, "perception")
+        for sample, text in zip(record["samples"], texts):
+            status, ids, _raw = parse_perception_branch_note(text)
+            if sample.get("note_parse_status") != status or list(sample.get("candidate_intent_ids") or ()) != list(ids):
+                raise PerceptionBranchError(f"{what} perception sample note fields differ from their re-derivation")
+        outcome = merge_perception_samples(axis, texts)
+        if (
+            list(outcome.merged_candidate_ids) != record["merged_candidate_ids"]
+            or list(outcome.appended_candidate_ids) != record["appended_candidate_ids"]
+        ):
+            raise PerceptionBranchError(f"{what} perception merge differs from its re-derivation")
+    record = sampling.get("solver_samples")
+    if isinstance(record, Mapping):
+        commit = record["commit"]
+        axis = SolverSamplesAxis(
+            n=record["n"], decoding=tuple(sorted(record["decoding"].items())), seed_offsets=tuple(record["seed_offsets"]),
+            commit_policy=commit["policy"], min_support=commit["min_support"],
+            similarity_threshold=commit["similarity_threshold"], n1_min=commit["n1_min"],
+            empty_votes_min=commit["empty_votes_min"],
+        )
+        texts = texts_of(record, "solver")
+        for sample, text in zip(record["samples"], texts):
+            if text is not None and solver_sample_parse_status(text) != sample.get("parse_status"):
+                raise PerceptionBranchError(f"{what} solver sample parse status differs from its re-derivation")
+        outcome = commit_solver_samples(axis, texts, n1=None)
+        recorded = record["outcome"]
+        if (
+            recorded["intent_support"] != outcome.intent_support
+            or recorded["delivered_entity_count"] != len(outcome.entities)
+            or recorded["entity_supports"] != [{"type": e.type, "support": e.support} for e in outcome.entities]
+        ):
+            raise PerceptionBranchError(f"{what} solver commit differs from its re-derivation")
 
 
 def replay_perception_branch_block(
@@ -3322,6 +4007,8 @@ def replay_perception_branch_block(
                 raise PerceptionBranchError(
                     f"{what} Solver column digests differ from its recorded contact"
                 )
+        if schema == PERCEPTION_BRANCH_RECEIPT_SCHEMA_V6:
+            _replay_sampling_value(row.get("sampling"), contacts=contacts, what=what)
         new_row = dict(row)
         new_row.update({
             "note_parse_status": status,
@@ -3340,8 +4027,11 @@ def replay_perception_branch_block(
     # Every block is rebuilt under the CURRENT schema (v3), as v1 -> v2 was before.
     # A v4 (template) block stays v4: its rows carry the template axis.
     # A v5 (thinking-policy) block stays v5: its rows carry the thinking axis.
+    # A v6 (sampling) block stays v6: its rows carry the sampling records.
     result["schema"] = (
-        schema if schema in (PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4, PERCEPTION_BRANCH_RECEIPT_SCHEMA_V5)
+        schema if schema in (
+            PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4, PERCEPTION_BRANCH_RECEIPT_SCHEMA_V5, PERCEPTION_BRANCH_RECEIPT_SCHEMA_V6,
+        )
         else PERCEPTION_BRANCH_RECEIPT_SCHEMA
     )
     result["branches"] = rebuilt
@@ -3356,6 +4046,22 @@ def replay_perception_branch_block(
 
 
 __all__ = [
+    "SAMPLING_VARIANT_KINDS",
+    "PerceptionSamplesAxis",
+    "SolverSamplesAxis",
+    "derive_sample_seeds",
+    "merge_perception_samples",
+    "commit_solver_samples",
+    "solver_sample_parse_status",
+    "perception_contact_slots",
+    "solver_contact_slots",
+    "sampling_decoding_table",
+    "parse_perception_samples",
+    "parse_perception_sampling_variants",
+    "parse_solver_samples",
+    "perception_samples_record",
+    "sampling_extra_contacts",
+    "solver_samples_record",
     "MAX_PERCEPTION_B_BRANCHES",
     "MAX_PERCEPTION_BRANCHES",
     "MIN_PERCEPTION_BRANCHES",

@@ -642,6 +642,17 @@ def _presentation_blocks(request_payload: Mapping[str, object]) -> tuple[tuple[s
 _THINKING_DECODING_KEYS = ("thinking_budget_tokens", "chat_template_kwargs", "max_tokens")
 
 
+def _sampling_contact_ids(row: object, axis: str) -> list[object] | None:
+    """The ordered sample contact ids of a v6 branch row's ``sampling[axis]`` record, or ``None`` when the row declares none."""
+
+    sampling = row.get("sampling") if isinstance(row, Mapping) else None
+    record = sampling.get(axis) if isinstance(sampling, Mapping) else None
+    samples = record.get("samples") if isinstance(record, Mapping) else None
+    if not isinstance(samples, Sequence) or isinstance(samples, (str, bytes)):
+        return None
+    return [sample.get("contact_id") if isinstance(sample, Mapping) else None for sample in samples]
+
+
 def _is_perception_branch_solver_fanout(
     receipt: Mapping[str, object], solver_receipt: Mapping[str, object],
 ) -> bool:
@@ -665,9 +676,17 @@ def _is_perception_branch_solver_fanout(
     branches = block.get("branches")
     if not isinstance(branches, Sequence) or isinstance(branches, (str, bytes)) or not branches:
         return False
-    declared = [
-        row.get("solver_contact_id") if isinstance(row, Mapping) else None for row in branches
-    ]
+    declared: list[object] = []
+    for row in branches:
+        samples = _sampling_contact_ids(row, "solver_samples")
+        if samples is not None:
+            # Decision 338 (receipt v6): a ``solver_samples`` branch spends n consecutive Solver contacts, sample 0 first and
+            # named by the row's own solver_contact_id.
+            if not samples or samples[0] != row.get("solver_contact_id"):
+                return False
+            declared.extend(samples)
+        else:
+            declared.append(row.get("solver_contact_id") if isinstance(row, Mapping) else None)
     contacts = solver_receipt.get("contacts")
     final = solver_receipt.get("final_contact")
     visit = [

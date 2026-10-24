@@ -1878,6 +1878,17 @@ def _role_thinking_policy(config, thinking_policy: Mapping[str, object] | None) 
     return {by_kind[kind]: entry for kind, entry in thinking_policy.items()}
 
 
+def _sampling_decoding_table(group, perception_phase_id, solver_phase_id):
+    """Decision 338: ``{branch id: {role phase id: {decoding, seed_offsets}}}`` for a sampling group (see
+    ``rails.supply_variants.sampling_decoding_table``)."""
+
+    from .supply_variants import sampling_decoding_table
+
+    return sampling_decoding_table(
+        group, perception_phase_id=perception_phase_id, solver_phase_id=solver_phase_id,
+    ) or None
+
+
 def _branch_thinking_policy(config, group) -> dict[str, dict[str, Mapping[str, object]]] | None:
     """NX-T R1: re-key a thinking-policy column's per-branch ``{role kind: override}`` maps by this episode's role phase ids.
 
@@ -2671,6 +2682,26 @@ async def _invoke_native_role_episode(
     perception_thinking_mode = bool(
         perception_branch_group is not None and perception_branch_group.is_thinking
     )
+    # Decision 338 (2026-10-19): True when the branch group is the SAMPLING kind -- a branch fans out k Perception samples
+    # (merged into its shortlist) and/or n Solver samples (committed by the support policy), every sample a real contact. The
+    # ordered contact slots map a node-global contact index to its ``(branch index, sample index)``; both slot lists are None
+    # (everything keyed on them unreachable) for every config written before decision 338.
+    perception_sampling_mode = bool(
+        perception_branch_group is not None and perception_branch_group.is_sampling
+    )
+    sampling_perception_slots = None
+    sampling_solver_slots = None
+    if perception_sampling_mode:
+        from .supply_variants import perception_contact_slots, solver_contact_slots
+
+        sampling_perception_slots = perception_contact_slots(perception_branch_group)
+        sampling_solver_slots = solver_contact_slots(perception_branch_group)
+    # Per-branch sampling custody built contact by contact: ``{branch id: [per-sample stream rows]}`` for the Perception
+    # samples (with their raw note texts and parsed lists, for the merge) and the Solver samples (with their raw texts, for
+    # the commit), and the finished records the final receipt assembly folds into each branch row.
+    sampling_perception_streams: dict[str, list[dict[str, object]]] = {}
+    sampling_solver_streams: dict[str, list[dict[str, object]]] = {}
+    sampling_records: dict[str, dict[str, object]] = {}
     # LEVEL 2 (merge set C item 1): the Solver's own phase id, resolved once,
     # so the Solver-fan-out messages/settle/contact-context seams below can
     # tell "this is the Solver's own phase" from "this is Perception's own
@@ -3103,7 +3134,10 @@ async def _invoke_native_role_episode(
         branch_index = perception_branch_group.branch_ids.index(branch_id)
         extra_item = None
         presentation_skip_reason = None
-        if branch.deliver or branch.is_twin or branch.instruction_template is not None or branch.thinking_policy is not None:
+        if (
+            branch.deliver or branch.is_twin or branch.instruction_template is not None or branch.thinking_policy is not None
+            or perception_sampling_mode
+        ):
             # NX programme E1, Perception node: a template branch varies the
             # instruction (set by the caller before the contact plan is minted)
             # and nothing else, so it renders the SAME evidence blocks over the
@@ -3183,6 +3217,11 @@ async def _invoke_native_role_episode(
             "presentation_skip_reason": presentation_skip_reason,
             "contrast_block_sha256": contrast_block_sha256,
         }
+        if perception_sampling_mode:
+            # Decision 338: which sample of the branch's Perception fan-out this contact is (None for a branch that
+            # declares no ``perception_samples`` axis). Added only for a sampling group, so every other group's pending row
+            # is unchanged.
+            record["sample_index"] = request.context.sample_index
         existing = perception_branch_records.setdefault(plan.contact_id, record)
         if existing != record:
             raise RailsRunnerError(
@@ -3343,6 +3382,10 @@ async def _invoke_native_role_episode(
             "branch_id": branch_id,
             "candidate_supply_value_ids": _rendered_candidate_value_ids(messages),
         }
+        if perception_sampling_mode:
+            # Decision 338: which sample of the branch's Solver fan-out this contact is (None outside a ``solver_samples``
+            # branch). Added only for a sampling group, so every other group's pending row is unchanged.
+            record["sample_index"] = request.context.sample_index
         existing = perception_branch_solver_pending.setdefault(plan.contact_id, record)
         if existing != record:
             raise RailsRunnerError(
@@ -3495,11 +3538,25 @@ async def _invoke_native_role_episode(
             # exactly one visit per row (design section 3, "Branch visits"),
             # so this block runs at most once per row.
             branch_id = pending["perception_branch_id"]
-            expected = perception_branch_group.branch_ids[
-                len(perception_branch_contacts)
-            ] if (
-                len(perception_branch_contacts) < perception_branch_group.branch_count
-            ) else None
+            # Decision 338: a sampling group's visit has one contact per SLOT (k for a perception_samples branch), so the
+            # expected branch -- and sample -- of the next settled contact comes from the slot list; every other group has
+            # one contact per branch.
+            perception_slot_total = (
+                len(sampling_perception_slots) if sampling_perception_slots is not None
+                else perception_branch_group.branch_count
+            )
+            if len(perception_branch_contacts) < perception_slot_total:
+                if sampling_perception_slots is not None:
+                    slot_branch, slot_sample = sampling_perception_slots[len(perception_branch_contacts)]
+                    expected = perception_branch_group.branch_ids[slot_branch]
+                    if pending.get("sample_index") != slot_sample:
+                        raise RailsRunnerError(
+                            "perception-branch samples settled out of their declared order"
+                        )
+                else:
+                    expected = perception_branch_group.branch_ids[len(perception_branch_contacts)]
+            else:
+                expected = None
             if branch_id is None or branch_id != expected:
                 raise RailsRunnerError(
                     "perception branches settled out of their declared order"
@@ -3509,7 +3566,7 @@ async def _invoke_native_role_episode(
                     "a perception-branch contact cannot execute a tool"
                 )
             perception_branch_contacts.append((plan, completion, slot_id))
-            if len(perception_branch_contacts) < perception_branch_group.branch_count:
+            if len(perception_branch_contacts) < perception_slot_total:
                 pending.clear()
                 return
             # A NEW, explicit assertion beside the structural guarantee
@@ -3550,12 +3607,22 @@ async def _invoke_native_role_episode(
             # this ``if`` block's tail and falls through to register state,
             # exactly as an ordinary Solver visit's single contact would.
             branch_id = pending["perception_branch_id"]
-            expected = perception_branch_group.branch_ids[
-                len(perception_branch_solver_contacts)
-            ] if (
-                len(perception_branch_solver_contacts)
-                < perception_branch_group.branch_count
-            ) else None
+            solver_slot_total = (
+                len(sampling_solver_slots) if sampling_solver_slots is not None
+                else perception_branch_group.branch_count
+            )
+            if len(perception_branch_solver_contacts) < solver_slot_total:
+                if sampling_solver_slots is not None:
+                    slot_branch, slot_sample = sampling_solver_slots[len(perception_branch_solver_contacts)]
+                    expected = perception_branch_group.branch_ids[slot_branch]
+                    if pending.get("sample_index") != slot_sample:
+                        raise RailsRunnerError(
+                            "perception-branch Solver samples settled out of their declared order"
+                        )
+                else:
+                    expected = perception_branch_group.branch_ids[len(perception_branch_solver_contacts)]
+            else:
+                expected = None
             if branch_id is None or branch_id != expected:
                 raise RailsRunnerError(
                     "perception-branch Solver contacts settled out of their "
@@ -3566,10 +3633,7 @@ async def _invoke_native_role_episode(
                     "a perception-branch Solver contact cannot execute a tool"
                 )
             perception_branch_solver_contacts.append((plan, completion, slot_id))
-            if (
-                len(perception_branch_solver_contacts)
-                < perception_branch_group.branch_count
-            ):
+            if len(perception_branch_solver_contacts) < solver_slot_total:
                 pending.clear()
                 return
             if branch_id != perception_branch_group.delivering_branch.branch_id:
@@ -4524,7 +4588,7 @@ async def _invoke_native_role_episode(
             )
         return record
 
-    def read_perception_branch_record(branch_index, result):
+    def read_perception_branch_record(branch_index, result, sample_index=None):
         """Same-flight instrument, PHASE 2: the receipt row for THIS branch.
 
         Structurally :func:`read_supply_variant_arm_record`'s twin: the
@@ -4551,6 +4615,10 @@ async def _invoke_native_role_episode(
             raise RailsRunnerError(
                 "a perception branch sealed no recorded contact of its own"
             )
+        if perception_sampling_mode and pending_row.get("sample_index") != sample_index:
+            raise RailsRunnerError(
+                "a perception-branch sample sealed another sample's recorded contact"
+            )
         request_sha256 = final.get("request_sha256") if isinstance(final, Mapping) else None
         response_text_sha256 = (
             final.get("response_text_sha256") if isinstance(final, Mapping) else None
@@ -4565,12 +4633,51 @@ async def _invoke_native_role_episode(
             note_text,
         )
         branch = perception_branch_group.branch_at(branch_index)
+        if perception_sampling_mode and branch.perception_samples is not None:
+            # Decision 338, lever L2: keep this sample's custody; the LAST sample merges the k notes and the merged note
+            # replaces the branch's own in ``perception_branch_notes`` (what its Solver contact renders). Sample 0 alone builds
+            # the branch's row below; later samples return only the branch identity.
+            axis = branch.perception_samples
+            seed = adapter_request.branch_sample_seeds.get(contact_id)
+            if seed is None:
+                raise RailsRunnerError("a perception-sample contact composed no recorded seed")
+            stream = sampling_perception_streams.setdefault(branch.branch_id, [])
+            if sample_index != len(stream):
+                raise RailsRunnerError("perception samples were read out of their declared order")
+            stream.append({
+                "contact_id": contact_id, "request_sha256": request_sha256,
+                "response_text_sha256": response_text_sha256, "note_parse_status": note_parse_status,
+                "candidate_intent_ids": list(candidate_intent_ids), "text": note_text, "seed": seed,
+            })
+            if sample_index == axis.k - 1:
+                from .perception_merge_policies import build_merged_note
+                from .supply_variants import (
+                    derive_sample_seeds, merge_perception_samples, perception_samples_record,
+                )
+
+                outcome = merge_perception_samples(axis, [row["text"] for row in stream])
+                if tuple(row["seed"] for row in stream) != derive_sample_seeds(stream[0]["seed"], axis.seed_offsets):
+                    raise RailsRunnerError(
+                        f"perception branch {branch.branch_id!r} samples carried seeds other than the lock seed plus its offsets"
+                    )
+                sampling_records.setdefault(branch.branch_id, {})["perception_samples"] = perception_samples_record(
+                    axis, lock_seed=stream[0]["seed"],
+                    samples=[{key: value for key, value in row.items() if key not in ("text", "seed")} for row in stream],
+                    outcome=outcome,
+                )
+                perception_branch_notes[branch.branch_id] = build_merged_note(
+                    [row["text"] for row in stream], outcome,
+                )
+            if sample_index != 0:
+                return {"branch_id": branch.branch_id}
+            # Sample 0 falls through to build the row; the notes entry below is sample 0's until the merge replaces it.
         # LEVEL 2 (merge set C item 1): keep this branch's own RAW note text
         # for the whole row -- the Solver's later first visit
         # (``perception_branch_solver_messages``) needs it to render a
         # non-A branch's own history without a second Perception contact.
         # Harmless at level 1 too (simply never read).
-        perception_branch_notes[branch.branch_id] = note_text
+        if not (perception_sampling_mode and branch.perception_samples is not None and branch.branch_id in sampling_records):
+            perception_branch_notes[branch.branch_id] = note_text
         # "What to build" item 3: a short list is a measured outcome, never
         # a refusal. Counted on the COLLAPSED list (a padded [x, x, y] meets
         # a bound of 2, not 3); an empty or malformed note carries no ids and
@@ -4591,9 +4698,43 @@ async def _invoke_native_role_episode(
             min_candidates_met=min_candidates_met,
             template_group=perception_template_mode,
             thinking_group=perception_thinking_mode,
+            sampling_group=perception_sampling_mode, sampling_pending=perception_sampling_mode,
         )
 
-    def read_perception_branch_solver_record(branch_index, result):
+    def record_solver_sample(branch, sample_index, *, contact_id, request_sha256, response_text_sha256, text, finite_reason):
+        """Decision 338, lever L1: keep one Solver sample's custody; the LAST sample commits the n answers."""
+
+        from .supply_variants import (
+            commit_solver_samples, derive_sample_seeds, solver_sample_parse_status, solver_samples_record,
+        )
+
+        axis = branch.solver_samples
+        seed = adapter_request.branch_sample_seeds.get(contact_id)
+        if seed is None:
+            raise RailsRunnerError("a solver-sample contact composed no recorded seed")
+        stream = sampling_solver_streams.setdefault(branch.branch_id, [])
+        if sample_index != len(stream):
+            raise RailsRunnerError("solver samples were read out of their declared order")
+        stream.append({
+            "contact_id": contact_id, "request_sha256": request_sha256, "response_text_sha256": response_text_sha256,
+            "parse_status": solver_sample_parse_status(text, finite_reason=finite_reason), "text": text, "seed": seed,
+        })
+        if sample_index != axis.n - 1:
+            return
+        if tuple(row["seed"] for row in stream) != derive_sample_seeds(stream[0]["seed"], axis.seed_offsets):
+            raise RailsRunnerError(
+                f"perception branch {branch.branch_id!r} Solver samples carried seeds other than the lock seed plus its offsets"
+            )
+        # The in-flight run declares no N1 source (it needs the supplied exemplar ids), so a configured gate reports
+        # ``n1-unavailable`` and does not fire; the reader computes N1 offline.
+        outcome = commit_solver_samples(axis, [row["text"] for row in stream], n1=None)
+        sampling_records.setdefault(branch.branch_id, {})["solver_samples"] = solver_samples_record(
+            axis, lock_seed=stream[0]["seed"],
+            samples=[{key: value for key, value in row.items() if key not in ("text", "seed")} for row in stream],
+            outcome=outcome,
+        )
+
+    def read_perception_branch_solver_record(branch_index, result, sample_index=None):
         """LEVEL 2 (merge set C item 1, design section 3, "Level 2"): one
         branch's own Solver-column custody.
 
@@ -4626,6 +4767,10 @@ async def _invoke_native_role_episode(
                 "a perception-branch Solver contact sealed another branch's "
                 "pending record"
             )
+        if perception_sampling_mode and pending_row.get("sample_index") != sample_index:
+            raise RailsRunnerError(
+                "a perception-branch Solver sample sealed another sample's pending record"
+            )
         request_sha256 = final.get("request_sha256") if isinstance(final, Mapping) else None
         response_text_sha256 = (
             final.get("response_text_sha256") if isinstance(final, Mapping) else None
@@ -4634,6 +4779,19 @@ async def _invoke_native_role_episode(
             raise RailsRunnerError(
                 "a perception-branch Solver contact has no request/response digest"
             )
+        if perception_sampling_mode and branch.solver_samples is not None:
+            record_solver_sample(
+                branch, sample_index, contact_id=contact_id, request_sha256=request_sha256,
+                response_text_sha256=response_text_sha256, text=result.get("actor_output"), finite_reason=None,
+            )
+            if sample_index != 0:
+                # The branch's Solver column is its sample 0 contact; later samples only feed the sampling record.
+                rendered = perception_branch_solver_render.get(contact_id)
+                if rendered is not None and rendered != perception_branch_solver_render_by_branch.get(branch.branch_id):
+                    raise RailsRunnerError(
+                        f"perception branch {branch.branch_id!r} Solver samples rendered different requests"
+                    )
+                return {"branch_id": branch.branch_id}
         record = {
             "branch_id": branch.branch_id,
             "solver_contact_id": contact_id,
@@ -4647,7 +4805,7 @@ async def _invoke_native_role_episode(
             perception_branch_solver_render_by_branch[branch.branch_id] = rendered
         return record
 
-    def read_perception_branch_solver_absent(branch_index, error):
+    def read_perception_branch_solver_absent(branch_index, error, sample_index=None):
         """LEVEL 2, NX-T R1 seal fix (2026-10-15): one NON-delivering branch's
         Solver contact that ended on a finite completion.
 
@@ -4694,6 +4852,16 @@ async def _invoke_native_role_episode(
                 "a perception-branch Solver contact that ended on a finite completion "
                 "has no request/response digest"
             )
+        if perception_sampling_mode and branch.solver_samples is not None:
+            # A sample that ended on a finite completion casts no vote; the other samples still run. Only sample 0 (the
+            # branch's Solver column) marks the branch row absent.
+            record_solver_sample(
+                branch, sample_index, contact_id=contact_id, request_sha256=request_sha256,
+                response_text_sha256=response_text_sha256, text=None,
+                finite_reason=str(getattr(error, "finish_reason", None)),
+            )
+            if sample_index != 0:
+                return {"branch_id": branch.branch_id}
         record = {
             "branch_id": branch.branch_id,
             "solver_contact_id": contact_id,
@@ -4916,6 +5084,13 @@ async def _invoke_native_role_episode(
         # phase id. None for every config that declares no ``roles.solver.decoding_variants`` -- byte-identical requests.
         solver_arm_decoding=solver_arm_decoding or None,
         solver_arm_decoding_role_id=(supply_variant_phase_id if solver_arm_decoding else None),
+        # Decision 338: the per-branch SAMPLING axes of a sampling column, ``{branch id: {role phase id: {decoding,
+        # seed_offsets}}}``. None for every config that declares no ``roles.perception.sampling_variants`` -- byte-identical
+        # requests.
+        branch_sampling=(
+            _sampling_decoding_table(perception_branch_group, perception_branch_phase_id, solver_phase_id)
+            if perception_sampling_mode else None
+        ),
     )
     # E8b: the SAME request composer, bound to the cleaning contact's own
     # binding provider and to a completion sink that settles nothing. It is a
@@ -5644,9 +5819,17 @@ async def _invoke_native_role_episode(
                     # "first"/"every" choice to make: EVERY invocation of
                     # this node fans out to every declared branch, in order.
                     branch_group = role.perception_branches
-                    kwargs["perception_branch_id"] = branch_group.branch_ids[
-                        index % branch_group.branch_count
-                    ]
+                    if sampling_perception_slots is not None:
+                        # Decision 338: one slot per contact -- k consecutive slots for a ``perception_samples`` branch.
+                        slot_branch, slot_sample = sampling_perception_slots[
+                            index % len(sampling_perception_slots)
+                        ]
+                        kwargs["perception_branch_id"] = branch_group.branch_ids[slot_branch]
+                        kwargs["sample_index"] = slot_sample
+                    else:
+                        kwargs["perception_branch_id"] = branch_group.branch_ids[
+                            index % branch_group.branch_count
+                        ]
                 if (
                     role.role_kind == "solver"
                     and perception_branch_group is not None
@@ -5663,7 +5846,14 @@ async def _invoke_native_role_episode(
                     # leaves ``perception_branch_id`` at its default ``None``
                     # -- the ordinary, unbranched contact path, which is what
                     # makes a revisit contact branch A alone.
-                    if index < perception_branch_group.branch_count:
+                    if sampling_solver_slots is not None:
+                        # Decision 338: one slot per first-visit Solver contact -- n consecutive slots for a
+                        # ``solver_samples`` branch, one for every other branch.
+                        if index < len(sampling_solver_slots):
+                            slot_branch, slot_sample = sampling_solver_slots[index]
+                            kwargs["perception_branch_id"] = perception_branch_group.branch_ids[slot_branch]
+                            kwargs["sample_index"] = slot_sample
+                    elif index < perception_branch_group.branch_count:
                         kwargs["perception_branch_id"] = (
                             perception_branch_group.branch_ids[index]
                         )
@@ -6519,13 +6709,20 @@ async def _invoke_native_role_episode(
                     _render = perception_branch_solver_render_by_branch.get(_branch.branch_id)
                     if _render is None:
                         continue
+                    # Decision 338: a ``perception_samples`` branch's Solver reads its MERGED note, not the sample-0 note its
+                    # row names, so the guard compares the note the Solver actually rendered.
+                    _effective_note = (
+                        hashlib.sha256(perception_branch_notes[_branch.branch_id].encode("utf-8")).hexdigest()
+                        if perception_sampling_mode and _branch.perception_samples is not None
+                        else _row["note_sha256"]
+                    )
                     if _branch.is_twin:
                         if _render != _a_render:
                             raise RailsRunnerError(
                                 f"level-2 perception branch {_branch.branch_id!r} (the twin) "
                                 "rendered a Solver request different from branch A's"
                             )
-                    elif _row["note_sha256"] != _a_note and _render == _a_render:
+                    elif _effective_note != _a_note and _render == _a_render:
                         raise RailsRunnerError(
                             f"level-2 perception branch {_branch.branch_id!r} Solver column "
                             "replicated branch A's rendered request although its own "
@@ -6572,6 +6769,18 @@ async def _invoke_native_role_episode(
                         ),
                         template_group=perception_template_mode,
                         thinking_group=perception_thinking_mode,
+                        **(
+                            {
+                                "sampling_group": True,
+                                "sampling": (
+                                    {
+                                        "perception_samples": sampling_records.get(branch.branch_id, {}).get("perception_samples"),
+                                        "solver_samples": sampling_records.get(branch.branch_id, {}).get("solver_samples"),
+                                    }
+                                    if branch.is_b else None
+                                ),
+                            } if perception_sampling_mode else {}
+                        ),
                         solver_absent=bool(solver_row.get("solver_absent", False)),
                         absent_reason=solver_row.get("absent_reason"),
                     ))

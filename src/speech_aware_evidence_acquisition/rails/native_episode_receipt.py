@@ -1840,15 +1840,17 @@ PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4 = "saea-perception-branch-arms-v4"
 #: answer_reserve_tokens}}`` override map for every other branch, whose ONLY axis it is. Sealed by a
 #: ``roles.perception.thinking_variants`` group, whose twin is OPTIONAL (the column may fly without an in-flight A/A).
 PERCEPTION_BRANCH_RECEIPT_SCHEMA_V5 = "saea-perception-branch-arms-v5"
+# (v6 is declared below, beside its validator, and appended to these tuples there.)
 PERCEPTION_BRANCH_RECEIPT_SCHEMAS = (
     PERCEPTION_BRANCH_RECEIPT_SCHEMA_V1, PERCEPTION_BRANCH_RECEIPT_SCHEMA_V2,
     PERCEPTION_BRANCH_RECEIPT_SCHEMA, PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4,
-    PERCEPTION_BRANCH_RECEIPT_SCHEMA_V5,
+    PERCEPTION_BRANCH_RECEIPT_SCHEMA_V5, "saea-perception-branch-arms-v6",
 )
 #: The schemas whose rows carry the v2 note-parse fields (v2 and every later one).
 PERCEPTION_BRANCH_NOTE_FIELD_SCHEMAS = (
     PERCEPTION_BRANCH_RECEIPT_SCHEMA_V2, PERCEPTION_BRANCH_RECEIPT_SCHEMA,
     PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4, PERCEPTION_BRANCH_RECEIPT_SCHEMA_V5,
+    "saea-perception-branch-arms-v6",
 )
 #: The three retrieval-key pins a ``key_source`` branch may swap (v3).
 PERCEPTION_BRANCH_KEY_SOURCE_FIELDS = ("facet_source", "query_source", "agreement_source")
@@ -2082,6 +2084,165 @@ def perception_branch_thinking_policy_error(policy: object) -> str | None:
             elif isinstance(value, bool) or not isinstance(value, int) or value < 0:
                 return f"perception branch thinking_policy {key} must be a non-negative integer"
     return None
+#: v6 (2026-10-19, decision 338, the SAMPLING column): v3 plus ``sampling`` on every branch row -- ``None`` for A and the twin,
+#: for every other branch ``{"perception_samples": <record>|None, "solver_samples": <record>|None}`` with at least one
+#: record. Each record carries the branch's per-sample streams (seed, override, contact identity, request / response hashes,
+#: parse status), the resolved seeds, and the merge (candidate union) or commit (first-support) outcome. Sealed by a
+#: ``roles.perception.sampling_variants`` group, whose twin is required. v1-v5 verify unchanged under their own rules.
+PERCEPTION_BRANCH_RECEIPT_SCHEMA_V6 = "saea-perception-branch-arms-v6"
+_PERCEPTION_BRANCH_V6_EXTRA_FIELDS = frozenset({"sampling"})
+SAMPLING_AXES = ("perception_samples", "solver_samples")
+_SAMPLING_DECODING_KEYS = frozenset({"temperature", "top_p", "top_k"})
+_HEX = frozenset("0123456789abcdef")
+
+
+def _is_hex64(value: object) -> bool:
+    return isinstance(value, str) and len(value) == 64 and set(value) <= _HEX
+
+
+def _is_int(value: object, low: int = 0) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool) and value >= low
+
+
+def _sampling_stream_error(
+    record: Mapping[str, object], *, count_key: str, low: int, high: int, status_key: str,
+) -> str | None:
+    """Shared shape of the per-sample stream every sampling record carries."""
+
+    count = record.get(count_key)
+    if not _is_int(count, low) or count > high:
+        return f"sampling {count_key} must be an integer from {low} to {high}"
+    decoding = record.get("decoding")
+    if (
+        not isinstance(decoding, Mapping) or not decoding or set(decoding) - _SAMPLING_DECODING_KEYS
+        or "temperature" not in decoding
+        or decoding_override_error(decoding) is not None
+        or decoding["temperature"] <= 0
+    ):
+        return (
+            f"sampling decoding must be a valid override over {sorted(_SAMPLING_DECODING_KEYS)} "
+            "with a positive temperature"
+        )
+    offsets, seeds = record.get("seed_offsets"), record.get("seeds")
+    if (
+        not isinstance(offsets, list) or len(offsets) != count - 1
+        or any(not _is_int(value, 1) for value in offsets) or len(set(offsets)) != len(offsets)
+    ):
+        return f"sampling seed_offsets must be {count - 1} distinct positive integers"
+    if (
+        not isinstance(seeds, list) or len(seeds) != count or any(not _is_int(value, 0) for value in seeds)
+        or [seed - seeds[0] for seed in seeds[1:]] != offsets
+    ):
+        return "sampling seeds must be the lock seed followed by lock seed + each offset"
+    samples = record.get("samples")
+    if not isinstance(samples, list) or len(samples) != count:
+        return f"sampling must record exactly {count} samples"
+    contact_ids: list[str] = []
+    for index, sample in enumerate(samples):
+        keys = {
+            "sample_index", "seed", "override", "contact_id", "request_sha256", "response_text_sha256", status_key,
+        }
+        if status_key == "note_parse_status":
+            keys.add("candidate_intent_ids")
+        if not isinstance(sample, Mapping) or set(sample) != keys:
+            return "sampling sample record has an invalid shape"
+        if sample["sample_index"] != index or sample["seed"] != seeds[index]:
+            return "sampling samples must be ordered by sample_index and carry their derived seed"
+        if (sample["override"] is None) != (index == 0) or (
+            index > 0 and dict(sample["override"]) != dict(decoding)
+        ):
+            return "sampling sample 0 is greedy (override None); every later sample carries the declared override"
+        if not isinstance(sample["contact_id"], str) or not sample["contact_id"]:
+            return "sampling sample lacks its contact identity"
+        contact_ids.append(sample["contact_id"])
+        if not _is_hex64(sample["request_sha256"]) or not _is_hex64(sample["response_text_sha256"]):
+            return "sampling sample hashes must be lowercase 64-hex SHA-256"
+        if not isinstance(sample[status_key], str) or not sample[status_key]:
+            return f"sampling sample {status_key} must be a non-empty string"
+        if status_key == "note_parse_status":
+            ids = sample["candidate_intent_ids"]
+            if (
+                not isinstance(ids, list) or any(not isinstance(value, str) or not value for value in ids)
+                or len(set(ids)) != len(ids)
+            ):
+                return "sampling sample candidate_intent_ids must be distinct non-empty strings"
+    if len(set(contact_ids)) != len(contact_ids):
+        return "sampling samples must have distinct contact ids"
+    return None
+
+
+def perception_branch_sampling_error(sampling: object, *, is_b: bool) -> str | None:
+    """Why a v6 row's ``sampling`` value is malformed, or ``None`` when it is well formed (``None`` for A / the twin)."""
+
+    if not is_b:
+        return None if sampling is None else "the delivering branch (A) and its twin (T) must declare no sampling axis"
+    if not isinstance(sampling, Mapping) or set(sampling) != set(SAMPLING_AXES):
+        return f"a sampling branch row must carry exactly {list(SAMPLING_AXES)}"
+    if all(sampling[axis] is None for axis in SAMPLING_AXES):
+        return "a B sampling branch must declare at least one sampling axis"
+    perception = sampling["perception_samples"]
+    if perception is not None:
+        if not isinstance(perception, Mapping) or set(perception) != {
+            "k", "decoding", "seed_offsets", "seeds", "samples", "merge_policy", "cap",
+            "support_counts", "merged_candidate_ids", "appended_candidate_ids",
+        }:
+            return "sampling perception_samples record has an invalid shape"
+        reason = _sampling_stream_error(
+            perception, count_key="k", low=2, high=4, status_key="note_parse_status",
+        )
+        if reason is not None:
+            return reason
+        if not isinstance(perception["merge_policy"], str) or not perception["merge_policy"]:
+            return "sampling merge_policy must be a non-empty string"
+        if not _is_int(perception["cap"], 1):
+            return "sampling cap must be a positive integer"
+        merged = perception["merged_candidate_ids"]
+        appended = perception["appended_candidate_ids"]
+        if (
+            not isinstance(merged, list) or len(merged) > perception["cap"]
+            or any(not isinstance(value, str) or not value for value in merged)
+            or len(set(merged)) != len(merged)
+            or not isinstance(appended, list) or any(value not in merged for value in appended)
+        ):
+            return "sampling merged_candidate_ids must be distinct, within the cap, and contain every appended id"
+        first = perception["samples"][0]["candidate_intent_ids"]
+        if merged[: len(first)] != first[: perception["cap"]]:
+            return "sampling merged list must start with sample 0's own list verbatim"
+        counts = perception["support_counts"]
+        if not isinstance(counts, list) or any(
+            not isinstance(row, Mapping) or set(row) != {"intent_id", "support", "best_rank"}
+            or not _is_int(row["support"], 1) or not _is_int(row["best_rank"], 1)
+            for row in counts
+        ) or any(value not in {row["intent_id"] for row in counts} for value in merged):
+            return "sampling support_counts must cover every merged candidate"
+    solver = sampling["solver_samples"]
+    if solver is not None:
+        if not isinstance(solver, Mapping) or set(solver) != {
+            "n", "greedy_first", "decoding", "seed_offsets", "seeds", "samples", "commit", "outcome",
+        }:
+            return "sampling solver_samples record has an invalid shape"
+        reason = _sampling_stream_error(
+            solver, count_key="n", low=2, high=8, status_key="parse_status",
+        )
+        if reason is not None:
+            return reason
+        if solver["greedy_first"] is not True:
+            return "sampling greedy_first must be true: the first-support commit keeps sample 0's labels"
+        commit = solver["commit"]
+        if not isinstance(commit, Mapping) or set(commit) != {
+            "policy", "min_support", "similarity_threshold", "n1_min", "empty_votes_min",
+        } or not isinstance(commit["policy"], str) or not commit["policy"]:
+            return "sampling commit must carry policy, min_support, similarity_threshold, n1_min, empty_votes_min"
+        outcome = solver["outcome"]
+        if not isinstance(outcome, Mapping) or set(outcome) != {
+            "intent_support", "entity_supports", "delivered_entity_count", "gate",
+        } or not _is_int(outcome["delivered_entity_count"], 0) or not isinstance(outcome["entity_supports"], list):
+            return "sampling commit outcome has an invalid shape"
+        if outcome["gate"] is not None and not isinstance(outcome["gate"], Mapping):
+            return "sampling commit outcome gate must be None or a mapping"
+    return None
+
+
 _PERCEPTION_BRANCH_LEVELS = (1, 2)
 _PERCEPTION_BRANCH_VISITS = "first"
 
@@ -2170,8 +2331,10 @@ def validate_perception_branch_receipt(
     is_v2 = schema in PERCEPTION_BRANCH_NOTE_FIELD_SCHEMAS
     is_v4 = schema == PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4
     is_v5 = schema == PERCEPTION_BRANCH_RECEIPT_SCHEMA_V5
+    is_v6 = schema == PERCEPTION_BRANCH_RECEIPT_SCHEMA_V6
     is_v3 = schema in (
         PERCEPTION_BRANCH_RECEIPT_SCHEMA, PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4, PERCEPTION_BRANCH_RECEIPT_SCHEMA_V5,
+        PERCEPTION_BRANCH_RECEIPT_SCHEMA_V6,
     )
     if perception_branches["phase_id"] != phase_id:
         _raise(error_type, "perception branch receipt names another phase")
@@ -2213,6 +2376,8 @@ def validate_perception_branch_receipt(
         expected_fields = expected_fields | _PERCEPTION_BRANCH_V4_EXTRA_FIELDS
     if is_v5:
         expected_fields = expected_fields | _PERCEPTION_BRANCH_V5_EXTRA_FIELDS
+    if is_v6:
+        expected_fields = expected_fields | _PERCEPTION_BRANCH_V6_EXTRA_FIELDS
     contact_ids: list[str] = []
     delivering_ids: tuple[str, ...] | None = None
     delivering_request_sha256: str | None = None
@@ -2389,6 +2554,10 @@ def validate_perception_branch_receipt(
         reason = perception_branch_thinking_policy_error(thinking_policy)
         if reason is not None:
             _raise(error_type, reason)
+        sampling = row.get("sampling") if is_v6 else None
+        reason = perception_branch_sampling_error(sampling, is_b=is_v6 and not (deliver or is_twin))
+        if reason is not None:
+            _raise(error_type, reason)
         if deliver or is_twin:
             if (
                 paths or release_swap is not None or presentation_id is not None
@@ -2402,10 +2571,19 @@ def validate_perception_branch_receipt(
                     "the delivering perception branch (A) and its twin (T) must "
                     "declare no axis",
                 )
-        elif not (
+        elif is_v6 and (
             paths or release_swap is not None or presentation_id is not None
             or min_candidates is not None or key_source is not None
             or instruction_template is not None or thinking_policy is not None
+        ):
+            _raise(
+                error_type,
+                "a v6 (sampling) perception branch declares its sampling axes as its only axis category",
+            )
+        elif not (
+            paths or release_swap is not None or presentation_id is not None
+            or min_candidates is not None or key_source is not None
+            or instruction_template is not None or thinking_policy is not None or sampling is not None
         ):
             _raise(
                 error_type,
@@ -2540,6 +2718,9 @@ __all__ = [
     "PERCEPTION_BRANCH_RECEIPT_SCHEMA",
     "PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4",
     "PERCEPTION_BRANCH_RECEIPT_SCHEMA_V5",
+    "PERCEPTION_BRANCH_RECEIPT_SCHEMA_V6",
+    "SAMPLING_AXES",
+    "perception_branch_sampling_error",
     "perception_branch_thinking_policy_error",
     "PERCEPTION_BRANCH_RECEIPT_SCHEMA_V1",
     "PERCEPTION_BRANCH_RECEIPT_SCHEMA_V2",
