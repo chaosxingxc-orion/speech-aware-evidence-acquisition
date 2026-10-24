@@ -15,10 +15,11 @@ STAGE=${1:-read}
 eval "$($PY -B -c "import sys; sys.path.insert(0, 'scripts/flights/nx'); import l338_family as f; print('RUN=%s ATTEMPT=%s' % (f.CELLS['arm']['run'], f.CELLS['arm']['attempt']))")" || exit 66
 ANALYSIS=$SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-L338-LEVER-COLUMN-FOLD-B-READ-V1
 if [ "$STAGE" = "columns" ]; then
-  # A decoding group is scored in supply-variants mode: each arm's first-visit Solver answer, rendered through the delivered row's normaliser and scored ONCE, complete,
-  # with the registered official scorer (arm-<arm>-slurp-slu-official-train-scores.json under $ANALYSIS/columns). Never sharded.
+  # A sampling group (roles.perception.sampling_variants, a level-2 Perception-branch group) is scored in perception-branches mode: each branch's first-visit Solver
+  # column (the committed answer for the solver_samples branch, with its sample 0 as the extra stream column l1-support-sample0), rendered through the delivered row's
+  # normaliser and scored ONCE, complete, with the registered official scorer (arm-<arm>-slurp-slu-official-train-scores.json under $ANALYSIS/columns). Never sharded.
   mkdir -p "$ANALYSIS/columns"
-  $PY -B scripts/analysis/stage3_rollout_score.py --mode supply-variants --stage all --run "$RUN" --attempt "$ATTEMPT" \
+  $PY -B scripts/analysis/stage3_rollout_score.py --mode perception-branches --stage all --run "$RUN" --attempt "$ATTEMPT" \
     --roster docs/receipts/rosters/slurp-evo-fold-b-v2.json --analysis-root "$ANALYSIS/columns" --scorer-id slurp-slu-official-train \
     --repo-root "$MAIN" --data-root "$SPEECHRL_DATA_DIR" || exit 2
   echo "L338 columns done $(date -u +%T)"

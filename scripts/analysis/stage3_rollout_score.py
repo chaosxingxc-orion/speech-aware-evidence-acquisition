@@ -1531,6 +1531,80 @@ def score_relisten_shadow_copies(
 PERCEPTION_BRANCH_SOLVER_RENDER_SCHEMA = "saea-stage3-perception-branch-solver-first-visit-v1"
 
 
+def _perception_samples_meta(record: Mapping[str, Any]) -> dict[str, Any]:
+    """The ids and counts of a ``perception_samples`` branch's sealed merge (no text)."""
+
+    sampling = record.get("sampling") if isinstance(record.get("sampling"), Mapping) else {}
+    merge = sampling.get("perception_samples") if isinstance(sampling.get("perception_samples"), Mapping) else {}
+    return {
+        "k": merge.get("k"), "merged_candidate_ids": list(merge.get("merged_candidate_ids") or []),
+        "appended_candidate_ids": list(merge.get("appended_candidate_ids") or []),
+        "support_counts": list(merge.get("support_counts") or []),
+        "sample_lists": [{"sample_index": row.get("sample_index"), "candidate_intent_ids": list(row.get("candidate_intent_ids") or []),
+                          "note_parse_status": row.get("note_parse_status")} for row in merge.get("samples") or []],
+    }
+
+
+def _committed_solver_samples(sid, name, axis, own, record, bundle, predecessor_records):
+    """One ``solver_samples`` branch of one row: ``(committed raw answer text, sample 0's raw text or None, custody meta)``.
+
+    Every sample contact's trace pair is hash-checked against its execution-receipt contact AND the sealed v6 ``sampling.solver_samples``
+    sample record; a sample that ended on a finite completion casts no vote (its text is ``None``). The commit is the registered policy
+    (``rails.supply_variants.commit_solver_samples``) with no N1 (unavailable in flight); the committed answer is rendered to the canonical
+    answer text the delivered row's normaliser takes. Ids and counts only are kept in the meta.
+    """
+
+    from speech_aware_evidence_acquisition.rails.supply_variants import commit_solver_samples
+
+    sampling = record.get("sampling") if isinstance(record.get("sampling"), Mapping) else {}
+    solver_record = sampling.get("solver_samples") if isinstance(sampling.get("solver_samples"), Mapping) else None
+    if solver_record is None or len(solver_record.get("samples") or []) != axis.n or len(own) != axis.n:
+        raise Stage3ScoreError(f"{sid}: branch {name!r} lacks its sealed {axis.n}-sample Solver custody")
+    source = _custody_trace_source(bundle, predecessor_records, sid)
+    texts: list[str | None] = []
+    for position, (sample_index, contact) in enumerate(own):
+        sealed = solver_record["samples"][position]
+        if sample_index != position or sealed.get("sample_index") != position:
+            raise Stage3ScoreError(f"{sid}: branch {name!r} Solver samples are out of order")
+        if sealed.get("response_text_sha256") != contact.get("response_text_sha256") or sealed.get("contact_id") != contact.get("agent_contact_id"):
+            raise Stage3ScoreError(f"{sid}: branch {name!r} Solver sample {position} differs from its sealed sampling record")
+        status = str(sealed.get("parse_status"))
+        if status.startswith("finite-completion"):
+            texts.append(None)
+            continue
+        request_id = contact.get("request_id")
+        response, request = source.get(f"{request_id}/response"), source.get(f"{request_id}/request")
+        text = response.get("text") if isinstance(response, Mapping) else None
+        if (not isinstance(text, str) or not isinstance(request, Mapping)
+                or request.get("payload_sha256") != contact.get("request_sha256")
+                or hashlib.sha256(text.encode("utf-8")).hexdigest() != contact.get("response_text_sha256")):
+            raise Stage3ScoreError(f"{sid}: branch {name!r} Solver sample {position} trace hash differs from custody")
+        texts.append(text)
+    outcome = commit_solver_samples(axis, texts, n1=None)
+    committed = {
+        "scenario": outcome.answer.scenario, "action": outcome.answer.action,
+        "entities": [{"type": entity.type, "filler": entity.filler} for entity in outcome.answer.entities],
+    }
+    sealed_outcome = solver_record.get("outcome") or {}
+    if sealed_outcome.get("delivered_entity_count") != len(outcome.entities):
+        raise Stage3ScoreError(f"{sid}: branch {name!r} re-derived commit differs from the sealed outcome")
+    meta = {
+        "n": axis.n, "parse_status": [str(s.get("parse_status")) for s in solver_record["samples"]],
+        "intent_support": outcome.intent_support, "entity_supports": [{"type": e.type, "support": e.support} for e in outcome.entities],
+        "delivered_entity_count": len(outcome.entities),
+        "base_entity_count": None if not texts or texts[0] is None else _answer_entity_count(texts[0]),
+        "gate": None if outcome.gate is None else dict(outcome.gate),
+    }
+    return render_answer(committed), texts[0], meta
+
+
+def _answer_entity_count(text: str) -> int | None:
+    from speech_aware_evidence_acquisition.reproduction.ojw.native_group_solver import parse_solver_answer_text
+
+    parsed = parse_solver_answer_text(text)
+    return None if parsed is None else len(parsed.entities)
+
+
 def render_perception_branch_columns(
     bundle, group, roster: Mapping[str, str], out_dir: Path,
     *, run_id: str, attempt_id: str, roster_sha256: str, config_hash: str,
@@ -1596,6 +1670,22 @@ def render_perception_branch_columns(
     absent = 0
     revisions = 0
     at1_checked = 0
+    #: Decision 338: a SAMPLING group's first Solver visit holds ``n`` consecutive contacts for a ``solver_samples`` branch (sample 0 first)
+    #: and one for every other branch (``rails.supply_variants.solver_contact_slots``). ``solver_slots`` is ``None`` for every other group,
+    #: which leaves this render byte-identical to its pre-338 self.
+    solver_slots = None
+    stream_names: list[str] = []
+    stream_columns: dict[str, list[dict[str, Any]]] = {}
+    sampling_rows: list[dict[str, Any]] = []
+    if getattr(group, "is_sampling", False):
+        from speech_aware_evidence_acquisition.rails.supply_variants import solver_contact_slots
+
+        solver_slots = solver_contact_slots(group)
+        # The official scorer scores each ``solver_samples`` branch's sample 0 beside the committed column: the branch's own second A/A
+        # (the pure-filter delta is the committed column minus this one).
+        stream_names = [f"{b.branch_id}-sample0" for b in group.branches if b.solver_samples is not None]
+        stream_columns = {name: [] for name in stream_names}
+    streams_text: dict[str, dict[str, list[str]]] = {}
     for sid in ids:
         row = rows[sid]
         episode = row.get("native_episode_receipt")
@@ -1637,12 +1727,19 @@ def render_perception_branch_columns(
             continue
         first = solver[0].get("execution_receipt")
         contacts = first.get("contacts") if isinstance(first, Mapping) else None
-        if not isinstance(contacts, list) or len(contacts) != len(names):
+        expected_contacts = len(solver_slots) if solver_slots is not None else len(names)
+        if not isinstance(contacts, list) or len(contacts) != expected_contacts:
             raise Stage3ScoreError(f"{sid}: first Solver visit lacks a complete branch group")
         branch_meta = []
         branch_records = branches_receipt.get("branches")
+        row_sampling: dict[str, Any] = {}
         for i, name in enumerate(names):
-            contact = contacts[i]
+            if solver_slots is not None:
+                own = [(sample, contacts[j]) for j, (branch_index, sample) in enumerate(solver_slots) if branch_index == i]
+                contact = own[0][1]
+            else:
+                own = None
+                contact = contacts[i]
             if not isinstance(contact, Mapping):
                 raise Stage3ScoreError(f"{sid}: first Solver branch contact is malformed")
             record = branch_records[i] if isinstance(branch_records, Sequence) else None
@@ -1671,6 +1768,9 @@ def render_perception_branch_columns(
                     raise Stage3ScoreError(f"{sid}: the delivering branch's Solver column cannot be absent")
                 solver_absent_by_branch[name] += 1
                 columns[name].append({"sample_id": sid, "text": EMPTY_ANSWER})
+                if f"{name}-sample0" in stream_columns:
+                    stream_columns[f"{name}-sample0"].append({"sample_id": sid, "text": EMPTY_ANSWER})
+                    row_sampling[name] = {"solver_samples_absent": True}
                 branch_meta.append({
                     "branch_id": name, "contact_id": contact.get("agent_contact_id"),
                     "request_sha256": contact.get("request_sha256"),
@@ -1679,6 +1779,17 @@ def render_perception_branch_columns(
                     "absent_reason": record.get("absent_reason"),
                 })
                 continue
+            sample0_text = None
+            if solver_slots is not None and group.branch_at(i).solver_samples is not None:
+                # Decision 338, lever L1: the branch's column is the COMMITTED answer of its n Solver samples (the registered commit policy,
+                # re-derived from the trace's own response texts exactly as the runner, the replay and the bundle verifier derive it), rendered
+                # through the delivered row's own normaliser. Sample 0's own normalised answer is the stream column.
+                committed_raw, sample0_raw, solver_meta = _committed_solver_samples(
+                    sid, name, group.branch_at(i).solver_samples, own, record, bundle, predecessor_records,
+                )
+                row_sampling[name] = solver_meta
+                sample0_text, _ = normalise_arm_answer(sample0_raw, normaliser_id) if sample0_raw is not None else (EMPTY_ANSWER, False)
+                raw = committed_raw
             if normaliser_id is not None:
                 normalisation = DELIVERY_NORMALISERS.resolve(normaliser_id)(raw)
                 branch_text = normalisation.text
@@ -1692,6 +1803,10 @@ def render_perception_branch_columns(
             if not ok:
                 malformed[name] += 1
             columns[name].append({"sample_id": sid, "text": branch_text})
+            if sample0_text is not None:
+                stream_columns[f"{name}-sample0"].append({"sample_id": sid, "text": sample0_text})
+            if solver_slots is not None and group.branch_at(i).perception_samples is not None:
+                row_sampling[name] = {"perception_samples": _perception_samples_meta(record)}
             branch_meta.append({
                 "branch_id": name, "contact_id": contact.get("agent_contact_id"),
                 "request_sha256": contact.get("request_sha256"),
@@ -1715,6 +1830,8 @@ def render_perception_branch_columns(
                         )
         row_meta.append({"sample_id": sid, "availability": "first_solver_visit",
                          "later_solver_visits": len(solver) - 1, "branches": branch_meta})
+        if solver_slots is not None:
+            sampling_rows.append({"sample_id": sid, "branches": row_sampling})
     source = {
         "run_id": run_id, "attempt_id": attempt_id,
         "manifest_path": str(bundle.manifest_path),
@@ -1748,6 +1865,17 @@ def render_perception_branch_columns(
         path = out_dir / f"arm-{name}-first-visit-outputs.jsonl"
         digest = _immutable_jsonl(path, columns[name])
         manifest["copies"][name] = {"path": str(path), "sha256": digest, "rows": len(ids)}
+    if stream_names:
+        # Decision 338: the extra official columns (a ``solver_samples`` branch's sample 0) and the sampling custody (ids and counts only).
+        manifest["stream_order"] = list(stream_names)
+        for name in stream_names:
+            path = out_dir / f"arm-{name}-first-visit-outputs.jsonl"
+            digest = _immutable_jsonl(path, stream_columns[name])
+            manifest["copies"][name] = {"path": str(path), "sha256": digest, "rows": len(ids)}
+        _immutable_json(out_dir / "sampling-rows.json", {
+            "schema": "saea-l338-sampling-rows-v1", "source": source, "rows": sampling_rows,
+            "note": "per-row sampling custody read off the sealed v6 receipts and re-derived commit outcomes: ids and counts only, no text",
+        })
     _immutable_json(out_dir / "first-visit-rows.json", {
         "schema": PERCEPTION_BRANCH_SOLVER_RENDER_SCHEMA, "source": source, "rows": row_meta,
         "note": "later visits are counted only, never mixed into first-visit columns",
@@ -1780,7 +1908,7 @@ def score_perception_branch_copies(
         )
     ids = None
     sides = {}
-    for branch_id in manifest["branch_order"]:
+    for branch_id in [*manifest["branch_order"], *manifest.get("stream_order", [])]:
         entry = manifest["copies"].get(branch_id)
         if not isinstance(entry, Mapping):
             raise Stage3ScoreError(f"missing rendered copy for branch {branch_id}")
@@ -1823,7 +1951,7 @@ def score_perception_branch_copies(
     summary = {
         "schema": PERCEPTION_BRANCH_SOLVER_RENDER_SCHEMA, "stage": "score",
         "source": manifest["source"], "scorer_id": scorer_id,
-        "branch_order": manifest["branch_order"], "branches": sides,
+        "branch_order": manifest["branch_order"], "stream_order": list(manifest.get("stream_order", [])), "branches": sides,
         "sealed_delivered_scores_sha256": manifest["source"]["sealed_scores_sha256"],
         "sealed_delivered_rows": len(delivered),
         "meaning": "level-2 first Solver visit local branch feedback; not full-system returns",
@@ -1853,6 +1981,12 @@ def parse_perception_arm_group(values: Mapping[str, Any], perception: Mapping[st
     declares_branches = "branches" in perception
     declares_template = "template_variants" in perception
     declares_thinking = "thinking_variants" in perception
+    declares_sampling = "sampling_variants" in perception
+    if declares_sampling and (declares_branches or declares_template or declares_thinking):
+        raise Stage3ScoreError(
+            "the Perception role declares sampling_variants beside branches, template_variants or thinking_variants; "
+            "one fan-out mechanism per node"
+        )
     if declares_branches and declares_template:
         raise Stage3ScoreError(
             "the Perception role declares both branches and template_variants; "
@@ -1864,6 +1998,11 @@ def parse_perception_arm_group(values: Mapping[str, Any], perception: Mapping[st
             "one fan-out mechanism per node"
         )
     try:
+        if declares_sampling:
+            # Decision 338: the sampling column (receipt schema v6); every arm renders the delivering arm's evidence.
+            from speech_aware_evidence_acquisition.rails.supply_variants import parse_perception_sampling_variants
+
+            return parse_perception_sampling_variants(perception["sampling_variants"], phase_id=perception.get("phase_id"))
         if declares_thinking:
             # NX-T R1: the per-node thinking-policy column (receipt schema v5); every arm renders the delivering arm's evidence.
             from speech_aware_evidence_acquisition.rails.supply_variants import parse_perception_thinking_variants

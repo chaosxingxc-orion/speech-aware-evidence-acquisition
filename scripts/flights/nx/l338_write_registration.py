@@ -308,7 +308,7 @@ def plan_docs(root: Path, ids: Mapping[str, Mapping], commit: str, at: str, prot
                    run_id=i["run_id"], schema="saea-execution-plan-v1", split_identity_hash=i["split_identity_hash"], study="speech-aware-evidence-acquisition")
         route = ("Shared core.flight.cli worker on this cell alone (the batch driver's smoke step); never scored." if key == "smoke" else
                  f"Shared core.flight.cli campaign over {spec['campaign']} on the resident Thinking session ({fam.THINK_SESSION}); one official score per arm column "
-                 "(stage3_rollout_score --mode supply-variants) after the seal. Flown by scripts/flights/nx/batch_chain_l338.sh.")
+                 "(stage3_rollout_score --mode perception-branches) after the seal. Flown by scripts/flights/nx/batch_chain_l338.sh.")
         docs[fam.plan_file_name(key, "generation")] = {
             **base, "execution_plan": gen, "execution_route": route, "plan_kind": "generation", "schema": "saea-registered-generation-plan-v1",
             "purpose": f"{i['run_id']}: {spec['role']} of L338.",
@@ -352,7 +352,7 @@ def draft_rows(ids: Mapping[str, Mapping], commit: str, at: str, pkg: str, shas:
     arm = ids["arm"]
     rows.append([at[:10], fam.READ_RUN_ID, "model-free-check",
                  (f"The offline read of L338: score the {fam.K} arm columns of the sealed column flight once each with the official scorer (stage3_rollout_score "
-                  f"--mode supply-variants); the paired contrast of each candidate arm and the twin {fam.TWIN} against the delivering {fam.DELIVERING} arm, the arm words, the per-scenario "
+                  f"--mode perception-branches); the paired contrast of each candidate arm and the twin {fam.TWIN} against the delivering {fam.DELIVERING} arm, the arm words, the per-scenario "
                   f"table, the per-stream discordance, support-count and union-size tables and the L1 secondary forms (N1 offline) by the recipe {pkg}/analysis-recipe-v1.json. "
                   "Zero model, server, encoder, embedder, tokenizer and GPU contacts."),
                  "no model or tool contact; read of sealed bytes and CPU official scorings over derived copies",
@@ -472,7 +472,7 @@ def readme_text(ids: Mapping[str, Mapping], cost: Mapping[str, Any]) -> str:
         "`arm-only` is the recovery segment (smoke sealed, marker present).\n"
         "5. `bash scripts/flights/nx/l338_read.sh columns` (the official per-arm scoring; prints no number), countersign the READ row, then `bash scripts/flights/nx/l338_read.sh`.\n\n"
         "## Read rule (preregistered)\n\n"
-        f"`{fam.READER}`: every arm's first-visit Solver answer is scored once, complete, by the official scorer (`slurp-slu-official-train`, `stage3_rollout_score --mode supply-variants`); "
+        f"`{fam.READER}`: every arm's first-visit Solver answer is scored once, complete, by the official scorer (`slurp-slu-official-train`, `stage3_rollout_score --mode perception-branches`); "
         f"each candidate arm and the twin minus the delivering `{fam.DELIVERING}` arm, SLU-F1 and intent accuracy, paired per row, utterance-cluster bootstrap "
         "CI95 (10,000 draws, seed 20261018). The twin is the in-flight A/A: its SLU / intent deltas o_SLU / o_int give the bars |o_SLU| / |o_int|. The l1 branch's sample 0 is a second A/A "
         "(reported, used in no word). Floors (decision 190, n = 1,080): "
@@ -684,7 +684,7 @@ def write_package(root: Path, commit: str, at: str | None, *, append_ledger: boo
                                 "thinking_system_slu": fam.THINKING_SYSTEM_SLU},
         "schema": "saea-stage3-rollout-analysis-recipe-v1",
         "stages": {
-            "1_columns": "bash scripts/flights/nx/l338_read.sh columns  (stage3_rollout_score --mode supply-variants: one complete official scoring per arm; no number printed)",
+            "1_columns": "bash scripts/flights/nx/l338_read.sh columns  (stage3_rollout_score --mode perception-branches: one complete official scoring per arm; no number printed)",
             "2_read": f"python -B {fam.READER} --stage read --data-root $SPEECHRL_DATA_DIR (through scripts/flights/nx/l338_read.sh)",
             "smoke": f"python -B {fam.READER} --stage smoke (per-arm decode cost and the v6 sampling receipt; no countersignature; the machine sign-off input for the column flight)"},
         "verdict_words": sorted({w for order in WORD_ORDER.values() for w in order}), "word_rules": WORD_RULES, "word_order": WORD_ORDER,
