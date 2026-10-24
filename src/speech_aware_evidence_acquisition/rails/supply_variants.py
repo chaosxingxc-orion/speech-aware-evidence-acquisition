@@ -3810,6 +3810,82 @@ class PerceptionBranchReplayContact:
     presentation_block_sha256: Mapping[str, str] | None = None
 
 
+def _replay_sampling_value(sampling: object, *, contacts: Mapping[str, "PerceptionBranchReplayContact"], what: str) -> None:
+    """Decision 338: hold a recorded v6 ``sampling`` value to its recorded contacts.
+
+    Every sample contact must be one the row recorded, with the recorded request / response digests; the merge and the commit
+    must re-derive from the recorded response texts. A sample that ended on a finite completion has no text to re-derive from, so
+    its recorded status stands (the bundle verifier checks it against the wire ``finish_reason``). Raises
+    :class:`PerceptionBranchError` on any disagreement, which the caller turns into an INCOMPLETE (re-flown) row.
+    """
+
+    if sampling is None:
+        return
+    if not isinstance(sampling, Mapping):
+        raise PerceptionBranchError(f"{what} sampling record is not an object")
+
+    def texts_of(record: Mapping[str, object], label: str) -> list[str | None]:
+        texts: list[str | None] = []
+        for sample in record["samples"]:
+            found = contacts.get(sample.get("contact_id"))
+            if found is None:
+                raise PerceptionBranchError(f"{what} {label} sample names a contact this row did not record")
+            if (
+                found.request_sha256 != sample.get("request_sha256")
+                or found.response_text_sha256 != sample.get("response_text_sha256")
+            ):
+                raise PerceptionBranchError(f"{what} {label} sample digests differ from its recorded contact")
+            status = sample.get("parse_status")
+            if isinstance(status, str) and status.startswith("finite-completion:"):
+                texts.append(None)
+                continue
+            if not isinstance(found.text, str) or hashlib.sha256(found.text.encode("utf-8")).hexdigest() != sample.get(
+                "response_text_sha256"
+            ):
+                raise PerceptionBranchError(f"{what} {label} sample text does not hash to its recorded response")
+            texts.append(found.text)
+        return texts
+
+    record = sampling.get("perception_samples")
+    if isinstance(record, Mapping):
+        axis = PerceptionSamplesAxis(
+            k=record["k"], decoding=tuple(sorted(record["decoding"].items())), seed_offsets=tuple(record["seed_offsets"]),
+            merge_policy=record["merge_policy"], cap=record["cap"],
+        )
+        texts = texts_of(record, "perception")
+        for sample, text in zip(record["samples"], texts):
+            status, ids, _raw = parse_perception_branch_note(text)
+            if sample.get("note_parse_status") != status or list(sample.get("candidate_intent_ids") or ()) != list(ids):
+                raise PerceptionBranchError(f"{what} perception sample note fields differ from their re-derivation")
+        outcome = merge_perception_samples(axis, texts)
+        if (
+            list(outcome.merged_candidate_ids) != record["merged_candidate_ids"]
+            or list(outcome.appended_candidate_ids) != record["appended_candidate_ids"]
+        ):
+            raise PerceptionBranchError(f"{what} perception merge differs from its re-derivation")
+    record = sampling.get("solver_samples")
+    if isinstance(record, Mapping):
+        commit = record["commit"]
+        axis = SolverSamplesAxis(
+            n=record["n"], decoding=tuple(sorted(record["decoding"].items())), seed_offsets=tuple(record["seed_offsets"]),
+            commit_policy=commit["policy"], min_support=commit["min_support"],
+            similarity_threshold=commit["similarity_threshold"], n1_min=commit["n1_min"],
+            empty_votes_min=commit["empty_votes_min"],
+        )
+        texts = texts_of(record, "solver")
+        for sample, text in zip(record["samples"], texts):
+            if text is not None and solver_sample_parse_status(text) != sample.get("parse_status"):
+                raise PerceptionBranchError(f"{what} solver sample parse status differs from its re-derivation")
+        outcome = commit_solver_samples(axis, texts, n1=None)
+        recorded = record["outcome"]
+        if (
+            recorded["intent_support"] != outcome.intent_support
+            or recorded["delivered_entity_count"] != len(outcome.entities)
+            or recorded["entity_supports"] != [{"type": e.type, "support": e.support} for e in outcome.entities]
+        ):
+            raise PerceptionBranchError(f"{what} solver commit differs from its re-derivation")
+
+
 def replay_perception_branch_block(
     block: Mapping[str, object],
     *,
@@ -3931,6 +4007,8 @@ def replay_perception_branch_block(
                 raise PerceptionBranchError(
                     f"{what} Solver column digests differ from its recorded contact"
                 )
+        if schema == PERCEPTION_BRANCH_RECEIPT_SCHEMA_V6:
+            _replay_sampling_value(row.get("sampling"), contacts=contacts, what=what)
         new_row = dict(row)
         new_row.update({
             "note_parse_status": status,
@@ -3949,8 +4027,11 @@ def replay_perception_branch_block(
     # Every block is rebuilt under the CURRENT schema (v3), as v1 -> v2 was before.
     # A v4 (template) block stays v4: its rows carry the template axis.
     # A v5 (thinking-policy) block stays v5: its rows carry the thinking axis.
+    # A v6 (sampling) block stays v6: its rows carry the sampling records.
     result["schema"] = (
-        schema if schema in (PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4, PERCEPTION_BRANCH_RECEIPT_SCHEMA_V5)
+        schema if schema in (
+            PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4, PERCEPTION_BRANCH_RECEIPT_SCHEMA_V5, PERCEPTION_BRANCH_RECEIPT_SCHEMA_V6,
+        )
         else PERCEPTION_BRANCH_RECEIPT_SCHEMA
     )
     result["branches"] = rebuilt

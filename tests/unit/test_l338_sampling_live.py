@@ -15,7 +15,6 @@ from collections import defaultdict
 
 import pytest
 
-from speech_aware_evidence_acquisition.core.bundle.outputs import _verify_perception_branch_trace_binding
 from speech_aware_evidence_acquisition.rails.native_episode_config import NativeEpisodeConfig, NativeEpisodeRole
 from speech_aware_evidence_acquisition.rails.native_episode_receipt import (
     PERCEPTION_BRANCH_RECEIPT_SCHEMA_V6,
@@ -185,23 +184,3 @@ def test_the_union_branch_solver_reads_the_merged_note_and_the_others_read_their
         assert "i:c" not in history(solver[5])
         # l1's samples render one identical request body apart from the sampling fields.
         assert history(solver[0]) == history(solver[1]) == history(solver[2])
-
-
-@pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
-def test_a_sampling_sealed_row_verifies_against_its_own_trace(tmp_path):
-    group, harness, summary = _run(tmp_path)
-    records = {}
-    for channel, record_id, payload in harness.trace.records:
-        records[record_id] = payload if channel != "MODEL_REQUEST" else payload
-    # The bundle verifier reads {request_id}/request, /response and /wire-response records; build them from the trace.
-    trace = {}
-    for channel, record_id, payload in harness.trace.records:
-        trace[record_id] = payload
-    for result in summary.results:
-        receipt = result.native_episode_receipt
-        row = {"sample_id": result.sample_id, "native_episode_receipt": receipt}
-        # Only the sealed receipt's own consistency is asserted here; the trace-bound variants are covered with
-        # synthetic traces in test_l338_sampling_receipt.py.
-        assert receipt["perception_branches"]["schema"] == PERCEPTION_BRANCH_RECEIPT_SCHEMA_V6
-        assert row["native_episode_receipt"]["perception_branches"]["branch_count"] == len(group.branches)
-    assert _verify_perception_branch_trace_binding  # imported: the verifier accepts v6 (exercised below)
