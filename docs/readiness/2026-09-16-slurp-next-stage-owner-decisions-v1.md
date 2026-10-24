@@ -3577,3 +3577,23 @@ what we discussed before: the single-module optimisation must still go on!").
   part 1 instrument in progress). The ASR biasing work is CPU-side and runs beside it.
 - **344 (PROPOSED)** the biasing column: A = V1 type vocabulary, V2 intent-scoped lexicon (N = 30 / 100), V3 = V2 + logit_bias, V4 n-best
   union, on Qwen3-ASR-1.7B (CPU, ~25 min per variant; recommended); B = V2 only; C = none (then 343 as proposed).
+
+### Owner ruling 344 A; 322 window incident (data VHDX detached by wsl --shutdown); power plug replaced, GPU at 175 W; resumption (coordinator, 2026-10-24 13:30Z)
+
+Owner, verbatim: 「决策344：A」 (2026-10-20) and 「继续吧，我们换了原装电池插头，GPU配置可以调的更高一些」 (2026-10-24; English: "Continue; we
+replaced the original battery/power plug, the GPU configuration can be set higher.").
+- 322 window, 2026-10-20 11:29-11:38Z: R2 rec2 sealed rc 0 at 11:29:29Z (the rec2 column took ~45 h against the 23.5 h estimate: the laptop
+  ran on a degraded power plug; see below); the orchestrator stopped the server, wrote memory=36GB, shut WSL down and ran the post step, which
+  REFUSED: `wsl --shutdown` detaches the data VHDX (/mnt/saea-data-1; mounted only by the boot-time task SAEA-Mount-Data1), so the data root
+  was absent and both the ledger closure (rc 1) and the serving swap (rc 10, "resident: cannot-tell") refused; R3 did not launch. Fix
+  8b27c67ce: the post step starts SAEA-Mount-Data1 and waits for the data root. The coordinator's rerun on 10-20 was lost with the session
+  (exit 4, no log); the host then rebooted (power work). GPU idle 2026-10-20 11:29Z -> 2026-10-24 (resumed today).
+- Power: nvidia-smi now reports Current / Requested Power Limit 175 W (Default 95 W, Max 175 W; before the plug change the card was held at
+  the lower cap, which explains the 2x slowdown of R2 rec2). Windows scheme 高性能 (High performance). No geometry change (VRAM unchanged:
+  np4 x 24,576 holds 22,976 of 24,463 MiB); the expected effect is throughput back to the measured 1.84 rows/min or better. Verified on the
+  R3 flight by the throughput table.
+- 344 A: the biasing instrument merged (d38ef3f7f, Sonnet 8658908dc; smoke: context rendered as the ChatML system turn, output changed on
+  2 / 4 rows for v1, 1 / 4 for v2-n100); ledger row SAEA-SLURP-ASRBIAS-FOLD-B-V1 countersigned (2026-10-24T13:15:59Z); the 7-variant pass (~4.4 h CPU, 1.7B)
+  runs after the serving swap, beside the R3 flight. 338 part 1 merged next; part 2 (runtime fan-out + package) re-commissioned (the first
+  attempt died to an API connection error before its first commit).
+- Resumption order now: post step (close R2 rows -> swap -> 330 diagnostic -> R3 flip + chain -> NXT4 hook) -> R2 rec2 read -> ASRBIAS pass.
