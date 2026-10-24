@@ -3597,3 +3597,20 @@ replaced the original battery/power plug, the GPU configuration can be set highe
   runs after the serving swap, beside the R3 flight. 338 part 1 merged next; part 2 (runtime fan-out + package) re-commissioned (the first
   attempt died to an API connection error before its first commit).
 - Resumption order now: post step (close R2 rows -> swap -> 330 diagnostic -> R3 flip + chain -> NXT4 hook) -> R2 rec2 read -> ASRBIAS pass.
+
+### NX-T R2 rec2 READ: Perception no-think does NOT replicate no-loss (UNRESOLVED, -1.49 SLU); solver-2048 UNRESOLVED; 324-B does not fly; R3 flying at full power (coordinator, 2026-10-24 15:35Z)
+
+- Read 15:20Z (READ row countersigned 15:17Z, consumed): n = 1,080 (26 kept + 1,054 flown, mode A). Delivering `budget-3072` 72.21 SLU / 84.91
+  intent. `perception-off-solver-3072` 70.72 / 85.56: paired SLU **-1.49 [-2.83, -0.11]**, intent +0.65 [-0.65, +2.04] (saves 32 / harms 25),
+  word UNRESOLVED (loss resolved against 0 but not beyond the declared 1.15 pp A/A offset). `solver-2048` 71.27 / 85.37: SLU -0.94 [-2.32,
+  +0.45], intent +0.46, UNRESOLVED. The R1 read's -0.19 NO-RESOLVED-LOSS for Perception no-think does not replicate on the same roster.
+- Consequences: the 324-B Fold A confirm does NOT fly (331 A / 334 B condition "no resolved loss" unmet); the composed lock v3.x keeps
+  Perception thinking at 3,072 / 4,096 and the Solver at 3,072 / 4,096 (R2b: 6,144 no gain; 2,048 unresolved, no saving adopted). Per-node
+  cost stands as measured: Perception thinking 62 s/contact (forced-close share 0.20) vs no-think 3.4 s; Solver 68-71 s (forced 0.45-0.46).
+  Results note: Opus (in progress).
+- R3 throughput at full power (first 74 min): 0.72 rows/min x 7 contacts = 5.0 contacts/min, 158-161 W draw; R2b (healthy) 4.8, R2 rec2
+  average 2.35 (its second half ~1.9 under the 95 W cap). Seal expected ~2026-10-25 15:00Z. R4 follows via SAEA-Queue-NXT4; the 330 A
+  diagnostic (refused in the window: stray __pycache__ in the scoring package; refused again under the open R3 flight) now runs inside
+  `chain_nxt4.sh` in the no-flight gap before the R4 smoke (8d3e8a3b7). ASRBIAS pass resumed under the Windows task SAEA-ASRBIAS
+  (v1, v2-n30 sealed; v2-n100 partial moved aside and re-flown; then v3 / v4; score all). 338 part 1 merged (0f78ba442; adapter line-budget
+  fix a6d675c0c); part 2 in a third Sonnet attempt.
