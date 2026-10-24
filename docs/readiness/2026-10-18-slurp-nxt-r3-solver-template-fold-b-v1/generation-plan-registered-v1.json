@@ -49,7 +49,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-18-slurp-nxt-r3-solver-template-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "c5625d617f2ad457462d38a01b6b4604143b3e391e7e44b3ec310c91bebf178f"
+    "sha256": "cc7f621ee2673107b9fbf780a4d6b3902e5306bacc5c4ea8bff04d178ae4d265"
   },
   "purpose": "SAEA-SLURP-STAGE3-NXT-R3-SOLVER-TEMPLATE-FOLD-B-V1: Solver instruction-template column flight (6 arms in one flight) of NX-T R3.",
   "registered_at_utc": "2026-10-18T15:51:41Z",

@@ -124,7 +124,7 @@
   "blockers": [],
   "composed_config_hashes": {
     "arm": "71f2784088fae204d720d9494718f8dbd42f43858b4048169c024b7509693ec3",
-    "smoke": "9f4e294b8f4e910ad95d1c1625fa7cfa876fe9b57e196b7aa22922f054f4b208"
+    "smoke": "230185e9eef93cf322e78ba444443f204a83820a2ce783f6a4dc612e6bc02327"
   },
   "context_fit": {
     "checks": {
@@ -277,7 +277,7 @@
       "baseline_fragment": "slurp-native-stage3-nxt-r3-solver-template-fold-b-smoke-4-baseline-v1",
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-nxt-r3-solver-template-fold-b-smoke-4-v1",
-      "composed_config_hash": "9f4e294b8f4e910ad95d1c1625fa7cfa876fe9b57e196b7aa22922f054f4b208",
+      "composed_config_hash": "230185e9eef93cf322e78ba444443f204a83820a2ce783f6a4dc612e6bc02327",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
       "execution_plan": {
         "execution_profile": "bounded-discovery-probe",
@@ -310,7 +310,7 @@
       "key": "smoke",
       "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
       "program": "phase-native-module-v1-c7",
-      "protocol_hash": "1a4a2dc119ad285ec577fba24de1e4ff3a81a2c8ade1e0b538ac0c2dc397816b",
+      "protocol_hash": "d119b41a1be4ad562acf8df08035ae342da5376fa0efe331a44271d7b90972b6",
       "roster_receipt": "docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-smoke-4-v1.json",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-NXT-R3-SOLVER-TEMPLATE-FOLD-B-SMOKE-4-V1",
