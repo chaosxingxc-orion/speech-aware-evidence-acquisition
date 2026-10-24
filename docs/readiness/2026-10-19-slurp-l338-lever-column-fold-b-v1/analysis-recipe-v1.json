@@ -1,0 +1,167 @@
+{
+  "arms": [
+    "l1-support",
+    "l2-union",
+    "aa",
+    "lock"
+  ],
+  "authority": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md (owner rulings 338 and 341 A (2026-10-19), 335 B and 336 A (2026-10-18), 326 A and 327 A (2026-10-17), 313 A (2026-10-14) and 304/307 (2026-10-13), coordinator approval of the decision-338 lever-column design); docs/superpowers/specs/2026-10-12-thinking-core-engineering-base-design.md; docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md; docs/superpowers/specs/2026-10-19-slurp-338-lever-column-design.md",
+  "candidates": [
+    "l1-support",
+    "l2-union"
+  ],
+  "cell_kind": "SAME-FLIGHT NODE COLUMN of two sampling levers -- 2 candidate arms (L1 Solver sample-and-commit, L2 Perception sample-and-merge) + the twin aa paired per row against the delivering lock arm; claim ceiling nominated",
+  "claim_boundary": "No benefit, system-level, superiority, generalisation, held-out, confirmatory or paper-scale claim.",
+  "contacts": {
+    "asr": 0,
+    "encoder": 0,
+    "model": 0,
+    "scorer": "CPU official scorer jobs over derived copies only",
+    "server": 0,
+    "tokenizer": 0
+  },
+  "delivering": "lock",
+  "execution_profile": "model-free-check (the read); bounded-discovery-probe (the flights themselves)",
+  "external_references": {
+    "thinking_system_slu": 71.61,
+    "twin_offset_268b_intent_pp": -0.09,
+    "twin_offset_268b_slu_pp": 1.15,
+    "twin_offset_p31_intent_pp": 1.6,
+    "twin_offset_p31_slu_pp": -0.61
+  },
+  "guard": {
+    "floors_pp": {
+      "intent": 0.65,
+      "slu": 1.49
+    },
+    "l1_metric": "intent accuracy (scenario_action exact)",
+    "l2_metric": "SLU-F1"
+  },
+  "levers": {
+    "l1-support": "L1",
+    "l2-union": "L2"
+  },
+  "locked_template": {
+    "relpath": "configs/probes/slurp_native_role_solver_v2.txt",
+    "sha256": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+  },
+  "measurement_design": "same-flight-node-column",
+  "next_step": "a NOMINATED arm goes to the 335 B Fold A column (stated, not built); the composed L1+L2 arm is not flown here",
+  "primary": {
+    "contrast": "arm minus lock, paired per row",
+    "draws": 10000,
+    "interval": "utterance-cluster bootstrap CI95",
+    "metric": "official SLURP SLU-F1 (L1) and intent accuracy (L2) per arm column (one complete scoring per column, slurp-slu-official-train)",
+    "seed": 20261018
+  },
+  "primary_by_lever": {
+    "L1": "slu",
+    "L2": "intent"
+  },
+  "read_run_id": "SAEA-SLURP-L338-LEVER-COLUMN-FOLD-B-READ-V1",
+  "recipe_id": "slurp-l338-lever-column-fold-b-read-v1",
+  "registered_at_utc": "2026-10-19T12:00:00.000000+00:00",
+  "roster": {
+    "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+    "roster_id": "SLURP-EVO-FOLD-B-V2",
+    "rows": 1080,
+    "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
+  },
+  "run_ids": {
+    "arm": "SAEA-SLURP-STAGE3-L338-LEVER-COLUMN-FOLD-B-V1",
+    "fit": "SAEA-SLURP-STAGE3-L338-LEVER-COLUMN-FOLD-B-FIT-V1",
+    "read": "SAEA-SLURP-L338-LEVER-COLUMN-FOLD-B-READ-V1",
+    "smoke": "SAEA-SLURP-STAGE3-L338-LEVER-COLUMN-FOLD-B-SMOKE-4-V1",
+    "smoke_fit": "SAEA-SLURP-STAGE3-L338-LEVER-COLUMN-FOLD-B-SMOKE-4-FIT-V1"
+  },
+  "sampling_arms": {
+    "aa": null,
+    "l1-support": {
+      "solver_samples": {
+        "commit": {
+          "empty_votes_min": 3,
+          "min_support": 2,
+          "n1_min": 0.2,
+          "policy": "saea-commit-first-support-v1",
+          "similarity_threshold": 0.8
+        },
+        "decoding": {
+          "temperature": 0.6,
+          "top_k": 20,
+          "top_p": 0.95
+        },
+        "n": 5
+      }
+    },
+    "l2-union": {
+      "perception_samples": {
+        "cap": 3,
+        "decoding": {
+          "temperature": 0.6,
+          "top_k": 20,
+          "top_p": 0.95
+        },
+        "k": 4,
+        "merge_policy": "saea-perception-candidate-union-v1"
+      }
+    },
+    "lock": null
+  },
+  "schema": "saea-stage3-rollout-analysis-recipe-v1",
+  "secondaries": [
+    "l1_pure_filter_delta",
+    "l1_forms_s3_filter_only_gate_only_n1_gated",
+    "l1_false_fills_removed_nonempty_exact_lost_gained",
+    "l2_merged_recall_vs_sample0_newly_listed_lost_gold",
+    "l2_conversion_by_gold_position",
+    "forced_close_share_by_list_size",
+    "support_count_table",
+    "union_size_table",
+    "completion_tokens",
+    "seconds_per_contact",
+    "empty_gold_false_fill",
+    "nonempty_exact_set",
+    "per_scenario_natural_mixture_and_equal_scenario",
+    "discordance_of_every_sampled_stream_against_the_twin"
+  ],
+  "stages": {
+    "1_columns": "bash scripts/flights/nx/l338_read.sh columns  (stage3_rollout_score --mode perception-branches: one complete official scoring per arm; no number printed)",
+    "2_read": "python -B scripts/analysis/slurp_l338_column_read.py --stage read --data-root $SPEECHRL_DATA_DIR (through scripts/flights/nx/l338_read.sh)",
+    "smoke": "python -B scripts/analysis/slurp_l338_column_read.py --stage smoke (per-arm decode cost and the v6 sampling receipt; no countersignature; the machine sign-off input for the column flight)"
+  },
+  "twin": "aa",
+  "verdict_words": [
+    "HARM",
+    "NEUTRAL",
+    "NOMINATED"
+  ],
+  "what_is_not_here": "No margins block and no admission: nothing is locked here.",
+  "word_order": {
+    "L1": [
+      "NOMINATED",
+      "HARM",
+      "NEUTRAL"
+    ],
+    "L2": [
+      "NOMINATED",
+      "HARM",
+      "NEUTRAL"
+    ]
+  },
+  "word_rules": {
+    "L1": {
+      "HARM": "SLU delta CI95 upper bound < -1.49 pp, or intent delta CI95 upper bound < -0.65 pp",
+      "NEUTRAL": "none of the above",
+      "NOMINATED": "SLU delta CI95 lower bound >= 1.49 pp AND intent delta CI95 upper bound >= -0.65 pp (no resolved intent loss)",
+      "guard": "intent",
+      "primary": "slu"
+    },
+    "L2": {
+      "HARM": "intent delta CI95 upper bound < -0.65 pp, or SLU delta CI95 upper bound < -1.49 pp",
+      "NEUTRAL": "none of the above",
+      "NOMINATED": "intent delta CI95 lower bound >= 0.65 pp AND SLU delta CI95 upper bound >= -1.49 pp (no resolved SLU loss)",
+      "guard": "slu",
+      "primary": "intent"
+    }
+  }
+}

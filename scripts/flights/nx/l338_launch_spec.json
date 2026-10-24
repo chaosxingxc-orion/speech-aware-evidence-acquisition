@@ -1,0 +1,63 @@
+{
+  "schema": "saea-package-launch-spec-v1",
+  "_note": "L338 launch spec for package_launch.sh (owner rulings 338 and 341 A). The coordinator registers with `--root-countersign --until commit` while the predecessor flies; the queue hook scripts/flights/batch/queue/queue_l338_after_chain.sh <chain-out> <exit-token> <start-stamp> (the predecessor will be the carrier chain) runs `--from flip --until chain` once that chain has exited rc=0. The write step passes --registered-at {utc} because a first registration has no registered-facts file to inherit a stamp from. The chain wrapper (scripts/flights/batch/queue/chain_l338.sh, installed at /home/chao/saea-queue/chain_l338.sh) runs batch_chain_l338.sh, whose serving swap is a no-op while the resident think-budget-np4 session is up. The Windows task SAEA-Chain-L338 must be registered first (no new serving task: the session is the resident one).",
+  "short": "l338",
+  "launch_id": "l338-first-attempt",
+  "package": "slurp-l338-lever-column-fold-b-v1",
+  "readiness_dir": "docs/readiness/2026-10-19-slurp-l338-lever-column-fold-b-v1",
+  "steps": {
+    "derive": {
+      "cmd": "python -B scripts/flights/nx/l338_derive_cells.py"
+    },
+    "write": {
+      "cmd": "python -B scripts/flights/nx/l338_write_registration.py --study-commit {head} --registered-at {utc} --append-ledger"
+    },
+    "countersign": {
+      "texts": "{readiness_dir}/countersign-row-texts-v1.json",
+      "ledger": "docs/exposure-ledger.md",
+      "skip_substrings": [
+        "-READ-"
+      ]
+    },
+    "mint": {
+      "cmd": "python -B scripts/flights/nx/l338_mint_receipt.py",
+      "done_if": {
+        "file": "coordination/slurp-l338-lever-column-fold-b-v1/root-admission-v1.json",
+        "contains": [
+          "SAEA-SLURP-STAGE3-L338-LEVER-COLUMN-FOLD-B-FIT-V1"
+        ]
+      }
+    },
+    "commit": {
+      "paths": [
+        "configs",
+        "docs/exposure-ledger.md",
+        "{readiness_dir}",
+        "{readiness_dir}-preregistration.md"
+      ],
+      "message": "register: L338 (the lever column, TRAIN Fold B); rows countersigned; receipt minted"
+    },
+    "flip": {
+      "script": "scripts/flights/nx/l338_flip.sh",
+      "package": "docs/readiness/2026-10-19-slurp-l338-lever-column-fold-b-v1",
+      "cells": [
+        "slurp-native-stage3-l338-lever-column-fold-b-smoke-4-v1",
+        "slurp-native-stage3-l338-lever-column-fold-b-v1"
+      ],
+      "pins_commit_msg": "/home/chao/l338-pins-commit.txt",
+      "env": {
+        "L338_KINDS": "smoke arm"
+      },
+      "flight_commit_file": "/home/chao/l338-flight-commit.txt",
+      "pins_commit_text": "L338: re-pin the lever column package (smoke-4, column) on the Thinking base at the registered study commit (rulings 338 and 341 A; ext4 flip)\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\n"
+    },
+    "chain": {
+      "task": "SAEA-Chain-L338",
+      "wrapper": "/home/chao/saea-queue/chain_l338.sh",
+      "flight_commit_file": "/home/chao/l338-flight-commit.txt"
+    },
+    "read": {
+      "cmd": "bash scripts/flights/nx/l338_read.sh smoke"
+    }
+  }
+}

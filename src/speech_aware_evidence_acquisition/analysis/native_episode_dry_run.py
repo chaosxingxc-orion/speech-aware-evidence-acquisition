@@ -670,7 +670,9 @@ def dry_run_native_episode(
     thinking_policy_by_arm: dict[str, Mapping[str, Mapping[str, object]] | None] = {}
     thinking_base: dict[str, object] | None = None
     episode_group = binding["episode"].perception_branch_group
-    if episode_group is not None and episode_group.is_thinking:
+    # Decision 338: a SAMPLING group's branches carry no thinking policy either (``thinking_policy`` is None), so its arms resolve to the node's own role-level
+    # decoding -- the lock's thinking fields -- and the walk reports them like a thinking group's.
+    if episode_group is not None and (episode_group.is_thinking or episode_group.is_sampling):
         from ..core.reasoning_knobs import fold_into_decoding
 
         thinking_policy_by_arm = {b.branch_id: b.thinking_policy for b in episode_group.branches}

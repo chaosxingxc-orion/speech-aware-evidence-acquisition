@@ -1,0 +1,108 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-l338-lever-column-fold-b-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-l338-lever-column-fold-b-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-l338-lever-column-fold-b-smoke-4-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
+      "readiness": {
+        "reason": "Four-row form smoke of the lever column: it proves that the phase-native-module-v1-c15 module program with 4 sampling arms loads on the resident np4 Thinking session, that every sampled contact carries the lock's thinking budget 3072 and max_tokens 4096, its sample index, its derived seed and the arm's decoding, that the merge and commit results land in the v6 receipt, that the live phase fit passes, that no node hits its cap, and what a contact costs per arm (completion tokens, finish reasons, forced closes, seconds) against the registered cost. Registered before contact on 2026-10-19 by script (decision 58) from the 268-B Thinking lock cell and the module compiler (owner rulings 338 and 341 A (2026-10-19), 335 B and 336 A (2026-10-18), 326 A and 327 A (2026-10-17), 313 A (2026-10-14) and 304/307 (2026-10-13), coordinator approval of the decision-338 lever-column design). HELD: root countersigns the DRAFT rows, mints the admission receipt (scripts/flights/nx/l338_mint_receipt.py), the chain swaps to the resident np4 Thinking session (scripts/flights/batch/serving_swap.sh think-budget-np4, a no-op when it is resident) and the cells are flipped with scripts/flights/batch/flip_package_ext4.sh through scripts/flights/nx/l338_flip.sh, which also mints each cell's own first-phase supply under its own run id (item E16); --allow-output-change must never be passed. Nothing here authorises a flight, a readiness flip or an admission entry.",
+        "requirements": [
+          {
+            "expected_decision_id": "slurp-l338-lever-column-fold-b-admission-v1",
+            "kind": "decision",
+            "reason": "Decision slurp-l338-lever-column-fold-b-admission-v1 pinned by scripts/flights/repin_cell.py.",
+            "relpath": "coordination/slurp-l338-lever-column-fold-b-v1/root-admission-v1.json",
+            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+          },
+          {
+            "kind": "preparation",
+            "reason": "The Fold B exemplar-intent AGREEMENT table this cell's boundary channel ranks with (w_agree 1.0), built model-free by scripts/build_slurp_intent_exemplar_agreement.py (DEV parameters, the DEV/Fold A builder) from the committed FILLER BASE cell's pins -- zero model, server, encoder, embedder, scorer, network and GPU contacts. Measured: 1,080 rows, every row 20 votes, 0 self-excluded exemplars, 0 rows without a vote, 60 facets reachable; bytes identical to the filler table (docs/readiness/2026-09-28-slurp-fold-b-phase2-inputs-v1/README.md; ledger row SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-B-V1).",
+            "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-B-V1/agreement.jsonl",
+            "sha256": "06990a86d20469c668ac4231990b49e5926d4771c9af8fbb13ae634b3ec21911"
+          },
+          {
+            "kind": "preparation",
+            "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under its own run id with core.flight.cli prepare-supply at the flip from the sealed TRAIN Fold B speech-query segment vectors, the centroid key file SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1 and the Fold B agreement table (item E16). --allow-output-change must never be passed.",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-L338-LEVER-COLUMN-FOLD-B-SMOKE-4-V1/phase-supply-v1.json",
+            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-L338-LEVER-COLUMN-FOLD-B-SMOKE-4-V1"
+    }
+  ],
+  "core_read_design": {
+    "arms": {
+      "aa": "SAEA-SLURP-STAGE3-L338-LEVER-COLUMN-FOLD-B-SMOKE-4-V1",
+      "l1-support": "SAEA-SLURP-STAGE3-L338-LEVER-COLUMN-FOLD-B-SMOKE-4-V1",
+      "l2-union": "SAEA-SLURP-STAGE3-L338-LEVER-COLUMN-FOLD-B-SMOKE-4-V1",
+      "lock": "SAEA-SLURP-STAGE3-L338-LEVER-COLUMN-FOLD-B-SMOKE-4-V1"
+    },
+    "chain": "resident np4 Thinking session (swap is a no-op) -> smoke -> machine sign-off (coordinator veto window) -> the column flight",
+    "reading": "official SLU-F1 and intent paired per row: l1-support, l2-union and the twin aa minus the delivering lock arm, beside the per-stream discordance, support-count, union-size, empty-gold false-fill, seconds-per-contact and per-scenario tables",
+    "this_cell": "four-row form smoke of the lever column"
+  },
+  "date": "2026-10-19",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.5,
+    "planned_model_calls": 120,
+    "planned_speech_audio_seconds": 306,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-STAGE3-L338-LEVER-COLUMN-FOLD-B-SMOKE-4-V1",
+  "failure_policy": "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A failed smoke stops the cell and the column flight does not open. The smoke is re-flown whole at most once under one root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 240,
+    "generation_calls_cap": 120,
+    "gpu_hours_fit_inclusive": 0.5,
+    "native_task_contract_calls_cap": 120,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 306
+  },
+  "fragment_kind": "saea-slurp-native-stage3-l338-lever-column-fold-b-smoke-4-v1",
+  "generation_budget": {
+    "cap": 120,
+    "definition": "The review-off module graph (perception 1, solver 1; Reviewer and Planner never visited) under program phase-native-module-v1-c15 with the 4-arm sampling column: 4 x 15 = 60 is the exact program maximum (2 + 2 (K - 1) + (k - 1) + (n - 1), K = 4); the plan ceiling adds 15 answer-only fallback contacts per row (one per budgeted-thinking contact: 7 Perception + 8 Solver contacts, core.reasoning_knobs): 120 = 4 x 30. The live phase fit makes 4 x 15 x 4 = 240 tokenizer endpoint calls under its own run id SAEA-SLURP-STAGE3-L338-LEVER-COLUMN-FOLD-B-SMOKE-4-FIT-V1. The GPU-hour ceiling is a BOUND (rows x 7.52 lock-row equivalents / 1.95 rows per minute / 60 x 1.3, ceil 0.1), never a target. The budget is RUN-CUMULATIVE across every attempt of this run id.",
+    "target": 120
+  },
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+    "decision_population": "TRAIN Fold B (SLURP-STAGE3-FILLER-FOLD-B-C01-SMOKE-4-V1): 4 rows of docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-smoke-4-v1.json; four of its rows, structural form proof only, no score and no read.",
+    "roster_receipt": "docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-smoke-4-v1.json",
+    "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "ids": [
+        "slurp:train:000010:audio-1502199193",
+        "slurp:train:000029:audio-1488538279",
+        "slurp:train:000092:audio-1488560082",
+        "slurp:train:000097:audio-1498564512"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Four-row structural form smoke of L338: that phase-native-module-v1-c15 (ceiling 15) with the 4-arm sampling column loads on the resident np4 Thinking session (serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1), that every sampled Perception and Solver contact carries the lock's thinking budget 3072 with max_tokens 4096, its sample index, its derived seed and the arm's decoding while the delivering arm's request is the lock's, that no node hits its own cap, that no delivered content carries a think marker, that the live phase fit passes, that the v6 arm receipt seals and that the episode completes, and what a contact costs per arm (completion tokens, finish reasons, forced closes, seconds) against the registered cost. Scored by no one and read by no one: four rows are never evidence of benefit or harm.",
+  "service_session": "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
+  "split_id": "SLURP-EVO-FOLD-B-V2",
+  "stage3_algorithm": {
+    "id": "none",
+    "note": "This cell carries NO training-free RL operator and says so explicitly: it is a same-flight node column of the NX instrument (L338) -- 2 hand-written candidate sampling levers (a Solver sample-and-commit and a Perception sample-and-merge) and an in-flight twin read as columns against the delivering lock arm (the 268-B lock form) -- with no rollout pool, no per-sample credit, no update operator and no evolving store.",
+    "operators_used": []
+  }
+}

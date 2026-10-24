@@ -1,0 +1,32 @@
+{
+  "_note": "The decision-338 lever-column arm table (data-driven; owner rulings 338, 341 A of 2026-10-19: false-fill suppression L1 and Perception candidate union L2 on the Thinking core, TRAIN Fold B). Each candidate arm carries exactly ONE sampling axis of the level-2 Perception-branch group (roles.perception.sampling_variants, receipt saea-perception-branch-arms-v6): l1-support fans out solver_samples (n same-prompt Solver contacts, sample 0 greedy at the lock seed, samples 1..n-1 at the arm's decoding with seed = lock seed + offset, committed by saea-commit-first-support-v1) and l2-union fans out perception_samples (k Perception contacts merged into the Solver's shortlist by saea-perception-candidate-union-v1, capped at the Solver's own max_candidates). Every arm renders the lock's templates, evidence and QueryState; the per-node thinking budget (3,072 / cap 4,096), the response format and the tool authority are the lock's. The twin aa (replicate_of lock) and the delivering arm lock (the lock's request, no axis) are added by the compiler, aa then lock LAST.",
+  "arms": [
+    {
+      "arm_id": "l1-support",
+      "evidence": "Decision 338 lever L1: false-fill suppression. The VER-1 support filter (first-first, n = 5, s = 2) plus the N1-gated empty decision over the arm's own 5 Solver samples; 1 Perception + 5 Solver = 6 contacts per row. Offline bound on the Thinking core: +1.09 [+0.53, +1.63] SLU (development numbers; the design spec section 2). N1 is unavailable in flight, so the gate reports n1-unavailable and the reader computes it offline.",
+      "solver_samples": {
+        "n": 5,
+        "decoding": {"temperature": 0.6, "top_p": 0.95, "top_k": 20},
+        "commit": {"policy": "saea-commit-first-support-v1", "min_support": 2, "similarity_threshold": 0.8, "n1_min": 0.2, "empty_votes_min": 3}
+      }
+    },
+    {
+      "arm_id": "l2-union",
+      "evidence": "Decision 338 lever L2: the Perception multi-sample candidate union. k = 4 Perception contacts (sample 0 greedy, samples 1-3 at the same sampling), merged into the one Solver contact's shortlist with sample 0's list first and capped at 3; 4 Perception + 1 Solver = 5 contacts per row. Offline bound: delivering-list recall 88.15 -> 89.81 %, expected intent 0 to +1.0 (design spec section 3).",
+      "perception_samples": {
+        "k": 4,
+        "decoding": {"temperature": 0.6, "top_p": 0.95, "top_k": 20},
+        "merge_policy": "saea-perception-candidate-union-v1",
+        "cap": 3
+      }
+    }
+  ],
+  "delivering": "lock",
+  "locked_decoding": {"seed": 20260913, "temperature": 0},
+  "locked_template": {
+    "relpath": "configs/probes/slurp_native_role_solver_v2.txt",
+    "sha256": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+  },
+  "schema": "saea-l338-arm-table-v1",
+  "twin": "aa"
+}
