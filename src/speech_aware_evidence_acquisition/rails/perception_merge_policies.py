@@ -20,6 +20,7 @@ contact, no randomness; the same input always produces the same
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 from typing import Sequence
 
@@ -127,9 +128,61 @@ def merge_candidate_union_v1(
 PERCEPTION_MERGE_POLICIES.register(CANDIDATE_UNION_V1, merge_candidate_union_v1)
 
 
+def _note_document(text: object) -> dict | None:
+    """The parsed note document, or ``None`` when ``text`` is not a JSON object carrying a ``candidates`` list of objects."""
+
+    if not isinstance(text, str):
+        return None
+    try:
+        document = json.loads(text)
+    except (TypeError, ValueError):
+        return None
+    candidates = document.get("candidates") if isinstance(document, dict) else None
+    if not isinstance(candidates, list) or any(
+        not isinstance(row, dict) or not isinstance(row.get("intent_id"), str) for row in candidates
+    ):
+        return None
+    return document
+
+
+def build_merged_note(sample_texts: Sequence[object], outcome: MergeOutcome) -> str:
+    """The note text the branch's Solver contact reads in place of sample 0's: one note document whose ``candidates`` are the
+    merged shortlist.
+
+    Sample 0's note text is returned VERBATIM whenever the merge changed nothing (no appended candidate and nothing cut), so a
+    union that adds no information renders the byte-identical request sample 0 alone would have. Otherwise the base document is
+    sample 0's (or, when sample 0 is unusable, the first usable sample's); every merged candidate keeps its OWN entry from the
+    first sample (in sample order) that listed it, in merged order, and every other document field is the base document's. The
+    text is re-serialised by ``json.dumps`` with sorted keys and compact separators, a pure function of the inputs.
+    """
+
+    documents = [_note_document(text) for text in sample_texts]
+    first_text = sample_texts[0]
+    if not isinstance(first_text, str):
+        raise MergePolicyError("a merged note needs sample 0's text")
+    base_index = next((index for index, document in enumerate(documents) if document is not None), None)
+    if base_index is None:
+        return first_text
+    first_ids = tuple(
+        dict.fromkeys(row["intent_id"] for row in documents[0]["candidates"])
+    ) if documents[0] is not None else ()
+    if documents[0] is not None and not outcome.appended_candidate_ids and first_ids == outcome.merged_candidate_ids:
+        return first_text
+    entry_of: dict[str, dict] = {}
+    for document in documents:
+        if document is None:
+            continue
+        for row in document["candidates"]:
+            entry_of.setdefault(row["intent_id"], row)
+    merged = dict(documents[base_index])
+    merged["candidates"] = [entry_of[intent_id] for intent_id in outcome.merged_candidate_ids]
+    return json.dumps(merged, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+
+
 __all__ = [
     "CANDIDATE_UNION_V1",
     "MergeOutcome",
     "MergePolicyError",
+    "build_merged_note",
     "merge_candidate_union_v1",
 ]

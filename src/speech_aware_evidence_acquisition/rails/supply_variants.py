@@ -2670,6 +2670,56 @@ def sampling_extra_contacts(group: PerceptionBranchGroup) -> int:
     return total
 
 
+def perception_contact_slots(group: PerceptionBranchGroup) -> tuple[tuple[int, int | None], ...]:
+    """The ordered Perception-phase contact slots of one visit: ``(branch_index, sample_index)``.
+
+    A branch without a ``perception_samples`` axis owns one slot whose sample index is ``None`` (the unsampled contact every
+    other branch group makes). A ``perception_samples`` branch owns ``k`` consecutive slots, sample indices ``0..k-1``. The
+    flat slot list is the order the Perception node invokes its contacts in, so a node-global contact index maps to its slot.
+    """
+
+    slots: list[tuple[int, int | None]] = []
+    for index, branch in enumerate(group.branches):
+        axis = branch.perception_samples
+        if axis is None:
+            slots.append((index, None))
+        else:
+            slots.extend((index, sample) for sample in range(axis.k))
+    return tuple(slots)
+
+
+def solver_contact_slots(group: PerceptionBranchGroup) -> tuple[tuple[int, int | None], ...]:
+    """The ordered first-visit Solver contact slots of a level-2 group: ``(branch_index, sample_index)``, ``n`` consecutive
+    slots for a ``solver_samples`` branch and one unsampled slot (``None``) for every other branch."""
+
+    slots: list[tuple[int, int | None]] = []
+    for index, branch in enumerate(group.branches):
+        axis = branch.solver_samples
+        if axis is None:
+            slots.append((index, None))
+        else:
+            slots.extend((index, sample) for sample in range(axis.n))
+    return tuple(slots)
+
+
+def sampling_decoding_table(group: PerceptionBranchGroup, *, perception_phase_id: str, solver_phase_id: str) -> dict[str, dict[str, dict[str, object]]]:
+    """``{branch_id: {role phase id: {"decoding": {...}, "seed_offsets": [...]}}}`` for the request adapter. Empty for a group
+    that declares no sampling axis (every adapter written before decision 338 then composes the requests it always did)."""
+
+    table: dict[str, dict[str, dict[str, object]]] = {}
+    for branch in group.branches:
+        entry: dict[str, dict[str, object]] = {}
+        if branch.perception_samples is not None:
+            axis = branch.perception_samples
+            entry[perception_phase_id] = {"decoding": dict(axis.decoding), "seed_offsets": list(axis.seed_offsets)}
+        if branch.solver_samples is not None:
+            axis = branch.solver_samples
+            entry[solver_phase_id] = {"decoding": dict(axis.decoding), "seed_offsets": list(axis.seed_offsets)}
+        if entry:
+            table[branch.branch_id] = entry
+    return table
+
+
 def parse_perception_sampling_variants(block: object, *, phase_id: str) -> PerceptionBranchGroup:
     """Parse ``roles.perception.sampling_variants`` into a LEVEL-2 Perception branch group whose axes are the sampling fan-outs
     (decision 338, levers L1 and L2).
@@ -3391,6 +3441,7 @@ def perception_branch_record(
     thinking_group: bool = False,
     sampling_group: bool = False,
     sampling: Mapping[str, object] | None = None,
+    sampling_pending: bool = False,
     solver_absent: bool = False,
     absent_reason: str | None = None,
 ) -> dict[str, object]:
@@ -3602,13 +3653,23 @@ def perception_branch_record(
     if sampling_group:
         if template_group or thinking_group:
             raise PerceptionBranchError("a perception branch row has one shape: template (v4), thinking (v5) or sampling (v6)")
-        reason = perception_branch_sampling_error(sampling, is_b=branch.is_b)
-        if reason is None and branch.is_b:
-            reason = _sampling_record_matches_axes(branch, sampling)
-        if reason is not None:
-            raise PerceptionBranchError(f"perception branch {branch.branch_id!r}: {reason}")
-        record["sampling"] = None if sampling is None else json.loads(json.dumps(sampling))
-    elif declares_sampling or sampling is not None:
+        if sampling_pending:
+            # The Perception-visit row of a level-2 sampling branch: its Solver samples (and, for the last Perception sample, the
+            # merge) do not exist yet. The runner re-seals the row through this same constructor at the episode's final receipt
+            # assembly, with the complete sampling value and sampling_pending False, so the pending form never survives.
+            if sampling is not None or has_level2:
+                raise PerceptionBranchError(
+                    f"perception branch {branch.branch_id!r}: a pending sampling row carries neither a sampling value nor level-2 fields"
+                )
+            record["sampling"] = None
+        else:
+            reason = perception_branch_sampling_error(sampling, is_b=branch.is_b)
+            if reason is None and branch.is_b:
+                reason = _sampling_record_matches_axes(branch, sampling)
+            if reason is not None:
+                raise PerceptionBranchError(f"perception branch {branch.branch_id!r}: {reason}")
+            record["sampling"] = None if sampling is None else json.loads(json.dumps(sampling))
+    elif declares_sampling or sampling is not None or sampling_pending:
         raise PerceptionBranchError(
             f"perception branch {branch.branch_id!r} declares sampling but its row is not the sampling (v6) shape"
         )
