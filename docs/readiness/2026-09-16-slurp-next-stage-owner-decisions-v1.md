@@ -3614,3 +3614,22 @@ replaced the original battery/power plug, the GPU configuration can be set highe
   `chain_nxt4.sh` in the no-flight gap before the R4 smoke (8d3e8a3b7). ASRBIAS pass resumed under the Windows task SAEA-ASRBIAS
   (v1, v2-n30 sealed; v2-n100 partial moved aside and re-flown; then v3 / v4; score all). 338 part 1 merged (0f78ba442; adapter line-budget
   fix a6d675c0c); part 2 in a third Sonnet attempt.
+
+### L338 lever column registered and queued after R4; R2 note merged; saea_task starts on registration (coordinator, 2026-10-24 16:40Z)
+
+- 338 part 2 merged (a3ade87c0, Sonnet aedbbf68d): official scoring of sampling groups (`stage3_rollout_score --mode perception-branches`;
+  the l1-support column = the committed answer of 5 Solver samples, sample 0 kept as a second official column), package
+  `slurp-l338-lever-column-fold-b-v1` (program c15: 7 Perception + 8 Solver contacts per row; expected 69.4 GPU-h, ceiling 90.3 + 0.5),
+  reader `slurp_l338_column_read.py`. Word vocabulary corrected before registration: both candidate arms cost more than the lock, so
+  NO-RESOLVED-LOSS applies to neither; L1 (SLU primary, intent guard) and L2 (intent primary, SLU guard) read NOMINATED / HARM / NEUTRAL
+  against the floors 1.49 / 0.65 with the twin as the noise bar (design spec section 6 updated).
+- Registered by `package_launch.sh l338_launch_spec.json --root-countersign --until commit` (8394f08fe; 4 rows countersigned 16:28:14Z,
+  READ row stays a draft; receipt minted). Hooks: `/home/chao/saea-queue/queue_l338.sh` waits `CHAIN_NXT4_EXIT rc=0` after
+  2026-10-24T00:00:00Z (task SAEA-Queue-L338 Running); SAEA-Chain-L338 registered (the hook starts it after the flip).
+- Coordinator call on ruling 341 A's free check: L338 flies as registered (both arms) directly after R4; the L1 rule over R4's sealed decodes is
+  computed at the R4 read as an ADVISORY (if < +0.67 pp the coordinator may stop the hook by hand before the flip); unattended continuity and
+  the 175 W throughput outweigh the 28 GPU-h saving.
+- Incident, harmless: `saea_task.ps1 -Name SAEA-Chain-L338 -Script ...` (no `-Start`) registers AND starts the task; the chain ran 3 s,
+  refused (no flight commit file), wrote `CHAIN_L338_EXIT rc=1 16:28:33Z` (ignored by stamp) and touched nothing (R3 flight intact, no run
+  dir). Model-free follow-up `-NoStart` stands.
+- R2 rec2 results note merged (e8079b57a, Opus); handoff refreshed (db0af82cd); doc gates PASS.
