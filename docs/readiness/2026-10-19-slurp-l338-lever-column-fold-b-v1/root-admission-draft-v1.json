@@ -3,17 +3,17 @@
   "antecedents": {
     "analysis_recipe": {
       "path": "docs/readiness/2026-10-19-slurp-l338-lever-column-fold-b-v1/analysis-recipe-v1.json",
-      "sha256": "3b878e0265ea86fef1850eb63290e5a2e3535132b804e7e974994f15c76731d3"
+      "sha256": "4a72277d8a9efd4c4a6ea6b32b7fb774e4745a06c04b21e4643a4ee312aa8116"
     },
     "protocol": {
       "path": "docs/readiness/2026-10-19-slurp-l338-lever-column-fold-b-v1/protocol-registered-v1.json",
-      "sha256": "7f15283b9d4b623195fbe9574bb992e43feba51ad76af5271d57dd8eb58e8f71"
+      "sha256": "96fd691e49c91a4ff8d2a32253a43f0bf342826da65ede36d06c4833bda784ff"
     },
     "registered_facts": {
       "path": "docs/readiness/2026-10-19-slurp-l338-lever-column-fold-b-v1/registered-facts-v1.json",
-      "sha256": "c2f5e2b1eae2d989126263c05186766c1756fe9afe0af1f9631bfb8d2b55579c"
+      "sha256": "f3259e73d10b6c37d4ca07976e47af7644f04bf5f8a983778ae57d1f64b916f2"
     },
-    "registration_base_commit": "2e92cac1827d028411c0c6fde42f2c8233a57bcd"
+    "registration_base_commit": "a3ade87c0e1629f2d26f2bd785a774caddea7c59"
   },
   "authorization_basis": "owner rulings 338 and 341 A (2026-10-19), 335 B and 336 A (2026-10-18), 326 A and 327 A (2026-10-17), 313 A (2026-10-14) and 304/307 (2026-10-13), coordinator approval of the decision-338 lever-column design; docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md; docs/superpowers/specs/2026-10-12-thinking-core-engineering-base-design.md.",
   "budget": {

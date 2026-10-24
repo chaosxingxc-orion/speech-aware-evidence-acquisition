@@ -60,7 +60,7 @@
   },
   "read_run_id": "SAEA-SLURP-L338-LEVER-COLUMN-FOLD-B-READ-V1",
   "recipe_id": "slurp-l338-lever-column-fold-b-read-v1",
-  "registered_at_utc": "2026-10-19T12:00:00.000000+00:00",
+  "registered_at_utc": "2026-10-24T16:28:10Z",
   "roster": {
     "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
     "roster_id": "SLURP-EVO-FOLD-B-V2",

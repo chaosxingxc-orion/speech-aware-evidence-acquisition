@@ -390,7 +390,7 @@
       }
     }
   },
-  "registered_at_utc": "2026-10-19T12:00:00.000000+00:00",
+  "registered_at_utc": "2026-10-24T16:28:10Z",
   "registration_basis": "owner rulings 338 and 341 A (2026-10-19), 335 B and 336 A (2026-10-18), 326 A and 327 A (2026-10-17), 313 A (2026-10-14) and 304/307 (2026-10-13), coordinator approval of the decision-338 lever-column design; docs/superpowers/specs/2026-10-12-thinking-core-engineering-base-design.md. DRAFT: nothing here authorises a flip or a flight.",
   "roster": {
     "arm": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
@@ -477,7 +477,7 @@
     }
   },
   "status": "DRAFT-HELD",
-  "study_commit_at_registration": "2e92cac1827d028411c0c6fde42f2c8233a57bcd",
+  "study_commit_at_registration": "a3ade87c0e1629f2d26f2bd785a774caddea7c59",
   "thinking_knobs": {
     "answer_fallback": {
       "enable_thinking": false,
