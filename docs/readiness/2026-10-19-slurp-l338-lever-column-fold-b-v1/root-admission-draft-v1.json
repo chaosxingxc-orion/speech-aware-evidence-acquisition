@@ -3,15 +3,15 @@
   "antecedents": {
     "analysis_recipe": {
       "path": "docs/readiness/2026-10-19-slurp-l338-lever-column-fold-b-v1/analysis-recipe-v1.json",
-      "sha256": "a135328679ec8a74b2994358a53a8e0930b7b28e540fe5d39582e909fde7c891"
+      "sha256": "3b878e0265ea86fef1850eb63290e5a2e3535132b804e7e974994f15c76731d3"
     },
     "protocol": {
       "path": "docs/readiness/2026-10-19-slurp-l338-lever-column-fold-b-v1/protocol-registered-v1.json",
-      "sha256": "eddf71570125a7f742600295bc263e969b0cf12083044e57ce06b96754bc0091"
+      "sha256": "7f15283b9d4b623195fbe9574bb992e43feba51ad76af5271d57dd8eb58e8f71"
     },
     "registered_facts": {
       "path": "docs/readiness/2026-10-19-slurp-l338-lever-column-fold-b-v1/registered-facts-v1.json",
-      "sha256": "1a4b07385d0d0df4a78a415a5b46f1f908fd364e36848e939edaf8ee74cb73cf"
+      "sha256": "c2f5e2b1eae2d989126263c05186766c1756fe9afe0af1f9631bfb8d2b55579c"
     },
     "registration_base_commit": "2e92cac1827d028411c0c6fde42f2c8233a57bcd"
   },

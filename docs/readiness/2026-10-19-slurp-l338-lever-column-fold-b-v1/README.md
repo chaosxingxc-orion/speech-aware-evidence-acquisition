@@ -89,20 +89,18 @@ expected = rows x arm mix / 1.95 rows per minute / 60 with the arm mix 7.52 lock
 
 ## Read rule (preregistered)
 
-`scripts/analysis/slurp_l338_column_read.py`: every arm's first-visit Solver answer is scored once, complete, by the official scorer (`slurp-slu-official-train`, `stage3_rollout_score --mode perception-branches`); each candidate arm and the twin minus the delivering `lock` arm, SLU-F1 and intent accuracy, paired per row, utterance-cluster bootstrap CI95 (10,000 draws, seed 20261018). The twin is the in-flight A/A: its SLU / intent deltas o_SLU / o_int give the bars |o_SLU| / |o_int|. The l1 branch's sample 0 is a second A/A (the extra official column `l1-support-sample0`, scored once beside the four arm columns; reported, used in no word). Floors (decision 190, n = 1,080): 1.49 pp SLU / 0.65 pp intent. Words per lever (fixed here and in the reader; the first that applies, in the listed order):
+`scripts/analysis/slurp_l338_column_read.py`: every arm's first-visit Solver answer is scored once, complete, by the official scorer (`slurp-slu-official-train`, `stage3_rollout_score --mode perception-branches`); each candidate arm and the twin minus the delivering `lock` arm, SLU-F1 and intent accuracy, paired per row, utterance-cluster bootstrap CI95 (10,000 draws, seed 20261018). The twin is the in-flight A/A noise bar (its SLU / intent deltas against the lock are reported beside the words and enter no word). The l1 branch's sample 0 is a second A/A (the extra official column `l1-support-sample0`, scored once beside the four arm columns; reported, used in no word). Floors (decision 190, n = 1,080): 1.49 pp SLU / 0.65 pp intent. Both candidate arms cost more than the lock, so NO-RESOLVED-LOSS (reserved for a cheaper arm that loses nothing) applies to neither. Words per lever (fixed here and in the reader; the first that applies, in the listed order):
 
 **L1** (slu primary, intent guard; `l1-support`)
 
-* **NOMINATED**: SLU delta CI95 lower bound > 0 AND the SLU delta point >= |o_SLU| (the twin's absolute SLU delta) AND the intent delta point >= -0.65 pp.
-* **NO-RESOLVED-LOSS**: SLU delta CI95 upper bound >= -|o_SLU| AND intent delta CI95 upper bound >= -0.65 pp.
-* **HARM**: SLU delta CI95 upper bound < 0.
+* **NOMINATED**: SLU delta CI95 lower bound >= 1.49 pp AND intent delta CI95 upper bound >= -0.65 pp (no resolved intent loss).
+* **HARM**: SLU delta CI95 upper bound < -1.49 pp, or intent delta CI95 upper bound < -0.65 pp.
 * **NEUTRAL**: none of the above.
 
 **L2** (intent primary, slu guard; `l2-union`)
 
-* **NOMINATED**: intent delta CI95 lower bound > 0 AND the intent delta point >= max(|o_int|, 0.33) pp AND SLU delta CI95 upper bound >= -|o_SLU|.
-* **HARM**: intent delta CI95 upper bound < 0, or SLU delta CI95 upper bound < 0.
-* **NO-RESOLVED-LOSS**: SLU delta CI95 upper bound >= -|o_SLU| AND intent delta CI95 upper bound >= -0.65 pp (as for L1).
+* **NOMINATED**: intent delta CI95 lower bound >= 0.65 pp AND SLU delta CI95 upper bound >= -1.49 pp (no resolved SLU loss).
+* **HARM**: intent delta CI95 upper bound < -0.65 pp, or SLU delta CI95 upper bound < -1.49 pp.
 * **NEUTRAL**: none of the above.
 
 Secondaries: L1 pure-filter delta (the rule minus its own sample 0), the s = 3 / filter-only / gate-only / N1-gated forms (N1 offline), false fills removed, non-empty exact lost / gained; L2 merged-list recall against sample 0's, newly listed / lost gold, conversion by gold position, forced-close share by list size; for every arm: the DISCORDANCE of every sampled stream against the twin's (the share of rows whose official per-row result differs, SLU side and intent side, as a multiple of the twin's; it enters no word), the per-scenario table (natural mixture and equal scenario), seconds per contact, and the support-count and union-size tables. claims_benefit is false; development numbers only (owner decisions 28 and 86).

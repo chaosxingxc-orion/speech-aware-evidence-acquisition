@@ -18,19 +18,18 @@ in-flight A/A, replicate_of lock) and ``lock`` (the delivering arm, the 268-B lo
            supplied -- merged-list recall against sample 0's, newly listed / lost gold and conversion by gold position); and the DISCORDANCE of every sampled stream against
            the twin's.
 
-Arm words (preregistered; development numbers only; claims_benefit is false -- a nomination, never an admission). The twin ``aa`` is the in-flight A/A: o_SLU / o_int are its
-SLU / intent deltas against ``lock``; floors (decision 190, n = 1,080) are 1.49 pp SLU and 0.65 pp intent. The first rule that applies wins.
+Arm words (preregistered; development numbers only; claims_benefit is false -- a nomination, never an admission). Floors (decision 190, n = 1,080) are 1.49 pp SLU and
+0.65 pp intent. Both candidate arms COST MORE than the lock (l1: 5 Solver samples; l2: 4 Perception samples), so NO-RESOLVED-LOSS (a cheaper arm that loses nothing) does not
+apply to either: the vocabulary is exactly NOMINATED / HARM / NEUTRAL. The twin ``aa`` is the in-flight A/A noise bar: reported beside the words, used in no word.
 
   L1 (``l1-support``; SLU primary, intent guard)
-    NOMINATED         SLU CI-LB > 0 AND SLU point >= |o_SLU| AND intent point >= -0.65
-    NO-RESOLVED-LOSS  SLU CI-UB >= -|o_SLU| AND intent CI-UB >= -0.65
-    HARM              SLU CI-UB < 0
-    NEUTRAL           otherwise
+    NOMINATED  SLU delta CI95 lower bound >= 1.49 AND intent delta CI95 upper bound >= -0.65 (no resolved intent loss)
+    HARM       SLU delta CI95 upper bound < -1.49, or intent delta CI95 upper bound < -0.65
+    NEUTRAL    otherwise
   L2 (``l2-union``; intent primary, SLU guard)
-    NOMINATED         intent CI-LB > 0 AND intent point >= max(|o_int|, 0.33) AND SLU CI-UB >= -|o_SLU|
-    HARM              intent CI-UB < 0, or SLU CI-UB < 0
-    NO-RESOLVED-LOSS  as for L1
-    NEUTRAL           otherwise
+    NOMINATED  intent delta CI95 lower bound >= 0.65 AND SLU delta CI95 upper bound >= -1.49 (no resolved SLU loss)
+    HARM       intent delta CI95 upper bound < -0.65, or SLU delta CI95 upper bound < -1.49
+    NEUTRAL    otherwise
 
 The l1 branch's sample 0 is a second A/A (reported, used in no word). A NOMINATED arm goes to the 335 B Fold A column (not built here).
 
@@ -82,7 +81,7 @@ def _data_root_env() -> str:
 
 SCHEMA_SMOKE = fam.SMOKE_SCHEMA
 SCHEMA_READ = fam.READ_SCHEMA
-WORDS = ("NOMINATED", "NO-RESOLVED-LOSS", "HARM", "NEUTRAL")
+WORDS = ("NOMINATED", "HARM", "NEUTRAL")
 SEED = 20261018
 DRAWS = base.DEFAULT_DRAWS
 INTENT_FIELD, SCORER = base.INTENT_FIELD, base.SCORER
@@ -578,10 +577,10 @@ def l1_forms(outputs_rows: Sequence[Mapping], answer_texts: Mapping[str, Sequenc
 # --------------------------------------------------------------------------- the words
 
 
-def arm_words(contrast: Mapping, *, floor_intent_pp: float = fam.FLOOR_INTENT_PP, intent_guard_pp: float = fam.INTENT_GUARD_PP,
-              l2_intent_point_min_pp: float = fam.L2_INTENT_POINT_MIN_PP) -> dict:
-    """The preregistered arm words per candidate (see the module docstring); the twin ``aa`` supplies |o_SLU| and |o_int|. L1 rules apply in order NOMINATED,
-    NO-RESOLVED-LOSS, HARM, NEUTRAL; L2 rules in order NOMINATED, HARM, NO-RESOLVED-LOSS, NEUTRAL."""
+def arm_words(contrast: Mapping, *, floor_slu_pp: float = fam.FLOOR_SLU_PP, floor_intent_pp: float = fam.FLOOR_INTENT_PP) -> dict:
+    """The preregistered arm words per candidate (see the module docstring): NOMINATED / HARM / NEUTRAL for both levers, judged against the decision-190 floors. The twin
+    ``aa`` is reported beside the words (its absolute offsets are the noise bar) and enters no word. NOMINATED and HARM cannot both hold: NOMINATED needs both upper bounds
+    at or above minus their floors, and HARM needs one below."""
 
     versus = contrast["versus_delivering"]
     twin = versus.get(TWIN)
@@ -594,34 +593,21 @@ def arm_words(contrast: Mapping, *, floor_intent_pp: float = fam.FLOOR_INTENT_PP
         lever = LEVER_OF[arm]
         slu, intent = versus[arm]["slu_f1"], versus[arm]["intent"]
         c = {
-            "slu_ci_lo_above_zero": slu["ci95_lo_pp"] > 0.0,
-            "slu_point_at_or_above_twin_bar": slu["point_pp"] >= o_slu,
-            "intent_point_at_or_above_guard": intent["point_pp"] >= intent_guard_pp,
-            "slu_no_resolved_loss": slu["ci95_hi_pp"] >= -o_slu,
-            "intent_no_resolved_loss": intent["ci95_hi_pp"] >= intent_guard_pp,
-            "slu_ci_hi_below_zero": slu["ci95_hi_pp"] < 0.0,
-            "intent_ci_lo_above_zero": intent["ci95_lo_pp"] > 0.0,
-            "intent_point_at_or_above_bar": intent["point_pp"] >= max(o_int, l2_intent_point_min_pp),
-            "intent_ci_hi_below_zero": intent["ci95_hi_pp"] < 0.0,
+            "slu_ci_lo_at_or_above_floor": slu["ci95_lo_pp"] >= floor_slu_pp,
+            "slu_no_resolved_loss": slu["ci95_hi_pp"] >= -floor_slu_pp,
+            "intent_ci_lo_at_or_above_floor": intent["ci95_lo_pp"] >= floor_intent_pp,
+            "intent_no_resolved_loss": intent["ci95_hi_pp"] >= -floor_intent_pp,
         }
         if lever == "L1":
-            if c["slu_ci_lo_above_zero"] and c["slu_point_at_or_above_twin_bar"] and c["intent_point_at_or_above_guard"]:
-                word = "NOMINATED"
-            elif c["slu_no_resolved_loss"] and c["intent_no_resolved_loss"]:
-                word = "NO-RESOLVED-LOSS"
-            elif c["slu_ci_hi_below_zero"]:
-                word = "HARM"
-            else:
-                word = "NEUTRAL"
+            primary_clears, guard_ok = c["slu_ci_lo_at_or_above_floor"], c["intent_no_resolved_loss"]
         else:
-            if c["intent_ci_lo_above_zero"] and c["intent_point_at_or_above_bar"] and c["slu_no_resolved_loss"]:
-                word = "NOMINATED"
-            elif c["intent_ci_hi_below_zero"] or c["slu_ci_hi_below_zero"]:
-                word = "HARM"
-            elif c["slu_no_resolved_loss"] and c["intent_no_resolved_loss"]:
-                word = "NO-RESOLVED-LOSS"
-            else:
-                word = "NEUTRAL"
+            primary_clears, guard_ok = c["intent_ci_lo_at_or_above_floor"], c["slu_no_resolved_loss"]
+        if primary_clears and guard_ok:
+            word = "NOMINATED"
+        elif not c["slu_no_resolved_loss"] or not c["intent_no_resolved_loss"]:
+            word = "HARM"
+        else:
+            word = "NEUTRAL"
         words[arm] = {"lever": lever, "primary": fam.PRIMARY_OF_LEVER[lever], "word": word, "next_step": "335 B Fold A column" if word == "NOMINATED" else None,
                       "slu_delta_pp": slu["point_pp"], "slu_ci95": [slu["ci95_lo_pp"], slu["ci95_hi_pp"]],
                       "intent_delta_pp": intent["point_pp"], "intent_ci95": [intent["ci95_lo_pp"], intent["ci95_hi_pp"]], "conditions": c}
@@ -630,7 +616,7 @@ def arm_words(contrast: Mapping, *, floor_intent_pp: float = fam.FLOOR_INTENT_PP
             "external_reference_268b": {"twin_offset_slu_pp": fam.TWIN_OFFSET_268B_SLU_PP, "twin_offset_intent_pp": fam.TWIN_OFFSET_268B_INTENT_PP,
                                         "twin_offset_p31_slu_pp": fam.TWIN_OFFSET_P31_SLU_PP, "thinking_system_slu": fam.THINKING_SYSTEM_SLU,
                                         "thinking_system_intent": fam.THINKING_SYSTEM_INTENT},
-            "floors_pp": {"slu": fam.FLOOR_SLU_PP, "intent": floor_intent_pp}, "intent_guard_pp": intent_guard_pp, "words": words}
+            "floors_pp": {"slu": floor_slu_pp, "intent": floor_intent_pp}, "words": words}
 
 
 def arm_secondaries(arms_rows: Mapping[str, Mapping[str, Mapping[str, float]]], contacts: Sequence[Mapping], tables: Mapping[str, Mapping]) -> dict:

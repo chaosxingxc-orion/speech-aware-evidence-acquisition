@@ -367,7 +367,7 @@ def test_stage3_measurement_blocks():
     ce = facts["accounting"]["cost_estimate"]
     assert ce["column_flight"]["planned_ceiling_gpu_hours"] == fam.CELLS["arm"]["gpu_hours"] and ce["arm_mix_rows"] == fam.ARM_MIX_ROWS
     assert [r["arm"] for r in ce["arm_table"]] == list(fam.ARM_ORDER) and ce["inputs"]["r2b_measured"]["slots"] == 4
-    assert facts["read_rule"]["word_order"] == {"L1": ["NOMINATED", "NO-RESOLVED-LOSS", "HARM", "NEUTRAL"], "L2": ["NOMINATED", "HARM", "NO-RESOLVED-LOSS", "NEUTRAL"]}
+    assert facts["read_rule"]["word_order"] == {"L1": ["NOMINATED", "HARM", "NEUTRAL"], "L2": ["NOMINATED", "HARM", "NEUTRAL"]}
     assert facts["read_rule"]["twin"] == "aa" and facts["context_fit"]["ok"] is True and facts["read_rule"]["levers"] == {"l1-support": "L1", "l2-union": "L2"}
     assert facts["pins"]["signoff_conditions"]["sha256"] == hashlib.sha256((PKG / "signoff-conditions-v1.json").read_bytes()).hexdigest()
     assert "thinking_arms" not in facts and "decoding_arms" not in facts and facts["locked_decoding"] == fam.LOCKED_DECODING
@@ -421,9 +421,9 @@ def test_plans_protocol_receipt_and_ledger_agree():
     recipe = json.loads((PKG / "analysis-recipe-v1.json").read_text(encoding="utf-8"))
     assert recipe["read_run_id"] == fam.READ_RUN_ID and recipe["arms"] == list(fam.ARM_ORDER) and recipe["twin"] == "aa" and recipe["delivering"] == "lock"
     assert recipe["verdict_words"] == sorted(reader.WORDS) and recipe["primary"]["draws"] == 10000 and "efficiency" not in recipe
-    assert recipe["guard"]["intent_guard_pp"] == -0.65 and recipe["guard"]["l2_intent_point_min_pp"] == 0.33 and "335 B Fold A column" in recipe["next_step"]
+    assert recipe["guard"]["floors_pp"] == {"slu": 1.49, "intent": 0.65} and "NO-RESOLVED-LOSS" not in json.dumps(recipe) and "335 B Fold A column" in recipe["next_step"]
     assert recipe["levers"] == {"l1-support": "L1", "l2-union": "L2"} and recipe["primary_by_lever"] == {"L1": "slu", "L2": "intent"}
-    assert recipe["word_order"] == {"L1": ["NOMINATED", "NO-RESOLVED-LOSS", "HARM", "NEUTRAL"], "L2": ["NOMINATED", "HARM", "NO-RESOLVED-LOSS", "NEUTRAL"]}
+    assert recipe["word_order"] == {"L1": ["NOMINATED", "HARM", "NEUTRAL"], "L2": ["NOMINATED", "HARM", "NEUTRAL"]}
     assert "discordance_of_every_sampled_stream_against_the_twin" in recipe["secondaries"] and recipe["sampling_arms"]["l2-union"] == AXES["l2-union"]
     assert {"support_count_table", "union_size_table", "l1_pure_filter_delta", "forced_close_share_by_list_size"} <= set(recipe["secondaries"])
     assert (REPO / fam.PREREG).is_file()
@@ -559,40 +559,56 @@ def _words(contrast):
     return {a: w["word"] for a, w in reader.arm_words(contrast)["words"].items()}
 
 
-def test_the_l1_words_follow_the_registered_order_and_thresholds():
+def test_the_l1_words_are_nominated_harm_neutral_against_the_floors():
     w = lambda slu, intent, twin=(0.4, 0.0): _words(_contrast((slu, intent), NEUTRAL_SIDE, twin))["l1-support"]  # noqa: E731
-    assert w((2.0, 0.5, 3.5), (0.0, -0.5, 0.5)) == "NOMINATED"
-    assert w((2.0, -0.2, 3.5), (0.0, -0.5, 0.5)) == "NO-RESOLVED-LOSS"              # CI-LB not above zero, but the CI-UB is far above -|o|: no resolved loss
-    assert w((0.3, 0.1, 3.5), (0.0, -0.5, 0.5)) == "NO-RESOLVED-LOSS"               # point below the twin bar |o| = 0.4: not nominated, no resolved loss
-    assert w((2.0, 0.5, 3.5), (-1.0, -1.5, 0.0)) == "NO-RESOLVED-LOSS"              # intent point under the -0.65 guard: not nominated; intent CI-UB 0.0 >= -0.65
-    assert w((2.0, 0.5, 3.5), (-3.0, -4.0, -1.0)) == "NEUTRAL"                      # intent CI-UB below the guard: neither nominated nor NRL; the SLU side is no harm
-    assert w((-3.0, -4.0, -2.0), (0.0, -0.5, 0.5)) == "HARM"
-    assert w((-0.1, -1.0, 0.8), (0.0, -0.5, 0.5)) == "NO-RESOLVED-LOSS"
-    assert w((-0.3, -1.0, -0.1), (0.0, -0.5, 0.5)) == "NO-RESOLVED-LOSS"            # the spec's order: NO-RESOLVED-LOSS before HARM (CI-UB -0.1 >= -|o| = -0.4)
-    assert w((-2.0, -3.0, -1.0), (0.0, -0.5, 0.5)) == "HARM"
+    assert w((2.5, 1.6, 3.4), (0.0, -0.5, 0.5)) == "NOMINATED"
+    assert w((1.49, 1.49, 3.0), (0.0, -0.5, 0.5)) == "NOMINATED"                    # CI-LB exactly at the 1.49 floor clears it
+    assert w((2.5, 1.6, 3.4), (-0.4, -1.5, -0.65)) == "NOMINATED"                   # intent CI-UB exactly at -0.65: no resolved intent loss
+    assert w((2.5, 1.6, 3.4), (-3.0, -4.0, -1.0)) == "HARM"                         # the SLU gain does not rescue a resolved intent loss
+    assert w((1.0, 0.2, 1.8), (0.0, -0.5, 0.5)) == "NEUTRAL"                        # positive but short of the floor
+    assert w((1.48, 1.48, 3.0), (0.0, -0.5, 0.5)) == "NEUTRAL"                      # CI-LB just under the floor
+    assert w((0.0, -0.5, 0.5), (0.0, -0.5, 0.5)) == "NEUTRAL"
+    assert w((-1.0, -2.0, -1.4), (0.0, -0.5, 0.5)) == "NEUTRAL"                     # SLU CI-UB -1.4 >= -1.49: a loss that is not resolved
+    assert w((-3.0, -4.0, -2.0), (0.0, -0.5, 0.5)) == "HARM"                        # SLU CI-UB below -1.49
+    assert w((0.0, -0.5, 0.5), (-1.5, -2.0, -0.7)) == "HARM"                        # intent CI-UB below -0.65
+    assert w((0.0, -0.5, 0.5), (-1.5, -2.0, -0.65)) == "NEUTRAL"                    # intent CI-UB exactly -0.65 is not below the floor
+    # the twin is the noise bar only: it never moves a word
+    assert w((2.5, 1.6, 3.4), (0.0, -0.5, 0.5), twin=(5.0, 5.0)) == "NOMINATED"
+    assert w((1.0, 0.2, 1.8), (0.0, -0.5, 0.5), twin=(0.0, 0.0)) == "NEUTRAL"
+    assert reader.arm_words(_contrast(((2.5, 1.6, 3.4), (0.0, -0.5, 0.5)), NEUTRAL_SIDE))["words"]["l1-support"]["next_step"] == "335 B Fold A column"
 
 
-def test_the_l2_words_follow_the_registered_order_and_thresholds():
+def test_the_l2_words_are_nominated_harm_neutral_against_the_floors():
     w = lambda intent, slu, twin=(0.0, 0.2): _words(_contrast(NEUTRAL_SIDE, (slu, intent), twin))["l2-union"]  # noqa: E731
-    assert w((1.0, 0.2, 1.8), (0.0, -0.5, 0.5)) == "NOMINATED"
-    assert w((0.2, 0.05, 0.4), (0.0, -0.5, 0.5)) == "NO-RESOLVED-LOSS"              # intent CI-LB above zero but the point is under max(|o_int|, 0.33)
-    assert w((1.0, 0.2, 1.8), (-3.0, -4.0, -2.0)) == "HARM"                          # the SLU guard fails (CI-UB < -|o_SLU| and < 0): HARM, never NOMINATED
-    assert w((-1.0, -2.0, -0.2), (0.0, -0.5, 0.5)) == "HARM"                         # intent CI-UB < 0
-    assert w((0.0, -0.5, 0.5), (0.0, -0.5, 0.5)) == "NO-RESOLVED-LOSS"
-    assert w((0.0, -1.5, -0.7), (0.0, -0.5, 0.5)) == "HARM"                          # intent CI-UB below zero
-    # the twin bar |o_int| raises the nominated point floor above 0.33
-    assert w((0.5, 0.1, 0.9), (0.0, -0.5, 0.5), twin=(0.0, 0.6)) == "NO-RESOLVED-LOSS"
-    assert reader.arm_words(_contrast(NEUTRAL_SIDE, ((0.0, -0.5, 0.5), (1.0, 0.2, 1.8))))["words"]["l2-union"]["next_step"] == "335 B Fold A column"
-    # SPEC QUIRK, pinned: with HARM ahead of NO-RESOLVED-LOSS (design spec section 6) every L2 outcome that is not NOMINATED or HARM has intent CI-UB >= 0 and SLU CI-UB >= 0, which
-    # satisfies the "as for L1" NO-RESOLVED-LOSS conditions, so L2 can never read NEUTRAL. L1 can (an intent CI-UB under the guard with a harmless SLU side).
-    seen = set()
-    for slu_hi in (-2.0, -0.2, 0.0, 1.0):
-        for intent_hi in (-2.0, -0.5, 0.0, 1.0):
-            for intent_lo in (-3.0, 0.1):
-                if intent_lo <= intent_hi:
-                    seen.add(_words(_contrast(NEUTRAL_SIDE, ((0.0, slu_hi - 1.0, slu_hi), (0.5, intent_lo, intent_hi)), twin=(0.4, 0.0)))["l2-union"])
-    assert seen == {"NOMINATED", "HARM", "NO-RESOLVED-LOSS"}
-    assert list(reader.WORDS) == ["NOMINATED", "NO-RESOLVED-LOSS", "HARM", "NEUTRAL"]
+    assert w((1.0, 0.7, 1.3), (0.0, -0.5, 0.5)) == "NOMINATED"
+    assert w((0.65, 0.65, 1.2), (0.0, -0.5, 0.5)) == "NOMINATED"                    # CI-LB exactly at the 0.65 floor clears it
+    assert w((1.0, 0.7, 1.3), (-1.0, -2.0, -1.49)) == "NOMINATED"                   # SLU CI-UB exactly at -1.49: no resolved SLU loss
+    assert w((1.0, 0.7, 1.3), (-3.0, -4.0, -2.0)) == "HARM"                         # the intent gain does not rescue a resolved SLU loss
+    assert w((0.5, 0.1, 0.9), (0.0, -0.5, 0.5)) == "NEUTRAL"                        # previously unreachable: positive but short of the floor
+    assert w((0.0, -0.5, 0.5), (0.0, -0.5, 0.5)) == "NEUTRAL"
+    assert w((0.64, 0.64, 1.2), (0.0, -0.5, 0.5)) == "NEUTRAL"                      # CI-LB just under the floor
+    assert w((-0.3, -1.0, -0.2), (0.0, -0.5, 0.5)) == "NEUTRAL"                     # intent CI-UB -0.2 >= -0.65: a loss that is not resolved
+    assert w((-1.5, -2.0, -0.7), (0.0, -0.5, 0.5)) == "HARM"                        # intent CI-UB below -0.65
+    assert w((0.0, -0.5, 0.5), (-3.0, -4.0, -2.0)) == "HARM"                        # SLU CI-UB below -1.49
+    assert w((0.0, -0.5, 0.5), (-1.0, -2.0, -1.4)) == "NEUTRAL"
+    # the twin is the noise bar only: it never moves a word
+    assert w((0.5, 0.1, 0.9), (0.0, -0.5, 0.5), twin=(0.0, 0.0)) == "NEUTRAL"
+    assert w((1.0, 0.7, 1.3), (0.0, -0.5, 0.5), twin=(5.0, 5.0)) == "NOMINATED"
+    assert reader.arm_words(_contrast(NEUTRAL_SIDE, ((0.0, -0.5, 0.5), (1.0, 0.7, 1.3))))["words"]["l2-union"]["next_step"] == "335 B Fold A column"
+    # every word of the three-word vocabulary is reachable for BOTH arms (NOMINATED and HARM are disjoint), and NO-RESOLVED-LOSS exists for neither
+    grid = (-4.0, -2.0, -1.4, -0.7, -0.5, 0.0, 0.5, 0.9, 1.3, 1.6, 3.0)
+    seen = {"l1-support": set(), "l2-union": set()}
+    for lo in grid:
+        for hi in grid:
+            if lo > hi:
+                continue
+            for other_lo, other_hi in ((-0.5, 0.5), (-4.0, -2.0), (0.7, 1.7)):
+                iv_ = ((lo + hi) / 2, lo, hi)
+                guard = ((other_lo + other_hi) / 2, other_lo, other_hi)
+                seen["l1-support"].add(_words(_contrast((iv_, guard), NEUTRAL_SIDE))["l1-support"])
+                seen["l2-union"].add(_words(_contrast(NEUTRAL_SIDE, (guard, iv_)))["l2-union"])
+    assert seen == {"l1-support": {"NOMINATED", "HARM", "NEUTRAL"}, "l2-union": {"NOMINATED", "HARM", "NEUTRAL"}}
+    assert list(reader.WORDS) == ["NOMINATED", "HARM", "NEUTRAL"] and "NO-RESOLVED-LOSS" not in reader.WORDS
 
 
 def test_the_discordance_table_reports_every_arm_against_the_lock_beside_the_twin():
@@ -616,11 +632,15 @@ def test_the_discordance_table_reports_every_arm_against_the_lock_beside_the_twi
 def test_the_writer_words_are_the_readers_words_in_order():
     import l338_write_registration as writer  # noqa: PLC0415
 
-    assert list(writer.WORD_RULES) == ["L1", "L2"] and writer.WORD_ORDER["L1"] == ["NOMINATED", "NO-RESOLVED-LOSS", "HARM", "NEUTRAL"]
-    assert writer.WORD_ORDER["L2"] == ["NOMINATED", "HARM", "NO-RESOLVED-LOSS", "NEUTRAL"] and sorted(reader.WORDS) == sorted(set(writer.WORD_ORDER["L1"]))
+    assert list(writer.WORD_RULES) == ["L1", "L2"] and writer.WORD_ORDER == {"L1": ["NOMINATED", "HARM", "NEUTRAL"], "L2": ["NOMINATED", "HARM", "NEUTRAL"]}
+    assert sorted(reader.WORDS) == sorted(writer.WORD_ORDER["L1"]) == sorted(writer.WORD_ORDER["L2"])
+    for lever in ("L1", "L2"):
+        assert set(writer.WORD_RULES[lever]) == {"primary", "guard", "NOMINATED", "HARM", "NEUTRAL"}
     assert writer.WORD_RULES["L1"]["primary"] == "slu" and writer.WORD_RULES["L2"]["primary"] == "intent"
-    assert "-0.65" in writer.WORD_RULES["L1"]["NOMINATED"] and "|o_SLU|" in writer.WORD_RULES["L1"]["NOMINATED"] and "< 0" in writer.WORD_RULES["L1"]["HARM"]
-    assert "0.33" in writer.WORD_RULES["L2"]["NOMINATED"] and "max(|o_int|" in writer.WORD_RULES["L2"]["NOMINATED"]
+    assert "SLU delta CI95 lower bound >= 1.49" in writer.WORD_RULES["L1"]["NOMINATED"] and "intent delta CI95 upper bound >= -0.65" in writer.WORD_RULES["L1"]["NOMINATED"]
+    assert "< -1.49" in writer.WORD_RULES["L1"]["HARM"] and "< -0.65" in writer.WORD_RULES["L1"]["HARM"]
+    assert "intent delta CI95 lower bound >= 0.65" in writer.WORD_RULES["L2"]["NOMINATED"] and "SLU delta CI95 upper bound >= -1.49" in writer.WORD_RULES["L2"]["NOMINATED"]
+    assert "< -0.65" in writer.WORD_RULES["L2"]["HARM"] and "< -1.49" in writer.WORD_RULES["L2"]["HARM"]
     for arm, lever in fam.ARM_LEVER.items():
         assert reader.LEVER_OF[arm] == lever
 

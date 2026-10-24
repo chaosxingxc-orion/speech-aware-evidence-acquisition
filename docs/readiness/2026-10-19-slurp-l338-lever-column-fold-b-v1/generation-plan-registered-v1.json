@@ -47,7 +47,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-19-slurp-l338-lever-column-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "eddf71570125a7f742600295bc263e969b0cf12083044e57ce06b96754bc0091"
+    "sha256": "7f15283b9d4b623195fbe9574bb992e43feba51ad76af5271d57dd8eb58e8f71"
   },
   "purpose": "SAEA-SLURP-STAGE3-L338-LEVER-COLUMN-FOLD-B-V1: lever-column flight (4 arms in one flight) of L338.",
   "registered_at_utc": "2026-10-19T12:00:00.000000+00:00",

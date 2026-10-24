@@ -152,22 +152,25 @@ column. Twin offsets o_SLU / o_int = `aa` minus `lock`; the l1 branch's sample 0
 (decision 190, n = 1,080): 1.49 SLU / 0.65 intent. `stage3_measurement`: `same-flight-node-column`, `claims_benefit false`,
 `expected_effect_pp 0.0`, claim `nominated` (as R3 / R4).
 
-Words, first that applies. **L1** (SLU primary, intent guard):
+Both candidate arms cost more than the lock (l1: 5 Solver samples; l2: 4 Perception samples), so NO-RESOLVED-LOSS (reserved for a
+cheaper arm that loses nothing, as in R1/R2) applies to neither. The vocabulary is exactly NOMINATED / HARM / NEUTRAL, judged against
+the floors; the twin `aa` is the noise bar, reported beside the words and used in no word.
+
+**L1** (SLU primary, intent guard):
 
   | word | condition |
   | --- | --- |
-  | NOMINATED | SLU CI-LB > 0, SLU point >= abs(o_SLU), intent point >= -0.65 |
-  | NO-RESOLVED-LOSS | SLU CI-UB >= -abs(o_SLU), intent CI-UB >= -0.65 |
-  | HARM | SLU CI-UB < 0 |
+  | NOMINATED | SLU CI-LB >= 1.49 and intent CI-UB >= -0.65 (no resolved intent loss) |
+  | HARM | SLU CI-UB < -1.49, or intent CI-UB < -0.65 |
   | NEUTRAL | otherwise |
 
 **L2** (intent primary, SLU guard):
 
   | word | condition |
   | --- | --- |
-  | NOMINATED | intent CI-LB > 0, intent point >= max(abs(o_int), 0.33), SLU CI-UB >= -abs(o_SLU) |
-  | HARM | intent CI-UB < 0, or SLU CI-UB < 0 |
-  | NO-RESOLVED-LOSS / NEUTRAL | as for L1 |
+  | NOMINATED | intent CI-LB >= 0.65 and SLU CI-UB >= -1.49 (no resolved SLU loss) |
+  | HARM | intent CI-UB < -0.65, or SLU CI-UB < -1.49 |
+  | NEUTRAL | otherwise |
 
 Secondaries: L1 pure-filter delta, s = 3 / filter-only / gate-only forms, false fills removed, non-empty exact lost / gained; L2 merged-list
 recall vs sample 0's, newly listed / lost gold, conversion by position, forced-close share by list size; all arms: discordance of every

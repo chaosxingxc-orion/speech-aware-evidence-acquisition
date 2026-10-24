@@ -58,26 +58,25 @@ DECISIONS = reg.OWNER_DECISIONS
 INSTRUMENT = reg.INSTRUMENT_NOTE
 PRIMARY_METRIC = ("official SLURP pooled SLU-F1 (micro; scorer slurp-slu-official-train, the pinned official evaluate.py), natural-mixture weighting, "
                   "with intent accuracy (scenario_action) beside it")
-#: The arm words, fixed here and implemented by the reader (``slurp_l338_column_read.arm_words``), per LEVER (design spec section 6). The twin ``aa`` is the in-flight A/A: its
-#: SLU / intent deltas against ``lock`` are the offsets o_SLU / o_int, and their absolute values are the bars. The rules apply in the listed order (the first that applies wins).
-#: The l1 branch's own sample 0 is a second A/A (reported, used in no word).
+#: The arm words, fixed here and implemented by the reader (``slurp_l338_column_read.arm_words``), per LEVER (design spec section 6). Both candidate arms cost more than the lock
+#: (l1: 5 Solver samples; l2: 4 Perception samples), so NO-RESOLVED-LOSS (reserved for a cheaper arm that loses nothing) applies to neither; the vocabulary is exactly NOMINATED /
+#: HARM / NEUTRAL, judged against the decision-190 floors. The twin ``aa`` is the in-flight A/A noise bar, reported beside the words and used in no word; the l1 branch's own
+#: sample 0 is a second A/A (reported, used in no word).
 WORD_RULES = {
     "L1": {
         "primary": "slu", "guard": "intent",
-        "NOMINATED": f"SLU delta CI95 lower bound > 0 AND the SLU delta point >= |o_SLU| (the twin's absolute SLU delta) AND the intent delta point >= {fam.INTENT_GUARD_PP} pp",
-        "NO-RESOLVED-LOSS": f"SLU delta CI95 upper bound >= -|o_SLU| AND intent delta CI95 upper bound >= {fam.INTENT_GUARD_PP} pp",
-        "HARM": "SLU delta CI95 upper bound < 0",
+        "NOMINATED": f"SLU delta CI95 lower bound >= {fam.FLOOR_SLU_PP} pp AND intent delta CI95 upper bound >= -{fam.FLOOR_INTENT_PP} pp (no resolved intent loss)",
+        "HARM": f"SLU delta CI95 upper bound < -{fam.FLOOR_SLU_PP} pp, or intent delta CI95 upper bound < -{fam.FLOOR_INTENT_PP} pp",
         "NEUTRAL": "none of the above",
     },
     "L2": {
         "primary": "intent", "guard": "slu",
-        "NOMINATED": (f"intent delta CI95 lower bound > 0 AND the intent delta point >= max(|o_int|, {fam.L2_INTENT_POINT_MIN_PP}) pp AND SLU delta CI95 upper bound >= -|o_SLU|"),
-        "HARM": "intent delta CI95 upper bound < 0, or SLU delta CI95 upper bound < 0",
-        "NO-RESOLVED-LOSS": f"SLU delta CI95 upper bound >= -|o_SLU| AND intent delta CI95 upper bound >= {fam.INTENT_GUARD_PP} pp (as for L1)",
+        "NOMINATED": f"intent delta CI95 lower bound >= {fam.FLOOR_INTENT_PP} pp AND SLU delta CI95 upper bound >= -{fam.FLOOR_SLU_PP} pp (no resolved SLU loss)",
+        "HARM": f"intent delta CI95 upper bound < -{fam.FLOOR_INTENT_PP} pp, or SLU delta CI95 upper bound < -{fam.FLOOR_SLU_PP} pp",
         "NEUTRAL": "none of the above",
     },
 }
-WORD_ORDER = {"L1": ["NOMINATED", "NO-RESOLVED-LOSS", "HARM", "NEUTRAL"], "L2": ["NOMINATED", "HARM", "NO-RESOLVED-LOSS", "NEUTRAL"]}
+WORD_ORDER = {"L1": ["NOMINATED", "HARM", "NEUTRAL"], "L2": ["NOMINATED", "HARM", "NEUTRAL"]}
 PROHIBITIONS = [
     "No test-split, DEV or Fold A contact (TRAIN Fold B only).",
     "No supply arm, no thinking column, no tool schema on any role; no Reviewer or Planner visit; max_revisions 0.",
@@ -474,9 +473,9 @@ def readme_text(ids: Mapping[str, Mapping], cost: Mapping[str, Any]) -> str:
         "## Read rule (preregistered)\n\n"
         f"`{fam.READER}`: every arm's first-visit Solver answer is scored once, complete, by the official scorer (`slurp-slu-official-train`, `stage3_rollout_score --mode perception-branches`); "
         f"each candidate arm and the twin minus the delivering `{fam.DELIVERING}` arm, SLU-F1 and intent accuracy, paired per row, utterance-cluster bootstrap "
-        "CI95 (10,000 draws, seed 20261018). The twin is the in-flight A/A: its SLU / intent deltas o_SLU / o_int give the bars |o_SLU| / |o_int|. The l1 branch's sample 0 is a second A/A "
+        "CI95 (10,000 draws, seed 20261018). The twin is the in-flight A/A noise bar (its SLU / intent deltas against the lock are reported beside the words and enter no word). The l1 branch's sample 0 is a second A/A "
         "(the extra official column `l1-support-sample0`, scored once beside the four arm columns; reported, used in no word). Floors (decision 190, n = 1,080): "
-        f"{fam.FLOOR_SLU_PP} pp SLU / {fam.FLOOR_INTENT_PP} pp intent. Words per lever (fixed here and in the reader; the first that applies, in the listed order):\n\n"
+        f"{fam.FLOOR_SLU_PP} pp SLU / {fam.FLOOR_INTENT_PP} pp intent. Both candidate arms cost more than the lock, so NO-RESOLVED-LOSS (reserved for a cheaper arm that loses nothing) applies to neither. Words per lever (fixed here and in the reader; the first that applies, in the listed order):\n\n"
         + "\n".join(f"**{lever}** ({rules['primary']} primary, {rules['guard']} guard; `{'`, `'.join(arm for arm, lv in fam.ARM_LEVER.items() if lv == lever)}`)\n\n"
                     + "\n".join(f"* **{w}**: {rules[w]}." for w in WORD_ORDER[lever]) + "\n" for lever, rules in WORD_RULES.items()) + "\n"
         "Secondaries: L1 pure-filter delta (the rule minus its own sample 0), the s = 3 / filter-only / gate-only / N1-gated forms (N1 offline), false fills removed, non-empty exact lost / gained; "
@@ -630,8 +629,8 @@ def write_package(root: Path, commit: str, at: str | None, *, append_ledger: boo
                                            "rows", "run_id", "split_identity_hash")} for k, v in ids.items()},
         "arms": {row["arm"]: {"role": row["role"], "axes": row["axes"]} for row in arm_table_rows()},
         "blockers": blockers, "findings": FINDINGS,
-        "decision_rule_fixed_here": (f"The arm words and their thresholds are fixed in {fam.READER} and in this package's README: NOMINATED, NO-RESOLVED-LOSS, HARM, NEUTRAL "
-                                     f"per lever (L1 on SLU with an intent guard, L2 on intent with an SLU guard) against the in-flight twin {fam.TWIN} (the A/A offset) and the decision-190 floors."),
+        "decision_rule_fixed_here": (f"The arm words and their thresholds are fixed in {fam.READER} and in this package's README: NOMINATED, HARM, NEUTRAL "
+                                     f"per lever (L1 on SLU with an intent guard, L2 on intent with an SLU guard) against the decision-190 floors; the in-flight twin {fam.TWIN} is the noise bar, reported beside the words."),
         "failure_policy": "Stop and preserve on the first failure; at most one root-diagnosed recovery re-registration per run id; run-cumulative budgets.",
         "one_factor": "one sampling lever per arm (L1 Solver sample-and-commit n = 5, L2 Perception sample-and-merge k = 4 cap 3); the system is the 268-B Thinking lock on TRAIN Fold B",
         "prohibitions": PROHIBITIONS, "protocol_id": "slurp-l338-lever-column-fold-b-protocol-v1", "registered_at_utc": at,
@@ -672,7 +671,7 @@ def write_package(root: Path, commit: str, at: str | None, *, append_ledger: boo
         "locked_template": {"relpath": fam.LOCKED_TEMPLATE, "sha256": fam.LOCKED_TEMPLATE_SHA},
         "primary": {"metric": "official SLURP SLU-F1 (L1) and intent accuracy (L2) per arm column (one complete scoring per column, slurp-slu-official-train)", "contrast": "arm minus lock, paired per row",
                     "interval": "utterance-cluster bootstrap CI95", "draws": 10000, "seed": 20261018},
-"guard": {"l1_metric": "intent accuracy (scenario_action exact)", "l2_metric": "SLU-F1", "intent_guard_pp": fam.INTENT_GUARD_PP, "l2_intent_point_min_pp": fam.L2_INTENT_POINT_MIN_PP},
+"guard": {"l1_metric": "intent accuracy (scenario_action exact)", "l2_metric": "SLU-F1", "floors_pp": {"slu": fam.FLOOR_SLU_PP, "intent": fam.FLOOR_INTENT_PP}},
         "secondaries": ["l1_pure_filter_delta", "l1_forms_s3_filter_only_gate_only_n1_gated", "l1_false_fills_removed_nonempty_exact_lost_gained",
                         "l2_merged_recall_vs_sample0_newly_listed_lost_gold", "l2_conversion_by_gold_position", "forced_close_share_by_list_size",
                         "support_count_table", "union_size_table", "completion_tokens", "seconds_per_contact",
@@ -709,7 +708,7 @@ def write_package(root: Path, commit: str, at: str | None, *, append_ledger: boo
         "prohibitions": PROHIBITIONS, "registered_at_utc": at,
         "registration_basis": f"{fam.OWNER_RULINGS}; {SPEC}. DRAFT: nothing here authorises a flip or a flight.",
         "read_rule": {"reader": fam.READER, "words": WORD_RULES, "word_order": WORD_ORDER, "twin": fam.TWIN, "floors_pp": {"slu": fam.FLOOR_SLU_PP, "intent": fam.FLOOR_INTENT_PP},
-                      "intent_guard_pp": fam.INTENT_GUARD_PP, "l2_intent_point_min_pp": fam.L2_INTENT_POINT_MIN_PP, "levers": dict(fam.ARM_LEVER), "delivering": fam.DELIVERING},
+                      "levers": dict(fam.ARM_LEVER), "delivering": fam.DELIVERING},
         "roster": {"arm": fam.ROSTER["arm"], "smoke": fam.ROSTER["smoke"], "roster_id": fam.READ_ROSTER, "split_identity_hash": arm["split_identity_hash"]},
         "rows": fam.ROWS, "schema": "saea-registered-facts-v1", "stage3_measurement": measurement_blocks(ids),
         "study_commit_at_registration": commit, "thinking_knobs": json.loads(json.dumps(fam.THINKING_KNOBS)), "no_think_node": None,

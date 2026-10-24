@@ -355,8 +355,6 @@
       "intent": 0.65,
       "slu": 1.49
     },
-    "intent_guard_pp": -0.65,
-    "l2_intent_point_min_pp": 0.33,
     "levers": {
       "l1-support": "L1",
       "l2-union": "L2"
@@ -366,31 +364,27 @@
     "word_order": {
       "L1": [
         "NOMINATED",
-        "NO-RESOLVED-LOSS",
         "HARM",
         "NEUTRAL"
       ],
       "L2": [
         "NOMINATED",
         "HARM",
-        "NO-RESOLVED-LOSS",
         "NEUTRAL"
       ]
     },
     "words": {
       "L1": {
-        "HARM": "SLU delta CI95 upper bound < 0",
+        "HARM": "SLU delta CI95 upper bound < -1.49 pp, or intent delta CI95 upper bound < -0.65 pp",
         "NEUTRAL": "none of the above",
-        "NO-RESOLVED-LOSS": "SLU delta CI95 upper bound >= -|o_SLU| AND intent delta CI95 upper bound >= -0.65 pp",
-        "NOMINATED": "SLU delta CI95 lower bound > 0 AND the SLU delta point >= |o_SLU| (the twin's absolute SLU delta) AND the intent delta point >= -0.65 pp",
+        "NOMINATED": "SLU delta CI95 lower bound >= 1.49 pp AND intent delta CI95 upper bound >= -0.65 pp (no resolved intent loss)",
         "guard": "intent",
         "primary": "slu"
       },
       "L2": {
-        "HARM": "intent delta CI95 upper bound < 0, or SLU delta CI95 upper bound < 0",
+        "HARM": "intent delta CI95 upper bound < -0.65 pp, or SLU delta CI95 upper bound < -1.49 pp",
         "NEUTRAL": "none of the above",
-        "NO-RESOLVED-LOSS": "SLU delta CI95 upper bound >= -|o_SLU| AND intent delta CI95 upper bound >= -0.65 pp (as for L1)",
-        "NOMINATED": "intent delta CI95 lower bound > 0 AND the intent delta point >= max(|o_int|, 0.33) pp AND SLU delta CI95 upper bound >= -|o_SLU|",
+        "NOMINATED": "intent delta CI95 lower bound >= 0.65 pp AND SLU delta CI95 upper bound >= -1.49 pp (no resolved SLU loss)",
         "guard": "slu",
         "primary": "intent"
       }
