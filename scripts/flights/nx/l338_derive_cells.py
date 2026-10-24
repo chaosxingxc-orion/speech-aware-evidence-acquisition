@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""Derive the two cells of L338 (config only): the Solver DECODING-POLICY column on the Thinking core, TRAIN Fold B.
+"""Derive the two cells of L338 (config only): the decision-338 LEVER column (L1 false-fill suppression, L2 Perception candidate union) on the Thinking core, TRAIN Fold B.
 
 WHAT THE CELLS ARE. The 268-B Thinking lock cell -- the loop's plain lock (lock v2.2 + the v4g post-processing, the review-off COMP-1b module graph, no supply arm) on
-the Thinking core -- with exactly ONE addition: the Solver role's ``decoding_variants`` block, compiled by the consumption module's ``decoding`` column kind from the
-data-driven arm table ``l338_arms.json`` (four candidate sampling policies, the twin ``aa`` and the delivering arm ``lock`` LAST). The program grows from
-``phase-native-module-v1-c2`` to ``phase-native-module-v1-c<2 + (K - 1)>`` (c7). The serving fragment is the RESIDENT np4 Thinking fragment (budget 3,072 / cap 4,096): there
-is no new fragment and no cell-level thinking policy, because the fragment's own defaults are the lock form. The Thinking packets and their promotion receipt, the
-knowledge supply, the sealed Fold B speech-query vectors, the agreement table, the centroid keys and the roster are the 268-B cell's, byte for byte. Nothing is
-hand-edited: every baseline is the 268-B parent plus the compiler's output plus the registered diff, and the script refuses a leaf that moved beyond
-:data:`MOVED_LEAF_RULES`. The result carries ``moved_leaves`` per cell.
+the Thinking core -- with exactly ONE addition: the Perception role's ``sampling_variants`` block (a level-2 Perception-branch group), compiled by the consumption module's
+``sampling`` column kind from the data-driven arm table ``l338_arms.json`` (candidate arms ``l1-support`` = ``solver_samples`` and ``l2-union`` = ``perception_samples``, the
+twin ``aa`` and the delivering arm ``lock`` LAST). The program grows from ``phase-native-module-v1-c2`` to ``phase-native-module-v1-c<2 + 2 (K - 1) + (k - 1) + (n - 1)>``
+(c15). The serving fragment is the RESIDENT np4 Thinking fragment (budget 3,072 / cap 4,096): there is no new fragment and no cell-level thinking policy, because the
+fragment's own defaults are the lock form. The Thinking packets and their promotion receipt, the knowledge supply, the sealed Fold B speech-query vectors, the agreement table,
+the centroid keys and the roster are the 268-B cell's, byte for byte. Nothing is hand-edited: every baseline is the 268-B parent plus the compiler's output plus the registered
+diff, and the script refuses a leaf that moved beyond :data:`MOVED_LEAF_RULES`. The result carries ``moved_leaves`` per cell.
 
 The derive REFUSES unless the live 24,576-token slot holds the lock's Solver prompt plus the 4,096-token cap (``l338_family.fit_proof``) and EMITS the
 machine sign-off conditions for this arm table inside the package.
@@ -48,8 +48,8 @@ from speech_aware_evidence_acquisition.rails.adapters.slurp_module_hooks import 
 #: ``decoding_variants`` block (and its declaration), the program id (the ceiling is its ``-c<N>`` suffix), the live-fit ids/cap, the cell's own first-phase supply pin
 #: and the cell text move. A leaf outside the rules refuses the derive (``stray``).
 MOVED_LEAF_RULES = (
-    ("the Solver decoding_variants block", re.compile(r"native_episode\.roles\.solver\.decoding_variants(\..+)?")),
-    ("its declaration in consumption_module", re.compile(r"native_episode\.consumption_module\.(columns|decoding_frame(\..+)?)")),
+    ("the Perception sampling_variants block", re.compile(r"native_episode\.roles\.perception\.sampling_variants(\..+)?")),
+    ("its declaration in consumption_module", re.compile(r"native_episode\.consumption_module\.(columns|sampling_frame(\..+)?)")),
     ("the program id and ceiling", re.compile(r"policy")),
     ("the live-fit ids and cap", re.compile(r"native_contact_fit\.(run_id|attempt_id|contact_cap)")),
     ("the cell's own first-phase supply pin", re.compile(r"prepared_phase_supply(\..+)?")),
@@ -73,21 +73,24 @@ def classify_moved(moved: list[str]) -> tuple[dict[str, list[str]], list[str]]:
 
 
 WHAT_THIS_IS = (
-    "Cell L338 (owner rulings 329 A and 332 A: the decoding-policy round): the 268-B Thinking system -- the locked SLURP system (lock v2.2 + v4g, review-off module graph, program "
-    "phase-native-module-v1-c2 as the base) on the Thinking core -- with a same-flight COLUMN over the Solver's SAMPLING PARAMETERS. The Solver role carries "
-    "roles.solver.decoding_variants: candidate arms " + ", ".join(fam.CANDIDATE_ARMS) + " (each renders the locked Solver template configs/probes/slurp_native_role_solver_v2.txt and overrides only "
-    "temperature / top_p / top_k / presence_penalty of its own contact), the in-chain twin " + fam.TWIN + " (replicate_of " + fam.DELIVERING + ") and the delivering arm "
-    + fam.DELIVERING + " (no override, LAST; its requests are the lock's byte for byte). Every arm renders the same Perception note, evidence and "
-    "QueryState and carries the lock's decoding and per-node thinking fields (budget 3072, cap 4096; the serving fragment's defaults are that form, so there is no cell-level "
-    "thinking_policy); arm_visits is first. Program " + fam.PROGRAM + f": 2 + ({fam.K} - 1) = {fam.CONTACTS_PER_ROW} contacts per row. Every policy block is the module compiler's output."
+    "Cell L338 (owner rulings 338 and 341 A: the lever column): the 268-B Thinking system -- the locked SLURP system (lock v2.2 + v4g, review-off module graph, program "
+    "phase-native-module-v1-c2 as the base) on the Thinking core -- with a same-flight COLUMN of two sampling levers. The Perception role carries "
+    "roles.perception.sampling_variants (a level-2 Perception-branch group: each branch is its own Perception and first-visit Solver visit): candidate arms "
+    + ", ".join(fam.CANDIDATE_ARMS) + " (l1-support fans out solver_samples: n = 5 Solver contacts, sample 0 greedy at the lock seed, samples 1-4 at temperature 0.6 / top_p 0.95 / top_k 20 with "
+    "seed = lock seed + offset, committed by saea-commit-first-support-v1; l2-union fans out perception_samples: k = 4 Perception contacts merged by "
+    "saea-perception-candidate-union-v1 into the Solver's shortlist, capped at 3), the in-chain twin " + fam.TWIN + " (replicate_of " + fam.DELIVERING + ") and the delivering arm "
+    + fam.DELIVERING + " (no axis, LAST; its requests are the lock's byte for byte). Every arm renders the lock's templates, evidence and "
+    "QueryState and carries the lock's per-node thinking fields (budget 3072, cap 4096; the serving fragment's defaults are that form, so there is no cell-level "
+    "thinking_policy); arm_visits is first. Program " + fam.PROGRAM + f": 2 + 2 ({fam.K} - 1) + sampling extras = {fam.CONTACTS_PER_ROW} contacts per row ({fam.PERCEPTION_CONTACTS_PER_ROW} Perception + "
+    f"{fam.SOLVER_CONTACTS_PER_ROW} Solver). Every policy block is the module compiler's output."
 )
 
 ROLE_TEXT = {
-    "smoke": ("Four-row form smoke of the Solver decoding column: it proves that the " + fam.PROGRAM + " module program with " + str(fam.K) + " Solver arms loads on the resident "
-              "np4 Thinking session, that every arm's Solver request carries the lock's thinking budget 3072 and max_tokens 4096 and its own sampling parameters, that the live "
-              "phase fit passes, that no node hits its cap, and what a contact costs per arm (completion tokens, finish reasons, forced closes, seconds) against the "
-              "registered cost."),
-    "arm": "The Solver decoding-policy column flight of L338: " + str(fam.K) + " arms over the same 1,080 Fold B rows in one flight.",
+    "smoke": ("Four-row form smoke of the lever column: it proves that the " + fam.PROGRAM + " module program with " + str(fam.K) + " sampling arms loads on the resident "
+              "np4 Thinking session, that every sampled contact carries the lock's thinking budget 3072 and max_tokens 4096, its sample index, its derived seed and the arm's "
+              "decoding, that the merge and commit results land in the v6 receipt, that the live phase fit passes, that no node hits its cap, and what a contact costs per "
+              "arm (completion tokens, finish reasons, forced closes, seconds) against the registered cost."),
+    "arm": "The lever-column flight of L338: " + str(fam.K) + " arms over the same 1,080 Fold B rows in one flight.",
 }
 
 HELD = (
@@ -125,19 +128,18 @@ def substitute(text: str, key: str) -> str:
     return text.replace(old, new).replace(old.upper(), new.upper())
 
 
-def decoding_columns() -> list[dict]:
-    return [{"column_id": a["arm_id"], "kind": "decoding", "node": "solver", "decoding": dict(a["decoding"])} for a in fam.ARM_SPECS]
+def sampling_columns() -> list[dict]:
+    return [{"column_id": a["arm_id"], "kind": "sampling", "node": "perception", a["axis"]: json.loads(json.dumps(a[a["axis"]]))} for a in fam.ARM_SPECS]
 
 
 def module_block(parent: Mapping[str, Any]) -> dict:
-    """The 268-B plain-lock block with the arm table's decoding columns and the decoding frame added (the twin, then the delivering arm, are added by the compiler)."""
+    """The 268-B plain-lock block with the arm table's sampling columns and the sampling frame added (the twin, then the delivering arm, are added by the compiler)."""
 
     block = copy.deepcopy(dict(parent["native_episode"][cm.CONSUMPTION_MODULE_CONFIG_KEY]))
     if (block.get("lock"), block.get("review_loop")) != (fam.LOCK, "off") or block.get("columns") != []:
         raise SystemExit(f"the parent's module block is not the plain review-off lock {fam.LOCK} with no columns")
-    block["columns"] = decoding_columns()
-    block["decoding_frame"] = {"max_supplied_items": fam.MAX_SUPPLIED_ITEMS, "template_tokens": fam.DELIVERING_TEMPLATE_TOKENS, "twin": True,
-                               "fit_estimate": dict(fam.FIT_ESTIMATE)}
+    block["columns"] = sampling_columns()
+    block["sampling_frame"] = {"max_supplied_items": fam.MAX_SUPPLIED_ITEMS, "twin": True, "fit_estimate": dict(fam.SAMPLING_FIT_ESTIMATE)}
     return block
 
 
@@ -178,15 +180,15 @@ def derive_baseline(key: str, *, repo_root: Path = REPO_ROOT, write: bool = True
     if episode.get("finite_completion_policy") != "deliver-latest-or-abstain" or episode.get("react_exhaustion_policy") != "continue-without-answer":
         raise SystemExit("the native_episode finite-completion / ReAct-exhaustion policies are not the registered ones")
     if (episode.get("review_loop"), episode.get("max_revisions")) != ("off", 0):
-        raise SystemExit("the decoding-column cell must run the Reviewer loop off")
+        raise SystemExit("the lever-column cell must run the Reviewer loop off")
     if document.get("preflight_budget_mode") != "defer-to-native-contact-fit":
         raise SystemExit("preflight_budget_mode must stay defer-to-native-contact-fit (the exact per-contact gate decides the fit)")
     roles = episode["roles"]
-    if ("decoding_variants" not in roles.get("solver", {}) or "supply_variants" in json.dumps(roles) or "thinking_variants" in json.dumps(roles)
-            or "template_variants" in json.dumps(roles)):
-        raise SystemExit("the cell carries exactly the Solver decoding_variants block (no supply, template, thinking or Perception-branch arms)")
-    if sorted(arm["arm_id"] for arm in roles["solver"]["decoding_variants"]["arms"]) != sorted(fam.ARM_ORDER):
-        raise SystemExit("the compiled decoding_variants arms are not the arm table's arms")
+    if ("sampling_variants" not in roles.get("perception", {}) or "supply_variants" in json.dumps(roles) or "thinking_variants" in json.dumps(roles)
+            or "template_variants" in json.dumps(roles) or "decoding_variants" in json.dumps(roles)):
+        raise SystemExit("the cell carries exactly the Perception sampling_variants block (no supply, template, thinking or decoding arms)")
+    if sorted(arm["arm_id"] for arm in roles["perception"]["sampling_variants"]["arms"]) != sorted(fam.ARM_ORDER):
+        raise SystemExit("the compiled sampling_variants arms are not the arm table's arms")
     fragment = json.loads(rd(f"configs/model/{spec['model']}.json", repo_root))
     lock_decoding = {k: v for k, v in fragment.get("decoding_params", {}).items() if k in fam.LOCKED_DECODING}
     if lock_decoding != fam.LOCKED_DECODING:
@@ -257,8 +259,8 @@ def derive_experiment(key: str, *, repo_root: Path = REPO_ROOT, write: bool = Tr
     document["preserve_wire_responses"] = True
     document["stage3_algorithm"] = {
         "id": "none", "operators_used": [],
-        "note": ("This cell carries NO training-free RL operator and says so explicitly: it is a same-flight node-decoding column of the NX instrument "
-                 f"(L338) -- {len(fam.CANDIDATE_ARMS)} hand-written candidate Solver sampling policies and an in-flight twin read as columns against the delivering "
+        "note": ("This cell carries NO training-free RL operator and says so explicitly: it is a same-flight node column of the NX instrument "
+                 f"(L338) -- {len(fam.CANDIDATE_ARMS)} hand-written candidate sampling levers (a Solver sample-and-commit and a Perception sample-and-merge) and an in-flight twin read as columns against the delivering "
                  f"{fam.DELIVERING} arm (the 268-B lock form) -- with no rollout pool, no per-sample credit, no update operator and no evolving store.")}
     document["split_id"] = fam.SPLIT_ID
     document["population"] = {
@@ -282,9 +284,9 @@ def derive_experiment(key: str, *, repo_root: Path = REPO_ROOT, write: bool = Tr
         "cap": plan["planned_model_calls"], "target": plan["planned_model_calls"],
         "definition": (
             f"The review-off module graph (perception 1, solver 1; Reviewer and Planner never visited) under program {fam.PROGRAM} with the {fam.K}-arm "
-            f"Solver decoding column: {rows:,} x {fam.CONTACTS_PER_ROW} = {rows * fam.CONTACTS_PER_ROW:,} is the exact program maximum (2 + (K - 1), K = {fam.K}); "
-            f"the plan ceiling adds {fam.FALLBACK_CONTACTS_PER_ROW_CEILING} answer-only fallback contacts per row (one per budgeted-thinking contact: Perception 1 + "
-            f"{fam.K} Solver contacts, core.reasoning_knobs): {calls:,} = {rows:,} x {fam.CONTACTS_PER_ROW + fam.FALLBACK_CONTACTS_PER_ROW_CEILING}. The live phase fit "
+            f"sampling column: {rows:,} x {fam.CONTACTS_PER_ROW} = {rows * fam.CONTACTS_PER_ROW:,} is the exact program maximum (2 + 2 (K - 1) + (k - 1) + (n - 1), K = {fam.K}); "
+            f"the plan ceiling adds {fam.FALLBACK_CONTACTS_PER_ROW_CEILING} answer-only fallback contacts per row (one per budgeted-thinking contact: {fam.PERCEPTION_CONTACTS_PER_ROW} Perception + "
+            f"{fam.SOLVER_CONTACTS_PER_ROW} Solver contacts, core.reasoning_knobs): {calls:,} = {rows:,} x {fam.CONTACTS_PER_ROW + fam.FALLBACK_CONTACTS_PER_ROW_CEILING}. The live phase fit "
             f"makes {rows} x {fam.CONTACTS_PER_ROW} x {tf.FIT_ENDPOINTS_PER_CONTACT} = {fam.fit_contact_cap(rows):,} tokenizer endpoint calls under its own run id "
             f"{spec['fit_run']}. The GPU-hour ceiling is a BOUND (rows x {fam.ARM_MIX_ROWS} lock-row equivalents / {fam.ROWS_PER_MINUTE_FULL} rows per minute / 60 x "
             f"{fam.GPU_MARGIN}, ceil 0.1), never a target. The budget is RUN-CUMULATIVE across every attempt of this run id.")}
@@ -313,10 +315,10 @@ def derive_experiment(key: str, *, repo_root: Path = REPO_ROOT, write: bool = Tr
         cell["readiness"] = json.loads(rd(out, repo_root))["cells"][0]["readiness"]
     if smoke:
         document["purpose"] = (
-            f"Four-row structural form smoke of L338: that {fam.PROGRAM} (ceiling {fam.CONTACTS_PER_ROW}) with the {fam.K}-arm Solver decoding column loads on the "
-            f"resident np4 Thinking session ({spec['session']}), that every arm's Solver request carries the lock's thinking budget {fam.DELIVERING_BUDGET} with max_tokens "
-            f"{fam.COMPLETION_CAP} and its own sampling parameters while the delivering arm's request is the lock's, that no node hits its own cap, that no delivered content "
-            "carries a think marker, that the live phase fit passes, that the v4 arm receipt seals and that the episode completes, and what a contact costs per arm "
+            f"Four-row structural form smoke of L338: that {fam.PROGRAM} (ceiling {fam.CONTACTS_PER_ROW}) with the {fam.K}-arm sampling column loads on the "
+            f"resident np4 Thinking session ({spec['session']}), that every sampled Perception and Solver contact carries the lock's thinking budget {fam.DELIVERING_BUDGET} with max_tokens "
+            f"{fam.COMPLETION_CAP}, its sample index, its derived seed and the arm's decoding while the delivering arm's request is the lock's, that no node hits its own cap, that no delivered content "
+            "carries a think marker, that the live phase fit passes, that the v6 arm receipt seals and that the episode completes, and what a contact costs per arm "
             "(completion tokens, finish reasons, forced closes, seconds) against the registered cost. Scored by no one and read by no one: four rows are never evidence "
             "of benefit or harm.")
         document["failure_policy"] = (
@@ -325,12 +327,12 @@ def derive_experiment(key: str, *, repo_root: Path = REPO_ROOT, write: bool = Tr
             "the cell and the fix is proven on a four-row dry run.")
     else:
         document["purpose"] = (
-            f"{spec['run']}: does a change of the Solver's sampling parameters (a decoding-policy control axis) move the score of the locked Thinking system (owner rulings 329 A and 332 A)? "
-            f"One flight, {fam.K} arms over TRAIN Fold B 1,080: the delivering {fam.DELIVERING} arm (the 268-B lock form), the in-chain twin {fam.TWIN} and the candidate sampling policies "
+            f"{spec['run']}: do the two sampling levers move the score of the locked Thinking system -- L1 false-fill suppression (n = 5 Solver samples, first-first support filter, N1-gated empty decision) judged on SLU with an intent guard, and L2 the Perception candidate union (k = 4 samples, cap 3) judged on intent with an SLU guard (owner rulings 338 and 341 A)? "
+            f"One flight, {fam.K} arms over TRAIN Fold B 1,080: the delivering {fam.DELIVERING} arm (the 268-B lock form), the in-chain twin {fam.TWIN} and the candidate arms "
             + ", ".join(fam.CANDIDATE_ARMS) + f". Each candidate is read PAIRED per row against {fam.DELIVERING} (official SLU-F1 primary, intent guard; utterance-cluster bootstrap CI95), "
-            f"beside the twin {fam.TWIN} (the in-flight A/A), the Solver forced-close share, completion tokens, seconds per contact, empty-gold false fill and the per-scenario "
-            "table. claims_benefit is false: a per-arm nomination, not an admission; development numbers only (owner decisions 28 and 86); never a test claim. A NOMINATED or "
-            "EFFICIENT-NO-LOSS arm goes to a 2-arm Fold A confirm (not built here). Nothing here authorises a flight, a readiness flip or an admission entry.")
+            f"beside the twin {fam.TWIN} (the in-flight A/A), the support-count and union-size tables, the per-stream discordance against the twin, empty-gold false fill and the per-scenario "
+            "table. claims_benefit is false: a per-arm nomination, not an admission; development numbers only (owner decisions 28 and 86); never a test claim. A NOMINATED "
+            "arm goes to the 335 B Fold A column (not built here). Nothing here authorises a flight, a readiness flip or an admission entry.")
         document["failure_policy"] = (
             "Stop and preserve on the first failure. No automatic restart, replay, row filtering, roster, role-graph, prompt, knowledge, geometry or cap "
             "change. AT MOST ONE root-diagnosed recovery re-registration per run id (a new generation attempt id AND a new native_contact_fit run and attempt "
@@ -343,7 +345,7 @@ def derive_experiment(key: str, *, repo_root: Path = REPO_ROOT, write: bool = Tr
         "arms": {arm: spec["run"] for arm in fam.ARM_ORDER},
         "chain": "resident np4 Thinking session (swap is a no-op) -> smoke -> machine sign-off (coordinator veto window) -> the column flight",
         "reading": (f"official SLU-F1 and intent paired per row: {', '.join(fam.CANDIDATE_ARMS)} and the twin {fam.TWIN} minus the delivering {fam.DELIVERING} arm, beside "
-                    "the per-arm Solver completion, forced-close, seconds-per-contact, empty-gold false-fill and per-scenario tables"),
+                    "the per-stream discordance, support-count, union-size, empty-gold false-fill, seconds-per-contact and per-scenario tables"),
         "this_cell": spec["role"],
     }
     leftovers = [m.group(0) for m in re.finditer(r".{40}(?:thinking-system|THINKING-SYSTEM|owner decision 268|Thinking system arm).{20}", json.dumps(document))]

@@ -1,33 +1,31 @@
-"""Shared identities of L338: the Solver DECODING-POLICY column on the Thinking core, TRAIN Fold B (the sampling-parameter round).
+"""Shared identities of the decision-338 lever column: false-fill suppression (L1) and the Perception candidate union (L2) on the Thinking core, TRAIN Fold B.
 
-One module, imported by the derive, writer, mint, reader, chain and test scripts, so no id is spelled twice. Model-free. It follows the NX-T R3 package form and reuses what
-it reused: ``thinking_system_family`` (the Thinking model fragment family, packet root and its pinned promotion receipt, the lock v2.2 + v4g plain-lock program, the Fold B
-roster), ``tfrl_family`` (the FIT arithmetic and the derive helpers) and ``recovery`` (the generic rec1 / rec2 mechanism). R3's own files are not changed.
+One module, imported by the derive, writer, mint, reader, chain and test scripts, so no id is spelled twice. Model-free. It follows the NX-T R4 package form (cloned 1:1 from
+it) and reuses what R4 reused: ``thinking_system_family`` (the Thinking model fragment family, packet root and its pinned promotion receipt, the lock v2.2 + v4g plain-lock
+program, the Fold B roster), ``tfrl_family`` (the FIT arithmetic and the derive helpers) and ``recovery`` (the generic rec1 mechanism). R4's own files are not changed.
 
-WHAT THE CELL IS. Owner rulings 329 A and 332 A (2026-10-18) open a DECODING-POLICY control axis: ONE flight of the locked Thinking system (the 268-B lock: lock v2.2 + v4g, the
-review-off COMP-1b module graph, Perception AND Solver both thinking at budget 3,072 / cap 4,096) on TRAIN Fold B (1,080 rows) with a same-flight COLUMN over the SAMPLING parameters
-of the Solver's own contact (``roles.solver.decoding_variants``, receipt ``saea-supply-variant-arms-v6``, the NX node-decoding instrument, ``rails.supply_variants.
-parse_decoding_variants``). The Solver is contacted K = 6 times over the SAME Perception note, the SAME evidence, the SAME locked template and the SAME QueryState, once per arm;
-the arms differ ONLY in ``temperature`` / ``top_p`` / ``top_k`` / ``presence_penalty`` (a closed validated set); the request seed (the lock's), the thinking budget and cap, the
-response format and the tool authority are the lock's for every arm. The arm set is DATA (``l338_arms.json``):
+WHAT THE CELL IS. Owner rulings 338 and 341 A (2026-10-19) build ONE flight of the locked Thinking system (the 268-B lock: lock v2.2 + v4g, the review-off COMP-1b module graph,
+Perception AND Solver both thinking at budget 3,072 / cap 4,096) on TRAIN Fold B (1,080 rows) with a same-flight COLUMN of two SAMPLING levers, compiled by the consumption module's
+``sampling`` column kind into ``roles.perception.sampling_variants`` (a level-2 Perception-branch group, receipt ``saea-perception-branch-arms-v6``; ``rails.supply_variants.
+parse_perception_sampling_variants``). Each branch is its own Perception and first-visit Solver visit. The arm set is DATA (``l338_arms.json``):
 
-  ``d1-qwen-sampling``           temperature 0.6, top_p 0.95, top_k 20 (Qwen's published Thinking-mode setting; owner ruling 332 A, arm 1)
-  ``d2-qwen-sampling-presence``  arm 1 plus presence_penalty 1.5 (arm 2)
-  ``d3-temp-0.3``                temperature 0.3, top_p 0.95, top_k 20 (arm 3)
-  ``d4-greedy-presence``         temperature 0 (the lock's) plus presence_penalty 1.5 (arm 4)
-  ``aa``                         the in-flight A/A (the lock's greedy request again; ``replicate_of`` lock)
-  ``lock``                       the delivering arm: the 268-B lock form; its requests are the lock's, byte for byte (LAST)
+  ``l1-support``  ``solver_samples`` n = 5 at T 0.6 / top_p 0.95 / top_k 20: the Solver is contacted five times (sample 0 greedy at the lock seed, samples 1-4 sampled at the lock
+                  seed + offsets 1..4) and the delivered entities are the VER-1 first-first support filter (s = 2) with the N1-gated empty decision (the gate reports
+                  ``n1-unavailable`` in flight; the reader computes N1 offline). 1 Perception + 5 Solver = 6 contacts per row.
+  ``l2-union``    ``perception_samples`` k = 4 at the same sampling: four Perception contacts (sample 0 greedy, samples 1-3 sampled) merged by the candidate-union policy
+                  (sample 0's list first, capped at 3) into the one greedy Solver contact's shortlist. 4 Perception + 1 Solver = 5 contacts per row.
+  ``aa``          the in-flight A/A (the lock's request again; ``replicate_of`` lock)
+  ``lock``        the delivering arm: the 268-B lock form; its requests are the lock's, byte for byte (LAST)
 
-``arm_visits`` is ``first``. Because the sampling arms are STOCHASTIC (and even a greedy arm is not reproducible under np4 batching: the R2b analysis measured 25 % forced-status
-flips between two greedy arms), the read reports every sampling arm's discordance against the lock beside the twin's.
+Per row: 7 Perception + 8 Solver = 15 contacts, 0 tool calls (program ``phase-native-module-v1-c15`` = 2 + 2 (K - 1) + (k - 1) + (n - 1)). ``arm_visits`` is ``first``. Because
+every sampled stream is STOCHASTIC (and even a greedy arm is not reproducible under np4 batching), the read reports every sampled stream's discordance against the twin's.
 
 The serving target is the RESIDENT ``think-budget-np4`` session (fragment ``...-budget3072-max4096-v1``, ``-c 98304 -np 4``, four 24,576-token slots): no new fragment, no
-cell-level thinking policy (the fragment's defaults ARE the lock form). The swap call is kept and is a no-op when that session is resident.
+cell-level thinking policy. The swap call is kept and is a no-op when that session is resident.
 
-GPU CEILING. The R3 cost model unchanged (``l338_cost_inputs.json`` copies R3's numbers: 9.23 GPU-h per 1,080-row lock flight, Perception 59 s and Solver 64.07 s per contact at
-4 slots): a row costs one Perception contact plus K Solver contacts, every Solver contact costed at the lock's Solver seconds (an upper envelope for the arms that shorten the
-reasoning, an under-estimate only if a sampling arm reasons longer than greedy does; the smoke measures the real mix). The arm mix is that row in lock-row equivalents, rounded UP
-to 0.01:
+GPU CEILING. The R3/R4 cost model (``l338_cost_inputs.json``: 9.23 GPU-h per 1,080-row lock flight, Perception 59 s and Solver 64.07 s per contact at 4 slots). A row costs
+P Perception contacts plus S Solver contacts (P = K + sum(k - 1) = 7, S = K + sum(n - 1) = 8), every contact costed at the lock's seconds for its node. The arm mix is that row in
+lock-row equivalents, rounded to the NEAREST 0.01 (the design spec registers 7.52; see round_hundredth):
     expected GPU-h = rows x arm mix / rows-per-minute / 60            (rows per minute = 4 slots x 60 / the lock row seconds, registered rounded DOWN to 0.01)
     ceiling        = ceil_0.1( expected x 1.3 )
 Ceilings are bounds, never targets (owner: runs of 24 GPU-h or more are intended). The four-row smoke keeps the 0.5 GPU-h form allowance.
@@ -55,13 +53,15 @@ import thinking_system_family as tsf  # noqa: E402
 import tfrl_family as tf  # noqa: E402
 import recovery as rcv  # noqa: E402
 
-from speech_aware_evidence_acquisition.rails.native_episode_receipt import decoding_override_error  # noqa: E402
+from speech_aware_evidence_acquisition.rails.supply_variants import (  # noqa: E402
+    PerceptionBranchError, parse_perception_sampling_variants, sampling_extra_contacts,
+)
 
 REPO_ROOT = tf.REPO_ROOT
 
-DATE = "2026-10-18"
+DATE = "2026-10-19"
 SLUG = "l338-lever-column-fold-b"
-SHORT = "nxt4"
+SHORT = "l338"
 PKG_NAME = "slurp-l338-lever-column-fold-b-v1"
 PACKAGE = f"docs/readiness/{DATE}-{PKG_NAME}"
 PREREG = f"{PACKAGE}-preregistration.md"
@@ -72,14 +72,14 @@ READ_RUN_ID = "SAEA-SLURP-L338-LEVER-COLUMN-FOLD-B-READ-V1"
 RECIPE_ID = "slurp-l338-lever-column-fold-b-read-v1"
 READER = "scripts/analysis/slurp_l338_column_read.py"
 ANALYSIS_ROOT = f"analysis/{READ_RUN_ID}"
-LEDGER_MARK = ("## Cell L338: the Solver decoding-policy column on the Thinking core, TRAIN Fold B (one flight, four candidate sampling policies plus the twin and the "
-               "delivering arm; smoke then 1,080 rows)")
-OWNER_RULINGS = ("owner rulings 329 A and 332 A (2026-10-18), 326 A and 327 A (2026-10-17), 313 A (2026-10-14) and 304/307 (2026-10-13), coordinator approval of the "
-                 "L338 design")
-SMOKE_SCHEMA = "saea-l338-solver-decoding-column-smoke-v1"
-READ_SCHEMA = "saea-l338-solver-decoding-column-read-v1"
-READ_TITLE = "L338 read -- the Solver decoding-policy column"
-SPEC_DESIGN = "docs/superpowers/specs/2026-10-09-slurp-nx-node-template-variant-instrument-design.md"
+LEDGER_MARK = ("## Cell L338: the lever column (L1 false-fill suppression, L2 Perception candidate union) on the Thinking core, TRAIN Fold B (one flight, two candidate "
+               "sampling levers plus the twin and the delivering arm; smoke then 1,080 rows)")
+OWNER_RULINGS = ("owner rulings 338 and 341 A (2026-10-19), 335 B and 336 A (2026-10-18), 326 A and 327 A (2026-10-17), 313 A (2026-10-14) and 304/307 (2026-10-13), coordinator "
+                 "approval of the decision-338 lever-column design")
+SMOKE_SCHEMA = "saea-l338-lever-column-smoke-v1"
+READ_SCHEMA = "saea-l338-lever-column-read-v1"
+READ_TITLE = "L338 read -- the lever column (L1 false-fill suppression, L2 candidate union)"
+SPEC_DESIGN = "docs/superpowers/specs/2026-10-19-slurp-338-lever-column-design.md"
 
 # ---- the system and the roster: exactly the 268-B lock, one flight --------------------------------------------------------------
 ROWS, SMOKE_ROWS = tsf.ROWS, tsf.SMOKE_ROWS
@@ -96,7 +96,8 @@ NODES = ("perception", "solver")
 # ---- the arm table (DATA: l338_arms.json) -----------------------------------------------------------------------------------------
 ARMS_PATH = HERE / "l338_arms.json"
 ARM_TABLE_SCHEMA = "saea-l338-arm-table-v1"
-MAX_CANDIDATE_ARMS = 6                                      # rails.supply_variants.MAX_DECODING_CANDIDATE_ARMS
+MAX_CANDIDATE_ARMS = 6                                      # rails.supply_variants.MAX_SAMPLING_CANDIDATE_ARMS
+SAMPLING_AXES = ("perception_samples", "solver_samples")
 DELIVERING, TWIN = "lock", "aa"
 LOCKED_TEMPLATE = "configs/probes/slurp_native_role_solver_v2.txt"
 LOCKED_TEMPLATE_SHA = "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
@@ -122,7 +123,9 @@ def template_tokens(relpath: str, root: Path | None = None) -> int:
 
 
 def validate_arm_table(table: object, root: Path | None = None) -> list[dict]:
-    """Validate the arm-table document against the closed sampling set and the locked template on disk; return its candidate arms (declared order). Every refusal names the rule."""
+    """Validate the arm-table document's SHAPE and the locked template on disk; return its candidate arms (declared order). Every candidate carries exactly one sampling axis
+    (``perception_samples`` or ``solver_samples``) in this registration; the axis bounds, the registered merge / commit policies, the seed offsets and the fit are refused by the
+    rails' own ``parse_perception_sampling_variants`` (run on the compiled block by :func:`sampling_group` below and by the module compiler at derive time). Every refusal names the rule."""
 
     keys = {"_note", "arms", "delivering", "locked_template", "locked_decoding", "schema", "twin"}
     if not isinstance(table, dict) or set(table) != keys:
@@ -141,28 +144,24 @@ def validate_arm_table(table: object, root: Path | None = None) -> list[dict]:
     if not isinstance(arms, list) or not 1 <= len(arms) <= MAX_CANDIDATE_ARMS:
         raise ArmTableError(f"between 1 and {MAX_CANDIDATE_ARMS} candidate arms")
     seen: set[str] = set()
-    overrides: set[str] = set()
+    axes_seen: set[str] = set()
     out = []
     for position, arm in enumerate(arms):
         where = f"arms[{position}]"
-        if not isinstance(arm, dict) or set(arm) != {"arm_id", "evidence", "decoding"}:
-            raise ArmTableError(f"{where} must be exactly {{arm_id, evidence, decoding}}")
+        axes = [a for a in SAMPLING_AXES if isinstance(arm, dict) and a in arm]
+        if not isinstance(arm, dict) or set(arm) != {"arm_id", "evidence", *axes} or len(axes) != 1:
+            raise ArmTableError(f"{where} must be exactly {{arm_id, evidence}} plus ONE of {list(SAMPLING_AXES)}")
         arm_id = arm["arm_id"]
         if not isinstance(arm_id, str) or not _ARM_ID.match(arm_id) or arm_id in (DELIVERING, TWIN) or arm_id in seen:
             raise ArmTableError(f"{where}.arm_id {arm_id!r} must be a distinct lower-case id other than {DELIVERING!r} and {TWIN!r}")
         seen.add(arm_id)
-        reason = decoding_override_error(arm["decoding"])
-        if reason is not None:
-            raise ArmTableError(f"{where}.decoding {reason}")
-        canonical = json.dumps(arm["decoding"], sort_keys=True)
-        if canonical in overrides:
-            raise ArmTableError(f"{where}: two arms declare the same sampling override")
-        overrides.add(canonical)
-        if all(name in LOCKED_DECODING and LOCKED_DECODING[name] == value for name, value in arm["decoding"].items()):
-            raise ArmTableError(f"{where}: every named parameter equals the lock's own value; that arm is a second spelling of the delivering arm")
+        canonical = json.dumps({axes[0]: arm[axes[0]]}, sort_keys=True)
+        if canonical in axes_seen:
+            raise ArmTableError(f"{where}: two arms declare the same sampling axis")
+        axes_seen.add(canonical)
         if not isinstance(arm["evidence"], str) or not arm["evidence"].strip():
             raise ArmTableError(f"{where}.evidence must be a non-empty string")
-        out.append({"arm_id": arm_id, "evidence": arm["evidence"], "decoding": dict(sorted(arm["decoding"].items()))})
+        out.append({"arm_id": arm_id, "evidence": arm["evidence"], "axis": axes[0], axes[0]: json.loads(json.dumps(arm[axes[0]]))})
     return out
 
 
@@ -174,13 +173,17 @@ ARM_SPECS = load_arm_table()
 CANDIDATE_ARMS = tuple(a["arm_id"] for a in ARM_SPECS)
 ARM_ORDER = (*CANDIDATE_ARMS, TWIN, DELIVERING)             # declared order; the twin, then the delivering arm LAST
 K = len(ARM_ORDER)
-CONTACTS_PER_ROW = 2 + (K - 1)                              # review-off base 2 + (K - 1) extra Solver contacts (c7 for K = 6)
+#: One Perception and one Solver contact per branch (the level-2 group), plus the sampling axes' own extras: (k - 1) Perception for a ``perception_samples`` arm, (n - 1) Solver
+#: for a ``solver_samples`` arm (``rails.supply_variants.sampling_extra_contacts``).
+PERCEPTION_CONTACTS_PER_ROW = K + sum(a["perception_samples"]["k"] - 1 for a in ARM_SPECS if a["axis"] == "perception_samples")
+SOLVER_CONTACTS_PER_ROW = K + sum(a["solver_samples"]["n"] - 1 for a in ARM_SPECS if a["axis"] == "solver_samples")
+CONTACTS_PER_ROW = PERCEPTION_CONTACTS_PER_ROW + SOLVER_CONTACTS_PER_ROW      # c15 for the registered table
 PROGRAM = f"phase-native-module-v1-c{CONTACTS_PER_ROW}"
 #: Every arm renders the node's LOCKED template, so one token count serves the whole fit estimate.
 DELIVERING_TEMPLATE_TOKENS = template_tokens(LOCKED_TEMPLATE)
-DECODING_OF = {a["arm_id"]: dict(a["decoding"]) for a in ARM_SPECS}
-#: Budgeted-thinking contacts per row (an answer-only fallback re-ask is possible only for a budgeted thinking request): Perception 1 + K Solver contacts, all thinking.
-THINKING_CONTACTS_PER_ROW = 1 + K
+AXIS_OF = {a["arm_id"]: {a["axis"]: json.loads(json.dumps(a[a["axis"]]))} for a in ARM_SPECS}
+#: Budgeted-thinking contacts per row (an answer-only fallback re-ask is possible only for a budgeted thinking request): every Perception and Solver contact, all thinking.
+THINKING_CONTACTS_PER_ROW = CONTACTS_PER_ROW
 FALLBACK_CONTACTS_PER_ROW_CEILING = THINKING_CONTACTS_PER_ROW
 
 # ---- the Thinking serving geometry: the RESIDENT np4 session, unchanged -------------------------------------------------------------------
@@ -230,13 +233,13 @@ def geometry_of(key: str) -> dict:
 
 
 def think_model_text(key: str) -> str:
-    """The ledger model/tool text of a cell (the resident np4 server geometry, the lock's decoding, the per-arm Solver sampling policy)."""
+    """The ledger model/tool text of a cell (the resident np4 server geometry, the lock's decoding, the per-arm sampling axes)."""
 
     g = ACTIVE_GEOMETRY
     return ("Frozen Qwen3-Omni-30B-A3B-Thinking Q4_K_M (qwen3-omni-30b-a3b-thinking-gguf-q4km), decoder-only build 04ccc72a, "
             f"c{g['slots'] * g['slot_tokens']} np{g['slots']} x {g['slot_tokens']:,} max{tsf.THINK_MAX_TOKENS} (reasoning budget {tsf.THINK_BUDGET_TOKENS} on both nodes), q8_0 KV, "
             f"--reasoning-format deepseek (model fragment {g['model_fragment']}); its own promoted speech packets; module program {PROGRAM}; "
-            "per-arm Solver sampling policy (temperature / top_p / top_k / presence_penalty); no tool authority")
+            "per-arm sampling axes (perception_samples / solver_samples at temperature 0.6, top_p 0.95, top_k 20); no tool authority")
 
 
 THINK_PACKET_ROOT, THINK_PROMOTION_RECEIPT = tsf.THINK_PACKET_ROOT, tsf.THINK_PROMOTION_RECEIPT
@@ -266,12 +269,20 @@ def ceil_hundredth(value: float) -> float:
     return math.ceil(round(value * 100.0, 9)) / 100.0
 
 
+def round_hundredth(value: float) -> float:
+    """Nearest 0.01 (half up). The L338 arm mix uses this so the registered figures are the design spec's (7.52 lock-row equivalents, 69.4 GPU-h expected, 90.3 ceiling): the
+    unrounded mix is 7.5204 and ``ceil_hundredth`` would read 7.53 and a 90.4 ceiling. The 1.3 margin dwarfs the 0.0004 difference."""
+
+    return math.floor(round(value * 100.0, 9) + 0.5) / 100.0
+
+
 def floor_hundredth(value: float) -> float:
     return math.floor(round(value * 100.0, 9)) / 100.0
 
 
-#: One row = one Perception contact + K Solver contacts, in lock-row equivalents (lock row = Perception + one Solver), rounded UP to 0.01.
-ARM_MIX_ROWS = ceil_hundredth((NODE_SECONDS["perception"] + K * NODE_SECONDS["solver"]) / (NODE_SECONDS["perception"] + NODE_SECONDS["solver"]))
+#: One row = P Perception contacts + S Solver contacts, in lock-row equivalents (lock row = Perception + one Solver), rounded UP to 0.01.
+ARM_MIX_ROWS = round_hundredth((PERCEPTION_CONTACTS_PER_ROW * NODE_SECONDS["perception"] + SOLVER_CONTACTS_PER_ROW * NODE_SECONDS["solver"])
+                              / (NODE_SECONDS["perception"] + NODE_SECONDS["solver"]))
 ROW_COST = {"column-row": ARM_MIX_ROWS, "lock-row": 1.0}
 #: rows per minute of a lock-only pass at the measured seconds per row and 4 slots, registered rounded DOWN to 0.01 (a lower rate means more GPU-hours).
 ROWS_PER_MINUTE_FULL = floor_hundredth(R2B_SLOTS * 60.0 / SECONDS_PER_ROW_LOCK)
@@ -312,7 +323,7 @@ def estimated_prompt_tokens(items: int, template: int = 0) -> int:
 
 
 def fit_proof() -> dict:
-    """The context-fit proof of the decoding column, registered in the fit plan; ``ok`` is False (and the derive REFUSES) when the live slot cannot hold the lock's Solver
+    """The context-fit proof of the lever column, registered in the fit plan; ``ok`` is False (and the derive REFUSES) when the live slot cannot hold the lock's Solver
     prompt plus the 4,096-token cap. Every arm renders the SAME locked template and evidence, and a sampling parameter adds no prompt token, so the prompt of an arm is the
     lock's own (nothing is added over the lock)."""
 
@@ -336,28 +347,49 @@ def fit_proof() -> dict:
     }
 
 
+#: The fit estimate the compiled ``sampling_variants`` block carries: the registered one with the locked template folded into the base prompt (the rails' parser has no separate
+#: template term), so the module compiler checks ``base + template + items x per-item`` against the prompt limit.
+SAMPLING_FIT_ESTIMATE = {**FIT_ESTIMATE, "base_prompt_tokens": FIT_ESTIMATE["base_prompt_tokens"] + DELIVERING_TEMPLATE_TOKENS}
+
+
+def sampling_block() -> dict:
+    """The ``roles.perception.sampling_variants`` block the module compiler writes for this arm table (candidate arms, the twin, the delivering arm LAST)."""
+
+    rows = [{"arm_id": a["arm_id"], a["axis"]: json.loads(json.dumps(a[a["axis"]]))} for a in ARM_SPECS]
+    rows += [{"arm_id": TWIN, "replicate_of": DELIVERING}, {"arm_id": DELIVERING, "deliver": True}]
+    return {"node": "perception", "arms": rows, "max_supplied_items": MAX_SUPPLIED_ITEMS, "fit_estimate": dict(SAMPLING_FIT_ESTIMATE)}
+
+
+def sampling_group():
+    """The block parsed by the rails' own parser: an axis outside its bounds, an unregistered merge or commit policy, a seed offset error or a fit overrun raises
+    ``PerceptionBranchError`` HERE, by that parser's name. The contact count the group adds must equal this module's arithmetic."""
+
+    group = parse_perception_sampling_variants(sampling_block(), phase_id="perception")
+    if 2 + 2 * (K - 1) + sampling_extra_contacts(group) != CONTACTS_PER_ROW:
+        raise ArmTableError("the rails' sampling contact count does not match the family's CONTACTS_PER_ROW")
+    return group
+
+
+SAMPLING_GROUP = sampling_group()
+
 # ---- the recoveries of a cell ----------------------------------------------------------------------------------------------------------
 #: A (run_id, attempt_id) pair is a one-time key, so a cell whose attempt stopped is re-registered under the ``-recN`` attempt ids (generation AND the live
 #: phase fit) with a plan that carries the original plan plus every earlier attempt's realised spend (run-cumulative). Generic mechanism:
 #: ``scripts/flights/lib/recovery.py``. ``RECOVERIES`` is EMPTY on the first registration; every recovery is data-driven: the coordinator commits a predecessor
-#: snapshot (``recovery.py snapshot`` for rec1, ``l338_rec2_snapshot.py`` for rec2) and a diagnosis input per recovery and the family builds
+#: snapshot (``recovery.py snapshot`` for rec1) and a diagnosis input per recovery and the family builds
 #: ``RECOVERY_HISTORY["arm"]`` from them. A predecessor's spend is the snapshot's, never typed here.
 #:
 #: * ``rec1`` hook: the column flight re-flown WHOLE after a host failure killed the first attempt. Files: ``predecessor-snapshot-arm-rec1-v1.json`` (the FIRST
 #:   attempt) and ``recovery-input-arm-v1.json``.
-#: * ``rec2`` hook (the resume form): the rec1 attempt was stopped; rec2 is a RESUME of it (a stopped attempt is resumed, never re-flown whole, whenever a checkpoint or
-#:   trace exists), under an explicit owner exception to the one-recovery rule. Files: ``predecessor-snapshot-arm-rec2-v1.json`` (written by ``l338_rec2_snapshot.py``)
-#:   and ``recovery-input-arm-rec2-v1.json`` (the diagnosis plus ``owner_exception`` and the COMPUTED ``resume_mode``; ``l338_rec2_mode.py``).
+#: * No rec2 (resume) hook is cloned from R4: this package is on its FIRST registration, and the one-recovery rule applies until the owner rules otherwise.
 #:
 #: ``RECOVERY_HISTORY[key]`` lists the records in order; ``RECOVERIES[key]`` is the LATEST one, the state the ids, plans and caps follow.
 REC = rcv.REC
 PREDECESSOR_SNAPSHOT = {"arm": f"{PACKAGE}/predecessor-snapshot-arm-rec1-v1.json"}      # the rec1 record's snapshot (the first attempt)
 RECOVERY_INPUT = {"arm": f"{PACKAGE}/recovery-input-arm-v1.json"}                       # the rec1 record's diagnosis
-PREDECESSOR_SNAPSHOTS = {"arm": [PREDECESSOR_SNAPSHOT["arm"], f"{PACKAGE}/predecessor-snapshot-arm-rec2-v1.json"]}
-RECOVERY_INPUTS = {"arm": [RECOVERY_INPUT["arm"], f"{PACKAGE}/recovery-input-arm-rec2-v1.json"]}
+PREDECESSOR_SNAPSHOTS = {"arm": [PREDECESSOR_SNAPSHOT["arm"]]}
+RECOVERY_INPUTS = {"arm": [RECOVERY_INPUT["arm"]]}
 RECOVERY_INPUT_KEYS = ("recovered_at", "ledger_title", "agent", "reason", "root_cause", "fix", "decision")
-RECOVERY_INPUT_KEYS_REC2 = RECOVERY_INPUT_KEYS + ("owner_exception", "resume_mode", "resume_mode_basis")
-RESUME_MODES = {"checkpoint": "B", "trace": "A"}                                        # resume mode -> the owner-decision-309 letter
 
 
 def build_arm_recovery(inputs: dict, snap: dict) -> dict:
@@ -401,105 +433,8 @@ def build_arm_recovery(inputs: dict, snap: dict) -> dict:
     }
 
 
-def resume_declaration(mode: str, stopped: dict) -> dict:
-    """The ``resume_from`` object of the stopped attempt in ``mode`` (``checkpoint``: mode B, ``trace``: mode A); the pins come from the snapshot's data-root reads."""
-
-    pins = stopped["trace"]
-    if mode == "checkpoint":
-        return {"attempt_id": stopped["attempt_id"], "checkpoint_sha256": pins["checkpoint_sha256"]}
-    if mode == "trace":
-        return {"attempt_id": stopped["attempt_id"], "trace_sha256": pins["trace_sha256"]}
-    raise ValueError(f"resume_mode must be 'checkpoint' or 'trace', got {mode!r}")
-
-
-def build_arm_rec2(inputs: dict, first: dict, stopped: dict) -> dict:
-    """The arm cell's rec2 recovery record: a RESUME of the stopped rec1 attempt. ``first`` = the first attempt's snapshot, ``stopped`` = the rec1 attempt's snapshot (trace
-    and checkpoint pins, both replay classifications, the code-identity comparison); ``inputs`` = the committed diagnosis and the computed ``resume_mode``."""
-
-    missing = [k for k in RECOVERY_INPUT_KEYS_REC2 if not inputs.get(k)]
-    if missing:
-        raise ValueError(f"the rec2 recovery input misses {missing}")
-    mode = inputs["resume_mode"]
-    letter = RESUME_MODES.get(mode)
-    if letter is None:
-        raise ValueError(f"resume_mode must be one of {sorted(RESUME_MODES)}, got {mode!r}")
-    if mode == "checkpoint" and (stopped.get("mode_inputs") or {}).get("implementation_differing_modules") != []:
-        raise ValueError("mode B (checkpoint) is refused: the snapshot does not show a byte-identical runtime / runner / row_checkpoint")
-    resume = stopped["resume"][mode]
-    counts = dict(resume["counts"])
-    kept, flown = counts["kept"], counts["flown"]
-    if kept + flown != counts["roster"]:
-        raise ValueError(f"the rec2 resume counts do not add up: {counts}")
-    if stopped["resume"]["trace"]["kept_sample_ids_sha256"] != stopped["resume"]["checkpoint"]["kept_sample_ids_sha256"] and mode == "checkpoint":
-        raise ValueError("the trace and the checkpoint disagree on the kept rows; the mode choice must be re-examined")
-    fit, trace = stopped.get("fit") or {}, stopped["trace"]
-    predecessors = [rcv.predecessor_from_snapshot(first), rcv.predecessor_from_snapshot(stopped)]
-    calls, audio = sum(p["contacts_spent"] for p in predecessors), sum(p["speech_seconds_spent"] for p in predecessors)
-    contacts = flown * CONTACTS_PER_ROW
-    gpu = expected_gpu_hours(flown)
-    exception = inputs["owner_exception"]
-    exception_cap = exception[:1].upper() + exception[1:]
-    snaps = " and ".join(PREDECESSOR_SNAPSHOTS["arm"])
-    pin_sha = trace["checkpoint_sha256"] if mode == "checkpoint" else trace["trace_sha256"]
-    pin_bytes = trace["checkpoint_bytes"] if mode == "checkpoint" else trace["trace_bytes"]
-    if mode == "checkpoint":
-        why_mode = (f"MODE {letter} (row checkpoint): {inputs['resume_mode_basis']} `resume_from` names the rec1 attempt and the sha256 of its row checkpoint, "
-                    f"{pin_sha} ({pin_bytes:,} bytes), read from the data root into {PREDECESSOR_SNAPSHOTS['arm'][1]}.")
-        phrase = f"resumed in mode B (row checkpoint) from `{stopped['attempt_id']}`: the {kept:,} complete rows are kept and the {flown:,} remaining rows are flown"
-    else:
-        why_mode = (f"MODE {letter} (trace replay), not mode B: {inputs['resume_mode_basis']} `resume_from` names the rec1 attempt and the sha256 of its trace, "
-                    f"{pin_sha} ({pin_bytes:,} bytes), read from the data root into {PREDECESSOR_SNAPSHOTS['arm'][1]}.")
-        phrase = f"resumed in mode A (trace replay) from `{stopped['attempt_id']}`: the {kept:,} complete rows are kept and the {flown:,} remaining rows are flown"
-    return {
-        "recovery_index": 2,
-        "recovered_at": inputs["recovered_at"],
-        "ledger_title": inputs["ledger_title"],
-        "agent": inputs["agent"],
-        "registered_at_utc": None,
-        "base_commit": None,
-        "worktree": None,
-        "branch": None,
-        "owner_exception": exception,
-        "predecessor_attempt_id": stopped["attempt_id"],
-        "predecessor_fit_run_id": fit["run_id"],
-        "predecessor_fit_attempt_id": fit["attempt_id"],
-        "fit_predecessor_phrase": (f"{'its attempt record is present, ' if fit.get('attempt_record_present') else 'no attempt record was opened for it, '}its prepared "
-                                   f"directory holds {fit.get('prepared_request_fit_envelopes', 0):,} request-fit envelopes preserved unread on the data root"),
-        "predecessor_state": (f"{stopped['state']} (its attempt record); {stopped['actual_calls']:,} calls / {stopped['actual_audio_seconds']:.2f} "
-                              f"speech-seconds realised per its attempt record (reserved {stopped['reserved_calls']:,} / {stopped['reserved_audio_seconds']:,.0f}); "
-                              f"{kept:,} complete rows in its row checkpoint (sha256 {trace['checkpoint_sha256'][:8]}...) and its trace (sha256 "
-                              f"{trace['trace_sha256'][:8]}...); {counts['partial']} partial row(s) in the trace were never completed; preserved unread."),
-        "predecessors": predecessors,
-        "reason": (f"{inputs['reason']} {exception_cap} grants an EXPLICIT exception to the package rule of one recovery re-registration per run id and rules that "
-                   f"a stopped attempt is RESUMED, never re-flown whole, whenever a checkpoint or trace exists: this rec2 keeps the {kept:,} complete rows of the stopped "
-                   f"rec1 attempt by a mode-{letter} resume and flies the {flown:,} remaining rows."),
-        "root_cause": inputs["root_cause"],
-        "amendment": (
-            f"RECOVERY {inputs['recovered_at']} (rec2; {exception}, {inputs['decision']}). {why_mode} The attempt keeps the {kept:,} complete rows (each is proven by "
-            f"the offline replay recorded as a block of the generation plan) and flies the {flown:,} remaining rows: {flown:,} x {CONTACTS_PER_ROW} = {contacts:,} "
-            f"program contacts and nothing else. The generation budget is run-cumulative across the attempts of the run id (core/model/adapter.py): the registered "
-            f"plan plus both earlier attempts' recorded spend ({calls:,} calls, {audio:g} speech-seconds, read from the attempt records into {snaps}). The FIT cap is "
-            "structural and unchanged. The FIT run id and the FIT attempt id take the rec2 marker because a (run_id, attempt_id) pair is a one-time key; the "
-            f"generation run id is unchanged. The registered GPU-hour ceiling ({planned_gpu_hours(ROWS)} GPU-h) stands; the resume is expected to spend about "
-            f"{gpu:.1f} GPU-h ({flown:,} rows x {ARM_MIX_ROWS} lock-row equivalents / {ROWS_PER_MINUTE_FULL} rows per minute). `--allow-output-change` is never "
-            f"passed: the rebuilt supply, the roster ({ROWS:,} rows) and the read (n = {ROWS:,}) are the registered ones."),
-        "fix": inputs["fix"],
-        "unchanged": (f"Unchanged: the smoke cell `slurp-native-stage3-{SLUG}-smoke-4-v1` (sealed, not re-flown) and every registered sampling arm, roster ({ROWS:,} rows), "
-                      f"prompt, geometry, cap, the program {PROGRAM} and the {planned_gpu_hours(ROWS)} GPU-hour ceiling of the arm cell."),
-        "extra_note": (f"Resume accounting: kept {kept:,} rows (from `{stopped['attempt_id']}`, kept-row id hash {resume['kept_sample_ids_sha256']}); flown {flown:,} rows "
-                       f"({counts['partial']} partial, {counts['unstarted']:,} never started), {contacts:,} program contacts. The read reports kept / flown counts "
-                       f"beside the arm columns. {exception_cap} covers this one re-registration only."),
-        "rule": "A third recovery is not covered by the owner exception; a second failure of rec2 closes the cell, and the fix is proven on a four-row dry run.",
-        "fit_cap_rule": "The FIT cap is structural: rows x program contacts x endpoints per contact.",
-        "resume_mode": f"resume-mode-{letter}-keep-{kept}-fly-{flown}",
-        "resume_from": resume_declaration(mode, stopped),
-        "resume_counts": counts,
-        "flown_phrase": phrase,
-    }
-
-
 def _load_history(root: Path = REPO_ROOT) -> dict[str, list[dict]]:
-    """Each recovered cell's records in order: rec1 from its two files, rec2 from its two files once they are committed."""
+    """Each recovered cell's rec1 record from its two committed files (the snapshot and the diagnosis)."""
 
     out: dict[str, list[dict]] = {}
     for key, inputs in RECOVERY_INPUTS.items():
@@ -509,9 +444,6 @@ def _load_history(root: Path = REPO_ROOT) -> dict[str, list[dict]]:
         snaps = [Path(root) / rel for rel in PREDECESSOR_SNAPSHOTS[key]]
         first = rcv.load_snapshot(snaps[0])
         history = [build_arm_recovery(json.loads(path.read_text(encoding="utf-8")), first)]
-        second = Path(root) / inputs[1]
-        if second.is_file() and snaps[1].is_file():
-            history.append(build_arm_rec2(json.loads(second.read_text(encoding="utf-8")), first, rcv.load_snapshot(snaps[1])))
         out[key] = history
     return out
 
@@ -570,9 +502,9 @@ def _spec(key: str, role: str, rows: int, roster: str, scoring_jobs: int, gpu: f
 
 
 CELLS = {
-    "smoke": _spec("smoke", "four-row form smoke of the Solver decoding column", SMOKE_ROWS, "smoke", 0, SMOKE_GPU_HOURS,
+    "smoke": _spec("smoke", "four-row form smoke of the lever column", SMOKE_ROWS, "smoke", 0, SMOKE_GPU_HOURS,
                    ids_stem=f"{SLUG}-smoke-4", parent_key="smoke"),
-    "arm": _spec("arm", f"Solver decoding-policy column flight ({K} arms in one flight)", ROWS, "arm", 1, planned_gpu_hours(ROWS),
+    "arm": _spec("arm", f"lever-column flight ({K} arms in one flight)", ROWS, "arm", 1, planned_gpu_hours(ROWS),
                  ids_stem=SLUG, parent_key="lock"),
 }
 ARM_KEYS = ("arm",)
