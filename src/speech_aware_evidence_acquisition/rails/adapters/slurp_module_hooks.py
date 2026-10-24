@@ -40,7 +40,6 @@ PROFILE = "slurp"
 #: qualified id is ``<store_id>::intent-boundary:<intent_id>``.
 INTENT_BOUNDARY_LOCAL_PREFIX = "intent-boundary:"
 
-
 def slurp_decision_candidates(supplied_value_ids: Sequence[str]) -> tuple[str, ...]:
     """The first two DISTINCT candidate intents a supply names, in rendered
     order (the ``decision_candidates`` hook; formerly
