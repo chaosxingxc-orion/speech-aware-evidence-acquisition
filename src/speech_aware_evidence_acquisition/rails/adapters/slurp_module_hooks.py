@@ -256,5 +256,6 @@ def carrier_module_hooks(*, repo_root: Path | None = None) -> CarrierHooks:
         thinking_variant_frame={**PERCEPTION_TEMPLATE_VARIANT_FRAME, "block_path": ("native_episode", "roles", "perception", "thinking_variants"), "delivering_arm_id": "both-on", "twin_arm_id": "both-on-twin"},  # NX-T R1
         supply_variant_frame={**TEMPLATE_VARIANT_FRAME, "block_path": ("native_episode", "roles", "solver", "supply_variants")},  # E-S1
         decoding_variant_frame={**TEMPLATE_VARIANT_FRAME, "block_path": ("native_episode", "roles", "solver", "decoding_variants")},  # NX-T R4
+        sampling_variant_frame={**PERCEPTION_TEMPLATE_VARIANT_FRAME, "block_path": ("native_episode", "roles", "perception", "sampling_variants"), "delivering_arm_id": "lock", "twin_arm_id": "aa"},  # decision 338
         construction=slurp_module_construction.construction_hooks(ROSTER_PIN_PATHS),  # the r01c variant (2026-10-12)
     )

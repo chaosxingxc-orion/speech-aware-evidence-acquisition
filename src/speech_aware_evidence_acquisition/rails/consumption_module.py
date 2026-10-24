@@ -87,7 +87,7 @@ COMPONENT_STATES: tuple[str, ...] = (STATE_ON, STATE_OFF, STATE_SHADOW, STATE_CO
 _BLOCK_REQUIRED = frozenset({"module_id", "profile", "components"})
 _BLOCK_OPTIONAL = frozenset({
     "columns", "lock", "review_loop", "solver_tool_access", "template_frame", "supply_frame", "construction_roster",
-    "thinking_frame", "decoding_frame",
+    "thinking_frame", "decoding_frame", "sampling_frame",
 })
 #: A lock-version name a block may declare (migration step 6, owner decision
 #: 204): ``v<major>.<minor>``, resolved through the carrier's ``lock_versions``.
@@ -192,6 +192,16 @@ _DECODING_COLUMN_KEYS = frozenset({"column_id", "kind", "node", "decoding"})
 #: ``max_supplied_items`` bounds the evidence every arm renders; ``template_tokens`` is the locked template's measured token
 #: count (every arm renders it); ``fit_estimate`` is the measured fail-closed fit estimate.
 _DECODING_FRAME_KEYS = frozenset({"max_supplied_items", "template_tokens", "twin", "fit_estimate"})
+#: Decision 338 (2026-10-19): the SAMPLING column. It IS one non-delivering arm of the Perception node's ``sampling_variants``
+#: block: the arm named ``column_id``, fanning out ``perception_samples`` (k Perception contacts merged into its shortlist) and/or
+#: ``solver_samples`` (n Solver contacts committed by the support policy) over the SAME evidence, locked templates and QueryState
+#: the delivering arm renders. It toggles no component and carries no template.
+COLUMN_KIND_SAMPLING = "sampling"
+_SAMPLING_COLUMN_KEYS = frozenset({"column_id", "kind", "node"})
+_SAMPLING_COLUMN_AXES = frozenset({"perception_samples", "solver_samples"})
+#: The block-level frame every sampling column set shares: ``twin`` adds the request-identical A/A arm the carrier's hook names;
+#: ``max_supplied_items`` bounds the evidence every arm renders; ``fit_estimate`` is the measured fail-closed fit estimate.
+_SAMPLING_FRAME_KEYS = frozenset({"max_supplied_items", "twin", "fit_estimate"})
 #: Loop engineering item E-S1 (2026-10-11): the node-SUPPLY column. It IS one
 #: non-delivering arm of the Solver's ``supply_variants`` block (the E42
 #: mechanism): the arm named ``column_id``, resolving its own supply -- knob-tail
@@ -422,6 +432,10 @@ class CarrierHooks:
     #: ``decoding_variants`` block, "node": "solver", "delivering_arm_id", "twin_arm_id"}``. ``None``: no analogue on this
     #: carrier, so a decoding column refuses. Declared LAST.
     decoding_variant_frame: Mapping[str, object] | None = None
+    #: Decision 338 (2026-10-19): where sampling columns compile -- ``{"block_path": the key path of the Perception role's
+    #: ``sampling_variants`` block, "node": "perception", "delivering_arm_id", "twin_arm_id"}``. ``None``: no analogue on this
+    #: carrier, so a sampling column refuses. Declared LAST.
+    sampling_variant_frame: Mapping[str, object] | None = None
 
 
 @dataclass(frozen=True)
@@ -556,6 +570,13 @@ class ColumnDecl:
     thinking_json: str | None = None
     #: NX-T R4: a ``decoding`` column's canonical sampling override (``None`` for every other kind). Declared LAST.
     decoding_json: str | None = None
+    #: Decision 338: a ``sampling`` column's canonical ``{perception_samples?, solver_samples?}`` axes (``None`` for every other
+    #: kind). Declared LAST.
+    sampling_json: str | None = None
+
+    @property
+    def sampling(self) -> dict[str, object] | None:
+        return None if self.sampling_json is None else json.loads(self.sampling_json)
 
     @property
     def decoding(self) -> dict[str, object] | None:
@@ -604,6 +625,16 @@ class ConsumptionModuleBlock:
     construction_roster: str | None = None
     #: NX-T R4: the decoding columns' shared frame (canonical JSON), or ``None`` when the block declares no decoding column.
     decoding_frame_json: str | None = None
+    #: Decision 338: the sampling columns' shared frame (canonical JSON), or ``None`` when the block declares no sampling column.
+    sampling_frame_json: str | None = None
+
+    @property
+    def sampling_columns(self) -> tuple[ColumnDecl, ...]:
+        return tuple(c for c in self.columns if c.kind == COLUMN_KIND_SAMPLING)
+
+    @property
+    def sampling_frame(self) -> dict[str, object] | None:
+        return None if self.sampling_frame_json is None else json.loads(self.sampling_frame_json)
 
     @property
     def decoding_columns(self) -> tuple[ColumnDecl, ...]:
@@ -727,7 +758,7 @@ def parse_consumption_module_block(
         raise ConsumptionModuleConfigError("Solver tool access requires the explicit review-off profile")
     if review_loop == "off" and any(
         not (isinstance(c, Mapping) and c.get("kind") in (
-            COLUMN_KIND_TEMPLATE, COLUMN_KIND_SUPPLY, COLUMN_KIND_THINKING, COLUMN_KIND_DECODING,
+            COLUMN_KIND_TEMPLATE, COLUMN_KIND_SUPPLY, COLUMN_KIND_THINKING, COLUMN_KIND_DECODING, COLUMN_KIND_SAMPLING,
         ))
         for c in columns
     ):
@@ -827,6 +858,10 @@ def parse_consumption_module_block(
         raw.get("decoding_frame"),
         has_decoding_columns=any(c.kind == COLUMN_KIND_DECODING for c in column_decls),
     )
+    sampling_frame_json = _parse_sampling_frame(
+        raw.get("sampling_frame"),
+        has_sampling_columns=any(c.kind == COLUMN_KIND_SAMPLING for c in column_decls),
+    )
     block_json = _canonical(dict(raw))
     identity = dict(raw)
     if "columns" in identity:
@@ -848,7 +883,34 @@ def parse_consumption_module_block(
         thinking_frame_json=thinking_frame_json,
         construction_roster=construction_roster,
         decoding_frame_json=decoding_frame_json,
+        sampling_frame_json=sampling_frame_json,
     )
+
+
+def _parse_sampling_frame(raw: object, *, has_sampling_columns: bool) -> str | None:
+    """The sampling columns' shared frame, fail-closed: present exactly when a sampling column is, with exactly the frame's
+    keys. The fit numbers are CHECKED by ``rails.supply_variants.parse_perception_sampling_variants`` at compile time."""
+
+    if raw is None:
+        if has_sampling_columns:
+            raise ConsumptionModuleConfigError(
+                "consumption_module.sampling_frame is required beside a sampling column: it carries the measured fit "
+                "estimate and supply bound the arms share"
+            )
+        return None
+    if not has_sampling_columns:
+        raise ConsumptionModuleConfigError("consumption_module.sampling_frame is declared but no sampling column is")
+    if not isinstance(raw, Mapping) or set(raw) != _SAMPLING_FRAME_KEYS:
+        raise ConsumptionModuleConfigError(
+            f"consumption_module.sampling_frame keys must be exactly {sorted(_SAMPLING_FRAME_KEYS)}"
+        )
+    if isinstance(raw["max_supplied_items"], bool) or not isinstance(raw["max_supplied_items"], int) or raw["max_supplied_items"] < 1:
+        raise ConsumptionModuleConfigError("consumption_module.sampling_frame.max_supplied_items must be a positive integer")
+    if not isinstance(raw["twin"], bool):
+        raise ConsumptionModuleConfigError("consumption_module.sampling_frame.twin must be a bool")
+    if not isinstance(raw["fit_estimate"], Mapping):
+        raise ConsumptionModuleConfigError("consumption_module.sampling_frame.fit_estimate must be an object")
+    return _canonical(dict(raw))
 
 
 def _parse_decoding_frame(raw: object, *, has_decoding_columns: bool) -> str | None:
@@ -1059,6 +1121,9 @@ def _parse_columns(columns: list, decls: list[ComponentDecl]) -> tuple[ColumnDec
         if entry.get("kind") == COLUMN_KIND_DECODING:
             out.append(_parse_decoding_column(entry, field=field))
             continue
+        if entry.get("kind") == COLUMN_KIND_SAMPLING:
+            out.append(_parse_sampling_column(entry, field=field))
+            continue
         if entry.get("kind") is not None:
             out.append(_parse_template_column(entry, field=field))
             continue
@@ -1125,7 +1190,16 @@ def _parse_columns(columns: list, decls: list[ComponentDecl]) -> tuple[ColumnDec
         raise ConsumptionModuleConfigError(
             "consumption_module decoding columns must all name one node (one decoding_variants block per flight)"
         )
+    if len({c.node for c in out if c.kind == COLUMN_KIND_SAMPLING}) > 1:
+        raise ConsumptionModuleConfigError(
+            "consumption_module sampling columns must all name one node (one sampling_variants block per flight)"
+        )
     kinds = {c.kind for c in out}
+    if COLUMN_KIND_SAMPLING in kinds and len(kinds) > 1:
+        raise ConsumptionModuleConfigError(
+            "sampling columns cannot be declared beside template, supply, thinking, decoding or Perception-branch columns: one "
+            "fan-out mechanism per episode"
+        )
     if COLUMN_KIND_DECODING in kinds and len(kinds) > 1:
         raise ConsumptionModuleConfigError(
             "decoding columns cannot be declared beside template, supply, thinking or Perception-branch columns: one fan-out "
@@ -1244,6 +1318,29 @@ def _parse_thinking_column(entry: Mapping, *, field: str) -> ColumnDecl:
         raise ConsumptionModuleConfigError(f"{field}.thinking_policy: {reason or 'a thinking column must declare a policy'}")
     return ColumnDecl(
         column_id, "", STATE_ON, 0, None, kind=COLUMN_KIND_THINKING, node=node, thinking_json=_canonical(dict(policy)),
+    )
+
+
+def _parse_sampling_column(entry: Mapping, *, field: str) -> ColumnDecl:
+    """One ``kind: sampling`` column, fail-closed on SHAPE: its three identity keys plus at least one of the two axes. The
+    axis-level refusals (counts, decoding bounds, registered merge / commit policies, seed offsets, cap) are
+    ``rails.supply_variants``' own, applied at compile time."""
+
+    keys = set(entry)
+    axes = keys & _SAMPLING_COLUMN_AXES
+    if not _SAMPLING_COLUMN_KEYS <= keys or keys - _SAMPLING_COLUMN_KEYS - _SAMPLING_COLUMN_AXES or not axes:
+        raise ConsumptionModuleConfigError(
+            f"{field} keys must be {sorted(_SAMPLING_COLUMN_KEYS)} plus at least one of {sorted(_SAMPLING_COLUMN_AXES)} for a "
+            f"sampling column, got {sorted(keys)}"
+        )
+    column_id = _require_text(entry["column_id"], field=f"{field}.column_id")
+    node = _require_text(entry["node"], field=f"{field}.node")
+    for axis in sorted(axes):
+        if not isinstance(entry[axis], Mapping):
+            raise ConsumptionModuleConfigError(f"{field}.{axis} must be an object")
+    return ColumnDecl(
+        column_id, "", STATE_ON, 0, None, kind=COLUMN_KIND_SAMPLING, node=node,
+        sampling_json=_canonical({axis: dict(entry[axis]) for axis in sorted(axes)}),
     )
 
 
@@ -1751,6 +1848,8 @@ def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPoli
         ceiling += _compile_thinking_columns(block, hooks, writer, layer)
     if block.decoding_columns:
         ceiling += _compile_decoding_columns(block, hooks, writer, layer)
+    if block.sampling_columns:
+        ceiling += _compile_sampling_columns(block, hooks, writer, layer)
     level = _compile_perception_branches(block, hooks, writer)
     if level is not None:
         from .supply_variants import perception_branch_ceiling  # noqa: PLC0415
@@ -1947,6 +2046,51 @@ def _compile_template_columns(
     # Perception (level-2) block adds one extra Perception contact AND one extra
     # Solver contact per non-delivering arm.
     return (len(rows) - 1) * (2 if at_perception else 1)
+
+
+def _compile_sampling_columns(
+    block: ConsumptionModuleBlock, hooks: CarrierHooks, writer: _Writer, layer: Mapping,
+) -> int:
+    """Compile the sampling columns into ONE ``sampling_variants`` block at the Perception node (decision 338): one arm per
+    column in column order, the twin when the frame asks for one, then the delivering arm -- LAST, with no axis, so its requests
+    are the lock's own. Returns the extra contacts the block adds to the ceiling: a level-2 branch group's ``2 (K - 1)`` (one
+    Perception AND one Solver contact per non-delivering arm) plus the sampling axes' own ``(k - 1)`` Perception and ``(n - 1)``
+    Solver contacts.
+
+    The compiled block is parsed by the rails' own ``parse_perception_sampling_variants`` HERE, so an axis outside its bounds, an
+    unregistered merge or commit policy, two identical arms or a fit overrun is refused at compile time, by that parser's name,
+    before any config is written."""
+
+    from .supply_variants import (  # noqa: PLC0415
+        PerceptionBranchError, parse_perception_sampling_variants, sampling_extra_contacts,
+    )
+
+    sf = block.sampling_frame
+    frame = _require_hook(hooks, "sampling_variant_frame", "sampling-columns")
+    nodes = {c.node for c in block.sampling_columns}
+    if nodes != {frame["node"]}:
+        raise ConsumptionModuleConfigError(
+            f"sampling columns name node(s) {sorted(nodes)}, but profile {hooks.profile!r} admits sampling variants only at "
+            f"{frame['node']!r}"
+        )
+    rows: list[dict[str, object]] = [{"arm_id": c.column_id, **c.sampling} for c in block.sampling_columns]
+    if sf["twin"]:
+        if frame.get("twin_arm_id") is None:
+            raise ConsumptionModuleConfigError(f"profile {hooks.profile!r} names no twin arm id for sampling columns")
+        rows.append({"arm_id": frame["twin_arm_id"], "replicate_of": frame["delivering_arm_id"]})
+    rows.append({"arm_id": frame["delivering_arm_id"], "deliver": True})
+    sampling_block = {
+        "node": frame["node"], "arms": rows, "max_supplied_items": sf["max_supplied_items"],
+        "fit_estimate": dict(sf["fit_estimate"]),
+    }
+    path = tuple(frame["block_path"])
+    role = _node(layer, path[:-1], field="sampling-columns")
+    try:
+        group = parse_perception_sampling_variants(sampling_block, phase_id=str(role.get("phase_id")))
+    except PerceptionBranchError as error:
+        raise ConsumptionModuleConfigError(f"sampling columns are invalid: {error}") from error
+    writer.set(path, sampling_block, component_id="sampling-columns", replace_only=False)
+    return (len(rows) - 1) * 2 + sampling_extra_contacts(group)
 
 
 def _compile_decoding_columns(
@@ -2318,6 +2462,7 @@ __all__ = [
     "COLUMN_KIND_SUPPLY",
     "COLUMN_KIND_TEMPLATE",
     "COLUMN_KIND_THINKING",
+    "COLUMN_KIND_SAMPLING",
     "COMPONENT_CATALOGUE",
     "COMPONENT_STATES",
     "CONSUMPTION_MODULE_CONFIG_KEY",
