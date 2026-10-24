@@ -412,6 +412,10 @@ class MeteredNativeSpeechRequest:
                     "decoding": dict(axis["decoding"]), "seed_offsets": [int(o) for o in axis["seed_offsets"]],
                 }
         self._branch_sampling = sampling_table
+        # {agent contact id: the integer seed the composed request carried}, written for every contact bound to a sampling
+        # axis (sample 0 included, whose seed is the lock's own). The runner reads it to seal each sample's seed from the
+        # request that was actually composed, never from a recomputation.
+        self.branch_sample_seeds: dict[str, int] = {}
         self._owner = object()
         self._client = client
         self._binding_provider = binding_provider
@@ -544,6 +548,10 @@ class MeteredNativeSpeechRequest:
                     raise NativeSpeechRequestError("a sampling-branch contact needs the fragment's integer lock seed")
                 decoding.update(axis["decoding"])
                 decoding["seed"] = lock_seed + axis["seed_offsets"][sample_index - 1]
+            composed_seed = decoding.get("seed")
+            if isinstance(composed_seed, bool) or not isinstance(composed_seed, int):
+                raise NativeSpeechRequestError("a sampling-branch contact needs the fragment's integer lock seed")
+            self.branch_sample_seeds[request.context.agent_contact_id] = composed_seed
         # NX-T R4: this Solver contact's ARM sampling override (a decoding column's candidate arm), composed after every
         # role-level field and BEFORE the answer-only re-ask, so the re-ask of an arm's contact keeps the arm's sampling. The
         # delivering arm and the twin have no entry: their requests are the locked plan's, byte for byte.

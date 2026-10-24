@@ -347,7 +347,18 @@ async def run_perception_branch_arms(
     records: list[Mapping[str, object]] = []
     delivered: Mapping[str, Any] | None = None
 
-    for branch_index, branch in enumerate(branches):
+    # Decision 338: a sampling group's Perception visit makes one contact per SLOT -- k consecutive contacts for a
+    # ``perception_samples`` branch, one for every other branch. Every other group walks its branches exactly as before.
+    sampling = bool(getattr(group, "is_sampling", False))
+    if sampling:
+        from ...rails.supply_variants import perception_contact_slots  # noqa: PLC0415
+
+        slots = perception_contact_slots(group)
+    else:
+        slots = tuple((index, None) for index in range(len(branches)))
+
+    for branch_index, sample_index in slots:
+        branch = branches[branch_index]
         result = await invoke_branch(branch_index)
         if (
             not isinstance(result, Mapping)
@@ -380,7 +391,10 @@ async def run_perception_branch_arms(
             )
         contacts.extend(dict(contact) for contact in raw_contacts)
         try:
-            row = branch_record(branch_index, result)
+            row = (
+                branch_record(branch_index, result, sample_index=sample_index) if sampling
+                else branch_record(branch_index, result)
+            )
         except PerceptionBranchError as error:
             raise SupplyVariantNodeError(
                 f"perception branch {branch.branch_id!r} record is invalid: {error}"
@@ -389,7 +403,9 @@ async def run_perception_branch_arms(
             raise SupplyVariantNodeError(
                 f"perception branch {branch.branch_id!r} record names another branch"
             )
-        records.append(dict(row))
+        if sample_index is None or sample_index == 0:
+            # A branch's row is built from its first (sample 0) contact; later samples only feed the runner's sampling record.
+            records.append(dict(row))
         if branch.deliver:
             delivered = result
 
@@ -582,7 +598,18 @@ async def run_perception_branch_solver_arms(
     contacts: list[dict[str, str]] = []
     delivered: Mapping[str, Any] | None = None
 
-    for branch_index, branch in enumerate(branches):
+    # Decision 338: a sampling group's first Solver visit makes n consecutive contacts for a ``solver_samples`` branch and one
+    # for every other branch. Every other group walks its branches exactly as before.
+    sampling = bool(getattr(group, "is_sampling", False))
+    if sampling:
+        from ...rails.supply_variants import solver_contact_slots  # noqa: PLC0415
+
+        slots = solver_contact_slots(group)
+    else:
+        slots = tuple((index, None) for index in range(len(branches)))
+
+    for branch_index, sample_index in slots:
+        branch = branches[branch_index]
         try:
             result = await invoke_branch(branch_index)
         except FrozenCoreRoleFiniteCompletionError as error:
@@ -601,7 +628,10 @@ async def run_perception_branch_solver_arms(
                     "without its execution receipt"
                 ) from error
             try:
-                absent_row = branch_absent(branch_index, error)
+                absent_row = (
+                    branch_absent(branch_index, error, sample_index=sample_index) if sampling
+                    else branch_absent(branch_index, error)
+                )
             except PerceptionBranchError as record_error:
                 raise SupplyVariantNodeError(
                     f"perception branch {branch.branch_id!r} absent Solver record is invalid: {record_error}"
@@ -645,7 +675,10 @@ async def run_perception_branch_solver_arms(
             )
         contacts.extend(dict(contact) for contact in raw_contacts)
         try:
-            row = branch_record(branch_index, result)
+            row = (
+                branch_record(branch_index, result, sample_index=sample_index) if sampling
+                else branch_record(branch_index, result)
+            )
         except PerceptionBranchError as error:
             raise SupplyVariantNodeError(
                 f"perception branch {branch.branch_id!r} Solver record is "

@@ -1135,7 +1135,24 @@ def _verify_perception_branch_trace_binding(
     contacts = execution.get("contacts") if isinstance(execution, Mapping) else None
     if not isinstance(contacts, Sequence) or isinstance(contacts, (str, bytes)):
         refuse("the Perception visit has no contacts")
-    if [item.get("contact_id") for item in branch_rows] != [
+    # Decision 338 (receipt v6): a ``perception_samples`` branch spends k consecutive Perception contacts -- sample 0 is the
+    # row's own contact, the rest are named only by its sampling record. Every other row owns exactly one contact. The expected
+    # contact sequence is derived from the receipt, then held to the visit's own contact list below.
+    sampling_receipt = branches.get("schema") == "saea-perception-branch-arms-v6"
+    contact_owner: list[tuple[Mapping[str, object], int | None]] = []
+    expected_ids: list[object] = []
+    for item in branch_rows:
+        samples = _perception_sample_rows(item) if sampling_receipt else None
+        if samples is None:
+            contact_owner.append((item, None))
+            expected_ids.append(item.get("contact_id"))
+            continue
+        if not samples or samples[0].get("contact_id") != item.get("contact_id"):
+            refuse("a perception_samples row's sample 0 must be the row's own contact")
+        for position, sample in enumerate(samples):
+            contact_owner.append((item, position))
+            expected_ids.append(sample.get("contact_id"))
+    if expected_ids != [
         contact.get("agent_contact_id") if isinstance(contact, Mapping) else None
         for contact in contacts
     ]:
@@ -1166,7 +1183,7 @@ def _verify_perception_branch_trace_binding(
         refuse(f"perception-branch receipt is invalid: {error}")
 
     seen_contacts: set[str] = set()
-    for position, (branch_row, contact) in enumerate(zip(branch_rows, contacts, strict=True)):
+    for position, ((branch_row, sample_position), contact) in enumerate(zip(contact_owner, contacts, strict=True)):
         if not isinstance(contact, Mapping):
             refuse(f"Perception branch {position} contact has no contact")
         contact_id = contact.get("agent_contact_id")
@@ -1193,6 +1210,23 @@ def _verify_perception_branch_trace_binding(
             or response.get("response_sha256") != contact.get("response_sha256")
         ):
             refuse(f"Perception branch {position} contact differs from its trace")
+        if sample_position not in (None, 0) and sampling_receipt:
+            continue_after_sample = True
+        else:
+            continue_after_sample = False
+        if sample_position is not None:
+            sample = _perception_sample_rows(branch_row)[sample_position]
+            if (
+                sample.get("request_sha256") != contact.get("request_sha256")
+                or sample.get("response_text_sha256") != contact.get("response_text_sha256")
+            ):
+                refuse(f"Perception branch {position} sample record disagrees with its own contact")
+            sample_status, sample_ids, _raw = parse_perception_branch_note(response_text)
+            if sample.get("note_parse_status") != sample_status or list(sample.get("candidate_intent_ids") or ()) != list(sample_ids):
+                refuse(f"Perception branch {position} sample note fields do not re-derive from its recorded response")
+            _verify_sample_wire(request, sample, refuse=refuse, what=f"Perception branch {position} sample")
+        if continue_after_sample:
+            continue
         if (
             not isinstance(branch_row, Mapping)
             or branch_row.get("request_sha256") != contact.get("request_sha256")
@@ -1230,10 +1264,148 @@ def _verify_perception_branch_trace_binding(
             "response_text_sha256 (its note IS its own response)"
         )
     _verify_absent_solver_columns(branch_rows, visits, trace_records, refuse=refuse)
+    if sampling_receipt:
+        _verify_sampling_columns(branch_rows, contacts, visits, trace_records, refuse=refuse)
     if branches.get("schema") == PERCEPTION_BRANCH_RECEIPT_SCHEMA_V5:
         _verify_thinking_policy_wire(
             branch_rows, contacts, visits, trace_records, refuse=refuse,
         )
+
+
+def _perception_sample_rows(row: object) -> list[Mapping[str, object]] | None:
+    """The per-sample rows of a v6 branch row's ``sampling.perception_samples`` record, or ``None`` when it declares none."""
+
+    sampling = row.get("sampling") if isinstance(row, Mapping) else None
+    record = sampling.get("perception_samples") if isinstance(sampling, Mapping) else None
+    samples = record.get("samples") if isinstance(record, Mapping) else None
+    if not isinstance(samples, Sequence) or isinstance(samples, (str, bytes)):
+        return None
+    return [sample if isinstance(sample, Mapping) else {} for sample in samples]
+
+
+def _verify_sample_wire(request: Mapping[str, object], sample: Mapping[str, object], *, refuse, what: str) -> None:
+    """Decision 338: the recorded request carried exactly the seed -- and, for a sampled stream, the sampling override -- its
+    sample row declares. Read from the trace's own request payload, never from the receipt's say-so."""
+
+    payload = request.get("payload")
+    decoding = payload.get("decoding_params") if isinstance(payload, Mapping) else None
+    if not isinstance(decoding, Mapping):
+        refuse(f"{what} request carries no decoding_params to compare with its sampling record")
+    if decoding.get("seed") != sample.get("seed"):
+        refuse(f"{what} request carries another seed than its sampling record declares")
+    override = sample.get("override")
+    if override is not None:
+        for name, value in dict(override).items():
+            if decoding.get(name) != value:
+                refuse(f"{what} request carries another {name} than its sampling record declares")
+
+
+def _verify_sampling_columns(branch_rows, perception_contacts, visits, trace_records, *, refuse) -> None:
+    """Decision 338 (receipt v6): re-derive every sampling record from the trace.
+
+    * ``perception_samples``: the merged list, the appended ids and the support counts re-derive from the k recorded sample
+      notes through the registered merge policy.
+    * ``solver_samples``: the n sample contacts are consecutive contacts of the first Solver visit, sample 0 is the row's own
+      Solver column, each sample's hashes, seed and override match the recorded request, its parse status re-derives from the
+      recorded response text (or the wire ``finish_reason`` of a finite completion), and the commit outcome re-derives through
+      the registered commit policy (N1 is unavailable in flight, so a configured gate reports ``n1-unavailable``).
+    """
+
+    from ...rails.supply_variants import (  # noqa: PLC0415
+        PerceptionBranchError, PerceptionSamplesAxis, SolverSamplesAxis, commit_solver_samples,
+        merge_perception_samples, solver_sample_parse_status,
+    )
+
+    contacts_by_agent = {
+        contact.get("agent_contact_id"): contact
+        for contact in perception_contacts if isinstance(contact, Mapping)
+    }
+
+    def response_text_of(contact: Mapping[str, object]) -> str | None:
+        record = trace_records.get(f"{contact.get('request_id')}/response")
+        text = record.get("text") if isinstance(record, Mapping) else None
+        return text if isinstance(text, str) else None
+
+    solver_visits = [v for v in visits if isinstance(v, Mapping) and v.get("stage") == "solver"]
+    solver_execution = solver_visits[0].get("execution_receipt") if solver_visits else None
+    solver_by_agent = {
+        contact.get("agent_contact_id"): contact
+        for contact in (solver_execution.get("contacts") if isinstance(solver_execution, Mapping) else None) or ()
+        if isinstance(contact, Mapping)
+    }
+    for row in branch_rows:
+        sampling = row.get("sampling") if isinstance(row, Mapping) else None
+        if not isinstance(sampling, Mapping):
+            continue
+        branch_id = row.get("branch_id")
+        record = sampling.get("perception_samples")
+        if isinstance(record, Mapping):
+            axis = PerceptionSamplesAxis(
+                k=record["k"], decoding=tuple(sorted(record["decoding"].items())), seed_offsets=tuple(record["seed_offsets"]),
+                merge_policy=record["merge_policy"], cap=record["cap"],
+            )
+            texts = []
+            for sample in record["samples"]:
+                contact = contacts_by_agent.get(sample.get("contact_id"))
+                if contact is None:
+                    refuse(f"perception samples of branch {branch_id!r} name a contact the Perception visit did not make")
+                texts.append(response_text_of(contact))
+            try:
+                outcome = merge_perception_samples(axis, texts)
+            except PerceptionBranchError as error:
+                refuse(f"perception samples of branch {branch_id!r} cannot be merged: {error}")
+            if (
+                list(outcome.merged_candidate_ids) != record["merged_candidate_ids"]
+                or list(outcome.appended_candidate_ids) != record["appended_candidate_ids"]
+                or [(r["intent_id"], r["support"], r["best_rank"]) for r in record["support_counts"]]
+                != [(i, sup, rank) for (i, sup), (_same, rank) in zip(outcome.support_counts, outcome.best_ranks)]
+            ):
+                refuse(f"perception samples of branch {branch_id!r} merge differently from their recorded outcome")
+        record = sampling.get("solver_samples")
+        if isinstance(record, Mapping):
+            axis = SolverSamplesAxis(
+                n=record["n"], decoding=tuple(sorted(record["decoding"].items())), seed_offsets=tuple(record["seed_offsets"]),
+                commit_policy=record["commit"]["policy"], min_support=record["commit"]["min_support"],
+                similarity_threshold=record["commit"]["similarity_threshold"], n1_min=record["commit"]["n1_min"],
+                empty_votes_min=record["commit"]["empty_votes_min"],
+            )
+            samples = record["samples"]
+            if not samples or samples[0].get("contact_id") != row.get("solver_contact_id"):
+                refuse(f"solver samples of branch {branch_id!r}: sample 0 must be the row's own Solver column")
+            texts = []
+            for sample in samples:
+                contact = solver_by_agent.get(sample.get("contact_id"))
+                if contact is None:
+                    refuse(f"solver samples of branch {branch_id!r} name a contact the Solver visit did not make")
+                if (
+                    sample.get("request_sha256") != contact.get("request_sha256")
+                    or sample.get("response_text_sha256") != contact.get("response_text_sha256")
+                ):
+                    refuse(f"solver sample of branch {branch_id!r} disagrees with its own contact")
+                request = trace_records.get(f"{contact.get('request_id')}/request")
+                if not isinstance(request, Mapping):
+                    refuse(f"solver sample of branch {branch_id!r} has no recorded request")
+                _verify_sample_wire(request, sample, refuse=refuse, what=f"solver sample of branch {branch_id!r}")
+                status = sample.get("parse_status")
+                if isinstance(status, str) and status.startswith("finite-completion:"):
+                    wire = trace_records.get(f"{contact.get('request_id')}/wire-response")
+                    if not isinstance(wire, Mapping) or wire.get("finish_reason") != status.partition(":")[2]:
+                        refuse(f"solver sample of branch {branch_id!r} claims {status!r} but its wire response says otherwise")
+                    texts.append(None)
+                    continue
+                text = response_text_of(contact)
+                if solver_sample_parse_status(text) != status:
+                    refuse(f"solver sample of branch {branch_id!r} parse status does not re-derive from its recorded response")
+                texts.append(text)
+            outcome = commit_solver_samples(axis, texts, n1=None)
+            recorded = record["outcome"]
+            if (
+                recorded["intent_support"] != outcome.intent_support
+                or recorded["entity_supports"] != [{"type": e.type, "support": e.support} for e in outcome.entities]
+                or recorded["delivered_entity_count"] != len(outcome.entities)
+                or recorded["gate"] != (None if outcome.gate is None else dict(outcome.gate))
+            ):
+                refuse(f"solver samples of branch {branch_id!r} commit differently from their recorded outcome")
 
 
 def _verify_absent_solver_columns(branch_rows, visits, trace_records, *, refuse) -> None:

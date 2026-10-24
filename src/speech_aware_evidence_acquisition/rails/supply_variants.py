@@ -2906,6 +2906,68 @@ def solver_samples_record(
     }
 
 
+def merge_perception_samples(axis: PerceptionSamplesAxis, texts: Sequence[str | None]):
+    """The merge outcome of one branch's k Perception sample notes (``None`` = a sample that produced no note text).
+
+    The ONE derivation the live runner, the resume replay and the bundle verifier all apply, so a sealed merge can always be
+    re-derived from the trace's own recorded response texts.
+    """
+
+    from ..core.base import PERCEPTION_MERGE_POLICIES  # noqa: PLC0415
+    from . import perception_merge_policies as _merge_policies  # noqa: PLC0415, F401
+    from .native_episode_receipt import PERCEPTION_BRANCH_NOTE_MALFORMED  # noqa: PLC0415
+
+    if len(texts) != axis.k:
+        raise PerceptionBranchError(f"a perception_samples merge needs exactly {axis.k} sample notes, got {len(texts)}")
+    lists: list[list[str] | None] = []
+    for text in texts:
+        if text is None:
+            lists.append(None)
+            continue
+        status, ids, _raw = parse_perception_branch_note(text)
+        lists.append(None if status == PERCEPTION_BRANCH_NOTE_MALFORMED else list(ids))
+    return PERCEPTION_MERGE_POLICIES.resolve(axis.merge_policy)(lists, cap=axis.cap)
+
+
+def solver_sample_parse_status(text: str | None, *, finite_reason: str | None = None) -> str:
+    """``ok`` / ``malformed`` for a Solver sample's raw text; ``finite-completion:<reason>`` for a sample that ended on one."""
+
+    if finite_reason is not None:
+        return f"finite-completion:{finite_reason}"
+    from ..reproduction.ojw.native_group_solver import parse_solver_answer_text  # noqa: PLC0415
+
+    return "ok" if text is not None and parse_solver_answer_text(text) is not None else "malformed"
+
+
+def commit_solver_samples(axis: SolverSamplesAxis, texts: Sequence[str | None], *, n1: float | None = None):
+    """The commit outcome of one branch's n Solver samples (``None`` = no text: a sample that ended on a finite completion).
+
+    ``n1`` is the entity-free share of the supplied exemplars; it is unavailable in flight (the run declares no N1 source), so
+    a configured gate reports ``n1-unavailable`` and does not fire. The ONE derivation shared by the runner, the replay and the
+    bundle verifier.
+    """
+
+    from ..core.base import COMMIT_POLICIES  # noqa: PLC0415
+    from ..reproduction.ojw.native_group_solver import parse_solver_answer_text  # noqa: PLC0415
+    from . import commit_policies as _commit_policies  # noqa: PLC0415
+
+    if len(texts) != axis.n:
+        raise PerceptionBranchError(f"a solver_samples commit needs exactly {axis.n} sample answers, got {len(texts)}")
+    votes = [
+        _commit_policies.SolverSampleVote(
+            sample_index=index, parsed=None if text is None else parse_solver_answer_text(text),
+        )
+        for index, text in enumerate(texts)
+    ]
+    policy = COMMIT_POLICIES.resolve(axis.commit_policy)
+    kwargs: dict[str, object] = {
+        "min_support": axis.min_support, "similarity_threshold": axis.similarity_threshold,
+    }
+    if axis.commit_policy == _commit_policies.FIRST_SUPPORT_V1:
+        kwargs.update(n1=n1, n1_min=axis.n1_min, empty_votes_min=axis.empty_votes_min)
+    return policy(votes, **kwargs)
+
+
 def _sampling_record_matches_axes(branch: PerceptionBranch, sampling: Mapping[str, object]) -> str | None:
     """Why a v6 ``sampling`` value disagrees with the axes ``branch`` declared, or ``None``."""
 
@@ -3907,6 +3969,12 @@ __all__ = [
     "PerceptionSamplesAxis",
     "SolverSamplesAxis",
     "derive_sample_seeds",
+    "merge_perception_samples",
+    "commit_solver_samples",
+    "solver_sample_parse_status",
+    "perception_contact_slots",
+    "solver_contact_slots",
+    "sampling_decoding_table",
     "parse_perception_samples",
     "parse_perception_sampling_variants",
     "parse_solver_samples",

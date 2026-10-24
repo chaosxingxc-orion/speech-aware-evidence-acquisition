@@ -441,6 +441,11 @@ def _perception_branches_identity(raw_native_episode: object) -> Mapping[str, ob
     thinking_variants = perception.get("thinking_variants")
     if isinstance(thinking_variants, Mapping):
         return {"thinking_variants": dict(thinking_variants)}
+    # Decision 338: the sampling block (k / n, decoding, seed offsets, merge and commit policies) is an input to the prepared
+    # first-phase supply identity too, under its own key.
+    sampling_variants = perception.get("sampling_variants")
+    if isinstance(sampling_variants, Mapping):
+        return {"sampling_variants": dict(sampling_variants)}
     return {}
 
 
