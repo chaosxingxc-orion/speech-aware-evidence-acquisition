@@ -253,7 +253,14 @@ TWIN_OFFSET_P31_SLU_PP, TWIN_OFFSET_P31_INTENT_PP = -0.61, 1.60              # P
 FLOOR_SLU_PP, FLOOR_INTENT_PP = 1.49, 0.65                                  # decision 190 node-column floors at n = 1,080
 INTENT_GUARD_PP = -0.65                                                     # NOMINATED needs the intent point at or above this
 EFFICIENT_SECONDS_RATIO = 0.85                                              # EFFICIENT-NO-LOSS needs Solver seconds per contact <= 0.85 x lock
-EXPECTED_EFFECT_PP = 0.0                                                    # no effect is assumed; the round maps four sampling policies
+EXPECTED_EFFECT_PP = 0.0                                                    # no effect is assumed; the round maps two sampling levers
+L2_INTENT_POINT_MIN_PP = 0.33                                               # the L2 NOMINATED intent point must reach max(|o_int|, this)
+#: The lever each axis carries and the metric that judges it: L1 (``solver_samples``, false-fill suppression) is judged on SLU with an intent guard; L2
+#: (``perception_samples``, the candidate union) on intent with an SLU guard (design spec section 6).
+LEVER_OF_AXIS = {"solver_samples": "L1", "perception_samples": "L2"}
+PRIMARY_OF_LEVER = {"L1": "slu", "L2": "intent"}
+VARIANT_KIND_OF_AXIS = {"solver_samples": "solver-sampling", "perception_samples": "perception-sampling"}   # scripts/checks/stage3_effect_floor_check.VARIANT_KINDS
+ARM_LEVER = {a["arm_id"]: LEVER_OF_AXIS[a["axis"]] for a in ARM_SPECS}
 
 # ---- budget arithmetic (one place) ---------------------------------------------------------------------------------------------------
 COST_INPUTS_PATH = HERE / "l338_cost_inputs.json"

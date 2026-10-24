@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Mint the root-admission decision receipt of L338 (the Solver decoding-policy column) on the data root from the package's draft.
+"""Mint the root-admission decision receipt of L338 (the lever column) on the data root from the package's draft.
 
 Root's act, never an agent's. The 268-B minting logic (``thinking_system_mint_receipt.mint``) with the L338 family: copies
 ``docs/readiness/2026-10-19-slurp-l338-lever-column-fold-b-v1/root-admission-draft-v1.json`` to

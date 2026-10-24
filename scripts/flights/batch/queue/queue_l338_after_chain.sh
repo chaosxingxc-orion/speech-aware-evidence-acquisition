@@ -1,9 +1,9 @@
 #!/bin/bash
-# Queue hook (L338, unattended hand-over): launch L338 (the Solver decoding-policy column, owner rulings 329 A and 332 A) the moment a NAMED predecessor chain has
-# finished cleanly. The predecessor is an ARGUMENT (the carrier base-run chain at the time of writing), so the hook is not tied to one chain:
+# Queue hook (L338, unattended hand-over): launch L338 (the lever column, owner rulings 338 and 341 A) the moment a NAMED predecessor chain has
+# finished cleanly. The predecessor is an ARGUMENT (the NX-T R4 chain at the time of writing: `/home/chao/nxt4-chain.out CHAIN_NXT4_EXIT`), so the hook is not tied to one chain:
 #
 #   bash queue_l338_after_chain.sh <chain-out> <exit-token> <start-stamp>      (the argument order of queue_carriers_after.sh)
-#       e.g. bash queue_l338_after_chain.sh /home/chao/carrierthink-chain.out CHAIN_CARRIERTHINK_EXIT 2026-10-19T14:00:00Z
+#       e.g. bash queue_l338_after_chain.sh /home/chao/nxt4-chain.out CHAIN_NXT4_EXIT 2026-10-19T14:00:00Z
 #
 #   <chain-out>    the log file the predecessor chain writes its exit line to
 #   <exit-token>   the first field of the predecessor chain's exit line; the line is `<exit-token> rc=<N> <UTC timestamp>` (the form every chain wrapper writes:
@@ -14,8 +14,8 @@
 # --root-countersign) are the coordinator's and are NOT part of this hook. It polls (60 s, at most 30 h) the chain log for the first matching line:
 #   rc=0      -> run, from the master checkout,
 #                bash scripts/flights/batch/package_launch.sh scripts/flights/nx/l338_launch_spec.json --from flip --until chain
-#                and log to /home/chao/nxt4-queue.out; the hook then scans the launcher's output for a flip refusal (see below) and exits with the launcher's exit code;
-#   rc!=0     -> log it and exit 9 WITHOUT launching (a predecessor failure is the coordinator's to diagnose; R4 never follows a failed chain);
+#                and log to /home/chao/l338-queue.out; the hook then scans the launcher's output for a flip refusal (see below) and exits with the launcher's exit code;
+#   rc!=0     -> log it and exit 9 WITHOUT launching (a predecessor failure is the coordinator's to diagnose; L338 never follows a failed chain);
 #   no line within 30 h -> log it and exit 8 without launching.
 #
 # FLIP-LOG REFUSAL GREP. repin_cell_generic.sh prints the INFORMATIONAL line `repin exit N (1 = its internal check refused the dirty tree, expected)` on every pass; a plain
@@ -25,7 +25,7 @@
 # Exit codes: 0 launched and the launcher succeeded; 8 timed out; 9 the predecessor exited non-zero; 10 the launcher's output shows a real refusal; 64 usage; other = the
 # launcher's own code.
 #
-# Test hooks (environment): NXT4_HOOK_OUT, NXT4_HOOK_MAIN, NXT4_HOOK_POLL_SECONDS, NXT4_HOOK_MAX_WAIT_SECONDS, NXT4_HOOK_LAUNCH_CMD.
+# Test hooks (environment): L338_HOOK_OUT, L338_HOOK_MAIN, L338_HOOK_POLL_SECONDS, L338_HOOK_MAX_WAIT_SECONDS, L338_HOOK_LAUNCH_CMD.
 CHAIN_OUT=${1:-}
 TOKEN=${2:-}
 STAMP=${3:-}
@@ -33,14 +33,14 @@ if [ -z "$TOKEN" ] || [ -z "$CHAIN_OUT" ] || [ -z "$STAMP" ]; then
   echo "usage: queue_l338_after_chain.sh <predecessor-chain-out> <predecessor-exit-token> <start-stamp, UTC ISO e.g. 2026-10-19T14:00:00Z>" >&2
   exit 64
 fi
-OUT=${NXT4_HOOK_OUT:-/home/chao/nxt4-queue.out}
-MAIN=${NXT4_HOOK_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
-POLL=${NXT4_HOOK_POLL_SECONDS:-60}
-MAX_WAIT=${NXT4_HOOK_MAX_WAIT_SECONDS:-108000}
-LAUNCH=${NXT4_HOOK_LAUNCH_CMD:-"bash scripts/flights/batch/package_launch.sh scripts/flights/nx/l338_launch_spec.json --from flip --until chain"}
+OUT=${L338_HOOK_OUT:-/home/chao/l338-queue.out}
+MAIN=${L338_HOOK_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
+POLL=${L338_HOOK_POLL_SECONDS:-60}
+MAX_WAIT=${L338_HOOK_MAX_WAIT_SECONDS:-108000}
+LAUNCH=${L338_HOOK_LAUNCH_CMD:-"bash scripts/flights/batch/package_launch.sh scripts/flights/nx/l338_launch_spec.json --from flip --until chain"}
 INFO_RE='repin exit [0-9]+ \(1 = its internal check refused the dirty tree, expected\)'
 
-say() { echo "$(date -u +%FT%TZ) queue_nxt4: $*" >> "$OUT"; }
+say() { echo "$(date -u +%FT%TZ) queue_l338: $*" >> "$OUT"; }
 
 # the first predecessor exit line stamped after the start stamp: prints "rc=<N>" (nothing when there is none yet)
 predecessor_exit_after_stamp() {
@@ -73,7 +73,7 @@ fi
 
 say "the predecessor chain exited with rc=0 ($TOKEN); launching L338 from $MAIN: $LAUNCH"
 cd "$MAIN" || { say "cannot cd to $MAIN"; exit 1; }
-LAUNCH_LOG=$(mktemp "${TMPDIR:-/tmp}/nxt4-launch.XXXXXX")
+LAUNCH_LOG=$(mktemp "${TMPDIR:-/tmp}/l338-launch.XXXXXX")
 bash -c "$LAUNCH" > "$LAUNCH_LOG" 2>&1
 rc=$?
 cat "$LAUNCH_LOG" >> "$OUT"

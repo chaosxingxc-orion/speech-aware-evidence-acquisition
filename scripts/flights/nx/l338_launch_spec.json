@@ -1,8 +1,8 @@
 {
   "schema": "saea-package-launch-spec-v1",
-  "_note": "L338 launch spec for package_launch.sh (owner rulings 329 A and 332 A). The coordinator registers with `--root-countersign --until commit` while the predecessor flies; the queue hook scripts/flights/batch/queue/queue_l338_after_chain.sh <chain-out> <exit-token> <start-stamp> (the predecessor will be the carrier chain) runs `--from flip --until chain` once that chain has exited rc=0. The write step passes --registered-at {utc} because a first registration has no registered-facts file to inherit a stamp from. The chain wrapper (scripts/flights/batch/queue/chain_l338.sh, installed at /home/chao/saea-queue/chain_l338.sh) runs batch_chain_l338.sh, whose serving swap is a no-op while the resident think-budget-np4 session is up. The Windows task SAEA-Chain-NXT4 must be registered first (no new serving task: the session is the resident one).",
-  "short": "nxt4",
-  "launch_id": "nxt4-first-attempt",
+  "_note": "L338 launch spec for package_launch.sh (owner rulings 338 and 341 A). The coordinator registers with `--root-countersign --until commit` while the predecessor flies; the queue hook scripts/flights/batch/queue/queue_l338_after_chain.sh <chain-out> <exit-token> <start-stamp> (the predecessor will be the carrier chain) runs `--from flip --until chain` once that chain has exited rc=0. The write step passes --registered-at {utc} because a first registration has no registered-facts file to inherit a stamp from. The chain wrapper (scripts/flights/batch/queue/chain_l338.sh, installed at /home/chao/saea-queue/chain_l338.sh) runs batch_chain_l338.sh, whose serving swap is a no-op while the resident think-budget-np4 session is up. The Windows task SAEA-Chain-L338 must be registered first (no new serving task: the session is the resident one).",
+  "short": "l338",
+  "launch_id": "l338-first-attempt",
   "package": "slurp-l338-lever-column-fold-b-v1",
   "readiness_dir": "docs/readiness/2026-10-19-slurp-l338-lever-column-fold-b-v1",
   "steps": {
@@ -35,7 +35,7 @@
         "{readiness_dir}",
         "{readiness_dir}-preregistration.md"
       ],
-      "message": "register: L338 (the Solver decoding-policy column, TRAIN Fold B); rows countersigned; receipt minted"
+      "message": "register: L338 (the lever column, TRAIN Fold B); rows countersigned; receipt minted"
     },
     "flip": {
       "script": "scripts/flights/nx/l338_flip.sh",
@@ -44,17 +44,17 @@
         "slurp-native-stage3-l338-lever-column-fold-b-smoke-4-v1",
         "slurp-native-stage3-l338-lever-column-fold-b-v1"
       ],
-      "pins_commit_msg": "/home/chao/nxt4-pins-commit.txt",
+      "pins_commit_msg": "/home/chao/l338-pins-commit.txt",
       "env": {
-        "NXT4_KINDS": "smoke arm"
+        "L338_KINDS": "smoke arm"
       },
-      "flight_commit_file": "/home/chao/nxt4-flight-commit.txt",
-      "pins_commit_text": "L338: re-pin the Solver decoding-policy column package (smoke-4, column) on the Thinking base at the registered study commit (rulings 329 A and 332 A; ext4 flip)\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\n"
+      "flight_commit_file": "/home/chao/l338-flight-commit.txt",
+      "pins_commit_text": "L338: re-pin the lever column package (smoke-4, column) on the Thinking base at the registered study commit (rulings 338 and 341 A; ext4 flip)\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\n"
     },
     "chain": {
-      "task": "SAEA-Chain-NXT4",
+      "task": "SAEA-Chain-L338",
       "wrapper": "/home/chao/saea-queue/chain_l338.sh",
-      "flight_commit_file": "/home/chao/nxt4-flight-commit.txt"
+      "flight_commit_file": "/home/chao/l338-flight-commit.txt"
     },
     "read": {
       "cmd": "bash scripts/flights/nx/l338_read.sh smoke"

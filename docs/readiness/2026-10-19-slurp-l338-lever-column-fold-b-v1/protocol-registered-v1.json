@@ -1,0 +1,161 @@
+{
+  "arms": {
+    "aa": {
+      "axes": null,
+      "role": "twin (replicate_of lock)"
+    },
+    "l1-support": {
+      "axes": {
+        "solver_samples": {
+          "commit": {
+            "empty_votes_min": 3,
+            "min_support": 2,
+            "n1_min": 0.2,
+            "policy": "saea-commit-first-support-v1",
+            "similarity_threshold": 0.8
+          },
+          "decoding": {
+            "temperature": 0.6,
+            "top_k": 20,
+            "top_p": 0.95
+          },
+          "n": 5
+        }
+      },
+      "role": "candidate (L1)"
+    },
+    "l2-union": {
+      "axes": {
+        "perception_samples": {
+          "cap": 3,
+          "decoding": {
+            "temperature": 0.6,
+            "top_k": 20,
+            "top_p": 0.95
+          },
+          "k": 4,
+          "merge_policy": "saea-perception-candidate-union-v1"
+        }
+      },
+      "role": "candidate (L2)"
+    },
+    "lock": {
+      "axes": null,
+      "role": "delivering"
+    }
+  },
+  "blockers": [],
+  "cells": {
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-l338-lever-column-fold-b-generation-v1",
+      "cell": "slurp-native-stage3-l338-lever-column-fold-b-v1",
+      "composed_config_hash": "6932eb005e8bd28fc75c28e1052e47796d6b4cbf1ab5b4a4e6d8a3f6b8aebeb9",
+      "experiment": "slurp-native-stage3-l338-lever-column-fold-b-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-l338-lever-column-fold-b-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-L338-LEVER-COLUMN-FOLD-B-FIT-V1",
+      "protocol_hash": "d9607915850f63bf1cddb821fd7e2aa756a0210db9f9bf33a5e6d35febbe9711",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-L338-LEVER-COLUMN-FOLD-B-V1",
+      "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
+    },
+    "smoke": {
+      "attempt_id": "attempt-slurp-native-stage3-l338-lever-column-fold-b-smoke-4-generation-v1",
+      "cell": "slurp-native-stage3-l338-lever-column-fold-b-smoke-4-v1",
+      "composed_config_hash": "2f8a24c3c010dd04e55a241bd7744272f2caae2b0b9524c5658a0e541e7accfc",
+      "experiment": "slurp-native-stage3-l338-lever-column-fold-b-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-l338-lever-column-fold-b-smoke-4-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-L338-LEVER-COLUMN-FOLD-B-SMOKE-4-FIT-V1",
+      "protocol_hash": "9729cec82ae3e290fc4af6d5fd3fb8b4cd932ee335bbc212af83e084ce244b16",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-L338-LEVER-COLUMN-FOLD-B-SMOKE-4-V1",
+      "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32"
+    }
+  },
+  "decision_rule_fixed_here": "The arm words and their thresholds are fixed in scripts/analysis/slurp_l338_column_read.py and in this package's README: NOMINATED, NO-RESOLVED-LOSS, HARM, NEUTRAL per lever (L1 on SLU with an intent guard, L2 on intent with an SLU guard) against the in-flight twin aa (the A/A offset) and the decision-190 floors.",
+  "failure_policy": "Stop and preserve on the first failure; at most one root-diagnosed recovery re-registration per run id; run-cumulative budgets.",
+  "findings": [
+    {
+      "finding": "Owner rulings 338 and 341 A (2026-10-19) build the lever column after the SLURP lock work: L1 false-fill suppression (the VER-1 first-first support filter, n = 5, s = 2, with the N1-gated empty decision) and L2 the Perception multi-sample candidate union (k = 4, cap 3) on the Thinking core. Offline bounds on sealed greedy Thinking decodes (development numbers, design spec sections 2-3): L1 +1.09 [+0.53, +1.63] SLU (expected +0.8 to +1.8 against the 1.49 floor); L2 delivering-list recall 88.15 -> 89.81 %, expected intent 0 to +1.0 against the 0.65 floor (likely NEUTRAL; the perception-off natural experiment converted a +3.3 recall gain into about 0 intent).",
+      "id": "why-the-lever-column",
+      "remedy": "none; the flight measures both levers against the in-flight twin."
+    },
+    {
+      "finding": "Owner ruling 341 A: L1 is subject to the free check over R4's sealed decodes (the L1 rule over {lock, d1..d4}); below +0.67 pp the L1 arm is dropped from the column (saves about 28 GPU-h). The R3 t2-grounded-or-empty arm attacks the same false-fill mass: if it nominates, L1 re-bases on it in 335 B.",
+      "id": "free-check-over-r4-before-the-countersign",
+      "remedy": "the coordinator runs the zero-GPU pre-reads and, on a drop, removes the l1-support row from l338_arms.json and re-runs the derive and the writer."
+    },
+    {
+      "finding": "The per-node thinking fields are composed at request time, keyed by the contact's ROLE ID; a sampled contact's decoding override is applied AFTER them and only to the sampling keys (and the derived seed), so every sampled Perception and Solver contact carries the same budget 3072 / max_tokens 4096 / enable_thinking as the delivering contact. Proven at the request level by tests/unit/test_l338_sampling_live.py and tests/unit/test_l338_registration.py and, for the cell, by the dry run (sample_index, seed and override per contact).",
+      "id": "sample-contacts-carry-the-lock-thinking-fields",
+      "remedy": "none."
+    },
+    {
+      "finding": "The twin aa (replicate_of lock) is the in-flight A/A: its request is the lock's in every declared field, so its SLU and intent deltas against lock are the offsets o_SLU / o_int of the read. The l1 branch's own sample 0 is a second A/A (reported, used in no word). The 268-B cross-flight offsets (SLU +1.15, P3.1 -0.61) are reported beside, never used in a word.",
+      "id": "in-flight-aa-twin",
+      "remedy": "none."
+    },
+    {
+      "finding": "Each sampled contact has a fixed, recorded seed (the lock seed 20260913 + a per-sample offset) but is still one draw under the serving geometry's batching nondeterminism (greedy decoding at np4 is not bitwise reproducible across batch shapes), so no arm is read as an expectation: the read reports each sampled stream's discordance against the twin's.",
+      "id": "stochastic-streams-and-the-fixed-seeds",
+      "remedy": "none; the discordance table is in the read."
+    },
+    {
+      "finding": "The commit policy's N1 gate (the entity-free share of the 20 supplied exemplars, n1_min 0.2) needs the supplied exemplar ids, which the commit does not see in flight (335 B / lock work). In flight the gate therefore reports `n1-unavailable` and does not fire: the delivered l1 answer is the first-first support filter alone. The reader computes N1 offline (the R6 helpers) and reports the gated form, the s = 3 / filter-only / gate-only forms and the pure-filter delta (the rule minus its own sample 0) as secondaries.",
+      "id": "n1-is-unavailable-in-flight",
+      "remedy": "none needed to fly; the primary L1 word is read on the in-flight filter."
+    },
+    {
+      "finding": "The live slot is 24,576 tokens; the prompt limit of every contact at the 4,096-token cap is 17,406. Every arm renders the lock's templates and evidence; the union shortlist is capped at the Solver's own max_candidates (3), so no arm adds 0 prompt tokens over the lock's. The registered estimate (base 2,000 + the locked template 323 + 55 items x 235) is 15,248 tokens and the sealed Fold B Solver prompt maximum is 13,918 (the derive refuses otherwise). The context-fit policy is compact-or-abstain.",
+      "id": "context-fit-with-no-prompt-addition",
+      "remedy": "none needed on the observed data."
+    },
+    {
+      "finding": "A longer candidate list raises the Solver forced-close share (R2b: 38 / 45 / 65 % at 1 / 2 / 3 candidates) and forced rows false-fill, so L2 may lose SLU while it gains intent; the L2 word therefore carries an SLU guard, and the read reports the forced-close share by list size.",
+      "id": "l2-longer-lists-and-forced-close",
+      "remedy": "none; L1 removes part of that false-fill, and the interaction is measured in the 335 B column."
+    },
+    {
+      "finding": "The target is the resident think-budget-np4 session (serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1, fragment q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1); the fragment's defaults ARE the lock form, so there is no cell-level thinking policy and no serving change. The chain keeps the swap call, which is a no-op while that session is recorded resident and swaps to it otherwise (the predecessor chain may have flown another geometry).",
+      "id": "resident-session-no-new-fragment",
+      "remedy": "none."
+    },
+    {
+      "finding": "A row costs 7 Perception contacts plus 8 Solver contacts; every contact is costed at the lock's measured seconds for its node (Perception 59.00 s, Solver 64.07 s), so the arm mix is 7.52 lock-row equivalents and the expected cost 69.4 GPU-h against the lock flight's 9.23 GPU-h. A sampled contact may reason for more or fewer tokens than a greedy one and L2's Solver sees longer lists, so the cost is an estimate, not an envelope. Runs of 24 GPU-h or more are intended (owner).",
+      "id": "cost-is-an-estimate-from-the-lock-seconds",
+      "remedy": "the smoke measures the real mix; the machine sign-off refuses unless it is within 1.3x of the registered one."
+    },
+    {
+      "finding": "Ruling 303 A: one experiment in flight. This package is DRAFT / HELD until the predecessor chain named to the queue hook (the NX-T R4 chain at the time of writing) has exited rc 0 (scripts/flights/batch/queue/queue_l338_after_chain.sh <chain-out> <exit-token> <start-stamp> waits for that line, then flips and starts the chain).",
+      "id": "serial-gpu-and-the-resident-session",
+      "remedy": "the coordinator registers (derive .. commit) while the predecessor flies; the hook does flip .. chain."
+    },
+    {
+      "finding": "As in the 268-B cells the model-free preflight counts the payload at 4 bytes per token (a placeholder); the cells defer to the registered exact per-contact context-fit gate (preflight_budget_mode defer-to-native-contact-fit), which runs on every contact's REAL request.",
+      "id": "preflight-defers-to-the-exact-gate",
+      "remedy": "none."
+    },
+    {
+      "finding": "The chain waits for the smoke's sign-off with chain_lib.sh wait_or_machine_signoff (reader l338_read.sh smoke, the conditions file the derive emits INSIDE this package, marker /home/chao/l338-decode-signoff.marker, veto window 20 minutes). A refused machine sign-off falls back to waiting for a coordinator marker (12 h).",
+      "id": "machine-signoff-with-a-veto-window",
+      "remedy": "the coordinator may veto by deleting the marker or creating /home/chao/batch-STOP during the window."
+    }
+  ],
+  "one_factor": "one sampling lever per arm (L1 Solver sample-and-commit n = 5, L2 Perception sample-and-merge k = 4 cap 3); the system is the 268-B Thinking lock on TRAIN Fold B",
+  "prohibitions": [
+    "No test-split, DEV or Fold A contact (TRAIN Fold B only).",
+    "No supply arm, no thinking column, no tool schema on any role; no Reviewer or Planner visit; max_revisions 0.",
+    "The system is the 268-B Thinking lock: the knowledge supply, the module graph, the post-processing, the Solver instruction template, the per-node thinking budget and cap, the request seed and the roster are not changed. The two sampling levers (Solver sample-and-commit, Perception sample-and-merge) are the ONLY varied factors, one per arm.",
+    "Every sampled contact carries the lock's thinking fields (budget 3072, cap 4096); sample 0 of every axis is greedy at the lock seed 20260913, samples 1.. take the arm's decoding with seed = lock seed + its recorded offset; no arm may set a cap, a response format, a thinking switch or a tool (refused by name at config load).",
+    "arm_visits is first: the fan-out happens at the one visit; the delivering arm's request is the locked plan's request, byte for byte (invariant I7v), and so is the twin's.",
+    "No reasoning text is ever delivered, scored or carried to another node (reasoning_context_policy drop-reasoning-v1); a delivered reasoning marker stops the flight.",
+    "No benefit claim and no admission: claims_benefit is false; a NOMINATED arm goes to the 335 B Fold A column (not built here). The composed L1+L2 arm is NOT flown here.",
+    "No flight before the coordinator countersigns the DRAFT rows, mints the decision receipt, the harness commit is on master, the predecessor chain named to the queue hook has exited rc 0 and the cells are flipped.",
+    "No session is started by this registration. No paper-scale profile. No system-level claim."
+  ],
+  "protocol_id": "slurp-l338-lever-column-fold-b-protocol-v1",
+  "registered_at_utc": "2026-10-19T12:00:00.000000+00:00",
+  "schema": "saea-registered-protocol-v1",
+  "status": "DRAFT-HELD-REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_COUNTERSIGN_AND_READINESS_FLIP",
+  "study_commit_at_registration": "f42b9a7af0a8aa1d4ca64113efcddb95facc86f8",
+  "the_question": "Do the two sampling levers (L1 false-fill suppression, L2 Perception candidate union) move the score of the locked Thinking system (owner rulings 338 and 341 A)? Each candidate arm and the twin aa are read PAIRED per row against the delivering lock arm on the same 1,080 Fold B rows in one flight."
+}

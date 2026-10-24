@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
-"""The L338 four-row OFFLINE dry run: the review-off module graph with the Solver decoding column, walked node by node.
+"""The L338 four-row OFFLINE dry run: the review-off module graph with the sampling lever column, walked node by node.
 
 Model-free by construction: zero model, tool, network, GPU, gate, transport, client, attempt and serving-session contacts. The REAL registered smoke cell
 is composed from the committed fragments over the real released stores and walked by
 ``speech_aware_evidence_acquisition.analysis.native_episode_dry_run`` (the harness's own contact-free per-node walk); only the two role answers (Perception,
 Solver) are canned, exactly as a fake frozen core would answer. It READS the data root (released knowledge stores, packet receipts); it writes nothing.
 
-What it proves, per row of the four-row Fold B prefix: the whole graph walks (perception -> solver -> delivery; no Reviewer or Planner visit), the Solver node
-carries the declared arms (``l338_arms.json``) in declared order with the twin ``aa`` and the delivering ``lock`` arm last, EVERY arm renders the SAME locked
-instruction (one digest: a decoding arm varies no text), every arm is supplied the SAME evidence, each candidate carries exactly its declared sampling override while the
-twin and the delivering arm carry none, the delivered arm is ``lock``, EVERY arm's per-node thinking fields are the lock's (budget 3,072 / max_tokens 4,096 / thinking on, on both
-nodes), and the program ceiling is the compiled one. Prints one ``L338-DRYRUN-SUMMARY`` line (ids, counts and digests only -- never an instruction text, utterance or gold) and exits
-non-zero on any violation.
+What it proves, per row of the four-row Fold B prefix: the whole graph walks (perception -> solver -> delivery; no Reviewer or Planner visit), the Perception
+node carries the declared arms (``l338_arms.json``) in declared order with the twin ``aa`` and the delivering ``lock`` arm last, EVERY arm renders the node's
+SAME locked instruction (one digest: a sampling arm varies no text) over the SAME supplied evidence, EVERY arm's per-node thinking fields are the lock's
+(budget 3,072 / max_tokens 4,096 / thinking on, on both nodes), the delivered arm is ``lock``, the registered sample plan (sample 0 greedy at the lock seed,
+samples 1.. at the lock seed + the recorded offsets, derived by the rails' own ``derive_sample_seeds``) is the arm table's, and the program ceiling is the
+compiled one (c15). The request-level proof that each sampled contact carries its sample index, seed and override is
+``tests/unit/test_l338_sampling_live.py``. Prints one ``L338-DRYRUN-SUMMARY`` line (ids, counts and digests only -- never an instruction text, utterance or
+gold) and exits non-zero on any violation.
 
     PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python -B scripts/flights/nx/l338_dry_run.py \\
         --repo-root . --data-root "$SPEECHRL_DATA_DIR" --lock-path /mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json
@@ -35,6 +37,21 @@ def lock_node_decoding() -> dict:
 
     on = {"thinking_budget_tokens": nf.DELIVERING_BUDGET, "chat_template_kwargs": {"enable_thinking": True}, "max_tokens": nf.COMPLETION_CAP}
     return {node: dict(on) for node in nf.NODES}
+
+
+def sample_plan() -> dict:
+    """The registered sample plan of every candidate arm from the rails' own derivation: ``{arm: {axis, samples, seeds, decoding, extra_contacts}}``."""
+
+    from speech_aware_evidence_acquisition.rails.supply_variants import derive_sample_seeds
+
+    out = {}
+    for spec in nf.ARM_SPECS:
+        axis = spec[spec["axis"]]
+        group_axis = getattr(nf.SAMPLING_GROUP.branch(spec["arm_id"]), spec["axis"])
+        seeds = derive_sample_seeds(nf.LOCKED_DECODING["seed"], group_axis.seed_offsets)
+        out[spec["arm_id"]] = {"axis": spec["axis"], "samples": axis.get("k", axis.get("n")), "seeds": list(seeds), "decoding": dict(axis["decoding"]),
+                               "sample_0": "greedy at the lock seed", "extra_contacts": group_axis.extra_contacts}
+    return out
 
 
 def main(argv=None) -> int:
@@ -81,12 +98,17 @@ def main(argv=None) -> int:
     rows = []
     expected_order = list(nf.ARM_ORDER)
     expected_decoding = lock_node_decoding()
+    plan = sample_plan()
+    for arm_id, entry in plan.items():
+        seeds = entry["seeds"]
+        if len(seeds) != entry["samples"] or seeds[0] != nf.LOCKED_DECODING["seed"] or any(seed <= seeds[0] for seed in seeds[1:]):
+            problems.append(f"arm {arm_id!r}: derived seeds {seeds} are not the lock seed followed by {entry['samples'] - 1} larger seeds")
     locked_digest = None
     for sample in runtime._samples[:4]:
         result = dry_run_native_episode(runtime, answers=answer, sample_id=sample.sample_id, sample_limit=4, node_order=("perception", "solver"))
         walked = [node.phase for node in result.nodes]
-        solver_node = next(node for node in result.nodes if node.phase == "solver")
-        arms = solver_node.supply_variant_arms
+        perception_node = next(node for node in result.nodes if node.phase == "perception")
+        arms = perception_node.supply_variant_arms
         by_id = {arm.arm_id: arm for arm in arms}
         digests = {arm.arm_id: arm.instruction_sha256 for arm in arms}
         supplied = {arm.arm_id: tuple(arm.supplied_value_ids) for arm in arms}
@@ -98,14 +120,9 @@ def main(argv=None) -> int:
             problems.append(f"{sample.sample_id}: the delivering arm is not the single last arm")
         if result.delivered_arm_id() != nf.DELIVERING:
             problems.append(f"{sample.sample_id}: delivered arm {result.delivered_arm_id()!r}")
-        if len({digests.get(a) for a in expected_order}) != 1:
-            problems.append(f"{sample.sample_id}: the arms do not all render the one locked instruction")
-        for arm_id in expected_order:
-            declared = nf.DECODING_OF.get(arm_id)
-            carried = by_id[arm_id].decoding_override if arm_id in by_id else "absent"
-            if carried != declared:
-                problems.append(f"{sample.sample_id}: arm {arm_id!r} carries sampling override {carried!r}, declared {declared!r}")
-        if len({supplied[a] for a in expected_order if a in supplied}) != 1:
+        if len(set(digests.values())) != 1:
+            problems.append(f"{sample.sample_id}: the arms do not all render the node's one locked instruction")
+        if len(set(supplied.values())) != 1:
             problems.append(f"{sample.sample_id}: arms were supplied different evidence")
         for arm_id in expected_order:
             arm = by_id.get(arm_id)
@@ -117,7 +134,7 @@ def main(argv=None) -> int:
     summary = {
         "ok": not problems, "problems": problems, "rows": len(rows), "program_id": binding["program"].program_id,
         "program_max_contacts": binding["program"].max_contacts, "expected_ceiling": nf.CONTACTS_PER_ROW,
-        "arm_order": expected_order, "locked_instruction_sha256": locked_digest, "decoding_override_by_arm": {a: nf.DECODING_OF.get(a) for a in expected_order},
+        "arm_order": expected_order, "locked_instruction_sha256": locked_digest, "sample_plan_by_arm": plan,
         "node_decoding_every_arm": expected_decoding, "per_row": rows,
     }
     if binding["program"].max_contacts != nf.CONTACTS_PER_ROW:

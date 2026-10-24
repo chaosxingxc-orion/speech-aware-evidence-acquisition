@@ -82,7 +82,7 @@ def test_ids_are_unique_and_follow_the_registered_pattern():
     assert fam.CELLS["smoke"]["run"] == "SAEA-SLURP-STAGE3-L338-LEVER-COLUMN-FOLD-B-SMOKE-4-V1"
     assert fam.CELLS["arm"]["cell"] == "slurp-native-stage3-l338-lever-column-fold-b-v1"
     assert fam.CELLS["arm"]["attempt"] == "attempt-slurp-native-stage3-l338-lever-column-fold-b-generation-v1"
-    assert fam.PACKAGE == "docs/readiness/2026-10-19-slurp-l338-lever-column-fold-b-v1" and fam.SHORT == "nxt4" and fam.PKG_NAME == "slurp-l338-lever-column-fold-b-v1"
+    assert fam.PACKAGE == "docs/readiness/2026-10-19-slurp-l338-lever-column-fold-b-v1" and fam.SHORT == "l338" and fam.PKG_NAME == "slurp-l338-lever-column-fold-b-v1"
     assert fam.READ_RUN_ID == "SAEA-SLURP-L338-LEVER-COLUMN-FOLD-B-READ-V1" and fam.SIGNOFF_CONDITIONS == f"{fam.PACKAGE}/signoff-conditions-v1.json"
     for key in fam.ALL_KEYS:
         assert experiment(key)["cells"][0]["run_id"] == fam.CELLS[key]["run"]
@@ -428,7 +428,7 @@ def test_the_readme_names_the_ruling_the_arms_the_fit_the_cost_the_words_and_the
     for needle in ("329 A", "332 A", "d1-qwen-sampling", "d2-qwen-sampling-presence", "d3-temp-0.3", "d4-greedy-presence", "saea-supply-variant-arms-v6", "arm_visits", "first",
                    "temperature", "top_p", "top_k", "presence_penalty", "request seed", "discordance", "stochastic", "parse_decoding_variants",
                    "think-budget-np4", "no-op", "drop-reasoning-v1", "ceil_0.1", "NOMINATED", "EFFICIENT-NO-LOSS", "HARM", "NEUTRAL", "2-arm Fold A confirm", "NOT built",
-                   "flip_package_ext4.sh", "l338_arms.json", "l338-decode-signoff.marker", "NXT4_KINDS", "wait_or_machine_signoff", "close_rows_after_seal", "SAEA-Chain-NXT4",
+                   "flip_package_ext4.sh", "l338_arms.json", "l338-decode-signoff.marker", "L338_KINDS", "wait_or_machine_signoff", "close_rows_after_seal", "SAEA-Chain-L338",
                    "queue_l338_after_chain.sh", "exit token", "carrier chain", "signoff-conditions-v1.json", "arm-only", "forced-close share", "supplied-item bin", "forced status",
                    "ceil(bytes / 3.5)", "no tokenizer contact", "24 GPU-h", str(fam.CELLS["arm"]["gpu_hours"]), str(fam.ARM_MIX_ROWS), "0.85", "-0.65",
                    "repin exit N (1 = its internal check refused the dirty tree, expected)"):
@@ -664,7 +664,7 @@ def test_the_writer_recovery_text_and_flags_are_wired():
     ids = writer.identities(REPO)
     assert writer.recovery_blocks(REPO, ids, "x", "2026-10-25T00:00:00+00:00", "abc", "/wt", "br") == {}
     text = writer.recovery_sequence_text(ids)
-    assert "recovery-input-arm-v1.json" in text and "predecessor-snapshot-arm-rec1-v1.json" in text and "NXT4_KINDS=arm" in text and "arm-only" in text
+    assert "recovery-input-arm-v1.json" in text and "predecessor-snapshot-arm-rec1-v1.json" in text and "L338_KINDS=arm" in text and "arm-only" in text
     out = subprocess.run([sys.executable, "-B", str(NX / "l338_write_registration.py"), "--help"], capture_output=True, text=True, cwd=REPO)
     assert out.returncode == 0
     for flag in ("--append-recovery-ledger", "--recovery-registered-at", "--recovery-base-commit", "--study-commit", "--append-ledger", "--registered-at"):
@@ -702,18 +702,18 @@ def test_the_chain_uses_the_machine_signoff_and_closes_the_rows():
     assert "SIGNOFF_MARKER=/home/chao/l338-decode-signoff.marker" in chain and "f.SIGNOFF_CONDITIONS" in chain
     assert "close_rows_after_seal" in chain and "close_rows $SMOKE_CLOSE_IDS" in chain and "close_rows $ALL_CLOSE_IDS" in chain
     for needle in ("smoke|arm|arm-only|all) export BATCH_SESSION=$THINK_SESSION", "arm-only) run_driver arm", "exit 9", '"$SMOKE_STATE" = sealed', "COMPLETED", "no sign-off marker",
-                   "serving_swap.sh \"$SWAP_TARGET\"", "l338_family", "NXT4_SIGNOFF_WAIT_SECONDS", "is not resident; swapping to"):
+                   "serving_swap.sh \"$SWAP_TARGET\"", "l338_family", "L338_SIGNOFF_WAIT_SECONDS", "is not resident; swapping to"):
         assert needle in chain, needle
-    assert "SHORT=nxt4" in chain and "/home/chao/$SHORT-flight-commit.txt" in chain and 'spec["attempt"]' in chain and "nxt_r2b" not in chain and "7168" not in chain
+    assert "SHORT=l338" in chain and "/home/chao/$SHORT-flight-commit.txt" in chain and 'spec["attempt"]' in chain and "nxt_r2b" not in chain and "7168" not in chain
 
 
 def test_the_flip_read_and_repin_scripts_consume_the_family_record():
     flip, read, repin = [(NX / n).read_text(encoding="utf-8") for n in ("l338_flip.sh", "l338_read.sh", "l338_repin_cell.sh")]
-    assert "PLAN_REC=" in flip and "rec_suffix" in flip and 'NXT4_KINDS:-"smoke arm"' in flip and "l338_family" in flip
-    assert "SLUG=l338-lever-column-fold-b" in flip and "PKGN=slurp-l338-lever-column-fold-b-v1" in flip and "SHORT=nxt4" in flip
+    assert "PLAN_REC=" in flip and "rec_suffix" in flip and 'L338_KINDS:-"smoke arm"' in flip and "l338_family" in flip
+    assert "SLUG=l338-lever-column-fold-b" in flip and "PKGN=slurp-l338-lever-column-fold-b-v1" in flip and "SHORT=l338" in flip
     assert "l338_family" in read and "SAEA-SLURP-L338-LEVER-COLUMN-FOLD-B-READ-V1" in read and "slurp_l338_column_read.py" in read
     assert "--mode supply-variants" in read and "perception-branches" not in read and re.search(r'STAGE=\$\{1:-read\}', read) and '"$STAGE" = "columns"' in read
-    assert "NXT4_KIND" in repin and "l338-lever-column-fold-b" in repin and "2026-10-18" in repin
+    assert "L338_KIND" in repin and "l338-lever-column-fold-b" in repin and "2026-10-18" in repin
     assert f"RD={fam.PACKAGE}".replace("slurp-l338-lever-column-fold-b-v1", "$PKGN") in flip, "the flip's readiness directory must be the package's own (date included)"
 
 
@@ -725,8 +725,8 @@ def _hook(tmp_path, chain_lines, *, stamp="2026-10-18T12:40:00Z", wait="3", poll
     chain.write_text("\n".join(chain_lines) + ("\n" if chain_lines else ""), encoding="utf-8")
     ran = tmp_path / "ran.txt"
     launch = launch or f"echo launched-from $(pwd) > {ran}"
-    env = dict(os.environ, NXT4_HOOK_OUT=str(out), NXT4_HOOK_MAIN=str(tmp_path), NXT4_HOOK_POLL_SECONDS=poll,
-               NXT4_HOOK_MAX_WAIT_SECONDS=wait, NXT4_HOOK_LAUNCH_CMD=launch, TMPDIR=str(tmp_path))
+    env = dict(os.environ, L338_HOOK_OUT=str(out), L338_HOOK_MAIN=str(tmp_path), L338_HOOK_POLL_SECONDS=poll,
+               L338_HOOK_MAX_WAIT_SECONDS=wait, L338_HOOK_LAUNCH_CMD=launch, TMPDIR=str(tmp_path))
     argv = [str(chain), token, stamp] if args else []
     done = subprocess.run(["bash", str(REPO / "scripts/flights/batch/queue/queue_l338_after_chain.sh"), *argv], capture_output=True, text=True, env=env, timeout=60)
     return done, out.read_text(encoding="utf-8") if out.exists() else "", ran
@@ -736,7 +736,7 @@ def test_the_queue_hook_launches_only_after_a_clean_predecessor_exit_later_than_
     script = REPO / "scripts/flights/batch/queue/queue_l338_after_chain.sh"
     assert subprocess.run(["bash", "-n", str(script)], capture_output=True).returncode == 0
     text = script.read_text(encoding="utf-8")
-    assert "/home/chao/nxt4-queue.out" in text and "108000" in text and "POLL_SECONDS:-60" in text and "CHAIN_NXT2_EXIT" in text         # only in the usage example
+    assert "/home/chao/l338-queue.out" in text and "108000" in text and "POLL_SECONDS:-60" in text and "CHAIN_NXT2_EXIT" in text         # only in the usage example
     assert "package_launch.sh scripts/flights/nx/l338_launch_spec.json --from flip --until chain" in text and "exit 9" in text
     (tmp_path / "a").mkdir()
     done, log, ran = _hook(tmp_path / "a", [f"{TOKEN} rc=0 2026-10-18T12:50:00Z"])
@@ -779,8 +779,8 @@ def test_the_queue_hook_sees_a_line_that_appears_while_it_polls(tmp_path):
     chain = tmp_path / "chain.out"
     chain.write_text("chain start 2026-10-18T12:40:00Z\n", encoding="utf-8")
     ran = tmp_path / "ran.txt"
-    env = dict(os.environ, NXT4_HOOK_OUT=str(tmp_path / "q.out"), NXT4_HOOK_MAIN=str(tmp_path), NXT4_HOOK_POLL_SECONDS="0.2",
-               NXT4_HOOK_MAX_WAIT_SECONDS="30", NXT4_HOOK_LAUNCH_CMD=f"echo ok > {ran}", TMPDIR=str(tmp_path))
+    env = dict(os.environ, L338_HOOK_OUT=str(tmp_path / "q.out"), L338_HOOK_MAIN=str(tmp_path), L338_HOOK_POLL_SECONDS="0.2",
+               L338_HOOK_MAX_WAIT_SECONDS="30", L338_HOOK_LAUNCH_CMD=f"echo ok > {ran}", TMPDIR=str(tmp_path))
     proc = subprocess.Popen(["bash", str(REPO / "scripts/flights/batch/queue/queue_l338_after_chain.sh"), str(chain), TOKEN, "2026-10-18T12:40:00Z"], env=env,
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     import time
@@ -796,7 +796,7 @@ def test_the_launch_spec_is_the_r2b_form_with_the_r4_names():
     spec = js("scripts/flights/nx/l338_launch_spec.json")
     r2b = js("scripts/flights/nx/nxt_r2b_launch_spec.json")
     assert spec["schema"] == "saea-package-launch-spec-v1" == r2b["schema"] and list(spec["steps"]) == list(r2b["steps"]) == ["derive", "write", "countersign", "mint", "commit", "flip", "chain", "read"]
-    assert (spec["short"], spec["package"], spec["readiness_dir"]) == ("nxt4", fam.PKG_NAME, fam.PACKAGE) and spec["launch_id"] == "nxt4-first-attempt"
+    assert (spec["short"], spec["package"], spec["readiness_dir"]) == ("l338", fam.PKG_NAME, fam.PACKAGE) and spec["launch_id"] == "l338-first-attempt"
     steps = spec["steps"]
     assert steps["derive"]["cmd"].endswith("l338_derive_cells.py") and "l338_write_registration.py --study-commit {head}" in steps["write"]["cmd"]
     assert "--registered-at {utc}" in steps["write"]["cmd"] and "--append-ledger" in steps["write"]["cmd"]
@@ -805,20 +805,20 @@ def test_the_launch_spec_is_the_r2b_form_with_the_r4_names():
     assert steps["countersign"]["texts"] == "{readiness_dir}/countersign-row-texts-v1.json" and steps["countersign"]["skip_substrings"] == ["-READ-"]
     assert set(steps["commit"]["paths"]) == {"configs", "docs/exposure-ledger.md", "{readiness_dir}", "{readiness_dir}-preregistration.md"}
     flip = steps["flip"]
-    assert flip["script"] == "scripts/flights/nx/l338_flip.sh" and flip["package"] == fam.PACKAGE and flip["env"] == {"NXT4_KINDS": "smoke arm"}
-    assert flip["cells"] == [fam.CELLS["smoke"]["cell"], fam.CELLS["arm"]["cell"]] and flip["pins_commit_msg"] == "/home/chao/nxt4-pins-commit.txt"
-    assert flip["flight_commit_file"] == "/home/chao/nxt4-flight-commit.txt" == steps["chain"]["flight_commit_file"]
+    assert flip["script"] == "scripts/flights/nx/l338_flip.sh" and flip["package"] == fam.PACKAGE and flip["env"] == {"L338_KINDS": "smoke arm"}
+    assert flip["cells"] == [fam.CELLS["smoke"]["cell"], fam.CELLS["arm"]["cell"]] and flip["pins_commit_msg"] == "/home/chao/l338-pins-commit.txt"
+    assert flip["flight_commit_file"] == "/home/chao/l338-flight-commit.txt" == steps["chain"]["flight_commit_file"]
     assert flip["pins_commit_text"].rstrip("\n").splitlines()[-1] == "Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>" and flip["pins_commit_text"].startswith("L338")
-    assert steps["chain"]["task"] == "SAEA-Chain-NXT4" and steps["chain"]["wrapper"] == "/home/chao/saea-queue/chain_l338.sh"
+    assert steps["chain"]["task"] == "SAEA-Chain-L338" and steps["chain"]["wrapper"] == "/home/chao/saea-queue/chain_l338.sh"
     assert steps["read"]["cmd"] == "bash scripts/flights/nx/l338_read.sh smoke"
     wrapper = (REPO / "scripts/flights/batch/queue/chain_l338.sh").read_text(encoding="utf-8")
     assert subprocess.run(["bash", "-n", str(REPO / "scripts/flights/batch/queue/chain_l338.sh")], capture_output=True).returncode == 0
-    assert "batch_chain_l338.sh all" in wrapper and "CHAIN_NXT4_EXIT" in wrapper and "/home/chao/nxt4-flight-commit.txt" in wrapper
+    assert "batch_chain_l338.sh all" in wrapper and "CHAIN_L338_EXIT" in wrapper and "/home/chao/l338-flight-commit.txt" in wrapper
     import package_launch  # noqa: PLC0415
 
     launch = package_launch.Launch(spec, REPO, dry=True, root_countersign=False, redo=set())
     launch.head = lambda: "0" * 40                     # rendering needs no repository state here (a linked worktree is not readable from every shell)
-    assert launch.log_path == Path("/home/chao/nxt4-launch.out") and launch.render("{readiness_dir}") == fam.PACKAGE
+    assert launch.log_path == Path("/home/chao/l338-launch.out") and launch.render("{readiness_dir}") == fam.PACKAGE
 
 
 def test_every_script_the_spec_names_exists_and_parses():
