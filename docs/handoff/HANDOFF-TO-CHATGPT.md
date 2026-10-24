@@ -1,6 +1,6 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-19T10:34:49Z
+Last refreshed: 2026-10-24T15:37:50Z
 
 
 
@@ -9,6 +9,18 @@ Last refreshed: 2026-10-19T10:34:49Z
 
 
 
+
+## Resumed 2026-10-24 after the 322 window incident; R3 FLYING at full power (seal ~10-25 15:00Z); R2 rec2 READ: Perception no-think UNRESOLVED (-1.49 SLU), 324-B does not fly; 344 A biasing pass resumed; 338 part 1 merged (2026-10-24T15:37:50Z, Fable 5.1 root)
+
+Incident: `wsl --shutdown` in the 322 window detached the data VHDX (boot-only mount task); post step refused; R3 did not launch 10-20;
+host power plug degraded mid-R2 (GPU at the 95 W cap, R2 rec2 ~45 h); plug replaced 10-24 (175 W); post step fixed to re-mount
+(8b27c67ce) and rerun: R2 rows closed, swap, R3 launched 13:27Z (5.0 contacts/min = healthy R2b rate). R2 rec2 read (note
+docs/results/2026-10-24-slurp-nxt-r2-thinking-budget-column-read.md): perception-off SLU -1.49 [-2.83, -0.11] UNRESOLVED (R1's -0.19 did not
+replicate), solver-2048 -0.94 UNRESOLVED; lock keeps both nodes thinking at 3,072. ASR339: Qwen3-ASR 0.6B/1.7B do not beat Whisper on
+missed values (343 held); 344 A biasing column (7 variants, 1.7B, CPU) running under task SAEA-ASRBIAS. 330 diagnostic moved into
+chain_nxt4.sh (no-flight gap before R4). 338 part 1 merged (0f78ba442); part 2 (runtime fan-out + package) in build. Registry e28a95a66.
+
+Superseded stamp: 2026-10-19T10:34:49Z
 
 ## 339 part 1 merged (Qwen3-ASR llama.cpp CPU sidecar + Fold B qualification); ASR339 READ: no candidate beats Whisper on the missed values; 343 proposed; 341 A / 342 A (2026-10-19T10:34:49Z, Fable 5.1 root)
 
