@@ -3633,3 +3633,38 @@ replaced the original battery/power plug, the GPU configuration can be set highe
   refused (no flight commit file), wrote `CHAIN_L338_EXIT rc=1 16:28:33Z` (ignored by stamp) and touched nothing (R3 flight intact, no run
   dir). Model-free follow-up `-NoStart` stands.
 - R2 rec2 results note merged (e8079b57a, Opus); handoff refreshed (db0af82cd); doc gates PASS.
+
+### 2026-10-24 17:30Z -- Owner directive on the Solver forced-close share; within-row analysis across two same-form flights; 345 proposed
+
+- Owner, verbatim: 「强制截断率的配置，我们要分析调整和优化！你想如果我们的强制截断率都达到了45%的话，我们的solver基本上处于不可用的状态！」
+  (English: "The forced-close configuration must be analysed, adjusted and optimised. Think about it: if our forced-close share reaches 45 %,
+  our Solver is basically in an unusable state.")
+- Coordinator analysis (model-free; `scripts/analysis/forced_close/within_row_forced_close.py`, output
+  `forced-close-within-row-r2b-vs-r2rec2.json`; development numbers on TRAIN Fold B; no reasoning text exists in the seals). The Solver lock arm
+  (`budget-3072`, same form, same roster) was decoded twice: R2b (2026-10-18, 1,080 rows, forced 433 = 40.1 %) and R2 rec2 (2026-10-20, 1,054
+  flown rows, forced 474 = 45.0 %). Greedy at np4 is not reproducible, so 263 of the 1,054 common rows are forced in one flight and natural in
+  the other: the forced close is a within-row treatment there.
+  * Marginal (confounded by row difficulty): forced rows 63.0 / 65.9 SLU-F1 and 80.1 / 80.6 intent against 77.6 / 74.3 and 88.9 / 88.6 natural;
+    forced share rises with the workload (supplied items 30-39: 33-39 %, 40+: 61-63 %; Solver prompt over 10k tokens: 59-63 %). Rows forced in
+    BOTH flights 61.65 SLU-F1 (supply 38.6, prompt 9,289 tokens); natural in both 76.84 (35.6, 7,977).
+  * Within-row (263 discordant rows): forced decode 73.67 SLU-F1 vs the natural decode of the SAME rows 74.04, delta -0.37 [-3.59, +2.70];
+    intent 80.61 vs 80.99 (-0.38 [-3.42, +2.66]); 220 of 263 rows score identically, 24 better forced, 19 worse; per row TP +0.015, FP +0.034,
+    FN -0.012, intent -0.004; empty-gold discordant rows false-fill 22 forced vs 17 natural (of 82). Applying the within-row delta to every forced
+    row moves the column by +0.12 pp (69.94 -> 70.06 R2b; 69.44 -> 69.57 rec2): the answer written after the budget message is as good as the
+    answer written after a natural stop on the same row.
+  * Cost: a forced Solver contact runs 3,122 completion tokens and 101 s against 1,481 tokens and 47 s for the natural decode of the same row;
+    natural-close completion p50 1,074 / p90 2,184 / p95 2,564 / max 3,084 tokens, so the 3,072 budget covers terminating reasoning; the forced
+    tail is reasoning that does not converge (R2b read: 94 % of it still runs at 6,144).
+  * Reading: the forced-close share is not a quality failure of the Solver (the answers are the same); it is the share of contacts whose
+    reasoning does not terminate, and it is where the Solver's seconds go (forced contacts hold about 63 % of Solver time). The knob to turn is
+    therefore the cause of non-termination, not the budget (raise: R2b NEEDS-NO-MORE-BUDGET; lower: solver-2048 -0.94 UNRESOLVED, forced 0.50)
+    and not the budget message (at most +0.12 pp to recover).
+- Levers already flying or queued, each with the forced-close share and seconds per contact as pre-declared mechanism readouts: NX-T R3
+  (t1 decide-once, t3 supply-focus, t4; seal ~2026-10-25 15:00Z), the 330 diagnostic (enumeration vs repetition loop, 56 contacts, chain gap),
+  NX-T R4 decoding column (presence penalty 1.5 is the model vendor's own anti-loop recommendation; temperature 0.6 / top_p 0.95 / top_k 20).
+- **345 (PROPOSED) Forced-close reduction policy.** A = adopt the efficiency rule: a Solver arm that cuts the forced-close share by >= 15 pp
+  (absolute) with no resolved loss (SLU lower bound >= -1.49, intent lower bound >= -0.65 against the twin) enters the lock as an efficiency
+  component even when its score word is NEUTRAL; R3 (t1 / t4) and R4 (presence penalty) are read under this rule; if neither cuts the tail, the
+  330 diagnostic's verdict picks the next lever (repetition loop -> decoding; enumeration -> a structural Solver supply cap column, items per
+  candidate intent, after L338). B = score-only words as today (forced share reported, never a lock criterion). C = owner's own rule.
+  Coordinator recommends A.
