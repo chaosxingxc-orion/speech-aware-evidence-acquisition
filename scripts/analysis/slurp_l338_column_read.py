@@ -1,36 +1,44 @@
 #!/usr/bin/env python3
-"""slurp_l338_column_read.py -- the preregistered READ of L338 (the Solver decoding-policy column on the Thinking core, TRAIN Fold B).
+"""slurp_l338_column_read.py -- the preregistered READ of L338 (the decision-338 lever column on the Thinking core, TRAIN Fold B).
 
-Package ``docs/readiness/2026-10-19-slurp-l338-lever-column-fold-b-v1/``. A sealed run whose Solver node carries ``decoding_variants`` (receipt
-``saea-supply-variant-arms-v6``) holds, per row, one Perception note and K = 6 first-visit Solver answers: ``d1-qwen-sampling`` / ``d2-qwen-sampling-presence`` /
-``d3-temp-0.3`` / ``d4-greedy-presence`` (candidate sampling policies), ``aa`` (the in-flight A/A, replicate_of lock) and ``lock`` (the delivering arm). The sampling arms are
-STOCHASTIC, so the read also reports DISCORDANCE: per arm, the share of rows whose official per-row result (word-level TP / FP / FN, or the intent) differs from the lock's,
-beside the twin's (which is the run-to-run variation of two requests that are identical in every declared field). Stages:
+Package ``docs/readiness/2026-10-19-slurp-l338-lever-column-fold-b-v1/``. A sealed run whose Perception node carries ``sampling_variants`` (receipt
+``saea-perception-branch-arms-v6``, level 2) holds, per row, four first-visit branches: ``l1-support`` (lever L1: 1 Perception contact and n = 5 Solver samples committed
+by ``saea-commit-first-support-v1``), ``l2-union`` (lever L2: k = 4 Perception samples merged by ``saea-perception-candidate-union-v1``, one Solver contact), ``aa`` (the
+in-flight A/A, replicate_of lock) and ``lock`` (the delivering arm, the 268-B lock form). Stages:
 
-  columns  (run first, by ``scripts/flights/nx/l338_read.sh columns``) the OFFICIAL per-arm scoring: ``stage3_rollout_score.py --mode supply-variants`` renders each
-           arm's first Solver answer and scores it once, complete, with the registered official scorer (``slurp-slu-official-train``).
-  smoke    the four-row smoke: per ARM the Solver decode cost from the sealed trace (completion tokens, finish reasons, cap hits, empty completions, forced closes,
-           seconds) and the shared Perception node as ``_perception``. Nothing is scored; the machine sign-off reads it.
-  read     the full read, PAIRED per row against the delivering ``lock`` arm (utterance-cluster bootstrap, 10,000 draws, seed 20261018): official SLU-F1 (primary)
-           and intent accuracy (scenario_action exact) per arm; each candidate and the twin minus ``lock`` with CI95; the per-scenario table (natural mixture and
-           equal scenario); per arm the Solver completion / finish-reason / cap-hit / empty / forced-close tables, seconds per contact, the forced-close share SPLIT
-           BY SUPPLIED-ITEM BIN (< 40 and >= 40 items), the empty-gold false-fill rows SPLIT BY FORCED STATUS, and the non-empty exact-set rate.
+  columns  (run first, by ``scripts/flights/nx/l338_read.sh columns``) the OFFICIAL per-arm scoring: ``stage3_rollout_score.py --mode perception-branches`` renders each
+           branch's first Solver column (the COMMITTED answer for ``l1-support``) plus the extra stream column ``l1-support-sample0`` (the branch's own sample 0) and scores
+           each once, complete, with the registered official scorer (``slurp-slu-official-train``).
+  smoke    the four-row smoke: per ARM and per NODE the decode cost from the sealed trace (completion tokens, finish reasons, cap hits, empty completions, forced closes,
+           seconds), the measured arm mix against the registered one. Nothing is scored; the machine sign-off reads it.
+  read     the full read, PAIRED per row against the delivering ``lock`` arm (utterance-cluster bootstrap, 10,000 draws, seed 20261018): official SLU-F1 and intent
+           accuracy (scenario_action exact) per arm; every other arm and the twin minus ``lock`` with CI95; the arm words per LEVER; the per-scenario table (natural
+           mixture and equal scenario); the per-node decode tables; the L1 secondaries (pure-filter delta = committed column minus its own sample 0, false fills removed,
+           non-empty exact lost / gained, the support-count table); the L2 secondaries (union-size table, forced-close share by list size, and -- when ``--gold-intents`` is
+           supplied -- merged-list recall against sample 0's, newly listed / lost gold and conversion by gold position); and the DISCORDANCE of every sampled stream against
+           the twin's.
 
-Arm words (preregistered; development numbers only; claims_benefit is false -- a nomination, never an admission). The twin ``aa`` is the in-flight A/A: its SLU delta
-against ``lock`` is the offset o and |o| the bar. For each candidate arm X with SLU delta d (CI95 [lo, hi]) and intent delta i (CI95 [ilo, ihi]), the first rule that
-applies wins:
+Arm words (preregistered; development numbers only; claims_benefit is false -- a nomination, never an admission). The twin ``aa`` is the in-flight A/A: o_SLU / o_int are its
+SLU / intent deltas against ``lock``; floors (decision 190, n = 1,080) are 1.49 pp SLU and 0.65 pp intent. The first rule that applies wins.
 
-  NOMINATED          lo > 0 AND i >= -0.65 pp AND d >= |o|
-  EFFICIENT-NO-LOSS  hi >= -|o| AND ihi >= -0.65 pp (the NX-T R1 NO-RESOLVED-LOSS rule on SLU and, with the decision-190 intent floor, on intent) AND the arm's Solver
-                     seconds per contact <= 0.85 x the lock arm's
-  HARM               hi < 0
-  NEUTRAL            otherwise
+  L1 (``l1-support``; SLU primary, intent guard)
+    NOMINATED         SLU CI-LB > 0 AND SLU point >= |o_SLU| AND intent point >= -0.65
+    NO-RESOLVED-LOSS  SLU CI-UB >= -|o_SLU| AND intent CI-UB >= -0.65
+    HARM              SLU CI-UB < 0
+    NEUTRAL           otherwise
+  L2 (``l2-union``; intent primary, SLU guard)
+    NOMINATED         intent CI-LB > 0 AND intent point >= max(|o_int|, 0.33) AND SLU CI-UB >= -|o_SLU|
+    HARM              intent CI-UB < 0, or SLU CI-UB < 0
+    NO-RESOLVED-LOSS  as for L1
+    NEUTRAL           otherwise
 
-A NOMINATED or EFFICIENT-NO-LOSS arm goes to a 2-arm Fold A confirm (not built here). The words are the R3 words unchanged; the discordance table is a secondary, reported
-for every arm, and enters no word.
+The l1 branch's sample 0 is a second A/A (reported, used in no word). A NOMINATED arm goes to the 335 B Fold A column (not built here).
+
+Optional offline inputs (nothing is read from them unless supplied): ``--gold-intents`` (a JSON ``{sample_id: gold intent id}`` for the L2 recall tables) and ``--n1-json`` (a
+JSON ``{sample_id: N1}``, the entity-free share of the supplied exemplars, for the N1-gated L1 forms; N1 is unavailable in flight).
 
 Model-free. Every sealed byte is opened read-only. NO utterance text, transcript, gold label, model output or reasoning text is printed or persisted: contact text is
-reduced to booleans and counts at read time and dropped.
+reduced to booleans, counts and parse keys at read time and dropped.
 
     python -B scripts/analysis/slurp_l338_column_read.py --stage smoke --data-root $SPEECHRL_DATA_DIR
     python -B scripts/analysis/slurp_l338_column_read.py --stage read  --data-root $SPEECHRL_DATA_DIR
@@ -39,10 +47,12 @@ reduced to booleans and counts at read time and dropped.
 from __future__ import annotations
 
 import argparse
+import dataclasses
 import json
 import os
 import re
 import sys
+from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Callable, Mapping, Sequence
 
@@ -72,7 +82,7 @@ def _data_root_env() -> str:
 
 SCHEMA_SMOKE = fam.SMOKE_SCHEMA
 SCHEMA_READ = fam.READ_SCHEMA
-WORDS = ("NOMINATED", "EFFICIENT-NO-LOSS", "HARM", "NEUTRAL")
+WORDS = ("NOMINATED", "NO-RESOLVED-LOSS", "HARM", "NEUTRAL")
 SEED = 20261018
 DRAWS = base.DEFAULT_DRAWS
 INTENT_FIELD, SCORER = base.INTENT_FIELD, base.SCORER
@@ -80,19 +90,47 @@ ReadError = base.ReadError
 CONTACTS_ZERO = base.CONTACTS_ZERO
 ARMS = fam.ARM_ORDER
 DELIVERING, TWIN, CANDIDATES = fam.DELIVERING, fam.TWIN, fam.CANDIDATE_ARMS
-PERCEPTION = "_perception"
+LEVER_OF = dict(fam.ARM_LEVER)
 SLOTS = fam.THINK_SLOTS
-SUPPLY_BIN_EDGE = 40                                   # supplied items: "lt40" below, "ge40" at or above (the coordinator's row-level analysis of the sealed R2b column)
 COLUMN_SCORE_NAME = "arm-{arm}-{scorer}-scores.json"
+SAMPLE0_SUFFIX = "-sample0"
 WORD_TP, WORD_FP, WORD_FN = "slu_f1_word_tp", "slu_f1_word_fp", "slu_f1_word_fn"
+ROW_RESULT_FIELDS = (WORD_TP, WORD_FP, WORD_FN)
+LIST_SIZE_BINS = ("1", "2", "3", "other")
 
 
-# --------------------------------------------------------------------------- the sealed row -> arm -> contact map (ids only)
+def stream_column_names() -> list[str]:
+    """The extra official columns the render writes: one ``<branch>-sample0`` per ``solver_samples`` branch."""
+
+    return [f"{a['arm_id']}{SAMPLE0_SUFFIX}" for a in fam.ARM_SPECS if a["axis"] == "solver_samples"]
+
+
+# --------------------------------------------------------------------------- the sealed row -> branch -> contact map (ids only)
+
+
+def _branch_view(branch: Mapping) -> dict:
+    """One sealed branch record reduced to ids, statuses and counts (every note and answer text is dropped)."""
+
+    sampling = branch.get("sampling") if isinstance(branch.get("sampling"), Mapping) else {}
+    perception = sampling.get("perception_samples") if isinstance(sampling.get("perception_samples"), Mapping) else None
+    solver = sampling.get("solver_samples") if isinstance(sampling.get("solver_samples"), Mapping) else None
+    return {
+        "branch_id": str(branch.get("branch_id")), "contact_id": branch.get("contact_id"), "solver_contact_id": branch.get("solver_contact_id"),
+        "solver_absent": bool(branch.get("solver_absent")), "candidate_ids": [str(x) for x in branch.get("candidate_intent_ids") or []],
+        "perception_samples": None if perception is None else {
+            "merged_ids": [str(x) for x in perception.get("merged_candidate_ids") or []],
+            "appended_ids": [str(x) for x in perception.get("appended_candidate_ids") or []],
+            "samples": [{"contact_id": s.get("contact_id"), "candidate_ids": [str(x) for x in s.get("candidate_intent_ids") or []],
+                         "note_parse_status": s.get("note_parse_status")} for s in perception.get("samples") or []]},
+        "solver_samples": None if solver is None else {
+            "samples": [{"contact_id": s.get("contact_id"), "parse_status": s.get("parse_status")} for s in solver.get("samples") or []],
+            "outcome": dict(solver.get("outcome") or {})},
+    }
 
 
 def load_outputs_rows(path: Path) -> list[dict]:
-    """The sealed outputs reduced to what the map needs (ids and counts only; every delivered text is dropped): per row, the sample id, the arm group
-    ``[(arm_id, contact_id, supplied_item_count)]`` of the one arm receipt and the Perception contact ids of the role visits."""
+    """The sealed outputs reduced to what the map needs (ids, statuses and counts only; every delivered text is dropped): per row the branch views and the
+    ``{agent_contact_id: request_id}`` of every contact of every Solver visit (the key to the trace's response record)."""
 
     rows: list[dict] = []
     with Path(path).open("r", encoding="utf-8") as handle:
@@ -100,41 +138,61 @@ def load_outputs_rows(path: Path) -> list[dict]:
             if not line.strip():
                 continue
             row = json.loads(line)
-            receipt = row.get("supply_variants") if isinstance(row.get("supply_variants"), Mapping) else None
-            arms = [(str(a.get("arm_id")), str(a.get("contact_id")), a.get("supplied_item_count")) for a in (receipt or {}).get("arms") or []]
-            perception = []
-            for visit in ((row.get("native_episode_receipt") or {}).get("role_visits") or []):
-                if isinstance(visit, Mapping) and visit.get("stage") == "perception":
-                    contacts = ((visit.get("execution_receipt") or {}).get("contacts")) or []
-                    perception += [str(c.get("agent_contact_id")) for c in contacts if isinstance(c, Mapping) and c.get("agent_contact_id")]
-            rows.append({"sample_id": str(row["sample_id"]), "arms": arms, "perception": perception})
+            episode = row.get("native_episode_receipt") or {}
+            branches = [_branch_view(b) for b in ((episode.get("perception_branches") or {}).get("branches")) or []]
+            requests: dict[str, str] = {}
+            for visit in episode.get("role_visits") or []:
+                if isinstance(visit, Mapping) and visit.get("stage") == "solver":
+                    for contact in ((visit.get("execution_receipt") or {}).get("contacts")) or []:
+                        if isinstance(contact, Mapping) and contact.get("agent_contact_id") and contact.get("request_id"):
+                            requests[str(contact["agent_contact_id"])] = str(contact["request_id"])
+            rows.append({"sample_id": str(row["sample_id"]), "branches": branches, "requests": requests})
             row.clear()
     return rows
 
 
 def arm_contact_map(outputs_rows: Sequence[Mapping]) -> dict[str, tuple[str, str]]:
-    """``{agent_contact_id: (arm, node)}``: each Solver arm contact to its arm, each Perception contact to the shared ``_perception`` pseudo-arm."""
+    """``{agent_contact_id: (arm, node)}``: each branch's Perception and Solver contact, and every sampled Perception / Solver contact of a sampling axis."""
 
     mapping: dict[str, tuple[str, str]] = {}
     for row in outputs_rows:
-        for arm_id, contact_id, _ in row["arms"]:
-            mapping[contact_id] = (arm_id, "solver")
-        for contact_id in row["perception"]:
-            mapping[contact_id] = (PERCEPTION, "perception")
+        for branch in row["branches"]:
+            arm = branch["branch_id"]
+            if branch["contact_id"]:
+                mapping[str(branch["contact_id"])] = (arm, "perception")
+            if branch["solver_contact_id"]:
+                mapping[str(branch["solver_contact_id"])] = (arm, "solver")
+            for sample in (branch["perception_samples"] or {}).get("samples", []):
+                if sample.get("contact_id"):
+                    mapping[str(sample["contact_id"])] = (arm, "perception")
+            for sample in (branch["solver_samples"] or {}).get("samples", []):
+                if sample.get("contact_id"):
+                    mapping[str(sample["contact_id"])] = (arm, "solver")
     return mapping
 
 
+def list_size(branch: Mapping) -> int:
+    """The candidate-list size the branch's Solver was shown: the merged list for a ``perception_samples`` branch, else its own note's candidate count."""
+
+    merged = (branch["perception_samples"] or {}).get("merged_ids")
+    return len(merged) if merged else len(branch["candidate_ids"])
+
+
+def list_size_bin(size: int) -> str:
+    return str(size) if size in (1, 2, 3) else "other"
+
+
 def contact_rows(outputs_rows: Sequence[Mapping], contacts: Sequence[Mapping]) -> list[dict]:
-    """Solver arm contacts joined to their row: ``{sample_id, arm, supplied, forced_close, ...}`` (booleans and counts only)."""
+    """Each branch's first-visit Solver contact (the column's sample 0) joined to its row: ``{sample_id, arm, list_size, forced_close, ...}`` (booleans and counts only)."""
 
     by_contact = {c["agent_contact_id"]: c for c in contacts if c.get("agent_contact_id")}
     out: list[dict] = []
     for row in outputs_rows:
-        for arm_id, contact_id, supplied in row["arms"]:
-            c = by_contact.get(contact_id)
+        for branch in row["branches"]:
+            c = by_contact.get(branch["solver_contact_id"])
             if c is None:
                 continue
-            out.append({"sample_id": row["sample_id"], "arm": arm_id, "supplied": supplied, "forced_close": c.get("forced_close"),
+            out.append({"sample_id": row["sample_id"], "arm": branch["branch_id"], "list_size": list_size(branch), "forced_close": c.get("forced_close"),
                         "completion_tokens": c.get("completion_tokens"), "latency_seconds": c.get("latency_seconds")})
     return out
 
@@ -145,13 +203,13 @@ def missing_columns(outputs_rows: Sequence[Mapping], contacts: Sequence[Mapping]
     present = {c.get("agent_contact_id") for c in contacts}
     by_arm: dict[str, int] = {arm: 0 for arm in arms}
     for row in outputs_rows:
-        declared = {arm_id for arm_id, _, _ in row["arms"]}
+        declared = {b["branch_id"] for b in row["branches"]}
         for arm in arms:
             if arm not in declared:
                 by_arm[arm] += 1
-        for arm_id, contact_id, _ in row["arms"]:
-            if contact_id not in present:
-                by_arm[arm_id] = by_arm.get(arm_id, 0) + 1
+        for b in row["branches"]:
+            if b["solver_contact_id"] not in present and not b["solver_absent"]:
+                by_arm[b["branch_id"]] = by_arm.get(b["branch_id"], 0) + 1
     return {"by_arm": by_arm, "total": sum(by_arm.values())}
 
 
@@ -159,55 +217,49 @@ def missing_columns(outputs_rows: Sequence[Mapping], contacts: Sequence[Mapping]
 
 
 def tables_by_arm(by_arm: Mapping[str, Sequence[Mapping]]) -> dict[str, dict]:
-    """Per arm, the per-node decode table (``npc.arm_node_table``: think mode, the 4,096 cap, forced closes, finish reasons, tokens, seconds)."""
+    """Per arm, the per-node decode table (``npc.arm_node_table``): every contact of the arm, sampled ones included, per node."""
 
     return {arm: npc.arm_node_table(by_arm[arm], arm, slots=SLOTS) for arm in sorted(by_arm)}
 
 
-def solver_seconds(tables: Mapping[str, Mapping]) -> dict[str, float]:
-    return {arm: float(t["solver"]["seconds_per_contact"]["mean"]) for arm, t in tables.items() if "solver" in t}
+def _node_total_seconds(table: Mapping, node: str) -> float:
+    cell = table.get(node)
+    return float(cell["seconds_per_contact"]["mean"]) * int(cell["contacts"]) if cell else 0.0
 
 
 def throughput_table(tables: Mapping[str, Mapping], rows: int) -> dict:
-    """Seconds per row of the column flight (the shared Perception mean plus every arm's Solver mean) in lock-row equivalents against the registered arm mix, plus the
-    slot-normalised GPU hours of a pass over ``rows`` rows. Measured seconds only."""
+    """Seconds per row of the column flight (every contact of every arm, sampled ones included) in lock-row equivalents against the registered arm mix, and the
+    slot-normalised GPU hours of a pass over ``rows`` rows. The lock row is the lock arm's Perception plus Solver contact seconds. Measured seconds only."""
 
-    secs = solver_seconds(tables)
-    perception = float(tables.get(PERCEPTION, {}).get("perception", {}).get("seconds_per_contact", {}).get("mean", float("nan")))
-    lock = secs.get(DELIVERING)
-    per_row = perception + sum(v for k, v in secs.items() if k in ARMS)
-    lock_row = perception + lock if lock is not None else float("nan")
-    return {"slots": SLOTS, "perception_seconds_per_contact": perception, "solver_seconds_per_contact": dict(sorted(secs.items())),
+    arms = {a: t for a, t in tables.items() if a != "unattributed"}
+    per_arm = {a: sum(_node_total_seconds(t, n) for n in ("perception", "solver")) / max(rows, 1) for a, t in arms.items()}
+    lock = arms.get(DELIVERING) or {}
+    lock_row = (_node_total_seconds(lock, "perception") + _node_total_seconds(lock, "solver")) / max(rows, 1)
+    per_row = sum(per_arm.values())
+    contacts_per_row = {a: {n: (t[n]["contacts"] / max(rows, 1)) for n in t} for a, t in arms.items()}
+    return {"slots": SLOTS, "seconds_per_row_by_arm": dict(sorted(per_arm.items())), "contacts_per_row_by_arm": contacts_per_row,
             "seconds_per_row_column": per_row, "seconds_per_row_lock": lock_row,
-            "arm_mix_measured_rows": per_row / lock_row if lock_row == lock_row and lock_row else float("nan"), "arm_mix_registered_rows": fam.ARM_MIX_ROWS,
+            "arm_mix_measured_rows": per_row / lock_row if lock_row else float("nan"), "arm_mix_registered_rows": fam.ARM_MIX_ROWS,
             "registered_rows_per_minute_full": fam.ROWS_PER_MINUTE_FULL, "registered_gpu_hours_ceiling": fam.CELLS["arm"]["gpu_hours"],
-            "measured_gpu_hours_one_flight": rows * per_row / SLOTS / 3600.0 if per_row == per_row else float("nan")}
+            "measured_gpu_hours_one_flight": (fam.ROWS * per_row / SLOTS / 3600.0) if per_row == per_row else float("nan")}
 
 
 def smoke_stage(by_arm: Mapping[str, Sequence[Mapping]], *, rows: int = fam.SMOKE_ROWS, missing: Mapping | None = None) -> dict:
     tables = tables_by_arm(by_arm)
     missing = missing if missing is not None else {"total": 0, "by_arm": {}}
-    return {"schema": SCHEMA_SMOKE, "status": "DECODE-COST PER ARM (no score, no read)", "arms": tables, "throughput": throughput_table(tables, fam.ROWS), "smoke_rows": rows,
-            "absent_columns": missing["total"], "absent_columns_by_arm": dict(missing["by_arm"]), "unattributed_contacts": len(by_arm.get("unattributed", [])),
-            "contacts": CONTACTS_ZERO}
+    return {"schema": SCHEMA_SMOKE, "status": "DECODE-COST PER ARM AND NODE (no score, no read)", "arms": tables, "throughput": throughput_table(tables, rows),
+            "smoke_rows": rows, "absent_columns": missing["total"], "absent_columns_by_arm": dict(missing["by_arm"]),
+            "unattributed_contacts": len(by_arm.get("unattributed", [])), "contacts": CONTACTS_ZERO}
 
 
-def supply_bin(count: object) -> str:
-    """``lt40`` / ``ge40`` by the supplied-item count of the arm's receipt row; ``unknown`` when the receipt carries no count."""
+def forced_by_list_size(contacts: Sequence[Mapping], arm: str) -> dict:
+    """The arm's first-visit Solver forced-close share split by the size of the candidate list the Solver saw (1 / 2 / 3 / other)."""
 
-    if not isinstance(count, int) or isinstance(count, bool):
-        return "unknown"
-    return "lt40" if count < SUPPLY_BIN_EDGE else "ge40"
-
-
-def forced_by_supply_bin(contacts: Sequence[Mapping], arm: str) -> dict:
-    """The arm's forced-close share split by the supplied-item bin of its row (counts and shares; contacts without a wire record are counted as ``no_wire``)."""
-
-    out: dict[str, dict] = {b: {"contacts": 0, "forced": 0, "no_wire": 0} for b in ("lt40", "ge40", "unknown")}
+    out: dict[str, dict] = {b: {"contacts": 0, "forced": 0, "no_wire": 0} for b in LIST_SIZE_BINS}
     for c in contacts:
         if c["arm"] != arm:
             continue
-        cell = out[supply_bin(c["supplied"])]
+        cell = out[list_size_bin(c["list_size"])]
         cell["contacts"] += 1
         if c["forced_close"] is None:
             cell["no_wire"] += 1
@@ -226,8 +278,8 @@ def gold_empty(row: Mapping[str, float]) -> bool:
 
 
 def empty_gold_false_fill(rows: Mapping[str, Mapping[str, float]], forced_of: Callable[[str], object]) -> dict:
-    """On the arm's empty-gold rows: how many were false-filled (the arm emitted at least one entity: word false positives > 0), overall and split by whether the
-    arm's Solver contact was a FORCED close (``None`` when the wire record is absent)."""
+    """On the arm's empty-gold rows: how many were false-filled (word false positives > 0), overall and split by whether the arm's first Solver contact was a FORCED
+    close (``None`` when the wire record is absent)."""
 
     out = {"empty_gold_rows": 0, "false_fill_rows": 0, "forced": {"rows": 0, "false_fill": 0}, "natural": {"rows": 0, "false_fill": 0}, "no_wire": {"rows": 0, "false_fill": 0}}
     for sid, row in rows.items():
@@ -258,13 +310,33 @@ def nonempty_exact(rows: Mapping[str, Mapping[str, float]]) -> dict:
     return {"nonempty_gold_rows": n, "exact_rows": exact, "exact_share": exact / n if n else float("nan")}
 
 
-ROW_RESULT_FIELDS = (WORD_TP, WORD_FP, WORD_FN)
+def _exact(row: Mapping[str, float]) -> bool:
+    return row.get(WORD_FP, 0.0) == 0.0 and row.get(WORD_FN, 0.0) == 0.0
+
+
+def l1_filter_effect(committed: Mapping[str, Mapping[str, float]], sample0: Mapping[str, Mapping[str, float]], ids: Sequence[str]) -> dict:
+    """The L1 filter's effect read off the two official columns of the same branch (committed minus its own sample 0): empty-gold false fills removed (and added),
+    non-empty-gold rows whose entity set was exact in sample 0 and is no longer (lost) and the reverse (gained)."""
+
+    removed = added = lost = gained = 0
+    for sid in ids:
+        a, b = sample0[sid], committed[sid]
+        if gold_empty(a):
+            filled_a, filled_b = a.get(WORD_FP, 0.0) > 0.0, b.get(WORD_FP, 0.0) > 0.0
+            removed += int(filled_a and not filled_b)
+            added += int(filled_b and not filled_a)
+        else:
+            lost += int(_exact(a) and not _exact(b))
+            gained += int(_exact(b) and not _exact(a))
+    return {"empty_gold_false_fills_removed": removed, "empty_gold_false_fills_added": added,
+            "nonempty_exact_lost": lost, "nonempty_exact_gained": gained, "rows": len(ids),
+            "note": "committed column versus the branch's own sample 0 (the second A/A): official per-row word-level results"}
 
 
 def discordance_table(arms: Mapping[str, Mapping[str, Mapping[str, float]]], ids: Sequence[str], *, delivering: str = DELIVERING, twin: str = TWIN) -> dict:
-    """Per arm other than the delivering one: how many rows' official per-row results differ from the lock's, split into the SLU side (the word-level TP / FP / FN triple
-    differs) and the intent side (the scenario_action exactness differs), and the arm's SLU-discordant share as a multiple of the twin's. The twin ``aa`` is the baseline
-    run-to-run variation (its request is identical to the lock's in every declared field), so a sampling arm is read against it, never against zero."""
+    """Per column other than the delivering one: how many rows' official per-row results differ from the lock's (SLU side: the word-level TP / FP / FN triple; intent side:
+    the scenario_action exactness), and the SLU-discordant share as a multiple of the twin's. The twin ``aa`` is the baseline run-to-run variation (its request is
+    identical to the lock's in every declared field), so a sampled arm is read against it, never against zero."""
 
     ref = arms[delivering]
     out: dict[str, dict] = {}
@@ -286,19 +358,296 @@ def discordance_table(arms: Mapping[str, Mapping[str, Mapping[str, float]]], ids
             "note": "per-row official results compared with the lock's; the twin is the run-to-run variation at identical declared request fields"}
 
 
+# --------------------------------------------------------------------------- per-stream discordance (parse keys from the trace; no text kept)
+
+
+def answer_key(text: str | None) -> tuple:
+    """A comparable key of one Solver answer text: ``(scenario, action, sorted (type, filler) pairs)``; ``("malformed",)`` for text the governed parser refuses and
+    ``("absent",)`` for no text. The key is a tuple of short strings, never persisted as text."""
+
+    if text is None:
+        return ("absent",)
+    from speech_aware_evidence_acquisition.reproduction.ojw.native_group_solver import parse_solver_answer_text
+
+    parsed = parse_solver_answer_text(text)
+    if parsed is None:
+        return ("malformed",)
+    return (parsed.scenario, parsed.action, tuple(sorted((e.type, e.filler) for e in parsed.entities)))
+
+
+def trace_response_keys(trace: Path, wanted_request_ids: set[str]) -> dict[str, tuple]:
+    """``{request_id: answer_key}`` for the wanted requests, read once from the sealed trace's MODEL_RESPONSE records (the text is reduced to its key and dropped)."""
+
+    out: dict[str, tuple] = {}
+    with Path(trace).open("rb") as handle:
+        for raw in handle:
+            if b'"MODEL_RESPONSE"' not in raw[:60]:
+                continue
+            record = json.loads(raw)
+            rid = str(record.get("record_id", ""))
+            if not rid.endswith("/response"):
+                continue
+            request_id = rid[: -len("/response")]
+            if request_id in wanted_request_ids:
+                text = (record.get("payload") or {}).get("text")
+                out[request_id] = answer_key(text if isinstance(text, str) else None)
+    return out
+
+
+def solver_stream_keys(outputs_rows: Sequence[Mapping], response_keys: Mapping[str, tuple]) -> dict[str, dict[str, tuple]]:
+    """``{stream name: {sample_id: answer key}}`` for every Solver stream: ``<arm>`` (the branch's first-visit contact) and, for a ``solver_samples`` branch, ``<arm>.s<j>``
+    for each sample (``.s0`` is the branch contact itself)."""
+
+    streams: dict[str, dict[str, tuple]] = defaultdict(dict)
+    for row in outputs_rows:
+        for branch in row["branches"]:
+            arm = branch["branch_id"]
+            request = row["requests"].get(str(branch["solver_contact_id"]))
+            streams[arm][row["sample_id"]] = response_keys.get(request, ("absent",)) if request else ("absent",)
+            for j, sample in enumerate((branch["solver_samples"] or {}).get("samples", [])):
+                request = row["requests"].get(str(sample.get("contact_id")))
+                streams[f"{arm}.s{j}"][row["sample_id"]] = response_keys.get(request, ("absent",)) if request else ("absent",)
+    return dict(streams)
+
+
+def perception_stream_keys(outputs_rows: Sequence[Mapping]) -> dict[str, dict[str, tuple]]:
+    """``{stream name: {sample_id: candidate id list}}`` for every Perception stream: ``<arm>`` (the branch's own note) and, for a ``perception_samples`` branch,
+    ``<arm>.s<j>`` for each sample plus ``<arm>.merged`` (the list the Solver was shown)."""
+
+    streams: dict[str, dict[str, tuple]] = defaultdict(dict)
+    for row in outputs_rows:
+        for branch in row["branches"]:
+            arm = branch["branch_id"]
+            sampled = branch["perception_samples"]
+            streams[arm][row["sample_id"]] = tuple((sampled["samples"][0]["candidate_ids"] if sampled and sampled["samples"] else branch["candidate_ids"]))
+            if sampled:
+                for j, sample in enumerate(sampled["samples"]):
+                    streams[f"{arm}.s{j}"][row["sample_id"]] = tuple(sample["candidate_ids"])
+                streams[f"{arm}.merged"][row["sample_id"]] = tuple(sampled["merged_ids"])
+    return dict(streams)
+
+
+def stream_discordance(streams: Mapping[str, Mapping[str, tuple]], ids: Sequence[str], *, delivering: str = DELIVERING, twin: str = TWIN) -> dict:
+    """Per stream other than the lock's: the share of rows whose answer key (Solver) or candidate list (Perception) differs from the lock's, and that share as a
+    multiple of the twin's. A stream missing a row counts that row as discordant."""
+
+    ref = streams[delivering]
+    out: dict[str, dict] = {}
+    for name, rows in streams.items():
+        if name == delivering:
+            continue
+        discordant = sum(1 for i in ids if rows.get(i) != ref.get(i))
+        out[name] = {"rows": len(ids), "discordant_rows": discordant, "discordant_share": discordant / len(ids) if ids else float("nan")}
+    base_share = out.get(twin, {}).get("discordant_share")
+    for name, cell in out.items():
+        cell["share_over_twin"] = (cell["discordant_share"] / base_share) if base_share else float("nan")
+        cell["is_twin"] = name == twin
+    return {"delivering": delivering, "twin": twin, "twin_discordant_share": base_share, "streams": out}
+
+
+# --------------------------------------------------------------------------- the sampling tables (support counts, union size, gold-aware recall)
+
+
+def support_count_table(sampling_rows: Sequence[Mapping]) -> dict:
+    """The L1 support-count table from ``sampling-rows.json`` (ids and counts only): delivered entities by support count, base / delivered / dropped entity totals, rows
+    that dropped at least one entity, rows emptied, the gate status counts and the sample parse-status counts."""
+
+    by_support: Counter = Counter()
+    gate: Counter = Counter()
+    parse: Counter = Counter()
+    base_total = delivered_total = rows_dropped = rows_emptied = rows = 0
+    for row in sampling_rows:
+        meta = (row.get("branches") or {}).get(_l1_arm(), {})
+        if not meta or meta.get("solver_samples_absent"):
+            continue
+        rows += 1
+        for entity in meta.get("entity_supports") or []:
+            by_support[str(entity.get("support"))] += 1
+        for status in meta.get("parse_status") or []:
+            parse[str(status)] += 1
+        gate[str((meta.get("gate") or {}).get("status"))] += 1
+        base = meta.get("base_entity_count")
+        delivered = int(meta.get("delivered_entity_count") or 0)
+        if base is not None:
+            base_total += base
+            rows_dropped += int(base > delivered)
+            rows_emptied += int(base > 0 and delivered == 0)
+        delivered_total += delivered
+    return {"rows": rows, "delivered_entities_by_support": dict(sorted(by_support.items())), "base_entities_total": base_total, "delivered_entities_total": delivered_total,
+            "dropped_entities_total": base_total - delivered_total, "rows_with_a_drop": rows_dropped, "rows_emptied": rows_emptied,
+            "gate_status_counts": dict(sorted(gate.items())), "sample_parse_status_counts": dict(sorted(parse.items())),
+            "note": "base = the branch's sample-0 entity count; the gate reports n1-unavailable in flight"}
+
+
+def _l1_arm() -> str:
+    return next(a["arm_id"] for a in fam.ARM_SPECS if a["axis"] == "solver_samples")
+
+
+def _l2_arm() -> str:
+    return next(a["arm_id"] for a in fam.ARM_SPECS if a["axis"] == "perception_samples")
+
+
+def union_size_table(sampling_rows: Sequence[Mapping]) -> dict:
+    """The L2 union-size table from ``sampling-rows.json``: the merged list size distribution, the appended-candidate count distribution, the rows where the merge changed
+    sample 0's list, and the per-sample list sizes."""
+
+    merged_sizes: Counter = Counter()
+    appended: Counter = Counter()
+    sample_sizes: Counter = Counter()
+    changed = rows = 0
+    for row in sampling_rows:
+        meta = ((row.get("branches") or {}).get(_l2_arm()) or {}).get("perception_samples")
+        if not meta:
+            continue
+        rows += 1
+        merged_sizes[str(len(meta.get("merged_candidate_ids") or []))] += 1
+        appended[str(len(meta.get("appended_candidate_ids") or []))] += 1
+        changed += int(bool(meta.get("appended_candidate_ids")))
+        for sample in meta.get("sample_lists") or []:
+            sample_sizes[str(len(sample.get("candidate_intent_ids") or []))] += 1
+    return {"rows": rows, "merged_list_size": dict(sorted(merged_sizes.items())), "appended_count": dict(sorted(appended.items())),
+            "rows_where_the_merge_changed_sample0": changed, "per_sample_list_size": dict(sorted(sample_sizes.items()))}
+
+
+def l2_gold_tables(outputs_rows: Sequence[Mapping], gold: Mapping[str, str], l2_rows: Mapping[str, Mapping[str, float]], lock_rows: Mapping[str, Mapping[str, float]],
+                   ids: Sequence[str]) -> dict:
+    """The gold-aware L2 tables (needs ``--gold-intents``): recall of sample 0's list, of the merged list and of the lock's note; newly listed / lost gold; and the
+    intent conversion (the scorer's scenario_action exactness) of the l2 branch and of the lock by the gold intent's position in the merged list."""
+
+    l2 = _l2_arm()
+    by_row = {row["sample_id"]: {b["branch_id"]: b for b in row["branches"]} for row in outputs_rows}
+    sample0_hit = merged_hit = lock_hit = newly = lost = n = 0
+    position: dict[str, dict] = {k: {"rows": 0, "l2_intent_correct": 0, "lock_intent_correct": 0} for k in ("1", "2", "3", "absent")}
+    for sid in ids:
+        branches = by_row.get(sid)
+        if branches is None or sid not in gold or l2 not in branches or DELIVERING not in branches:
+            continue
+        g = gold[sid]
+        n += 1
+        sampled = branches[l2]["perception_samples"]
+        s0 = sampled["samples"][0]["candidate_ids"] if sampled and sampled["samples"] else branches[l2]["candidate_ids"]
+        merged = sampled["merged_ids"] if sampled else s0
+        lock_note = branches[DELIVERING]["candidate_ids"]
+        sample0_hit += int(g in s0)
+        merged_hit += int(g in merged)
+        lock_hit += int(g in lock_note)
+        newly += int(g in merged and g not in s0)
+        lost += int(g in s0 and g not in merged)
+        key = str(merged.index(g) + 1) if g in merged else "absent"
+        cell = position[key] if key in position else position["3"]
+        cell["rows"] += 1
+        cell["l2_intent_correct"] += int(l2_rows[sid].get(INTENT_FIELD, 0.0) == 1.0)
+        cell["lock_intent_correct"] += int(lock_rows[sid].get(INTENT_FIELD, 0.0) == 1.0)
+    return {"rows": n, "recall_sample0_list": sample0_hit / n if n else float("nan"), "recall_merged_list": merged_hit / n if n else float("nan"),
+            "recall_lock_note": lock_hit / n if n else float("nan"), "gold_newly_listed_rows": newly, "gold_lost_rows": lost, "conversion_by_gold_position_in_merged_list": position}
+
+
+def l1_forms(outputs_rows: Sequence[Mapping], answer_texts: Mapping[str, Sequence[str | None]], n1: Mapping[str, float] | None) -> dict:
+    """The L1 secondary forms from the raw samples (counts only; the official SLU delta of a form is a zero-GPU composition by ``scripts/analysis/slurp_ver1_offline.py`` over
+    the same custody): per form (``s2`` = the registered rule; ``s3``; ``filter_only`` = s2 without the gate; ``gate_only`` = no filter, gate on), the rows whose delivered entity
+    list differs from sample 0's, the entities dropped and the rows emptied. A form that needs N1 reports ``n1-unavailable`` unless ``--n1-json`` supplied it."""
+
+    from speech_aware_evidence_acquisition.rails.supply_variants import commit_solver_samples
+
+    axis = fam.SAMPLING_GROUP.branch(_l1_arm()).solver_samples
+    forms = {"s2_gated": {"min_support": 2, "gated": True}, "s3_gated": {"min_support": 3, "gated": True},
+             "s2_filter_only": {"min_support": 2, "gated": False}, "gate_only": {"min_support": 1, "gated": True}}
+    out: dict[str, dict] = {}
+    for name, spec in forms.items():
+        variant = dataclasses.replace(axis, min_support=spec["min_support"], n1_min=axis.n1_min if spec["gated"] else None,
+                                      empty_votes_min=axis.empty_votes_min if spec["gated"] else None)
+        changed = dropped = emptied = rows = unavailable = 0
+        for row in outputs_rows:
+            texts = answer_texts.get(row["sample_id"])
+            if texts is None:
+                continue
+            rows += 1
+            outcome = commit_solver_samples(variant, list(texts), n1=(n1 or {}).get(row["sample_id"]) if spec["gated"] else None)
+            base_keys = answer_key(texts[0])
+            base_entities = len(base_keys[2]) if len(base_keys) == 3 else 0
+            delivered = len(outcome.entities)
+            changed += int(delivered != base_entities)
+            dropped += max(0, base_entities - delivered)
+            emptied += int(base_entities > 0 and delivered == 0)
+            unavailable += int(spec["gated"] and n1 is None)
+        out[name] = {"rows": rows, "rows_with_a_changed_entity_list": changed, "entities_dropped": dropped, "rows_emptied": emptied,
+                     "gate_n1_unavailable_rows": unavailable if spec["gated"] else 0}
+    return out
+
+
+# --------------------------------------------------------------------------- the words
+
+
+def arm_words(contrast: Mapping, *, floor_intent_pp: float = fam.FLOOR_INTENT_PP, intent_guard_pp: float = fam.INTENT_GUARD_PP,
+              l2_intent_point_min_pp: float = fam.L2_INTENT_POINT_MIN_PP) -> dict:
+    """The preregistered arm words per candidate (see the module docstring); the twin ``aa`` supplies |o_SLU| and |o_int|. L1 rules apply in order NOMINATED,
+    NO-RESOLVED-LOSS, HARM, NEUTRAL; L2 rules in order NOMINATED, HARM, NO-RESOLVED-LOSS, NEUTRAL."""
+
+    versus = contrast["versus_delivering"]
+    twin = versus.get(TWIN)
+    o_slu = abs(twin["slu_f1"]["point_pp"]) if twin else 0.0
+    o_int = abs(twin["intent"]["point_pp"]) if twin else 0.0
+    words: dict[str, dict] = {}
+    for arm in CANDIDATES:
+        if arm not in versus:
+            continue
+        lever = LEVER_OF[arm]
+        slu, intent = versus[arm]["slu_f1"], versus[arm]["intent"]
+        c = {
+            "slu_ci_lo_above_zero": slu["ci95_lo_pp"] > 0.0,
+            "slu_point_at_or_above_twin_bar": slu["point_pp"] >= o_slu,
+            "intent_point_at_or_above_guard": intent["point_pp"] >= intent_guard_pp,
+            "slu_no_resolved_loss": slu["ci95_hi_pp"] >= -o_slu,
+            "intent_no_resolved_loss": intent["ci95_hi_pp"] >= intent_guard_pp,
+            "slu_ci_hi_below_zero": slu["ci95_hi_pp"] < 0.0,
+            "intent_ci_lo_above_zero": intent["ci95_lo_pp"] > 0.0,
+            "intent_point_at_or_above_bar": intent["point_pp"] >= max(o_int, l2_intent_point_min_pp),
+            "intent_ci_hi_below_zero": intent["ci95_hi_pp"] < 0.0,
+        }
+        if lever == "L1":
+            if c["slu_ci_lo_above_zero"] and c["slu_point_at_or_above_twin_bar"] and c["intent_point_at_or_above_guard"]:
+                word = "NOMINATED"
+            elif c["slu_no_resolved_loss"] and c["intent_no_resolved_loss"]:
+                word = "NO-RESOLVED-LOSS"
+            elif c["slu_ci_hi_below_zero"]:
+                word = "HARM"
+            else:
+                word = "NEUTRAL"
+        else:
+            if c["intent_ci_lo_above_zero"] and c["intent_point_at_or_above_bar"] and c["slu_no_resolved_loss"]:
+                word = "NOMINATED"
+            elif c["intent_ci_hi_below_zero"] or c["slu_ci_hi_below_zero"]:
+                word = "HARM"
+            elif c["slu_no_resolved_loss"] and c["intent_no_resolved_loss"]:
+                word = "NO-RESOLVED-LOSS"
+            else:
+                word = "NEUTRAL"
+        words[arm] = {"lever": lever, "primary": fam.PRIMARY_OF_LEVER[lever], "word": word, "next_step": "335 B Fold A column" if word == "NOMINATED" else None,
+                      "slu_delta_pp": slu["point_pp"], "slu_ci95": [slu["ci95_lo_pp"], slu["ci95_hi_pp"]],
+                      "intent_delta_pp": intent["point_pp"], "intent_ci95": [intent["ci95_lo_pp"], intent["ci95_hi_pp"]], "conditions": c}
+    return {"twin_offset_slu_abs_pp": o_slu, "twin_offset_intent_abs_pp": o_int,
+            "twin_offset_slu_point_pp": twin["slu_f1"]["point_pp"] if twin else None, "twin_offset_intent_point_pp": twin["intent"]["point_pp"] if twin else None,
+            "external_reference_268b": {"twin_offset_slu_pp": fam.TWIN_OFFSET_268B_SLU_PP, "twin_offset_intent_pp": fam.TWIN_OFFSET_268B_INTENT_PP,
+                                        "twin_offset_p31_slu_pp": fam.TWIN_OFFSET_P31_SLU_PP, "thinking_system_slu": fam.THINKING_SYSTEM_SLU,
+                                        "thinking_system_intent": fam.THINKING_SYSTEM_INTENT},
+            "floors_pp": {"slu": fam.FLOOR_SLU_PP, "intent": floor_intent_pp}, "intent_guard_pp": intent_guard_pp, "words": words}
+
+
 def arm_secondaries(arms_rows: Mapping[str, Mapping[str, Mapping[str, float]]], contacts: Sequence[Mapping], tables: Mapping[str, Mapping]) -> dict:
-    """The per-arm secondaries: Solver forced-close share (overall and by supplied-item bin), completion tokens, seconds per contact, empty-gold false fill (overall and
-    by forced status) and the non-empty exact-set share."""
+    """The per-arm secondaries over the official columns: first-visit Solver forced-close share (overall and by candidate-list size), completion tokens, seconds per contact,
+    empty-gold false fill (overall and by forced status) and the non-empty exact-set share."""
 
     out: dict[str, dict] = {}
     for arm, rows in arms_rows.items():
+        if arm.endswith(SAMPLE0_SUFFIX):
+            continue
         forced_map = {c["sample_id"]: c["forced_close"] for c in contacts if c["arm"] == arm}
         solver = (tables.get(arm) or {}).get("solver") or {}
         wire = solver.get("wire_records") or 0
         out[arm] = {
             "solver_forced_close_share": (solver.get("forced_closes", 0) / wire) if wire else float("nan"),
             "solver_forced_closes": solver.get("forced_closes"), "solver_wire_records": wire,
-            "forced_close_by_supplied_items_bin": forced_by_supply_bin(contacts, arm),
+            "forced_close_by_list_size": forced_by_list_size(contacts, arm),
             "completion_tokens": solver.get("completion_tokens"), "seconds_per_contact": solver.get("seconds_per_contact"),
             "empty_gold_false_fill": empty_gold_false_fill(rows, lambda sid, m=forced_map: m.get(sid)),
             "nonempty_exact_set": nonempty_exact(rows),
@@ -306,89 +655,63 @@ def arm_secondaries(arms_rows: Mapping[str, Mapping[str, Mapping[str, float]]], 
     return out
 
 
-# --------------------------------------------------------------------------- the words
-
-
-def arm_words(contrast: Mapping, seconds: Mapping[str, float], *, floor_intent_pp: float = fam.FLOOR_INTENT_PP, intent_guard_pp: float = fam.INTENT_GUARD_PP,
-              ratio_max: float = fam.EFFICIENT_SECONDS_RATIO) -> dict:
-    """The preregistered arm words per candidate (see the module docstring); the twin ``aa`` supplies |o|. Rules apply in order: NOMINATED, EFFICIENT-NO-LOSS, HARM, NEUTRAL."""
-
-    versus = contrast["versus_delivering"]
-    twin = versus.get(TWIN)
-    offset = abs(twin["slu_f1"]["point_pp"]) if twin else 0.0
-    lock_s = seconds.get(DELIVERING)
-    words: dict[str, dict] = {}
-    for arm in CANDIDATES:
-        if arm not in versus:
-            continue
-        slu, intent = versus[arm]["slu_f1"], versus[arm]["intent"]
-        ratio = (seconds[arm] / lock_s) if (arm in seconds and lock_s) else float("nan")
-        conditions = {
-            "slu_ci_lo_above_zero": slu["ci95_lo_pp"] > 0.0,
-            "intent_point_at_or_above_guard": intent["point_pp"] >= intent_guard_pp,
-            "slu_point_at_or_above_twin_bar": slu["point_pp"] >= offset,
-            "slu_no_resolved_loss": slu["ci95_hi_pp"] >= -offset,
-            "intent_no_resolved_loss": intent["ci95_hi_pp"] >= -floor_intent_pp,
-            "solver_seconds_ratio_ok": bool(ratio == ratio and ratio <= ratio_max),
-            "slu_ci_hi_below_zero": slu["ci95_hi_pp"] < 0.0,
-        }
-        if conditions["slu_ci_lo_above_zero"] and conditions["intent_point_at_or_above_guard"] and conditions["slu_point_at_or_above_twin_bar"]:
-            word = "NOMINATED"
-        elif conditions["slu_no_resolved_loss"] and conditions["intent_no_resolved_loss"] and conditions["solver_seconds_ratio_ok"]:
-            word = "EFFICIENT-NO-LOSS"
-        elif conditions["slu_ci_hi_below_zero"]:
-            word = "HARM"
-        else:
-            word = "NEUTRAL"
-        words[arm] = {"word": word, "next_step": "2-arm Fold A confirm" if word in ("NOMINATED", "EFFICIENT-NO-LOSS") else None,
-                      "slu_delta_pp": slu["point_pp"], "slu_ci95": [slu["ci95_lo_pp"], slu["ci95_hi_pp"]],
-                      "intent_delta_pp": intent["point_pp"], "intent_ci95": [intent["ci95_lo_pp"], intent["ci95_hi_pp"]],
-                      "solver_seconds_ratio_vs_lock": ratio, "conditions": conditions}
-    return {"twin_offset_abs_pp": offset, "twin_offset_point_pp": twin["slu_f1"]["point_pp"] if twin else None,
-            "external_reference_268b": {"twin_offset_slu_pp": fam.TWIN_OFFSET_268B_SLU_PP, "twin_offset_intent_pp": fam.TWIN_OFFSET_268B_INTENT_PP,
-                                        "twin_offset_p31_slu_pp": fam.TWIN_OFFSET_P31_SLU_PP, "thinking_system_slu": fam.THINKING_SYSTEM_SLU,
-                                        "thinking_system_intent": fam.THINKING_SYSTEM_INTENT},
-            "floors_pp": {"slu": fam.FLOOR_SLU_PP, "intent": floor_intent_pp}, "intent_guard_pp": intent_guard_pp, "seconds_ratio_max": ratio_max, "words": words}
-
-
 def read_stage(arms: Mapping[str, Mapping[str, Mapping[str, float]]], ids: Sequence[str], cluster_of: Callable[[str], str], scenario_of: Callable[[str], str],
-               by_arm: Mapping[str, Sequence[Mapping]], contacts: Sequence[Mapping], *, seed: int = SEED, draws: int = DRAWS, missing: Mapping | None = None) -> dict:
-    """The full read: paired contrasts, the arm words, the per-scenario table and every per-arm secondary."""
+               by_arm: Mapping[str, Sequence[Mapping]], contacts: Sequence[Mapping], *, seed: int = SEED, draws: int = DRAWS, missing: Mapping | None = None,
+               stream_disc: Mapping | None = None, perception_disc: Mapping | None = None, sampling_rows: Sequence[Mapping] | None = None,
+               gold: Mapping[str, str] | None = None, outputs_rows: Sequence[Mapping] | None = None, forms: Mapping | None = None) -> dict:
+    """The full read: paired contrasts, the arm words, the per-scenario table, the discordances and every per-arm and per-lever secondary."""
 
     missing = missing if missing is not None else {"total": 0, "by_arm": {}}
-    contrast = npc.paired_contrasts(arms, ids, cluster_of, seed=seed, draws=draws, delivering=DELIVERING)
+    scored = {a: r for a, r in arms.items()}
+    column_arms = {a: r for a, r in scored.items() if a in ARMS}
+    contrast = npc.paired_contrasts(scored, ids, cluster_of, seed=seed, draws=draws, delivering=DELIVERING)
     tables = tables_by_arm(by_arm)
-    secs = solver_seconds(tables)
-    return {
+    l1, l2 = _l1_arm(), _l2_arm()
+    result = {
         "schema": SCHEMA_READ, "status": "PREREGISTERED-READ (development numbers; never a test claim; claims_benefit false)",
-        "arm_words": arm_words(contrast, secs), "arm_words_vocabulary": list(WORDS),
+        "arm_words": arm_words(contrast), "arm_words_vocabulary": list(WORDS), "levers": dict(LEVER_OF),
         "interval": {"kind": "utterance-cluster bootstrap", "draws": draws, "seed": seed, "level": "CI95"},
-        "contrast": contrast, "per_scenario": npc.per_scenario_table(arms, ids, scenario_of, DELIVERING),
-        "discordance": discordance_table(arms, ids),
-        "secondaries": arm_secondaries(arms, contacts, tables), "arms_nodes": tables, "throughput": throughput_table(tables, fam.ROWS),
+        "contrast": contrast, "per_scenario": npc.per_scenario_table(column_arms, ids, scenario_of, DELIVERING),
+        "discordance": discordance_table(scored, ids), "stream_discordance": {"solver_answer": stream_disc, "perception_note": perception_disc},
+        "secondaries": arm_secondaries(scored, contacts, tables), "arms_nodes": tables, "throughput": throughput_table(tables, len(ids)),
         "unattributed_contacts": len(by_arm.get("unattributed", [])), "absent_columns": missing["total"], "absent_columns_by_arm": dict(missing["by_arm"]),
-        "scorer_parse_failures": {arm: sum(1 for row in rows.values() if row.get("parsed", 1.0) == 0.0) for arm, rows in sorted(arms.items())},
+        "scorer_parse_failures": {arm: sum(1 for row in rows.values() if row.get("parsed", 1.0) == 0.0) for arm, rows in sorted(scored.items())},
         "contacts": CONTACTS_ZERO,
     }
+    if l1 + SAMPLE0_SUFFIX in scored:
+        result["l1_pure_filter"] = {
+            "delta_vs_own_sample0": npc.paired_contrasts({l1: scored[l1], l1 + SAMPLE0_SUFFIX: scored[l1 + SAMPLE0_SUFFIX]}, ids, cluster_of, seed=seed, draws=draws,
+                                                          delivering=l1 + SAMPLE0_SUFFIX)["versus_delivering"][l1],
+            "filter_effect": l1_filter_effect(scored[l1], scored[l1 + SAMPLE0_SUFFIX], ids),
+            "sample0_vs_lock_second_aa": npc.paired_contrasts({l1 + SAMPLE0_SUFFIX: scored[l1 + SAMPLE0_SUFFIX], DELIVERING: scored[DELIVERING]}, ids, cluster_of, seed=seed,
+                                                                draws=draws, delivering=DELIVERING)["versus_delivering"][l1 + SAMPLE0_SUFFIX],
+            "note": "the branch's sample 0 is a second A/A: reported, used in no word"}
+    if sampling_rows is not None:
+        result["support_count_table"] = support_count_table(sampling_rows)
+        result["union_size_table"] = union_size_table(sampling_rows)
+    if forms is not None:
+        result["l1_forms"] = forms
+    if gold is not None and outputs_rows is not None:
+        result["l2_gold_tables"] = l2_gold_tables(outputs_rows, gold, scored[l2], scored[DELIVERING], ids)
+    else:
+        result["l2_gold_tables"] = {"status": "not computed: no --gold-intents supplied"}
+    return result
 
 
 def render_markdown(result: Mapping) -> str:
     lines = [f"# {fam.READ_TITLE}", ""]
-    rs = result.get("resume")
-    if rs:
-        lines += [f"RESUME: n = {rs['rows']:,}; {rs['kept']:,} rows kept from the stopped attempt by replay and {rs['flown']} rows flown by the resume "
-                  "(the split is reported only; kept and flown rows are never separated in a contrast).", ""]
     aw = result.get("arm_words")
     if aw:
-        lines += [f"In-flight twin offset |o| = {aw['twin_offset_abs_pp']:.2f} pp SLU (external 268-B reference {aw['external_reference_268b']['twin_offset_slu_pp']:+.2f}).", "",
-                  "| arm | word | SLU d (pp) | SLU CI95 | intent d (pp) | intent CI95 | Solver s ratio | next step |", "| --- | --- | ---: | --- | ---: | --- | ---: | --- |"]
+        lines += [f"In-flight twin offsets |o_SLU| = {aw['twin_offset_slu_abs_pp']:.2f} pp, |o_int| = {aw['twin_offset_intent_abs_pp']:.2f} pp "
+                  f"(external 268-B reference SLU {aw['external_reference_268b']['twin_offset_slu_pp']:+.2f}).", "",
+                  "| arm | lever | word | SLU d (pp) | SLU CI95 | intent d (pp) | intent CI95 | next step |", "| --- | --- | --- | ---: | --- | ---: | --- | --- |"]
         for arm, w in aw["words"].items():
-            lines.append(f"| {arm} | {w['word']} | {w['slu_delta_pp']:+.2f} | [{w['slu_ci95'][0]:+.2f}, {w['slu_ci95'][1]:+.2f}] | {w['intent_delta_pp']:+.2f} | "
-                         f"[{w['intent_ci95'][0]:+.2f}, {w['intent_ci95'][1]:+.2f}] | {w['solver_seconds_ratio_vs_lock']:.2f} | {w['next_step'] or ''} |")
+            lines.append(f"| {arm} | {w['lever']} ({w['primary']}) | {w['word']} | {w['slu_delta_pp']:+.2f} | [{w['slu_ci95'][0]:+.2f}, {w['slu_ci95'][1]:+.2f}] | "
+                         f"{w['intent_delta_pp']:+.2f} | [{w['intent_ci95'][0]:+.2f}, {w['intent_ci95'][1]:+.2f}] | {w['next_step'] or ''} |")
         lines.append("")
     c = result.get("contrast")
     if c:
-        lines += ["| arm | SLU-F1 | intent | SLU d vs lock (pp) | CI95 | intent d (pp) | CI95 | intent saves / harms |", "| --- | ---: | ---: | ---: | --- | ---: | --- | --- |"]
+        lines += ["| column | SLU-F1 | intent | SLU d vs lock (pp) | CI95 | intent d (pp) | CI95 | intent saves / harms |", "| --- | ---: | ---: | ---: | --- | ---: | --- | --- |"]
         for arm, lv in c["levels"].items():
             v = c["versus_delivering"].get(arm)
             if v is None:
@@ -398,23 +721,32 @@ def render_markdown(result: Mapping) -> str:
                 lines.append(f"| {arm} | {lv['slu_f1_pct']:.2f} | {lv['intent_pct']:.2f} | {s['point_pp']:+.2f} | [{s['ci95_lo_pp']:+.2f}, {s['ci95_hi_pp']:+.2f}] | "
                              f"{i['point_pp']:+.2f} | [{i['ci95_lo_pp']:+.2f}, {i['ci95_hi_pp']:+.2f}] | {t['saves']} / {t['harms']} |")
         lines.append("")
-    dis = result.get("discordance")
-    if dis:
-        lines += [f"Discordance against `{dis['delivering']}` (rows whose official per-row result differs); the twin `{dis['twin']}` is the run-to-run baseline.", "",
-                  "| arm | SLU-discordant rows | share | x twin | intent-discordant rows | share | any |", "| --- | ---: | ---: | ---: | ---: | ---: | ---: |"]
-        for arm, d in dis["arms"].items():
-            lines.append(f"| {arm}{' (twin)' if d['is_twin'] else ''} | {d['slu_discordant_rows']} | {d['slu_discordant_share']:.3f} | {d['slu_discordant_share_over_twin']:.2f} | "
-                         f"{d['intent_discordant_rows']} | {d['intent_discordant_share']:.3f} | {d['any_discordant_share']:.3f} |")
-        lines.append("")
+    pf = result.get("l1_pure_filter")
+    if pf:
+        d, e = pf["delta_vs_own_sample0"], pf["filter_effect"]
+        lines += [f"L1 pure filter (committed minus its own sample 0): SLU {d['slu_f1']['point_pp']:+.2f} pp [{d['slu_f1']['ci95_lo_pp']:+.2f}, {d['slu_f1']['ci95_hi_pp']:+.2f}], "
+                  f"intent {d['intent']['point_pp']:+.2f}; empty-gold false fills removed {e['empty_gold_false_fills_removed']} (added {e['empty_gold_false_fills_added']}); "
+                  f"non-empty exact lost {e['nonempty_exact_lost']} / gained {e['nonempty_exact_gained']}.", ""]
+    for key, title in (("solver_answer", "Solver answer"), ("perception_note", "Perception note")):
+        block = ((result.get("stream_discordance") or {}).get(key))
+        if block:
+            lines += [f"{title} streams: discordance against `{block['delivering']}`; the twin `{block['twin']}` is the run-to-run baseline.", "",
+                      "| stream | discordant rows | share | x twin |", "| --- | ---: | ---: | ---: |"]
+            for name, d in sorted(block["streams"].items()):
+                lines.append(f"| {name}{' (twin)' if d['is_twin'] else ''} | {d['discordant_rows']} | {d['discordant_share']:.3f} | {d['share_over_twin']:.2f} |")
+            lines.append("")
+    for key, title in (("support_count_table", "L1 support counts"), ("union_size_table", "L2 union sizes")):
+        if result.get(key):
+            lines += [f"{title}: `{json.dumps(result[key], sort_keys=True)}`", ""]
     sec = result.get("secondaries")
     if sec:
-        lines += ["| arm | forced share | forced < 40 items | forced >= 40 items | completion tokens mean | s per contact | empty-gold false fill (forced / natural) | non-empty exact |",
-                  "| --- | ---: | ---: | ---: | ---: | ---: | --- | ---: |"]
+        lines += ["| arm | forced share | forced by list size 1 / 2 / 3 | tokens mean | s per contact | empty-gold false fill (forced / natural) | non-empty exact |",
+                  "| --- | ---: | --- | ---: | ---: | --- | ---: |"]
         for arm, s in sec.items():
-            b, e = s["forced_close_by_supplied_items_bin"], s["empty_gold_false_fill"]
+            b, e = s["forced_close_by_list_size"], s["empty_gold_false_fill"]
             tokens = (s["completion_tokens"] or {}).get("mean", float("nan"))
             seconds = (s["seconds_per_contact"] or {}).get("mean", float("nan"))
-            lines.append(f"| {arm} | {s['solver_forced_close_share']:.3f} | {b['lt40']['forced_share']:.3f} ({b['lt40']['contacts']}) | {b['ge40']['forced_share']:.3f} ({b['ge40']['contacts']}) | "
+            lines.append(f"| {arm} | {s['solver_forced_close_share']:.3f} | {b['1']['forced_share']:.3f} / {b['2']['forced_share']:.3f} / {b['3']['forced_share']:.3f} | "
                          f"{tokens:.0f} | {seconds:.1f} | {e['forced']['false_fill']}/{e['forced']['rows']} vs {e['natural']['false_fill']}/{e['natural']['rows']} | "
                          f"{s['nonempty_exact_set']['exact_share']:.3f} |")
         lines.append("")
@@ -436,15 +768,20 @@ def render_markdown(result: Mapping) -> str:
 
 
 def load_column_rows(analysis_columns: Path, scorer_id: str = SCORER) -> dict[str, dict]:
-    """Per-arm per-row official scores from ``arm-<arm>-<scorer>-scores.json`` (written by stage3_rollout_score --mode supply-variants)."""
+    """Per-column per-row official scores from ``arm-<column>-<scorer>-scores.json`` (written by stage3_rollout_score --mode perception-branches): the four arm columns
+    and the stream columns (``<l1 arm>-sample0``) when present."""
 
     out: dict[str, dict] = {}
-    for arm in ARMS:
+    for arm in [*ARMS, *stream_column_names()]:
         path = Path(analysis_columns) / COLUMN_SCORE_NAME.format(arm=arm, scorer=scorer_id)
         if not path.exists():
             raise ReadError(f"missing column score file {path}; run `l338_read.sh columns` first")
         out[arm] = base.rows_table(json.loads(path.read_text(encoding="utf-8")), scorer_id)
     return out
+
+
+def _load_json(path: Path | None):
+    return None if path is None else json.loads(Path(path).read_text(encoding="utf-8"))
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -455,6 +792,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--analysis-root", type=Path, default=None)
     parser.add_argument("--seed", type=int, default=SEED)
     parser.add_argument("--draws", type=int, default=DRAWS)
+    parser.add_argument("--gold-intents", type=Path, default=None, help="optional JSON {sample_id: gold intent id} for the L2 recall tables")
+    parser.add_argument("--n1-json", type=Path, default=None, help="optional JSON {sample_id: N1} for the N1-gated L1 forms")
     args = parser.parse_args(argv)
     root = args.analysis_root or (args.data_root / fam.ANALYSIS_ROOT)
     root.mkdir(parents=True, exist_ok=True)
@@ -480,10 +819,6 @@ def main(argv: Sequence[str] | None = None) -> int:
             manifest = json.loads(paths["manifest"].read_text(encoding="utf-8"))
             if str(manifest.get("status", "")).upper() != "COMPLETED":
                 raise ReadError(f"manifest status is {manifest.get('status')!r}, not COMPLETED")
-            resume = None
-            declared = json.loads((args.repo_root / "configs" / "experiment" / f"{cells['arm']['cell']}.json").read_text(encoding="utf-8"))["cells"][0].get("resume_from")
-            if declared is not None:
-                resume = npc.resume_block(manifest, declared, fam.ROWS)
             arms = load_column_rows(root / "columns")
             ids, cluster_of, scenario_of = base.roster_maps(args.repo_root / fam.ROSTER["arm"])
             for arm, rows in arms.items():
@@ -492,11 +827,18 @@ def main(argv: Sequence[str] | None = None) -> int:
             outputs_rows = load_outputs_rows(paths["outputs"])
             contacts = npc.trace_contacts(paths["trace"], budget_message)
             by_arm = npc.attribute(contacts, arm_contact_map(outputs_rows))
+            wanted = {request for row in outputs_rows for request in row["requests"].values()}
+            response_keys = trace_response_keys(paths["trace"], wanted)
+            streams = solver_stream_keys(outputs_rows, response_keys)
+            sampling_path = root / "columns" / "sampling-rows.json"
+            sampling_rows = json.loads(sampling_path.read_text(encoding="utf-8"))["rows"] if sampling_path.exists() else None
+            gold, n1 = _load_json(args.gold_intents), _load_json(args.n1_json)
+            forms = l1_forms_from_trace(outputs_rows, paths["trace"], n1)
             result = read_stage(arms, ids, cluster_of, scenario_of, by_arm, contact_rows(outputs_rows, contacts), seed=args.seed, draws=args.draws,
-                                missing=missing_columns(outputs_rows, contacts))
+                                missing=missing_columns(outputs_rows, contacts), stream_disc=stream_discordance(streams, ids),
+                                perception_disc=stream_discordance(perception_stream_keys(outputs_rows), ids), sampling_rows=sampling_rows, gold=gold,
+                                outputs_rows=outputs_rows, forms=forms)
             result["sealed_hashes"] = {n: base.sha256_file(paths[n]) for n in ("trace", "outputs", "manifest")}
-            if resume is not None:
-                result["resume"] = resume
             out = root / "read.json"
     except ReadError as error:
         print(f"REFUSED: {error}", file=sys.stderr)
@@ -510,6 +852,34 @@ def main(argv: Sequence[str] | None = None) -> int:
                     encoding="utf-8")
     print(json.dumps({"written": str(out), "arm_words": {a: w["word"] for a, w in (result.get("arm_words") or {}).get("words", {}).items()}}))
     return 0
+
+
+def l1_forms_from_trace(outputs_rows: Sequence[Mapping], trace: Path, n1: Mapping[str, float] | None) -> dict:
+    """Read the l1 branch's n raw Solver sample texts once from the trace and evaluate :func:`l1_forms` (texts live only inside this call)."""
+
+    arm = _l1_arm()
+    wanted: dict[str, tuple[str, int]] = {}
+    for row in outputs_rows:
+        for branch in row["branches"]:
+            if branch["branch_id"] != arm or not branch["solver_samples"]:
+                continue
+            for j, sample in enumerate(branch["solver_samples"]["samples"]):
+                request = row["requests"].get(str(sample.get("contact_id")))
+                if request and not str(sample.get("parse_status")).startswith("finite-completion"):
+                    wanted[request] = (row["sample_id"], j)
+    texts: dict[str, list] = {}
+    n = fam.SAMPLING_GROUP.branch(arm).solver_samples.n
+    with Path(trace).open("rb") as handle:
+        for raw in handle:
+            if b'"MODEL_RESPONSE"' not in raw[:60]:
+                continue
+            record = json.loads(raw)
+            rid = str(record.get("record_id", ""))
+            request_id = rid[: -len("/response")] if rid.endswith("/response") else None
+            if request_id in wanted:
+                sid, j = wanted[request_id]
+                texts.setdefault(sid, [None] * n)[j] = (record.get("payload") or {}).get("text")
+    return l1_forms(outputs_rows, texts, n1)
 
 
 if __name__ == "__main__":

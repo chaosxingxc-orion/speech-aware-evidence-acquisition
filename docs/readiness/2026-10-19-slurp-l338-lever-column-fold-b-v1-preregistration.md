@@ -1,6 +1,6 @@
 # L338: the lever column, preregistration (DRAFT / HELD)
 
-Registered 2026-10-19 at study commit `f42b9a7af0a8aa1d4ca64113efcddb95facc86f8` by script. Development numbers only.
+Registered 2026-10-19 at study commit `2e92cac1827d028411c0c6fde42f2c8233a57bcd` by script. Development numbers only.
 
 Runs: `SAEA-SLURP-STAGE3-L338-LEVER-COLUMN-FOLD-B-V1` / `SAEA-SLURP-STAGE3-L338-LEVER-COLUMN-FOLD-B-FIT-V1`; `SAEA-SLURP-STAGE3-L338-LEVER-COLUMN-FOLD-B-SMOKE-4-V1` / `SAEA-SLURP-STAGE3-L338-LEVER-COLUMN-FOLD-B-SMOKE-4-FIT-V1`; read `SAEA-SLURP-L338-LEVER-COLUMN-FOLD-B-READ-V1`.
 

@@ -123,7 +123,7 @@
     "discordance_of_every_sampled_stream_against_the_twin"
   ],
   "stages": {
-    "1_columns": "bash scripts/flights/nx/l338_read.sh columns  (stage3_rollout_score --mode supply-variants: one complete official scoring per arm; no number printed)",
+    "1_columns": "bash scripts/flights/nx/l338_read.sh columns  (stage3_rollout_score --mode perception-branches: one complete official scoring per arm; no number printed)",
     "2_read": "python -B scripts/analysis/slurp_l338_column_read.py --stage read --data-root $SPEECHRL_DATA_DIR (through scripts/flights/nx/l338_read.sh)",
     "smoke": "python -B scripts/analysis/slurp_l338_column_read.py --stage smoke (per-arm decode cost and the v6 sampling receipt; no countersignature; the machine sign-off input for the column flight)"
   },

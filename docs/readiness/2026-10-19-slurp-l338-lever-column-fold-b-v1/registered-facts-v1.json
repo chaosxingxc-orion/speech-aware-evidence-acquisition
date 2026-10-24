@@ -483,7 +483,7 @@
     }
   },
   "status": "DRAFT-HELD",
-  "study_commit_at_registration": "f42b9a7af0a8aa1d4ca64113efcddb95facc86f8",
+  "study_commit_at_registration": "2e92cac1827d028411c0c6fde42f2c8233a57bcd",
   "thinking_knobs": {
     "answer_fallback": {
       "enable_thinking": false,

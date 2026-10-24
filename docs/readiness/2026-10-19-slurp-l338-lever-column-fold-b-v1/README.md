@@ -89,7 +89,7 @@ expected = rows x arm mix / 1.95 rows per minute / 60 with the arm mix 7.52 lock
 
 ## Read rule (preregistered)
 
-`scripts/analysis/slurp_l338_column_read.py`: every arm's first-visit Solver answer is scored once, complete, by the official scorer (`slurp-slu-official-train`, `stage3_rollout_score --mode supply-variants`); each candidate arm and the twin minus the delivering `lock` arm, SLU-F1 and intent accuracy, paired per row, utterance-cluster bootstrap CI95 (10,000 draws, seed 20261018). The twin is the in-flight A/A: its SLU / intent deltas o_SLU / o_int give the bars |o_SLU| / |o_int|. The l1 branch's sample 0 is a second A/A (reported, used in no word). Floors (decision 190, n = 1,080): 1.49 pp SLU / 0.65 pp intent. Words per lever (fixed here and in the reader; the first that applies, in the listed order):
+`scripts/analysis/slurp_l338_column_read.py`: every arm's first-visit Solver answer is scored once, complete, by the official scorer (`slurp-slu-official-train`, `stage3_rollout_score --mode perception-branches`); each candidate arm and the twin minus the delivering `lock` arm, SLU-F1 and intent accuracy, paired per row, utterance-cluster bootstrap CI95 (10,000 draws, seed 20261018). The twin is the in-flight A/A: its SLU / intent deltas o_SLU / o_int give the bars |o_SLU| / |o_int|. The l1 branch's sample 0 is a second A/A (the extra official column `l1-support-sample0`, scored once beside the four arm columns; reported, used in no word). Floors (decision 190, n = 1,080): 1.49 pp SLU / 0.65 pp intent. Words per lever (fixed here and in the reader; the first that applies, in the listed order):
 
 **L1** (slu primary, intent guard; `l1-support`)
 

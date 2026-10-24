@@ -475,7 +475,7 @@ def readme_text(ids: Mapping[str, Mapping], cost: Mapping[str, Any]) -> str:
         f"`{fam.READER}`: every arm's first-visit Solver answer is scored once, complete, by the official scorer (`slurp-slu-official-train`, `stage3_rollout_score --mode perception-branches`); "
         f"each candidate arm and the twin minus the delivering `{fam.DELIVERING}` arm, SLU-F1 and intent accuracy, paired per row, utterance-cluster bootstrap "
         "CI95 (10,000 draws, seed 20261018). The twin is the in-flight A/A: its SLU / intent deltas o_SLU / o_int give the bars |o_SLU| / |o_int|. The l1 branch's sample 0 is a second A/A "
-        "(reported, used in no word). Floors (decision 190, n = 1,080): "
+        "(the extra official column `l1-support-sample0`, scored once beside the four arm columns; reported, used in no word). Floors (decision 190, n = 1,080): "
         f"{fam.FLOOR_SLU_PP} pp SLU / {fam.FLOOR_INTENT_PP} pp intent. Words per lever (fixed here and in the reader; the first that applies, in the listed order):\n\n"
         + "\n".join(f"**{lever}** ({rules['primary']} primary, {rules['guard']} guard; `{'`, `'.join(arm for arm, lv in fam.ARM_LEVER.items() if lv == lever)}`)\n\n"
                     + "\n".join(f"* **{w}**: {rules[w]}." for w in WORD_ORDER[lever]) + "\n" for lever, rules in WORD_RULES.items()) + "\n"

@@ -91,7 +91,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-19-slurp-l338-lever-column-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "1c7971875cc8103e0f2f329aea547e746f337a2d3fa7b5c0e1cca4b40cdf5597"
+    "sha256": "eddf71570125a7f742600295bc263e969b0cf12083044e57ce06b96754bc0091"
   },
   "purpose": "SAEA-SLURP-STAGE3-L338-LEVER-COLUMN-FOLD-B-FIT-V1: request envelopes only; reads nothing.",
   "registered_at_utc": "2026-10-19T12:00:00.000000+00:00",

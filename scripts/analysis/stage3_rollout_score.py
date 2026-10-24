@@ -1685,7 +1685,6 @@ def render_perception_branch_columns(
         # (the pure-filter delta is the committed column minus this one).
         stream_names = [f"{b.branch_id}-sample0" for b in group.branches if b.solver_samples is not None]
         stream_columns = {name: [] for name in stream_names}
-    streams_text: dict[str, dict[str, list[str]]] = {}
     for sid in ids:
         row = rows[sid]
         episode = row.get("native_episode_receipt")

@@ -54,7 +54,7 @@ import tfrl_family as tf  # noqa: E402
 import recovery as rcv  # noqa: E402
 
 from speech_aware_evidence_acquisition.rails.supply_variants import (  # noqa: E402
-    PerceptionBranchError, parse_perception_sampling_variants, sampling_extra_contacts,
+    parse_perception_sampling_variants, sampling_extra_contacts,
 )
 
 REPO_ROOT = tf.REPO_ROOT

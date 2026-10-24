@@ -1,9 +1,11 @@
-"""L338 (the Solver decoding-policy column on the Thinking core, TRAIN Fold B): package, cells, instrument seam, reader, chain, hook and launch spec.
+"""L338 (the decision-338 lever column on the Thinking core, TRAIN Fold B): package, cells, instrument seam, reader, chain, hook and launch spec.
 
-Model-free: no model, server, tokenizer, GPU or network contact. The cells are the 268-B Thinking lock cell plus the Solver ``decoding_variants`` block the module
-compiler writes; the proofs here are that (1) the arm table states only the closed sampling set and the lock's own decoding, (2) the compiled cells carry exactly that block
-and nothing else moved, (3) a Solver decoding-arm contact carries the lock's thinking fields and seed at the REQUEST level and differs from the lock's request in the declared
-sampling keys alone, (4) the package, the reader's words, splits and discordance table, the sign-off, the chain, the queue hook and the launch spec agree with the family.
+Model-free: no model, server, tokenizer, GPU or network contact. The cells are the 268-B Thinking lock cell plus the Perception ``sampling_variants`` block the module
+compiler writes; the proofs here are that (1) the arm table states only the registered sampling axes and the lock's own decoding, (2) the compiled cells carry exactly that
+block and nothing else moved, (3) the compiled group parses through the runtime loader as a level-2 sampling group with the registered seeds, contacts and policies,
+(4) the package, the reader's words, streams and discordance tables, the sign-off, the chain, the queue hook and the launch spec agree with the family.
+The request-level proof of the fan-out (sample index, seed and override per contact, sample 0 the lock's request) is ``test_l338_sampling_live.py``; the sealed-row render is
+``test_l338_sampling_score.py``.
 """
 
 from __future__ import annotations
@@ -39,11 +41,11 @@ from speech_aware_evidence_acquisition.rails.native_episode_config import load_n
 NX = REPO / "scripts" / "flights" / "nx"
 PKG = REPO / fam.PACKAGE
 LOCKED_PATH = REPO / fam.LOCKED_TEMPLATE
-SAMPLING = {
-    "d1-qwen-sampling": {"temperature": 0.6, "top_p": 0.95, "top_k": 20},
-    "d2-qwen-sampling-presence": {"temperature": 0.6, "top_p": 0.95, "top_k": 20, "presence_penalty": 1.5},
-    "d3-temp-0.3": {"temperature": 0.3, "top_p": 0.95, "top_k": 20},
-    "d4-greedy-presence": {"temperature": 0, "presence_penalty": 1.5},
+DECODING = {"temperature": 0.6, "top_p": 0.95, "top_k": 20}
+AXES = {
+    "l1-support": {"solver_samples": {"n": 5, "decoding": DECODING, "commit": {
+        "policy": "saea-commit-first-support-v1", "min_support": 2, "similarity_threshold": 0.8, "n1_min": 0.2, "empty_votes_min": 3}}},
+    "l2-union": {"perception_samples": {"k": 4, "decoding": DECODING, "merge_policy": "saea-perception-candidate-union-v1", "cap": 3}},
 }
 
 
@@ -92,13 +94,12 @@ def test_ids_are_unique_and_follow_the_registered_pattern():
         assert experiment(key)["cells"][0]["model_fragment"] == tsf.THINK_MODEL and experiment(key)["service_session"] == tsf.THINK_SESSION   # the RESIDENT np4 session
 
 
-def test_recovery_hooks_for_rec1_and_rec2_are_declared_and_empty_now():
+def test_recovery_hooks_for_rec1_are_declared_and_empty_now():
     assert list(fam.PREDECESSOR_SNAPSHOTS) == ["arm"] == list(fam.RECOVERY_INPUTS)
-    assert fam.PREDECESSOR_SNAPSHOTS["arm"][0].endswith("predecessor-snapshot-arm-rec1-v1.json") and fam.PREDECESSOR_SNAPSHOTS["arm"][1].endswith("predecessor-snapshot-arm-rec2-v1.json")
-    assert fam.RECOVERY_INPUTS["arm"][0].endswith("recovery-input-arm-v1.json") and fam.RECOVERY_INPUTS["arm"][1].endswith("recovery-input-arm-rec2-v1.json")
-    assert fam.RESUME_MODES == {"checkpoint": "B", "trace": "A"} and callable(fam.build_arm_rec2) and callable(fam.build_arm_recovery)
-    for name in ("l338_rec2_mode.py", "l338_rec2_snapshot.py", "l338_rec2_replay_proof.py"):
-        subprocess.run([sys.executable, "-B", "-c", "import ast,sys; ast.parse(open(sys.argv[1], encoding='utf-8').read())", str(NX / name)], check=True)
+    assert fam.PREDECESSOR_SNAPSHOTS["arm"] == [fam.PREDECESSOR_SNAPSHOT["arm"]] and fam.PREDECESSOR_SNAPSHOTS["arm"][0].endswith("predecessor-snapshot-arm-rec1-v1.json")
+    assert fam.RECOVERY_INPUTS["arm"] == [fam.RECOVERY_INPUT["arm"]] and fam.RECOVERY_INPUTS["arm"][0].endswith("recovery-input-arm-v1.json")
+    assert callable(fam.build_arm_recovery) and not hasattr(fam, "build_arm_rec2") and not hasattr(fam, "RESUME_MODES")        # the rec2 resume tooling is not cloned
+    assert not list(NX.glob("l338_rec2_*"))
 
 
 # ---- the arm table: the closed sampling set and the lock's own decoding ----------------------------------------------------------------------
@@ -110,14 +111,18 @@ def test_the_locked_template_is_the_one_the_thinking_lock_renders():
     assert baseline("arm")["native_episode"]["consumption_module"]["lock"] == fam.LOCK
 
 
-def test_the_four_registered_arms_are_exactly_owner_ruling_332a():
-    assert list(fam.CANDIDATE_ARMS) == list(SAMPLING) and fam.ARM_ORDER == (*SAMPLING, "aa", "lock") and fam.K == 6
-    for spec in fam.ARM_SPECS:
-        assert spec["decoding"] == SAMPLING[spec["arm_id"]] == fam.DECODING_OF[spec["arm_id"]]
+def test_the_registered_arms_are_the_two_levers_the_twin_and_the_lock():
+    assert list(fam.CANDIDATE_ARMS) == ["l1-support", "l2-union"] and fam.ARM_ORDER == ("l1-support", "l2-union", "aa", "lock") and fam.K == 4
+    assert fam.AXIS_OF == AXES and fam.ARM_LEVER == {"l1-support": "L1", "l2-union": "L2"}
+    assert fam.PERCEPTION_CONTACTS_PER_ROW == 7 and fam.SOLVER_CONTACTS_PER_ROW == 8 and fam.CONTACTS_PER_ROW == 15 and fam.PROGRAM == "phase-native-module-v1-c15"
     assert fam.LOCKED_DECODING == {"seed": 20260913, "temperature": 0}
-    # arm 4 is the lock's greedy decoding PLUS the penalty: it differs from the lock by the penalty alone
-    assert fam.DECODING_OF["d4-greedy-presence"]["temperature"] == fam.LOCKED_DECODING["temperature"]
-    assert "seed" not in json.dumps(fam.DECODING_OF) and "max_tokens" not in json.dumps(fam.DECODING_OF)
+    # the sampling decoding is the closed Qwen thinking-mode setting; no arm sets a seed, a cap or a switch (seeds are derived: lock seed + offset)
+    assert "seed" not in json.dumps(fam.AXIS_OF) and "max_tokens" not in json.dumps(fam.AXIS_OF)
+    group = fam.SAMPLING_GROUP
+    assert group.is_sampling and group.branch_ids == fam.ARM_ORDER and group.delivering_branch.branch_id == "lock" and group.twin_branch.branch_id == "aa"
+    l1, l2 = group.branch("l1-support").solver_samples, group.branch("l2-union").perception_samples
+    assert (l1.n, l1.seed_offsets, l1.min_support, l1.n1_min, l1.empty_votes_min) == (5, (1, 2, 3, 4), 2, 0.2, 3)
+    assert (l2.k, l2.seed_offsets, l2.cap, l2.merge_policy) == (4, (1, 2, 3), 3, "saea-perception-candidate-union-v1")
 
 
 def test_the_lock_decoding_in_the_arm_table_is_the_thinking_fragments_own():
@@ -136,22 +141,19 @@ def test_the_arm_table_is_refused_by_name():
         return doc
 
     cases = (
-        (mutate(lambda d: d["arms"][0].update(decoding={"seed": 5})), "not in the closed set"),
-        (mutate(lambda d: d["arms"][0].update(decoding={"max_tokens": 8192})), "not in the closed set"),
-        (mutate(lambda d: d["arms"][0].update(decoding={"temperature": 9})), "outside its bounds"),
-        (mutate(lambda d: d["arms"][0].update(decoding={"top_k": 2.5})), "must be an integer"),
-        (mutate(lambda d: d["arms"][0].update(decoding={})), "non-empty object"),
-        (mutate(lambda d: d["arms"][1].update(decoding=dict(d["arms"][0]["decoding"]))), "same sampling override"),
-        (mutate(lambda d: d["arms"][0].update(decoding={"temperature": 0})), "second spelling of the delivering arm"),
-        (mutate(lambda d: d["arms"][0].update(arm_id="lock")), "distinct lower-case id"),
+        (mutate(lambda d: d["arms"][0].update(perception_samples=d["arms"][1]["perception_samples"])), "ONE of"),                      # two axes on one arm
+        (mutate(lambda d: d["arms"][1].update(arm_id="lock")), "distinct lower-case id"),
+        (mutate(lambda d: d["arms"][1].update(arm_id="l1-support")), "distinct lower-case id"),
+        (mutate(lambda d: d["arms"][1].update(solver_samples=d["arms"][0]["solver_samples"])), "ONE of"),
+        (mutate(lambda d: d["arms"][0].pop("solver_samples")), "ONE of"),                                                              # no axis
         (mutate(lambda d: d.update(twin="x")), "the delivering arm is"),
         (mutate(lambda d: d.update(knobs={})), "must be exactly"),
-        (mutate(lambda d: d["arms"][0].update(extra=1)), "must be exactly"),
+        (mutate(lambda d: d["arms"][0].update(extra=1)), "ONE of"),
         (mutate(lambda d: d["arms"][0].update(evidence="")), "non-empty string"),
         (mutate(lambda d: d.update(locked_decoding={"seed": 1, "temperature": 0})), "locked_decoding must state"),
-        (mutate(lambda d: d.update(arms=[dict(d["arms"][0], arm_id=f"x{i}", decoding={"temperature": 0.1 * (i + 1)}) for i in range(7)])), "between 1 and"),
         (mutate(lambda d: d.update(arms=[])), "between 1 and"),
         (mutate(lambda d: d["locked_template"].update(sha256="0" * 64)), "Solver template the Thinking lock renders"),
+        (mutate(lambda d: d.update(schema="x")), "schema must be"),
     )
     for doc, message in cases:
         with pytest.raises(fam.ArmTableError, match=message):
@@ -159,61 +161,94 @@ def test_the_arm_table_is_refused_by_name():
     assert [a["arm_id"] for a in fam.validate_arm_table(arm_doc())] == list(fam.CANDIDATE_ARMS)
 
 
-# ---- the cells ---------------------------------------------------------------------------------------------------------------------
+def test_the_rails_parser_refuses_a_bad_axis_by_name_when_the_group_is_parsed(monkeypatch):
+    """The axis-level rules (counts, decoding bounds, registered policies, cap, seed offsets) are the rails' own, applied to the compiled block."""
+
+    from speech_aware_evidence_acquisition.rails.supply_variants import PerceptionBranchError, parse_perception_sampling_variants  # noqa: PLC0415
+
+    def parse(mutate):
+        block = fam.sampling_block()
+        mutate(block)
+        return parse_perception_sampling_variants(block, phase_id="perception")
+
+    assert parse(lambda b: None).is_sampling
+    for mutate, message in (
+        (lambda b: b["arms"][0]["solver_samples"].update(n=9), "n"),
+        (lambda b: b["arms"][1]["perception_samples"].update(k=1), "k"),
+        (lambda b: b["arms"][1]["perception_samples"].update(merge_policy="saea-nope-v1"), "merge"),
+        (lambda b: b["arms"][0]["solver_samples"]["commit"].update(policy="saea-nope-v1"), "commit"),
+        (lambda b: b["arms"][0]["solver_samples"]["decoding"].update(seed=5), "seed"),
+        (lambda b: b["arms"].pop(-2), "twin"),
+    ):
+        with pytest.raises(PerceptionBranchError, match=message):
+            parse(mutate)
 
 
 # ---- the cells ---------------------------------------------------------------------------------------------------------------------
 
 
-def test_the_cells_carry_the_solver_decoding_block_the_twin_and_the_delivering_arm_last():
+# ---- the cells ---------------------------------------------------------------------------------------------------------------------
+
+
+def test_the_cells_carry_the_perception_sampling_block_the_twin_and_the_delivering_arm_last():
     for key in fam.ALL_KEYS:
         base = baseline(key)
         roles = base["native_episode"]["roles"]
-        block = roles["solver"]["decoding_variants"]
-        assert block["node"] == "solver" and set(roles["perception"]) == {"max_iterations", "phase_id"} and "thinking_variants" not in json.dumps(roles)
+        block = roles["perception"]["sampling_variants"]
+        assert block["node"] == "perception" and set(roles["solver"]) <= {"max_iterations", "phase_id"} and "decoding_variants" not in json.dumps(roles)
         ids = [a["arm_id"] for a in block["arms"]]
         assert ids == list(fam.ARM_ORDER) and ids[-1] == fam.DELIVERING and ids[-2] == fam.TWIN
-        assert block["arms"][-1].get("deliver") is True and block["arms"][-2].get("replicate_of") == fam.DELIVERING
-        assert {a["arm_id"]: a["decoding"] for a in block["arms"] if "decoding" in a} == SAMPLING
-        assert all(set(a) == {"arm_id", "decoding"} for a in block["arms"] if a["arm_id"] in fam.CANDIDATE_ARMS)
+        assert {a["arm_id"]: {k: v for k, v in a.items() if k != "arm_id"} for a in block["arms"] if a["arm_id"] in fam.CANDIDATE_ARMS} == AXES
         assert block["arms"][-1] == {"arm_id": "lock", "deliver": True} and block["arms"][-2] == {"arm_id": "aa", "replicate_of": "lock"}
-        assert block["template_tokens"] == fam.DELIVERING_TEMPLATE_TOKENS and "template_variants" not in json.dumps(roles) and "supply_variants" not in json.dumps(roles)
-        assert block["max_supplied_items"] == fam.MAX_SUPPLIED_ITEMS and block["fit_estimate"] == fam.FIT_ESTIMATE
-        assert "thinking_policy" not in base and base["policy"] == fam.PROGRAM == "phase-native-module-v1-c7"
+        assert "template_variants" not in json.dumps(roles) and "supply_variants" not in json.dumps(roles) and "thinking_variants" not in json.dumps(roles)
+        assert block["max_supplied_items"] == fam.MAX_SUPPLIED_ITEMS and block["fit_estimate"] == fam.SAMPLING_FIT_ESTIMATE
+        assert fam.SAMPLING_FIT_ESTIMATE["base_prompt_tokens"] == fam.FIT_ESTIMATE["base_prompt_tokens"] + fam.DELIVERING_TEMPLATE_TOKENS
+        assert "thinking_policy" not in base and base["policy"] == fam.PROGRAM == "phase-native-module-v1-c15"
         assert base["native_contact_fit"]["contact_cap"] == fam.fit_contact_cap(fam.CELLS[key]["rows"])
         assert base["preflight_budget_mode"] == "defer-to-native-contact-fit"
         episode = base["native_episode"]
         assert (episode["review_loop"], episode["max_revisions"]) == ("off", 0)
         assert episode["finite_completion_policy"] == "deliver-latest-or-abstain" and episode["react_exhaustion_policy"] == "continue-without-answer"
+        module = episode["consumption_module"]
+        assert [c["column_id"] for c in module["columns"]] == list(fam.CANDIDATE_ARMS) and {c["kind"] for c in module["columns"]} == {"sampling"}
+        assert module["sampling_frame"] == {"max_supplied_items": fam.MAX_SUPPLIED_ITEMS, "twin": True, "fit_estimate": fam.SAMPLING_FIT_ESTIMATE}
+        assert episode["deliver_normaliser"] == {"normaliser": "saea-deliver-normalise-v4g"}                      # the lock's delivery rule is untouched
         assert block.get("arm_visits", "first") == "first"
 
 
 def test_the_composed_cell_loads_through_the_runtime_loader_and_verifies():
+    from speech_aware_evidence_acquisition.rails.native_episode_receipt import PERCEPTION_BRANCH_RECEIPT_SCHEMA_V6  # noqa: PLC0415
+    from speech_aware_evidence_acquisition.rails.supply_variants import sampling_extra_contacts  # noqa: PLC0415
+
     for key in fam.ALL_KEYS:
         values = composed(key).values
         program = default_phase_program(values["policy"])
         config = load_native_episode_config(values, program)
-        group = config.supply_variant_group
-        assert group is not None and group.is_decoding and not group.is_template and group.arm_visits == "first"
-        assert {a.arm_id: a.decoding for a in group.arms if a.decoding is not None} == SAMPLING and group.receipt_schema == "saea-supply-variant-arms-v6"
-        assert group.arm_ids == fam.ARM_ORDER and group.delivered_arm.arm_id == fam.DELIVERING
-        assert program.max_contacts == fam.CONTACTS_PER_ROW == 7
+        group = config.perception_branch_group
+        assert group is not None and group.is_sampling and group.level == 2 and group.branch_ids == fam.ARM_ORDER and group.delivering_branch.branch_id == fam.DELIVERING
+        assert group.twin_branch.branch_id == fam.TWIN and PERCEPTION_BRANCH_RECEIPT_SCHEMA_V6 == "saea-perception-branch-arms-v6"
+        assert config.supply_variant_group is None
+        assert program.max_contacts == fam.CONTACTS_PER_ROW == 15 == 2 + 2 * (fam.K - 1) + sampling_extra_contacts(group)
+        assert [(b.branch_id, b.perception_samples is not None, b.solver_samples is not None) for b in group.branches] == [
+            ("l1-support", False, True), ("l2-union", True, False), ("aa", False, False), ("lock", False, False)]
 
 
-def test_the_derive_proves_that_only_the_solver_block_the_program_and_the_ids_moved():
+def test_the_derive_proves_that_only_the_perception_block_the_program_and_the_ids_moved():
     result = dc.derive(write=False)
     assert result["program"] == fam.PROGRAM and result["ceiling"] == fam.CONTACTS_PER_ROW
     for key in fam.ALL_KEYS:
         cell = result["cells"][key]
         assert cell["loader_verification"] == {"ok": True, "refusal": None}
         assert dc.classify_moved(cell["moved_leaves"])[1] == []
-        assert cell["moved_by_rule"]["the Solver decoding_variants block"] and cell["moved_by_rule"]["its declaration in consumption_module"]
+        assert cell["moved_by_rule"]["the Perception sampling_variants block"] and cell["moved_by_rule"]["its declaration in consumption_module"]
         assert cell["moved_by_rule"]["the program id and ceiling"] == ["policy"]
-        assert not any(leaf.startswith("thinking_policy") for leaf in cell["moved_leaves"])
+        assert not any(leaf.startswith("thinking_policy") or ".decoding_variants" in leaf or ".solver." in leaf for leaf in cell["moved_leaves"])
     # the committed files are exactly what the derive writes (reproducible)
     assert dc.same_json(f"configs/baseline/{fam.CELLS['arm']['baseline']}.json", baseline("arm"))
-    for leaf in ("native_episode.roles.perception.thinking_variants", "thinking_policy"):
+    for leaf in ("native_episode.roles.solver.decoding_variants", "thinking_policy"):
         assert leaf not in dv._leaves(baseline("arm"))
+    # a leaf outside the registered diff is refused by name
+    assert dc.classify_moved(["native_episode.roles.solver.max_iterations"])[1] == ["native_episode.roles.solver.max_iterations"]
 
 
 def test_experiments_swap_nothing_but_the_ids_and_name_the_resident_session():
@@ -223,66 +258,30 @@ def test_experiments_swap_nothing_but_the_ids_and_name_the_resident_session():
         assert "thinking-system-fold-b" not in text.replace("thinking-system-fold-b-lock-fit", "")
 
 
-# ---- the request-level proof: a Solver decoding-arm contact differs from the lock's in the declared sampling keys alone -------------------------
+# ---- the sample plan of the compiled cell: seeds and decoding per sample come from the rails' own derivation -------------------------------------------
 
 
-def test_every_solver_arm_contact_carries_the_lock_thinking_fields_and_only_its_declared_sampling_keys_differ(tmp_path):
-    """Compose the Solver and Perception requests for every arm of the column with the real composer, built from the compiled cell's own arm map, and compare field for field
-    with the lock (delivering) request: thinking budget, cap, thinking switch and every other key are the lock's; a candidate differs in its declared sampling keys alone."""
+def test_the_compiled_cell_declares_the_registered_sample_plan_and_the_request_adapter_table_matches_it():
+    from speech_aware_evidence_acquisition.rails.supply_variants import derive_sample_seeds, sampling_decoding_table  # noqa: PLC0415
 
-    pytest.importorskip("openjiuwen", reason="OpenJiuwen unavailable")
-    import itertools  # noqa: PLC0415
-    from types import MappingProxyType  # noqa: PLC0415
-
-    import test_thinking_policy_column as tpc  # noqa: PLC0415
-
-    from speech_aware_evidence_acquisition.reproduction.ojw.native_roles import NativeRoleContactContext, NativeRoleModelRequest  # noqa: PLC0415
-
-    world = tpc._World(tmp_path)
-    feature_root, packet, bindings = tpc._speech_feature_world(world, tmp_path)
-    counter = itertools.count(1)
     config = load_native_episode_config(composed("smoke").values, default_phase_program(composed("smoke").values["policy"]))
-    arm_map = {arm.arm_id: arm.decoding for arm in config.supply_variant_group.arms if arm.decoding is not None}
-    assert arm_map == SAMPLING
-
-    def adapter(**kwargs):
-        client, _gate, _t = tpc._client(world, tmp_path, transport=tpc._ScriptedTransport([("a", "stop", 3)] * 40), arm="speech-feature-query-native-tools",
-                                        tool_schemas=tpc._TOOLS, speech_feature_root=feature_root, speech_packet_bindings=bindings,
-                                        plan=tpc._native_plan(planned_model_calls=200, attempt_id=f"attempt-native-tools-client-{next(counter):04d}"))
-        return tpc.MeteredNativeSpeechRequest(client=client, binding_provider=lambda r: tpc._native_binding(r.role_id, packet), render_request=lambda b: json.loads(b),
-                                              completion_sink=lambda request, completion: None, **kwargs)
-
-    plain = adapter()                                                              # the unarmed adapter: the lock's composition
-    armed = adapter(solver_arm_decoding=arm_map, solver_arm_decoding_role_id=config.supply_variant_phase_id)
-
-    def request(role_id, arm, contact):
-        return NativeRoleModelRequest(
-            role_id=role_id, context=NativeRoleContactContext(sample_id="s1", agent_contact_id=contact, variant_arm_id=arm),
-            messages=({"role": "system", "content": "Choose exactly one opaque key id."}, {"role": "user", "content": "Inspect the speech."}),
-            tool_schemas=(), visible_tool_names=(), decoding_controls=MappingProxyType({}))
-
-    on = {"thinking_budget_tokens": fam.DELIVERING_BUDGET, "chat_template_kwargs": {"enable_thinking": True}, "max_tokens": fam.COMPLETION_CAP}
-    solver_role = config.supply_variant_phase_id
-    reference = plain.prepare(request(solver_role, None, "c-ref")).rendered_body()["decoding_params"]
-    assert {k: reference[k] for k in on} == on
-    for arm in fam.ARM_ORDER:
-        body = armed.prepare(request(solver_role, arm, f"c-{arm}")).rendered_body()["decoding_params"]
-        assert {k: body[k] for k in on} == on, arm                                  # the thinking budget, the cap and the switch are the lock's on every arm
-        moved = {k for k in set(body) | set(reference) if body.get(k) != reference.get(k)}
-        assert moved == set(arm_map.get(arm, {})) - {k for k, v in arm_map.get(arm, {}).items() if reference.get(k) == v}, (arm, moved)
-        if arm in arm_map:
-            assert body == {**reference, **arm_map[arm]}
-        else:
-            assert body == reference                                                # the delivering arm and the twin: the lock's request, byte for byte
-    for role in ("perception",):
-        assert armed.prepare(request(role, "d1-qwen-sampling", "c-p")).request.payload_bytes == plain.prepare(request(role, "d1-qwen-sampling", "c-p")).request.payload_bytes
+    group = config.perception_branch_group
+    table = sampling_decoding_table(group, perception_phase_id="perception", solver_phase_id="solver")
+    assert set(table) == set(fam.CANDIDATE_ARMS)
+    assert table["l1-support"] == {"solver": {"decoding": DECODING, "seed_offsets": [1, 2, 3, 4]}}
+    assert table["l2-union"] == {"perception": {"decoding": DECODING, "seed_offsets": [1, 2, 3]}}
+    lock_seed = fam.LOCKED_DECODING["seed"]
+    assert derive_sample_seeds(lock_seed, group.branch("l1-support").solver_samples.seed_offsets) == (lock_seed, lock_seed + 1, lock_seed + 2, lock_seed + 3, lock_seed + 4)
+    assert derive_sample_seeds(lock_seed, group.branch("l2-union").perception_samples.seed_offsets) == (lock_seed, lock_seed + 1, lock_seed + 2, lock_seed + 3)
+    # the delivering arm and the twin declare no axis, so their requests are the lock's own
+    assert table.get("lock") is None and table.get("aa") is None
 
 
-def test_the_dry_run_reports_the_lock_thinking_fields_and_the_declared_override_for_every_arm():
-    """The dry-run walk resolves a per-arm ``node_decoding`` for a Solver arm group on a thinking fragment and states each arm's declared ``decoding_override``."""
+def test_the_dry_run_reports_the_lock_thinking_fields_for_every_arm_of_a_sampling_group():
+    """The native dry-run walk resolves a per-arm ``node_decoding`` for a SAMPLING group (decision 338), like a thinking group's."""
 
     source = (REPO / "src/speech_aware_evidence_acquisition/analysis/native_episode_dry_run.py").read_text(encoding="utf-8")
-    assert "decoding_override" in source and "template_group.arm(arm_id).decoding" in source and "unvaried_evidence" in source
+    assert "episode_group.is_thinking or episode_group.is_sampling" in source
     import l338_dry_run as dry  # noqa: PLC0415
 
     values = composed("smoke").values
@@ -292,14 +291,11 @@ def test_the_dry_run_reports_the_lock_thinking_fields_and_the_declared_override_
     assert set(expected) == {"perception", "solver"}
     for node_decoding in expected.values():
         assert node_decoding == {"thinking_budget_tokens": 3072, "chat_template_kwargs": {"enable_thinking": True}, "max_tokens": 4096}
-    from speech_aware_evidence_acquisition.analysis.native_episode_dry_run import DryRunArm  # noqa: PLC0415
-
-    row = DryRunArm(arm_id="d1-qwen-sampling", arm_index=0, deliver=False, resolved_knobs=(), supplied_value_ids=("v",), max_supplied_items=55, instruction_template=None,
-                    instruction_sha256="a" * 64, instruction_chars=10, decoding_override=SAMPLING["d1-qwen-sampling"]).as_json()
-    assert row["decoding_override"] == SAMPLING["d1-qwen-sampling"] and row["instruction_template"] is None
-    plain = DryRunArm(arm_id="lock", arm_index=5, deliver=True, resolved_knobs=(), supplied_value_ids=("v",), max_supplied_items=55, instruction_template=None,
-                      instruction_sha256="a" * 64, instruction_chars=10).as_json()
-    assert "decoding_override" not in plain
+    plan = None
+    sys.path.insert(0, str(REPO / "src"))
+    plan = dry.sample_plan()
+    assert plan["l1-support"]["seeds"] == [20260913 + i for i in range(5)] and plan["l1-support"]["extra_contacts"] == 4
+    assert plan["l2-union"]["seeds"] == [20260913 + i for i in range(4)] and plan["l2-union"]["extra_contacts"] == 3
 
 
 # ---- fit, cost and budget ------------------------------------------------------------------------------------------------------------
@@ -324,23 +320,28 @@ def test_the_registered_cost_and_ceiling_follow_the_measured_r2b_throughput():
     m = fam.M
     assert m["gpu_hours_per_1080_row_lock_flight"] == 9.23 and m["perception_seconds_per_contact_mean"] == 59.0 and abs(m["solver_seconds_per_contact_mean"] - 64.07) < 1e-9
     assert abs(m["seconds_per_row_lock"] - 9.23 * 4 * 3600 / 1080) < 0.01
-    assert fam.K == 6 and fam.CONTACTS_PER_ROW == 7 and fam.PROGRAM == "phase-native-module-v1-c7"
-    assert fam.ARM_MIX_ROWS == fam.ceil_hundredth((59.0 + 6 * 64.07) / (59.0 + 64.07)) == 3.61
+    assert fam.K == 4 and fam.CONTACTS_PER_ROW == 15 and fam.PROGRAM == "phase-native-module-v1-c15"
+    exact = (7 * 59.0 + 8 * 64.07) / (59.0 + 64.07)
+    assert 7.52 <= exact < 7.525 and fam.ARM_MIX_ROWS == fam.round_hundredth(exact) == 7.52          # the design spec's mix (nearest 0.01; ceil would read 7.53)
     assert fam.ROWS_PER_MINUTE_FULL == 1.95
-    expected = 1080 * 3.61 / 1.95 / 60
-    assert abs(fam.expected_gpu_hours(1080) - expected) < 1e-9 and 30 <= expected <= 40
-    assert fam.planned_gpu_hours(1080) == 43.4 == fam.CELLS["arm"]["gpu_hours"] and fam.CELLS["smoke"]["gpu_hours"] == 0.5
-    assert fam.planned_gpu_hours(1080) >= fam.expected_gpu_hours(1080) * 1.3
+    expected = 1080 * 7.52 / 1.95 / 60
+    assert abs(fam.expected_gpu_hours(1080) - expected) < 1e-9 and round(expected, 1) == 69.4
+    assert fam.planned_gpu_hours(1080) == 90.3 == fam.CELLS["arm"]["gpu_hours"] and fam.CELLS["smoke"]["gpu_hours"] == 0.5
+    assert fam.planned_gpu_hours(1080) >= fam.expected_gpu_hours(1080) * 1.3 and fam.planned_gpu_hours(1080) < fam.expected_gpu_hours(1080) * 1.3 + 0.1
+    # the per-branch shares of the design spec: lock 1.00, aa 1.00, l1 3.08, l2 2.44 lock-row equivalents
+    assert abs((59.0 + 5 * 64.07) / 123.07 - 3.08) < 0.005 and abs((4 * 59.0 + 64.07) / 123.07 - 2.44) < 0.005
 
 
 def test_plan_ceilings_follow_the_program_and_the_fallback_contacts():
-    assert fam.THINKING_CONTACTS_PER_ROW == 7 == fam.FALLBACK_CONTACTS_PER_ROW_CEILING
-    assert fam.original_generation_calls("arm") == 1080 * 14 == 15120 and fam.original_generation_calls("smoke") == 4 * 14
-    assert fam.program_calls("arm") == 1080 * 7 and fam.fit_contact_cap(1080) == 1080 * 7 * 4
+    assert fam.THINKING_CONTACTS_PER_ROW == 15 == fam.FALLBACK_CONTACTS_PER_ROW_CEILING
+    assert fam.original_generation_calls("arm") == 1080 * 30 == 32400 and fam.original_generation_calls("smoke") == 4 * 30
+    assert fam.program_calls("arm") == 1080 * 15 == 16200 and fam.fit_contact_cap(1080) == 1080 * 15 * 4
     for key in fam.ALL_KEYS:
         family, plan = dc.budgets(key)
         assert plan["planned_model_calls"] == fam.generation_calls(key) and family["fit_endpoint_calls_cap"] == fam.fit_contact_cap(fam.CELLS[key]["rows"])
         assert plan["execution_profile"] == "bounded-discovery-probe" and plan["split_role"] == "discovery" and plan["planned_gpu_hours"] == fam.CELLS[key]["gpu_hours"]
+    # repeated speech audio: every contact re-sends the row's speech packet (15 program contacts + 15 fallback re-asks per row)
+    assert abs(fam.audio_cap("arm") - fam.roster_audio("arm") * 30) <= 1 and fam.extra_audio_seconds("arm") == fam.roster_audio("arm") * 13
 
 
 # ---- the package -------------------------------------------------------------------------------------------------------------------------
@@ -353,20 +354,25 @@ def test_stage3_measurement_blocks():
     assert set(blocks) == {arm_run, smoke}
     b = blocks[arm_run]
     assert b["measurement_design"] == "same-flight-node-column" and b["claims_benefit"] is False and b["claim"] == "nominated" and b["aa_arm_id"] == "aa"
-    assert b["primary_metric_key"] == "slu" and b["rows"] == 1080 and b["tuning_roster"] == "none" and b["read_roster"] == fam.READ_ROSTER
-    assert b["template_variants"] == {"node": "solver", "candidate_arms": 4, "twin": True} and b["variant_kind"] == "solver-decoding"
-    assert b["variant_cost"]["extra_contacts_per_row"] == 5 and b["variant_cost"]["extra_audio_seconds"] > 0
+    assert b["primary_metric_key"] == "slu" and b["rows"] == 1080 and b["tuning_roster"] == "none" and b["read_roster"] == fam.READ_ROSTER and b["expected_effect_pp"] == 0.0
+    assert b["template_variants"] == {"node": "perception", "candidate_arms": 2, "twin": True}
+    assert b["variant_kind"] == "solver-sampling" and b["variant_kind_by_arm"] == {"l1-support": "solver-sampling", "l2-union": "perception-sampling"}
+    assert b["primary_metric_key_by_arm"] == {"l1-support": "slu", "l2-union": "intent"}
+    assert b["variant_cost"]["extra_contacts_per_row"] == 13 and b["variant_cost"]["extra_audio_seconds"] > 0
     assert blocks[smoke]["measurement_design"] == "form-proof" and blocks[smoke]["claims_benefit"] is False
-    assert facts["blockers"] == [] and {f["id"] for f in facts["findings"]} >= {"why-the-decoding-axis", "arm-contacts-carry-the-lock-thinking-fields", "in-flight-aa-twin",
-                                                                                   "stochastic-arms-and-the-fixed-seed", "wire-fields", "d4-greedy-with-a-penalty",
-                                                                                   "resident-session-no-new-fragment", "machine-signoff-with-a-veto-window"}
+    assert facts["blockers"] == [] and {f["id"] for f in facts["findings"]} >= {
+        "why-the-lever-column", "free-check-over-r4-before-the-countersign", "sample-contacts-carry-the-lock-thinking-fields", "in-flight-aa-twin",
+        "stochastic-streams-and-the-fixed-seeds", "n1-is-unavailable-in-flight", "l2-longer-lists-and-forced-close", "resident-session-no-new-fragment",
+        "machine-signoff-with-a-veto-window"}
     ce = facts["accounting"]["cost_estimate"]
     assert ce["column_flight"]["planned_ceiling_gpu_hours"] == fam.CELLS["arm"]["gpu_hours"] and ce["arm_mix_rows"] == fam.ARM_MIX_ROWS
     assert [r["arm"] for r in ce["arm_table"]] == list(fam.ARM_ORDER) and ce["inputs"]["r2b_measured"]["slots"] == 4
-    assert facts["read_rule"]["word_order"] == list(reader.WORDS) and facts["read_rule"]["twin"] == "aa" and facts["context_fit"]["ok"] is True
+    assert facts["read_rule"]["word_order"] == {"L1": ["NOMINATED", "NO-RESOLVED-LOSS", "HARM", "NEUTRAL"], "L2": ["NOMINATED", "HARM", "NO-RESOLVED-LOSS", "NEUTRAL"]}
+    assert facts["read_rule"]["twin"] == "aa" and facts["context_fit"]["ok"] is True and facts["read_rule"]["levers"] == {"l1-support": "L1", "l2-union": "L2"}
     assert facts["pins"]["signoff_conditions"]["sha256"] == hashlib.sha256((PKG / "signoff-conditions-v1.json").read_bytes()).hexdigest()
-    assert "thinking_arms" not in facts and "template_arms" not in facts and facts["decoding_arms"]["d4-greedy-presence"] == SAMPLING["d4-greedy-presence"]
-    assert facts["decoding_arms"]["lock"] is None and facts["decoding_arms"]["aa"] is None and facts["locked_decoding"] == fam.LOCKED_DECODING
+    assert "thinking_arms" not in facts and "decoding_arms" not in facts and facts["locked_decoding"] == fam.LOCKED_DECODING
+    assert facts["sampling_arms"]["lock"] is None and facts["sampling_arms"]["aa"] is None and facts["sampling_arms"]["l1-support"] == AXES["l1-support"]
+    assert facts["sampling_arms"]["l2-union"] == AXES["l2-union"]
 
 
 def test_the_effect_floor_gate_resolves_the_node_column(tmp_path):
@@ -378,11 +384,12 @@ def test_the_effect_floor_gate_resolves_the_node_column(tmp_path):
                          capture_output=True, text=True, cwd=REPO)
     assert out.returncode == 0, out.stderr[-500:]
     report = json.loads(out.stdout[out.stdout.find("{"):])
-    mine = [c for c in report["in_scope_cells"] if "l338-solver-decoding" in c["cell_id"]]
+    mine = [c for c in report["in_scope_cells"] if "l338-lever-column" in c["cell_id"]]
     assert {c["cell_id"] for c in mine} == {fam.CELLS[k]["cell"] for k in fam.ALL_KEYS}
-    assert not [f for f in report["findings"] if "l338-solver-decoding" in json.dumps(f)]
+    assert not [f for f in report["findings"] if "l338-lever-column" in json.dumps(f)]
     column = {c["cell_id"]: c["declaration"] for c in mine}[fam.CELLS["arm"]["cell"]]
     assert column["problems"] == [] and column["measurement_design"] == "same-flight-node-column" and column["claims_benefit"] is False
+    assert column["variant_kind"] == "solver-sampling" and column["template_variants"] == {"node": "perception", "candidate_arms": 2, "twin": True}
 
 
 def test_plans_protocol_receipt_and_ledger_agree():
@@ -395,8 +402,8 @@ def test_plans_protocol_receipt_and_ledger_agree():
             assert plan["expected_session_id"] == fam.THINK_SESSION and plan["protocol_document"]["sha256"] == protocol_sha
             assert plan["thinking_knobs"]["thinking_budget_tokens"] == 3072 and plan["execution_plan"]["split_role"] == "discovery"
             assert plan["arm_order"] == list(fam.ARM_ORDER) and plan["arm_visits"] == "first" and "recovery" not in plan and "cell_thinking_policy" not in plan
-            assert plan["decoding_arms"]["lock"]["decoding"] is None and plan["decoding_arms"]["d1-qwen-sampling"]["decoding"] == SAMPLING["d1-qwen-sampling"]
-            assert "template_arms" not in plan
+            assert plan["sampling_arms"]["lock"]["axes"] is None and plan["sampling_arms"]["l1-support"]["axes"] == AXES["l1-support"]
+            assert plan["sampling_arms"]["l2-union"]["axes"] == AXES["l2-union"] and "template_arms" not in plan and "decoding_arms" not in plan
             run = fam.CELLS[key]["run" if kind == "generation" else "fit_run"]
             assert plan["execution_plan"]["run_id"] == run and plan["execution_plan"]["planned_gpu_hours"] == fam.CELLS[key]["gpu_hours"]
             assert plan["execution_plan"]["planned_model_calls"] == (fam.generation_calls(key) if kind == "generation" else fam.fit_contact_cap(fam.CELLS[key]["rows"]))
@@ -413,27 +420,30 @@ def test_plans_protocol_receipt_and_ledger_agree():
     assert len([ln for ln in draft_rows.splitlines() if ln.startswith("| 2026")]) == 5
     recipe = json.loads((PKG / "analysis-recipe-v1.json").read_text(encoding="utf-8"))
     assert recipe["read_run_id"] == fam.READ_RUN_ID and recipe["arms"] == list(fam.ARM_ORDER) and recipe["twin"] == "aa" and recipe["delivering"] == "lock"
-    assert recipe["verdict_words"] == list(reader.WORDS) and recipe["primary"]["draws"] == 10000 and recipe["efficiency"]["solver_seconds_per_contact_ratio_max"] == 0.85
-    assert recipe["guard"]["nominated_point_floor_pp"] == -0.65 and "2-arm Fold A confirm" in recipe["next_step"]
-    assert any("by_supplied_items_bin" in s for s in recipe["secondaries"]) and any("split_by_forced_status" in s for s in recipe["secondaries"])
-    assert "discordance_against_lock_beside_the_twin" in recipe["secondaries"] and recipe["decoding"]["d2-qwen-sampling-presence"] == SAMPLING["d2-qwen-sampling-presence"]
+    assert recipe["verdict_words"] == sorted(reader.WORDS) and recipe["primary"]["draws"] == 10000 and "efficiency" not in recipe
+    assert recipe["guard"]["intent_guard_pp"] == -0.65 and recipe["guard"]["l2_intent_point_min_pp"] == 0.33 and "335 B Fold A column" in recipe["next_step"]
+    assert recipe["levers"] == {"l1-support": "L1", "l2-union": "L2"} and recipe["primary_by_lever"] == {"L1": "slu", "L2": "intent"}
+    assert recipe["word_order"] == {"L1": ["NOMINATED", "NO-RESOLVED-LOSS", "HARM", "NEUTRAL"], "L2": ["NOMINATED", "HARM", "NO-RESOLVED-LOSS", "NEUTRAL"]}
+    assert "discordance_of_every_sampled_stream_against_the_twin" in recipe["secondaries"] and recipe["sampling_arms"]["l2-union"] == AXES["l2-union"]
+    assert {"support_count_table", "union_size_table", "l1_pure_filter_delta", "forced_close_share_by_list_size"} <= set(recipe["secondaries"])
     assert (REPO / fam.PREREG).is_file()
     for line in draft_rows.splitlines():
         if line.startswith("| 2026"):
             assert "DRAFT" in line and "root countersigned" not in line
 
 
-def test_the_readme_names_the_ruling_the_arms_the_fit_the_cost_the_words_and_the_confirm():
+def test_the_readme_names_the_ruling_the_arms_the_fit_the_cost_the_words_and_the_next_step():
     readme = (PKG / "README.md").read_text(encoding="utf-8")
-    for needle in ("329 A", "332 A", "d1-qwen-sampling", "d2-qwen-sampling-presence", "d3-temp-0.3", "d4-greedy-presence", "saea-supply-variant-arms-v6", "arm_visits", "first",
-                   "temperature", "top_p", "top_k", "presence_penalty", "request seed", "discordance", "stochastic", "parse_decoding_variants",
-                   "think-budget-np4", "no-op", "drop-reasoning-v1", "ceil_0.1", "NOMINATED", "EFFICIENT-NO-LOSS", "HARM", "NEUTRAL", "2-arm Fold A confirm", "NOT built",
+    for needle in ("338", "341 A", "l1-support", "l2-union", "saea-perception-branch-arms-v6", "arm_visits", "first", "solver_samples", "perception_samples",
+                   "saea-commit-first-support-v1", "saea-perception-candidate-union-v1", "n1-unavailable", "parse_perception_sampling_variants", "lock seed", "discordance",
+                   "stochastic", "think-budget-np4", "no-op", "drop-reasoning-v1", "ceil_0.1", "NOMINATED", "NO-RESOLVED-LOSS", "HARM", "NEUTRAL", "335 B Fold A column", "NOT built",
                    "flip_package_ext4.sh", "l338_arms.json", "l338-decode-signoff.marker", "L338_KINDS", "wait_or_machine_signoff", "close_rows_after_seal", "SAEA-Chain-L338",
-                   "queue_l338_after_chain.sh", "exit token", "carrier chain", "signoff-conditions-v1.json", "arm-only", "forced-close share", "supplied-item bin", "forced status",
-                   "ceil(bytes / 3.5)", "no tokenizer contact", "24 GPU-h", str(fam.CELLS["arm"]["gpu_hours"]), str(fam.ARM_MIX_ROWS), "0.85", "-0.65",
+                   "queue_l338_after_chain.sh", "exit token", "signoff-conditions-v1.json", "arm-only", "forced-close share", "list size",
+                   "ceil(bytes / 3.5)", "no tokenizer contact", "24 GPU-h", str(fam.CELLS["arm"]["gpu_hours"]), str(fam.ARM_MIX_ROWS), "69.4", "-0.65", "1.49", "0.65",
+                   "perception-branches", "l1-support-sample0", "CHAIN_L338_EXIT", "/home/chao/l338-chain.out", "CHAIN_NXT4_EXIT",
                    "repin exit N (1 = its internal check refused the dirty tree, expected)"):
         assert needle in readme, needle
-    assert "t3-type-inventory" not in readme and "t1-decide-once" not in readme and "instruction-template" not in readme
+    assert "d1-qwen-sampling" not in readme and "EFFICIENT-NO-LOSS" not in readme and "decoding_variants" not in readme.replace("DECODING_VARIANT_KNOBS", "")
     for script in ("l338_flip.sh", "l338_read.sh", "l338_repin_cell.sh", "batch_chain_l338.sh"):
         assert subprocess.run(["bash", "-n", str(NX / script)], capture_output=True).returncode == 0
 
@@ -443,8 +453,7 @@ def test_the_text_of_the_package_is_english():
                                      "signoff-conditions-v1.json", "analysis-recipe-v1.json")]:
         assert not re.search(r"[^\x00-\x7f]", path.read_text(encoding="utf-8")), path
     for name in ("l338_family.py", "l338_derive_cells.py", "l338_write_registration.py", "l338_mint_receipt.py", "l338_dry_run.py", "l338_flip.sh", "l338_repin_cell.sh",
-                 "l338_read.sh", "batch_chain_l338.sh", "l338_arms.json", "l338_cost_inputs.json", "l338_launch_spec.json", "l338_rec2_mode.py",
-                 "l338_rec2_snapshot.py", "l338_rec2_replay_proof.py"):
+                 "l338_read.sh", "batch_chain_l338.sh", "l338_arms.json", "l338_cost_inputs.json", "l338_launch_spec.json"):
         assert (NX / name).read_text(encoding="utf-8").isascii(), name
     for rel in (fam.READER, fam.PREREG, "scripts/flights/batch/queue/queue_l338_after_chain.sh", "scripts/flights/batch/queue/chain_l338.sh"):
         assert (REPO / rel).read_text(encoding="utf-8").isascii(), rel
@@ -468,13 +477,35 @@ def test_signoff_conditions_are_emitted_inside_the_package_from_the_arm_table(tm
 # ---- the reader ---------------------------------------------------------------------------------------------------------------------------
 
 
-def _outputs_rows(n=4, supplied=(10, 45)):
+def _answer(*fillers, scenario="s", action="a"):
+    return json.dumps({"scenario": scenario, "action": action, "entities": [{"type": "place_name", "filler": f} for f in fillers]}, sort_keys=True)
+
+
+def _outputs_rows(n=4, lists=(2, 3)):
+    """Sealed-row views as ``load_outputs_rows`` returns them: per row the four branches, the l1 five-sample custody, the l2 four-sample merge and the request ids."""
+
     rows = []
     for i in range(n):
         sid = f"s{i}"
-        count = supplied[i % len(supplied)]
-        rows.append({"sample_id": sid, "perception": [f"{sid}:perception:00"],
-                     "arms": [(arm, f"{sid}:{arm}", count) for arm in fam.ARM_ORDER]})
+        size = lists[i % len(lists)]
+        merged = [f"i:{k}" for k in range(size)]
+        branches = []
+        requests = {}
+        for arm in fam.ARM_ORDER:
+            p, s = f"{sid}:{arm}:p0", f"{sid}:{arm}:s0"
+            requests[s] = f"req-{s}"
+            branch = {"branch_id": arm, "contact_id": p, "solver_contact_id": s, "solver_absent": False, "candidate_ids": merged[:2], "perception_samples": None,
+                      "solver_samples": None}
+            if arm == "l1-support":
+                samples = [{"contact_id": f"{sid}:{arm}:s{j}", "parse_status": "ok"} for j in range(5)]
+                for sample in samples:
+                    requests[sample["contact_id"]] = f"req-{sample['contact_id']}"
+                branch["solver_samples"] = {"samples": samples, "outcome": {"delivered_entity_count": 1}}
+            if arm == "l2-union":
+                samples = [{"contact_id": f"{sid}:{arm}:p{j}", "candidate_ids": merged[:2] if j == 0 else merged[j % size:], "note_parse_status": "ok"} for j in range(4)]
+                branch["perception_samples"] = {"merged_ids": merged, "appended_ids": merged[2:], "samples": samples}
+            branches.append(branch)
+        rows.append({"sample_id": sid, "branches": branches, "requests": requests})
     return rows
 
 
@@ -483,13 +514,17 @@ def _contact(agent, role, tokens, seconds, *, forced=False, finish="stop", empty
             "empty_content": empty, "no_json_object": False, "marker_in_content": marker, "reasoning_chars": reasoning, "forced_close": forced}
 
 
-def _synthetic_contacts(rows, *, cap_hit=False, forced_ge40=True):
+def _synthetic_contacts(rows, *, cap_hit=False, forced_size3=True):
     out = []
     for row in rows:
-        out.append(_contact(row["perception"][0], "perception", 1500, 59.0))
-        for arm, contact, supplied in row["arms"]:
-            forced = bool(forced_ge40 and supplied >= 40)
-            out.append(_contact(contact, "solver", 4096 if (cap_hit and arm == "lock") else 3200, 64.0, forced=forced))
+        mapping = reader.arm_contact_map([row])
+        sizes = {b["branch_id"]: reader.list_size(b) for b in row["branches"]}
+        for contact, (arm, node) in mapping.items():
+            if node == "perception":
+                out.append(_contact(contact, "perception", 1500, 59.0))
+            else:
+                forced = bool(forced_size3 and sizes[arm] >= 3)
+                out.append(_contact(contact, "solver", 4096 if (cap_hit and arm == "lock") else 3200, 64.0, forced=forced))
     return out
 
 
@@ -497,126 +532,176 @@ def _score_row(tp, fp, fn, intent):
     return {"slu_f1_word_tp": tp, "slu_f1_char_tp": tp, "slu_f1_word_fp": fp, "slu_f1_char_fp": fp, "slu_f1_word_fn": fn, "slu_f1_char_fn": fn, reader.INTENT_FIELD: intent}
 
 
-def _arms_scores(ids, *, candidate_gain=0.0, candidate_intent=1.0):
+def _arms_scores(ids, *, gain=0.0, intent=1.0):
     base = {i: _score_row(3.0, 1.0, 1.0, 1.0) for i in ids}
-    better = {i: _score_row(3.0 + candidate_gain, 1.0, max(0.0, 1.0 - candidate_gain), candidate_intent) for i in ids}
-    return {arm: (better if arm in fam.CANDIDATE_ARMS else base) for arm in fam.ARM_ORDER}
+    better = {i: _score_row(3.0 + gain, 1.0, max(0.0, 1.0 - gain), intent) for i in ids}
+    arms = {arm: (better if arm in fam.CANDIDATE_ARMS else base) for arm in fam.ARM_ORDER}
+    arms["l1-support-sample0"] = dict(base)
+    return arms
 
 
-def _contrast(slu, intent, twin=0.0):
-    """A contrast record with controlled CI95s for the word logic (pp)."""
+def _contrast(l1, l2, twin=(0.0, 0.0)):
+    """A contrast record with controlled CI95s (pp): ``l1`` / ``l2`` are ``((slu point, lo, hi), (intent point, lo, hi))``; ``twin`` is (SLU point, intent point)."""
 
     def iv(point, lo, hi):
         return {"point_pp": point, "ci95_lo_pp": lo, "ci95_hi_pp": hi}
 
-    versus = {fam.TWIN: {"slu_f1": iv(twin, twin - 1, twin + 1), "intent": iv(0.0, -0.5, 0.5), "intent_saves_harms_ties_vs_delivering": {}}}
-    for arm in fam.CANDIDATE_ARMS:
+    versus = {fam.TWIN: {"slu_f1": iv(twin[0], twin[0] - 1, twin[0] + 1), "intent": iv(twin[1], twin[1] - 0.5, twin[1] + 0.5), "intent_saves_harms_ties_vs_delivering": {}}}
+    for arm, (slu, intent) in (("l1-support", l1), ("l2-union", l2)):
         versus[arm] = {"slu_f1": iv(*slu), "intent": iv(*intent), "intent_saves_harms_ties_vs_delivering": {}}
     return {"versus_delivering": versus}
 
 
-def test_the_arm_words_follow_the_registered_order_and_thresholds():
-    secs = {arm: 64.0 for arm in fam.ARM_ORDER}
-    cheap = dict(secs, **{"d1-qwen-sampling": 50.0})
-    words = lambda c, s=secs: {a: w["word"] for a, w in reader.arm_words(c, s)["words"].items()}  # noqa: E731
-    assert words(_contrast((2.0, 0.5, 3.5), (0.0, -0.5, 0.5), twin=0.4))["d2-qwen-sampling-presence"] == "NOMINATED"
-    assert words(_contrast((2.0, -0.2, 3.5), (0.0, -0.5, 0.5), twin=0.4))["d2-qwen-sampling-presence"] == "NEUTRAL"                    # CI-LB not above zero, same speed
-    assert words(_contrast((2.0, 0.5, 3.5), (-1.0, -1.5, 0.0), twin=0.4))["d2-qwen-sampling-presence"] != "NOMINATED"                  # intent point under the -0.65 guard
-    assert words(_contrast((0.3, 0.1, 3.5), (0.0, -0.5, 0.5), twin=0.4))["d2-qwen-sampling-presence"] != "NOMINATED"                    # point below the twin bar |o| = 0.4
-    assert words(_contrast((-3.0, -4.0, -2.0), (0.0, -0.5, 0.5), twin=0.4))["d2-qwen-sampling-presence"] == "HARM"
-    assert words(_contrast((-0.1, -1.0, 0.8), (0.0, -0.5, 0.5), twin=0.4), cheap)["d1-qwen-sampling"] == "EFFICIENT-NO-LOSS"      # no resolved loss and 0.78 x the lock
-    assert words(_contrast((-0.1, -1.0, 0.8), (0.0, -0.5, 0.5), twin=0.4), secs)["d1-qwen-sampling"] == "NEUTRAL"                  # same speed: efficiency not met
-    efficient_but_harm = words(_contrast((-0.3, -1.0, -0.1), (0.0, -0.5, 0.5), twin=0.4), cheap)["d1-qwen-sampling"]
-    assert efficient_but_harm == "EFFICIENT-NO-LOSS"                                                                              # brief order: EFFICIENT before HARM
-    resolved_loss = words(_contrast((-2.0, -3.0, -1.0), (0.0, -0.5, 0.5), twin=0.4), cheap)["d1-qwen-sampling"]
-    assert resolved_loss == "HARM"                                                                                                # CI-UB -1.0 < -|o|: a resolved loss is never efficient
-    assert reader.arm_words(_contrast((2.0, 0.5, 3.5), (0.0, -0.5, 0.5)), secs)["words"]["d1-qwen-sampling"]["next_step"] == "2-arm Fold A confirm"
-    assert list(reader.WORDS) == ["NOMINATED", "EFFICIENT-NO-LOSS", "HARM", "NEUTRAL"]
+NEUTRAL_SIDE = ((0.0, -0.5, 0.5), (0.0, -0.5, 0.5))
+
+
+def _words(contrast):
+    return {a: w["word"] for a, w in reader.arm_words(contrast)["words"].items()}
+
+
+def test_the_l1_words_follow_the_registered_order_and_thresholds():
+    w = lambda slu, intent, twin=(0.4, 0.0): _words(_contrast((slu, intent), NEUTRAL_SIDE, twin))["l1-support"]  # noqa: E731
+    assert w((2.0, 0.5, 3.5), (0.0, -0.5, 0.5)) == "NOMINATED"
+    assert w((2.0, -0.2, 3.5), (0.0, -0.5, 0.5)) == "NO-RESOLVED-LOSS"              # CI-LB not above zero, but the CI-UB is far above -|o|: no resolved loss
+    assert w((0.3, 0.1, 3.5), (0.0, -0.5, 0.5)) == "NO-RESOLVED-LOSS"               # point below the twin bar |o| = 0.4: not nominated, no resolved loss
+    assert w((2.0, 0.5, 3.5), (-1.0, -1.5, 0.0)) == "NO-RESOLVED-LOSS"              # intent point under the -0.65 guard: not nominated; intent CI-UB 0.0 >= -0.65
+    assert w((2.0, 0.5, 3.5), (-3.0, -4.0, -1.0)) == "NEUTRAL"                      # intent CI-UB below the guard: neither nominated nor NRL; the SLU side is no harm
+    assert w((-3.0, -4.0, -2.0), (0.0, -0.5, 0.5)) == "HARM"
+    assert w((-0.1, -1.0, 0.8), (0.0, -0.5, 0.5)) == "NO-RESOLVED-LOSS"
+    assert w((-0.3, -1.0, -0.1), (0.0, -0.5, 0.5)) == "NO-RESOLVED-LOSS"            # the spec's order: NO-RESOLVED-LOSS before HARM (CI-UB -0.1 >= -|o| = -0.4)
+    assert w((-2.0, -3.0, -1.0), (0.0, -0.5, 0.5)) == "HARM"
+
+
+def test_the_l2_words_follow_the_registered_order_and_thresholds():
+    w = lambda intent, slu, twin=(0.0, 0.2): _words(_contrast(NEUTRAL_SIDE, (slu, intent), twin))["l2-union"]  # noqa: E731
+    assert w((1.0, 0.2, 1.8), (0.0, -0.5, 0.5)) == "NOMINATED"
+    assert w((0.2, 0.05, 0.4), (0.0, -0.5, 0.5)) == "NO-RESOLVED-LOSS"              # intent CI-LB above zero but the point is under max(|o_int|, 0.33)
+    assert w((1.0, 0.2, 1.8), (-3.0, -4.0, -2.0)) == "HARM"                          # the SLU guard fails (CI-UB < -|o_SLU| and < 0): HARM, never NOMINATED
+    assert w((-1.0, -2.0, -0.2), (0.0, -0.5, 0.5)) == "HARM"                         # intent CI-UB < 0
+    assert w((0.0, -0.5, 0.5), (0.0, -0.5, 0.5)) == "NO-RESOLVED-LOSS"
+    assert w((0.0, -1.5, -0.7), (0.0, -0.5, 0.5)) == "HARM"                          # intent CI-UB below zero
+    # the twin bar |o_int| raises the nominated point floor above 0.33
+    assert w((0.5, 0.1, 0.9), (0.0, -0.5, 0.5), twin=(0.0, 0.6)) == "NO-RESOLVED-LOSS"
+    assert reader.arm_words(_contrast(NEUTRAL_SIDE, ((0.0, -0.5, 0.5), (1.0, 0.2, 1.8))))["words"]["l2-union"]["next_step"] == "335 B Fold A column"
+    # SPEC QUIRK, pinned: with HARM ahead of NO-RESOLVED-LOSS (design spec section 6) every L2 outcome that is not NOMINATED or HARM has intent CI-UB >= 0 and SLU CI-UB >= 0, which
+    # satisfies the "as for L1" NO-RESOLVED-LOSS conditions, so L2 can never read NEUTRAL. L1 can (an intent CI-UB under the guard with a harmless SLU side).
+    seen = set()
+    for slu_hi in (-2.0, -0.2, 0.0, 1.0):
+        for intent_hi in (-2.0, -0.5, 0.0, 1.0):
+            for intent_lo in (-3.0, 0.1):
+                if intent_lo <= intent_hi:
+                    seen.add(_words(_contrast(NEUTRAL_SIDE, ((0.0, slu_hi - 1.0, slu_hi), (0.5, intent_lo, intent_hi)), twin=(0.4, 0.0)))["l2-union"])
+    assert seen == {"NOMINATED", "HARM", "NO-RESOLVED-LOSS"}
+    assert list(reader.WORDS) == ["NOMINATED", "NO-RESOLVED-LOSS", "HARM", "NEUTRAL"]
 
 
 def test_the_discordance_table_reports_every_arm_against_the_lock_beside_the_twin():
     ids = [f"s{i}" for i in range(20)]
     base = {i: _score_row(3.0, 1.0, 1.0, 1.0) for i in ids}
     twin = {i: (_score_row(3.0, 2.0, 1.0, 1.0) if n < 2 else dict(base[i])) for n, i in enumerate(ids)}                        # 2 / 20 rows differ (SLU side)
-    sampling = {i: (_score_row(3.0, 2.0, 1.0, 1.0) if n < 8 else dict(base[i])) for n, i in enumerate(ids)}                    # 8 / 20 rows differ
-    sampling_intent = {i: (dict(base[i], **{reader.INTENT_FIELD: 0.0}) if n < 4 else dict(base[i])) for n, i in enumerate(ids)}    # 4 / 20 differ, intent side only
-    arms = {"lock": base, "aa": twin, "d1-qwen-sampling": sampling, "d3-temp-0.3": sampling_intent}
+    sampled = {i: (_score_row(3.0, 2.0, 1.0, 1.0) if n < 8 else dict(base[i])) for n, i in enumerate(ids)}                     # 8 / 20 rows differ
+    sampled_intent = {i: (dict(base[i], **{reader.INTENT_FIELD: 0.0}) if n < 4 else dict(base[i])) for n, i in enumerate(ids)}   # 4 / 20 differ, intent side only
+    arms = {"lock": base, "aa": twin, "l1-support": sampled, "l2-union": sampled_intent}
     table = reader.discordance_table(arms, ids)
     assert table["delivering"] == "lock" and table["twin"] == "aa" and "lock" not in table["arms"] and table["twin_slu_discordant_share"] == 0.1
     assert table["arms"]["aa"]["slu_discordant_rows"] == 2 and table["arms"]["aa"]["is_twin"] is True and table["arms"]["aa"]["slu_discordant_share_over_twin"] == 1.0
-    d1 = table["arms"]["d1-qwen-sampling"]
+    d1 = table["arms"]["l1-support"]
     assert d1["slu_discordant_rows"] == 8 and d1["slu_discordant_share"] == 0.4 and d1["slu_discordant_share_over_twin"] == 4.0 and d1["intent_discordant_rows"] == 0
-    d3 = table["arms"]["d3-temp-0.3"]
-    assert d3["slu_discordant_rows"] == 0 and d3["intent_discordant_rows"] == 4 and d3["any_discordant_rows"] == 4
-    # an identical arm has zero discordance and the twin baseline of zero gives a NaN multiple, never a division error
-    zero = reader.discordance_table({"lock": base, "aa": dict(base), "d1-qwen-sampling": sampling}, ids)
-    assert zero["arms"]["aa"]["slu_discordant_rows"] == 0 and zero["arms"]["d1-qwen-sampling"]["slu_discordant_share_over_twin"] != zero["arms"]["d1-qwen-sampling"]["slu_discordant_share_over_twin"]
+    d2 = table["arms"]["l2-union"]
+    assert d2["slu_discordant_rows"] == 0 and d2["intent_discordant_rows"] == 4 and d2["any_discordant_rows"] == 4
+    zero = reader.discordance_table({"lock": base, "aa": dict(base), "l1-support": sampled}, ids)
+    assert zero["arms"]["aa"]["slu_discordant_rows"] == 0 and zero["arms"]["l1-support"]["slu_discordant_share_over_twin"] != zero["arms"]["l1-support"]["slu_discordant_share_over_twin"]
 
 
 def test_the_writer_words_are_the_readers_words_in_order():
     import l338_write_registration as writer  # noqa: PLC0415
 
-    assert list(writer.WORD_RULES) == list(reader.WORDS)
-    assert "-0.65" in writer.WORD_RULES["NOMINATED"] and "0.85" in writer.WORD_RULES["EFFICIENT-NO-LOSS"] and "< 0" in writer.WORD_RULES["HARM"]
+    assert list(writer.WORD_RULES) == ["L1", "L2"] and writer.WORD_ORDER["L1"] == ["NOMINATED", "NO-RESOLVED-LOSS", "HARM", "NEUTRAL"]
+    assert writer.WORD_ORDER["L2"] == ["NOMINATED", "HARM", "NO-RESOLVED-LOSS", "NEUTRAL"] and sorted(reader.WORDS) == sorted(set(writer.WORD_ORDER["L1"]))
+    assert writer.WORD_RULES["L1"]["primary"] == "slu" and writer.WORD_RULES["L2"]["primary"] == "intent"
+    assert "-0.65" in writer.WORD_RULES["L1"]["NOMINATED"] and "|o_SLU|" in writer.WORD_RULES["L1"]["NOMINATED"] and "< 0" in writer.WORD_RULES["L1"]["HARM"]
+    assert "0.33" in writer.WORD_RULES["L2"]["NOMINATED"] and "max(|o_int|" in writer.WORD_RULES["L2"]["NOMINATED"]
+    for arm, lever in fam.ARM_LEVER.items():
+        assert reader.LEVER_OF[arm] == lever
 
 
 def test_reader_paired_contrast_end_to_end_with_the_twin():
     ids = [f"s{i}" for i in range(40)]
-    arms = _arms_scores(ids, candidate_gain=1.0, candidate_intent=1.0)
+    arms = _arms_scores(ids, gain=1.0, intent=1.0)
     rows = _outputs_rows(40)
     contacts = _synthetic_contacts(rows)
     by_arm = reader.npc.attribute(contacts, reader.arm_contact_map(rows))
     result = reader.read_stage(arms, ids, lambda sid: sid, lambda sid: "alarm" if int(sid[1:]) % 2 else "play", by_arm, reader.contact_rows(rows, contacts), draws=200)
-    assert result["schema"] == reader.SCHEMA_READ and result["contrast"]["delivering"] == "lock" and set(result["contrast"]["versus_delivering"]) == set(fam.ARM_ORDER) - {"lock"}
-    assert result["contrast"]["versus_delivering"]["aa"]["slu_f1"]["point_pp"] == 0.0
-    assert result["contrast"]["versus_delivering"]["d1-qwen-sampling"]["slu_f1"]["point_pp"] > 0
-    assert result["arm_words"]["words"]["d1-qwen-sampling"]["word"] == "NOMINATED"
+    assert result["schema"] == reader.SCHEMA_READ and result["contrast"]["delivering"] == "lock"
+    assert set(result["contrast"]["versus_delivering"]) == set(fam.ARM_ORDER) - {"lock"} | {"l1-support-sample0"}
+    assert result["contrast"]["versus_delivering"]["aa"]["slu_f1"]["point_pp"] == 0.0 and result["contrast"]["versus_delivering"]["l1-support"]["slu_f1"]["point_pp"] > 0
+    assert result["arm_words"]["words"]["l1-support"]["word"] == "NOMINATED" and result["arm_words"]["words"]["l1-support"]["lever"] == "L1"
+    assert set(result["arm_words"]["words"]) == set(fam.CANDIDATE_ARMS)
     assert set(result["per_scenario"]["scenarios"]) == {"alarm", "play"} and "natural_mixture" in result["per_scenario"] and "equal_scenario" in result["per_scenario"]
-    assert reader.render_markdown(result).startswith("# ")
-    assert set(result["discordance"]["arms"]) == set(fam.ARM_ORDER) - {"lock"} and result["discordance"]["arms"]["aa"]["slu_discordant_rows"] == 0
-    assert result["discordance"]["arms"]["d1-qwen-sampling"]["slu_discordant_rows"] == 40 and "Discordance against" in reader.render_markdown(result)
+    assert "l1-support-sample0" not in result["per_scenario"]["natural_mixture"].__repr__().replace("slu_d_l1-support-sample0_pp", "")
+    pure = result["l1_pure_filter"]
+    assert pure["delta_vs_own_sample0"]["slu_f1"]["point_pp"] > 0 and pure["filter_effect"]["rows"] == 40 and "second A/A" in pure["note"]
+    assert result["l2_gold_tables"]["status"].startswith("not computed")
+    text = reader.render_markdown(result)
+    assert text.startswith("# ") and "Discordance" not in text and "L1 pure filter" in text
+    assert result["discordance"]["arms"]["aa"]["slu_discordant_rows"] == 0 and result["discordance"]["arms"]["l1-support"]["slu_discordant_rows"] == 40
     json.dumps(result)
 
 
-def test_forced_close_share_is_split_by_supplied_item_bin_and_empty_gold_false_fill_by_forced_status():
-    rows = _outputs_rows(8, supplied=(10, 45))
-    contacts = _synthetic_contacts(rows, forced_ge40=True)
+def test_forced_close_share_is_split_by_list_size_and_empty_gold_false_fill_by_forced_status():
+    rows = _outputs_rows(8, lists=(2, 3))
+    contacts = _synthetic_contacts(rows, forced_size3=True)
     joined = reader.contact_rows(rows, contacts)
-    split = reader.forced_by_supply_bin(joined, "lock")
-    assert split["lt40"]["contacts"] == 4 and split["lt40"]["forced"] == 0 and split["lt40"]["forced_share"] == 0.0
-    assert split["ge40"]["contacts"] == 4 and split["ge40"]["forced"] == 4 and split["ge40"]["forced_share"] == 1.0
-    assert reader.supply_bin(39) == "lt40" and reader.supply_bin(40) == "ge40" and reader.supply_bin(None) == "unknown"
-    # empty-gold rows: s1,s3,s5,s7 are the >= 40 (forced) rows; false-fill on the forced ones only
+    split = reader.forced_by_list_size(joined, "l2-union")
+    assert split["2"]["contacts"] == 4 and split["2"]["forced"] == 0 and split["2"]["forced_share"] == 0.0
+    assert split["3"]["contacts"] == 4 and split["3"]["forced"] == 4 and split["3"]["forced_share"] == 1.0
+    assert reader.list_size_bin(2) == "2" and reader.list_size_bin(3) == "3" and reader.list_size_bin(5) == "other" and reader.list_size_bin(0) == "other"
+    # l1 and lock see their own note's two candidates, so their contacts are all in the size-2 bin and none is forced
+    assert reader.forced_by_list_size(joined, "lock")["2"] == {"contacts": 8, "forced": 0, "no_wire": 0, "forced_share": 0.0}
     scores = {}
     for i in range(8):
         sid = f"s{i}"
         forced = i % 2 == 1
-        scores[sid] = _score_row(0.0, 1.0 if forced else 0.0, 0.0, 1.0)                    # empty gold (tp = fn = 0); an entity emitted only on forced rows
+        scores[sid] = _score_row(0.0, 1.0 if forced else 0.0, 0.0, 1.0)                    # empty gold (tp = fn = 0); an entity emitted only on the forced rows
     scores["s8"] = _score_row(2.0, 0.0, 0.0, 1.0)                                          # a non-empty gold row, exact
-    fill = reader.empty_gold_false_fill(scores, {c["sample_id"]: c["forced_close"] for c in joined if c["arm"] == "lock"}.get)
+    fill = reader.empty_gold_false_fill(scores, {c["sample_id"]: c["forced_close"] for c in joined if c["arm"] == "l2-union"}.get)
     assert fill["empty_gold_rows"] == 8 and fill["false_fill_rows"] == 4
     assert fill["forced"] == {"rows": 4, "false_fill": 4, "false_fill_share": 1.0} and fill["natural"]["rows"] == 4 and fill["natural"]["false_fill"] == 0
     assert reader.nonempty_exact(scores) == {"nonempty_gold_rows": 1, "exact_rows": 1, "exact_share": 1.0}
     tables = reader.tables_by_arm(reader.npc.attribute(contacts, reader.arm_contact_map(rows)))
-    sec = reader.arm_secondaries({"lock": scores}, joined, tables)["lock"]
-    assert sec["solver_forced_close_share"] == 0.5 and sec["forced_close_by_supplied_items_bin"]["ge40"]["forced"] == 4 and sec["empty_gold_false_fill"]["forced"]["false_fill"] == 4
+    sec = reader.arm_secondaries({"l2-union": scores, "l1-support-sample0": scores}, joined, tables)
+    assert set(sec) == {"l2-union"}                                                         # the stream column has no Solver contact of its own
+    assert sec["l2-union"]["solver_forced_close_share"] == 0.5 and sec["l2-union"]["forced_close_by_list_size"]["3"]["forced"] == 4
+
+
+def test_the_l1_filter_effect_counts_false_fills_removed_and_exact_rows_lost_or_gained():
+    ids = ["a", "b", "c", "d", "e"]
+    sample0 = {"a": _score_row(0, 1, 0, 1), "b": _score_row(0, 1, 0, 1), "c": _score_row(2, 0, 0, 1), "d": _score_row(1, 1, 1, 1), "e": _score_row(0, 0, 0, 1)}
+    committed = {"a": _score_row(0, 0, 0, 1), "b": _score_row(0, 1, 0, 1), "c": _score_row(1, 0, 1, 1), "d": _score_row(2, 0, 0, 1), "e": _score_row(0, 1, 0, 1)}
+    effect = reader.l1_filter_effect(committed, sample0, ids)
+    assert effect["empty_gold_false_fills_removed"] == 1 and effect["empty_gold_false_fills_added"] == 1
+    assert effect["nonempty_exact_lost"] == 1 and effect["nonempty_exact_gained"] == 1 and effect["rows"] == 5
 
 
 def test_reader_counts_cap_hits_and_tabulates_the_throughput():
     rows = _outputs_rows(4)
     mapping = reader.arm_contact_map(rows)
-    good = reader.smoke_stage(reader.npc.attribute(_synthetic_contacts(rows), mapping), missing=reader.missing_columns(rows, _synthetic_contacts(rows)))
-    assert set(good["arms"]) == set(fam.ARM_ORDER) | {"_perception"} and good["arms"]["lock"]["solver"]["contacts"] == 4 and good["arms"]["lock"]["solver"]["cap"] == 4096
-    assert good["arms"]["_perception"]["perception"]["contacts"] == 4 and good["absent_columns"] == 0 and good["unattributed_contacts"] == 0
+    contacts = _synthetic_contacts(rows)
+    good = reader.smoke_stage(reader.npc.attribute(contacts, mapping), missing=reader.missing_columns(rows, contacts))
+    assert set(good["arms"]) == set(fam.ARM_ORDER) and good["arms"]["lock"]["solver"]["contacts"] == 4 and good["arms"]["lock"]["solver"]["cap"] == 4096
+    assert good["arms"]["l1-support"]["solver"]["contacts"] == 20 and good["arms"]["l1-support"]["perception"]["contacts"] == 4          # five Solver samples per row
+    assert good["arms"]["l2-union"]["perception"]["contacts"] == 16 and good["arms"]["l2-union"]["solver"]["contacts"] == 4             # four Perception samples per row
+    assert good["absent_columns"] == 0 and good["unattributed_contacts"] == 0
     tp = good["throughput"]
-    assert tp["arm_mix_registered_rows"] == fam.ARM_MIX_ROWS and abs(tp["arm_mix_measured_rows"] - (59.0 + 6 * 64.0) / (59.0 + 64.0)) < 1e-9
+    assert tp["arm_mix_registered_rows"] == fam.ARM_MIX_ROWS and abs(tp["arm_mix_measured_rows"] - (7 * 59.0 + 8 * 64.0) / (59.0 + 64.0)) < 1e-9
+    assert tp["contacts_per_row_by_arm"]["l1-support"] == {"perception": 1.0, "solver": 5.0} and tp["contacts_per_row_by_arm"]["l2-union"] == {"perception": 4.0, "solver": 1.0}
     checks = smoke_signoff.evaluate(fam.signoff_conditions(), good)
     assert checks and all(c["ok"] for c in checks), [c for c in checks if not c["ok"]]
     capped = reader.smoke_stage(reader.npc.attribute(_synthetic_contacts(rows, cap_hit=True), mapping))
     assert good["arms"]["lock"]["solver"]["cap_hits"] == 0 and capped["arms"]["lock"]["solver"]["cap_hits"] == 4
     assert any(not c["ok"] for c in smoke_signoff.evaluate(fam.signoff_conditions(), capped))
     # a declared arm column whose Solver contact is missing from the trace is counted (absent_columns)
-    short = _synthetic_contacts(rows)[:-1]
+    short = [c for c in contacts if c["agent_contact_id"] != "s3:lock:s0"]
     missing = reader.missing_columns(rows, short)
     assert missing["total"] == 1 and missing["by_arm"]["lock"] == 1
 
@@ -624,11 +709,165 @@ def test_reader_counts_cap_hits_and_tabulates_the_throughput():
 def test_the_reader_loads_only_ids_from_the_sealed_outputs(tmp_path):
     path = tmp_path / "outputs.jsonl"
     secret = "A-SECRET-TRANSCRIPT"
-    receipt = {"schema": "saea-supply-variant-arms-v6", "arms": [{"arm_id": a, "contact_id": f"c:{a}", "supplied_item_count": 12, "decoding_override": fam.DECODING_OF.get(a)} for a in fam.ARM_ORDER]}
-    path.write_text(json.dumps({"sample_id": "s0", "delivered": secret, "supply_variants": receipt, "native_episode_receipt": {"role_visits": [
-        {"stage": "perception", "execution_receipt": {"contacts": [{"agent_contact_id": "c:p"}]}}]}}) + "\n", encoding="utf-8")
+    branch = {"branch_id": "l1-support", "contact_id": "c:p", "solver_contact_id": "c:s0", "candidate_intent_ids": ["i:a"], "note_text": secret,
+              "sampling": {"solver_samples": {"samples": [{"contact_id": "c:s0", "parse_status": "ok", "response_text": secret}, {"contact_id": "c:s1", "parse_status": "ok"}],
+                                              "outcome": {"delivered_entity_count": 1, "entity_supports": [{"type": "place_name", "support": 2}]}}, "perception_samples": None}}
+    path.write_text(json.dumps({"sample_id": "s0", "delivered": secret, "native_episode_receipt": {
+        "perception_branches": {"branches": [branch]},
+        "role_visits": [{"stage": "solver", "execution_receipt": {"contacts": [{"agent_contact_id": "c:s0", "request_id": "rails-1"}, {"agent_contact_id": "c:s1", "request_id": "rails-2"}]}}]}}) + "\n",
+        encoding="utf-8")
     rows = reader.load_outputs_rows(path)
-    assert secret not in json.dumps(rows) and rows[0]["perception"] == ["c:p"] and rows[0]["arms"][-1] == ("lock", "c:lock", 12)
+    assert secret not in json.dumps(rows) and rows[0]["requests"] == {"c:s0": "rails-1", "c:s1": "rails-2"}
+    assert rows[0]["branches"][0]["solver_samples"]["samples"] == [{"contact_id": "c:s0", "parse_status": "ok"}, {"contact_id": "c:s1", "parse_status": "ok"}]
+    assert reader.arm_contact_map(rows) == {"c:p": ("l1-support", "perception"), "c:s0": ("l1-support", "solver"), "c:s1": ("l1-support", "solver")}
+
+
+def test_answer_keys_and_stream_discordance_compare_parsed_answers_not_text():
+    assert reader.answer_key(_answer("paris")) == reader.answer_key(json.dumps(json.loads(_answer("paris")), indent=2)) == ("s", "a", (("place_name", "paris"),))
+    assert reader.answer_key("not json") == ("malformed",) and reader.answer_key(None) == ("absent",)
+    ids = [f"s{i}" for i in range(10)]
+    lock = {i: reader.answer_key(_answer("paris")) for i in ids}
+    twin = {i: (reader.answer_key(_answer("rome")) if n < 1 else lock[i]) for n, i in enumerate(ids)}                          # 1 / 10 differ
+    sample = {i: (reader.answer_key(_answer("paris", "rome")) if n < 4 else lock[i]) for n, i in enumerate(ids)}               # 4 / 10 differ
+    table = reader.stream_discordance({"lock": lock, "aa": twin, "l1-support.s2": sample}, ids)
+    assert table["twin_discordant_share"] == 0.1 and table["streams"]["aa"]["is_twin"] and table["streams"]["l1-support.s2"]["discordant_rows"] == 4
+    assert table["streams"]["l1-support.s2"]["share_over_twin"] == 4.0 and "lock" not in table["streams"]
+    rows = _outputs_rows(3)
+    notes = reader.perception_stream_keys(rows)
+    assert {"lock", "aa", "l1-support", "l2-union", "l2-union.s0", "l2-union.s3", "l2-union.merged"} <= set(notes)
+    assert notes["l2-union.merged"]["s1"] == ("i:0", "i:1", "i:2") and notes["l2-union"]["s0"] == notes["l2-union.s0"]["s0"]
+    response_keys = {f"req-{r['branches'][0]['solver_contact_id']}": reader.answer_key(_answer("paris")) for r in rows}
+    streams = reader.solver_stream_keys(rows, response_keys)
+    assert set(streams) >= {"lock", "aa", "l2-union", "l1-support", "l1-support.s0", "l1-support.s4"} and streams["l1-support"]["s0"] == reader.answer_key(_answer("paris"))
+    assert streams["lock"]["s0"] == ("absent",)
+
+
+def test_the_sampling_tables_come_from_the_render_custody():
+    rows = [{"sample_id": f"s{i}", "branches": {
+        "l1-support": {"n": 5, "entity_supports": [{"type": "place_name", "support": 2 + i % 2}], "delivered_entity_count": 1, "base_entity_count": 2 if i < 2 else 1,
+                       "gate": {"status": "n1-unavailable"}, "parse_status": ["ok"] * 4 + ["malformed"]},
+        "l2-union": {"perception_samples": {"merged_candidate_ids": ["a", "b", "c"][: 2 + i % 2], "appended_candidate_ids": ["c"][: i % 2],
+                                            "sample_lists": [{"candidate_intent_ids": ["a", "b"]}, {"candidate_intent_ids": ["c"]}]}}}} for i in range(4)]
+    support = reader.support_count_table(rows)
+    assert support["rows"] == 4 and support["delivered_entities_by_support"] == {"2": 2, "3": 2} and support["base_entities_total"] == 6 and support["delivered_entities_total"] == 4
+    assert support["dropped_entities_total"] == 2 and support["rows_with_a_drop"] == 2 and support["rows_emptied"] == 0
+    assert support["gate_status_counts"] == {"n1-unavailable": 4} and support["sample_parse_status_counts"] == {"ok": 16, "malformed": 4}
+    union = reader.union_size_table(rows)
+    assert union["rows"] == 4 and union["merged_list_size"] == {"2": 2, "3": 2} and union["appended_count"] == {"0": 2, "1": 2} and union["rows_where_the_merge_changed_sample0"] == 2
+    assert union["per_sample_list_size"] == {"1": 4, "2": 4}
+
+
+def _raw_row(view):
+    """A sealed outputs row (receipts only; a secret delivered text) from a ``load_outputs_rows``-shaped view."""
+
+    branches = []
+    for b in view["branches"]:
+        sampling = {"perception_samples": None, "solver_samples": None}
+        if b["perception_samples"]:
+            sampling["perception_samples"] = {"merged_candidate_ids": b["perception_samples"]["merged_ids"], "appended_candidate_ids": b["perception_samples"]["appended_ids"],
+                                              "samples": [{"contact_id": s["contact_id"], "candidate_intent_ids": s["candidate_ids"], "note_parse_status": "ok"}
+                                                          for s in b["perception_samples"]["samples"]]}
+        if b["solver_samples"]:
+            sampling["solver_samples"] = {"samples": b["solver_samples"]["samples"], "outcome": b["solver_samples"]["outcome"]}
+        branches.append({"branch_id": b["branch_id"], "contact_id": b["contact_id"], "solver_contact_id": b["solver_contact_id"], "candidate_intent_ids": b["candidate_ids"],
+                         "sampling": sampling})
+    contacts = [{"agent_contact_id": c, "request_id": r} for c, r in view["requests"].items()]
+    return {"sample_id": view["sample_id"], "text": "A-SECRET-TRANSCRIPT", "native_episode_receipt": {
+        "perception_branches": {"branches": branches}, "role_visits": [{"stage": "solver", "execution_receipt": {"contacts": contacts}}]}}
+
+
+def _write_sealed(tmp_path, rows, run, attempt, *, answers=None):
+    run_dir = tmp_path / "runs" / run / attempt
+    run_dir.mkdir(parents=True)
+    (run_dir / f"{run}.outputs.jsonl").write_text("".join(json.dumps(_raw_row(r)) + "\n" for r in rows), encoding="utf-8")
+    lines = []
+    for row in rows:
+        mapping = reader.arm_contact_map([row])
+        requests = {v: k for k, v in row["requests"].items()}
+        for contact, (arm, node) in mapping.items():
+            request = row["requests"].get(contact) or f"req-{contact}"
+            lines.append({"channel": "COST", "record_id": f"{request}/cost", "payload": {"prompt_tokens": 8000, "completion_tokens": 1500 if node == "perception" else 3200,
+                                                                                         "latency_seconds": 59.0 if node == "perception" else 64.0}})
+            lines.append({"channel": "USE", "record_id": f"{request}/native-role-contact", "payload": {"use_agent_contact_id": contact, "use_role_id": node}})
+            if answers is not None and node == "solver":
+                lines.append({"channel": "MODEL_RESPONSE", "record_id": f"{request}/response", "payload": {"text": answers(row["sample_id"], contact)}})
+        del requests
+    (run_dir / f"{run}.trace.jsonl").write_text("".join(json.dumps(line) + "\n" for line in lines), encoding="utf-8")
+    return run_dir
+
+
+def test_the_smoke_stage_runs_end_to_end_over_a_sealed_smoke_and_keeps_no_text(tmp_path):
+    rows = _outputs_rows(4)
+    cell = fam.CELLS["smoke"]
+    # the l1 and l2 branches own extra contacts; give every contact of the view a request id so the trace joins by id
+    for row in rows:
+        for b in row["branches"]:
+            for sample in (b["solver_samples"] or {}).get("samples", []) + (b["perception_samples"] or {}).get("samples", []):
+                row["requests"].setdefault(sample["contact_id"], f"req-{sample['contact_id']}")
+    _write_sealed(tmp_path, rows, cell["run"], cell["attempt"])
+    out = tmp_path / "analysis"
+    assert reader.main(["--stage", "smoke", "--data-root", str(tmp_path), "--analysis-root", str(out)]) == 0
+    result = json.loads((out / "smoke-decode-cost.json").read_text(encoding="utf-8"))
+    assert result["schema"] == fam.SMOKE_SCHEMA and set(result["arms"]) == set(fam.ARM_ORDER) and result["absent_columns"] == 0 and result["unattributed_contacts"] == 0
+    assert abs(result["throughput"]["arm_mix_measured_rows"] - (7 * 59.0 + 8 * 64.0) / (59.0 + 64.0)) < 1e-9
+    assert "A-SECRET-TRANSCRIPT" not in (out / "smoke-decode-cost.json").read_text(encoding="utf-8")
+    assert reader.main(["--stage", "smoke", "--data-root", str(tmp_path), "--analysis-root", str(out)]) == 6          # write-once
+    checks = smoke_signoff.evaluate(fam.signoff_conditions(), result)
+    assert checks and [c for c in checks if not c["ok"]] == [], [c for c in checks if not c["ok"]]
+
+
+def test_the_trace_reads_reduce_response_texts_to_keys_and_feed_the_l1_forms(tmp_path):
+    rows = _outputs_rows(2)
+    for row in rows:
+        for b in row["branches"]:
+            for sample in (b["solver_samples"] or {}).get("samples", []) + (b["perception_samples"] or {}).get("samples", []):
+                row["requests"].setdefault(sample["contact_id"], f"req-{sample['contact_id']}")
+
+    def answers(sid, contact):
+        j = contact.rsplit(":s", 1)[-1]
+        if "l1-support" in contact:
+            return _answer("paris", "rome") if j == "0" else _answer("paris") if j in ("1", "2") else _answer()
+        return _answer("paris")
+
+    run_dir = _write_sealed(tmp_path, rows, "RUN", "ATT", answers=answers)
+    trace = run_dir / "RUN.trace.jsonl"
+    wanted = {r for row in rows for r in row["requests"].values()}
+    keys = reader.trace_response_keys(trace, wanted)
+    assert keys["req-s0:l1-support:s0"] == ("s", "a", (("place_name", "paris"), ("place_name", "rome"))) and keys["req-s0:lock:s0"] == ("s", "a", (("place_name", "paris"),))
+    assert "A-SECRET" not in json.dumps(keys)
+    streams = reader.solver_stream_keys(rows, keys)
+    assert streams["l1-support.s3"]["s0"] == ("s", "a", ()) and streams["lock"]["s1"] == streams["aa"]["s1"]
+    forms = reader.l1_forms_from_trace(rows, trace, None)
+    assert forms["s2_filter_only"]["rows"] == 2 and forms["s2_filter_only"]["entities_dropped"] == 2 and forms["s2_filter_only"]["rows_emptied"] == 0     # rome lacks support
+    assert forms["s3_gated"]["entities_dropped"] >= 2 and forms["s2_gated"]["gate_n1_unavailable_rows"] == 2
+
+
+def test_the_l2_gold_tables_need_a_gold_join_and_count_recall_and_conversion_by_position():
+    rows = _outputs_rows(4, lists=(3,))
+    ids = [r["sample_id"] for r in rows]
+    gold = {"s0": "i:0", "s1": "i:2", "s2": "i:1", "s3": "i:9"}
+    l2 = {i: _score_row(1, 0, 0, 1.0 if i in ("s0", "s2") else 0.0) for i in ids}
+    lock = {i: _score_row(1, 0, 0, 1.0 if i == "s0" else 0.0) for i in ids}
+    table = reader.l2_gold_tables(rows, gold, l2, lock, ids)
+    assert table["rows"] == 4 and table["recall_merged_list"] == 0.75 and table["recall_sample0_list"] == 0.5 and table["recall_lock_note"] == 0.5
+    assert table["gold_newly_listed_rows"] == 1 and table["gold_lost_rows"] == 0
+    pos = table["conversion_by_gold_position_in_merged_list"]
+    assert pos["1"] == {"rows": 1, "l2_intent_correct": 1, "lock_intent_correct": 1} and pos["2"] == {"rows": 1, "l2_intent_correct": 1, "lock_intent_correct": 0}
+    assert pos["3"]["rows"] == 1 and pos["absent"]["rows"] == 1 and pos["absent"]["l2_intent_correct"] == 0
+
+
+def test_the_l1_forms_report_counts_and_the_n1_gate_is_unavailable_without_a_join():
+    rows = _outputs_rows(2)
+    texts = {"s0": [_answer("paris", "rome"), _answer("paris"), _answer("paris"), _answer(), _answer("paris")],
+             "s1": [_answer("paris"), _answer(), _answer(), _answer(), _answer()]}
+    forms = reader.l1_forms(rows, texts, None)
+    assert forms["s2_filter_only"] == {"rows": 2, "rows_with_a_changed_entity_list": 1, "entities_dropped": 1, "rows_emptied": 1, "gate_n1_unavailable_rows": 0} or \
+        forms["s2_filter_only"]["entities_dropped"] == 2
+    assert forms["s2_gated"]["gate_n1_unavailable_rows"] == 2 and forms["s3_gated"]["gate_n1_unavailable_rows"] == 2
+    assert forms["s3_gated"]["entities_dropped"] >= forms["s2_filter_only"]["entities_dropped"]
+    fired = reader.l1_forms(rows, texts, {"s0": 0.0, "s1": 0.9})
+    assert fired["s2_gated"]["gate_n1_unavailable_rows"] == 0 and fired["s2_gated"]["rows_emptied"] >= forms["s2_filter_only"]["rows_emptied"]
+    assert fired["gate_only"]["entities_dropped"] >= 1                                       # s1: N1 0.9 and four empty samples empty the row's single entity
 
 
 # ---- recovery: the generic lib is wired, EMPTY now -------------------------------------------------------------------------------------------
@@ -712,8 +951,9 @@ def test_the_flip_read_and_repin_scripts_consume_the_family_record():
     assert "PLAN_REC=" in flip and "rec_suffix" in flip and 'L338_KINDS:-"smoke arm"' in flip and "l338_family" in flip
     assert "SLUG=l338-lever-column-fold-b" in flip and "PKGN=slurp-l338-lever-column-fold-b-v1" in flip and "SHORT=l338" in flip
     assert "l338_family" in read and "SAEA-SLURP-L338-LEVER-COLUMN-FOLD-B-READ-V1" in read and "slurp_l338_column_read.py" in read
-    assert "--mode supply-variants" in read and "perception-branches" not in read and re.search(r'STAGE=\$\{1:-read\}', read) and '"$STAGE" = "columns"' in read
-    assert "L338_KIND" in repin and "l338-lever-column-fold-b" in repin and "2026-10-18" in repin
+    assert "--mode perception-branches" in read and "supply-variants" not in read and re.search(r'STAGE=\$\{1:-read\}', read)
+    assert '"$STAGE" = "columns"' in read
+    assert "L338_KIND" in repin and "l338-lever-column-fold-b" in repin and "2026-10-19" in repin and "2026-10-18" not in repin
     assert f"RD={fam.PACKAGE}".replace("slurp-l338-lever-column-fold-b-v1", "$PKGN") in flip, "the flip's readiness directory must be the package's own (date included)"
 
 

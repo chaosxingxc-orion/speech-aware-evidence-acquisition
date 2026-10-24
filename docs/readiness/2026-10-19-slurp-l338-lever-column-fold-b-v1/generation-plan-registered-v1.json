@@ -22,7 +22,7 @@
     "split_role": "discovery",
     "study": "speech-aware-evidence-acquisition"
   },
-  "execution_route": "Shared core.flight.cli campaign over configs/campaign/slurp-native-stage3-l338-lever-column-fold-b-v1.json on the resident Thinking session (serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1); one official score per arm column (stage3_rollout_score --mode supply-variants) after the seal. Flown by scripts/flights/nx/batch_chain_l338.sh.",
+  "execution_route": "Shared core.flight.cli campaign over configs/campaign/slurp-native-stage3-l338-lever-column-fold-b-v1.json on the resident Thinking session (serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1); one official score per arm column (stage3_rollout_score --mode perception-branches) after the seal. Flown by scripts/flights/nx/batch_chain_l338.sh.",
   "expected_session_id": "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
   "experiment": "slurp-native-stage3-l338-lever-column-fold-b-v1",
   "family_budget": {
@@ -47,7 +47,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-19-slurp-l338-lever-column-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "1c7971875cc8103e0f2f329aea547e746f337a2d3fa7b5c0e1cca4b40cdf5597"
+    "sha256": "eddf71570125a7f742600295bc263e969b0cf12083044e57ce06b96754bc0091"
   },
   "purpose": "SAEA-SLURP-STAGE3-L338-LEVER-COLUMN-FOLD-B-V1: lever-column flight (4 arms in one flight) of L338.",
   "registered_at_utc": "2026-10-19T12:00:00.000000+00:00",
