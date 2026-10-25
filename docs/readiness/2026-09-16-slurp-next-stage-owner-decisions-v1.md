@@ -3822,7 +3822,7 @@ replaced the original battery/power plug, the GPU configuration can be set highe
   exhausts the budget is the same restated block. If R4 reads NO-345 as well, the next decoding candidates are a repetition penalty /
   no-repeat n-gram window on the Solver only (model-free to register; one column), before any supply-cap column.
 
-### Owner ruling 346 A (coordinator, 2026-10-25 21:05Z): the 345 intent no-loss test is the preregistered NO-RESOLVED-LOSS (upper-bound) form
+### Owner ruling 346 A (coordinator, 2026-10-25 23:30Z): the 345 intent no-loss test is the preregistered NO-RESOLVED-LOSS (upper-bound) form
 
 Owner, verbatim: 「决策346：A，继续，R4读数出来后告诉我」 (English: "Decision 346: A; continue; tell me once the R4 read is out").
 

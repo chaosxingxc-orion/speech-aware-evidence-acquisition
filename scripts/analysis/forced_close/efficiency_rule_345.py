@@ -3,7 +3,7 @@
 Ruling 345 A (registry docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md, section 2026-10-24 17:50Z, quoted): "A Solver arm that cuts
 the Solver forced-close share by >= 15 pp (absolute, against the in-flight twin / delivering lock of the same flight) with no resolved loss (SLU-F1
 delta CI95 lower bound >= -1.49 pp AND intent delta CI95 lower bound >= -0.65 pp against the twin) enters the composed lock v3.x as an EFFICIENCY
-component even when its pre-registered score word is NEUTRAL." Ruling 346 A (2026-10-25, section 2026-10-25 21:05Z) fixes the intent test: on a
+component even when its pre-registered score word is NEUTRAL." Ruling 346 A (2026-10-25, section 2026-10-25 23:30Z) fixes the intent test: on a
 1,080-row column the intent CI95 half-width is about 1 pp, so the literal lower-bound floor fails every null-intent arm; the intent test is the
 preregistered NO-RESOLVED-LOSS form (intent delta CI95 UPPER bound >= -0.65 pp, i.e. no resolved intent loss) and the SLU test stays the lower-bound
 form (SLU delta CI95 lower bound >= -1.49 pp). The preregistered readers are untouched (registered before the ruling); this script
@@ -52,7 +52,7 @@ FORCED_CUT_BAR_PP = 15.0
 SLU_LOSS_FLOOR_PP = -1.49   # decision 190 SLU floor, as the ruling states it (CI95 lower bound of the SLU delta)
 INTENT_LOSS_FLOOR_PP = -0.65  # decision 190 intent floor; applied to the CI95 UPPER bound of the intent delta (ruling 346 A: no resolved intent loss)
 RULING = ("owner ruling 345 A (2026-10-24; registry docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md, section 2026-10-24 17:50Z) with the "
-          "intent test in the form of ruling 346 A (2026-10-25; section 2026-10-25 21:05Z: intent delta CI95 upper bound >= -0.65 pp)")
+          "intent test in the form of ruling 346 A (2026-10-25; section 2026-10-25 23:30Z: intent delta CI95 upper bound >= -0.65 pp)")
 
 
 def forced_share(rows: Sequence[Mapping]) -> float:

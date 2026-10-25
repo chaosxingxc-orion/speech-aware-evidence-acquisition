@@ -10,7 +10,7 @@ Last refreshed: 2026-10-25T23:35:41Z
 
 
 
-## 346 A RULED (2026-10-25 21:05Z): 345 intent test = CI95 upper bound >= -0.65 (SLU lower bound >= -1.49 unchanged); efficiency_rule_345.py v2 applies it, R3 recomputed NO-345 x4 (all four pass both no-loss conditions, none cuts 15 pp); R4 reads under this form
+## 346 A RULED (2026-10-25 23:30Z): 345 intent test = CI95 upper bound >= -0.65 (SLU lower bound >= -1.49 unchanged); efficiency_rule_345.py v2 applies it, R3 recomputed NO-345 x4 (all four pass both no-loss conditions, none cuts 15 pp); R4 reads under this form
 
 ## 330 A DIAGNOSTIC READ: the non-terminating Solver reasoning is a REPETITION LOOP (21 of 40 budget-3072 rows, forced-both 13 of 16); R4 decoding column FLYING since 18:08Z (128 of 1,080 rows by 20:44Z, seal ~2026-10-26 16:00Z); one rc=9 chain stop (stale serving sample) recovered with nothing flown (2026-10-25T20:54:25Z, Fable 5.1 root)
 
@@ -24,7 +24,7 @@ decoding axis (R4, flying) stays the next lever; the supply-cap column is not tr
 sample 11 s after the diagnostic and stopped (rc=9, nothing flown); relaunched 17:41Z, smoke-4 passed 17:48Z, column started 18:08:39Z at
 flight commit 7fae86389; L338 hook re-armed behind CHAIN_NXT4_EXIT after 17:45Z. Model-free follow-up after the chain: prelaunch re-poll
 (6 x 20 s) before stopping on busy > 0. Registry sections 2026-10-25 20:50Z and 20:55Z; ledger: diagnostic probe + READ rows and the two R4
-smoke rows closed. 346 ruled A (registry section 2026-10-25 21:05Z): the R4 345 readout is taken in the upper-bound intent form.
+smoke rows closed. 346 ruled A (registry section 2026-10-25 23:30Z): the R4 345 readout is taken in the upper-bound intent form.
 
 Superseded stamp: 2026-10-25T17:34:49Z
 
