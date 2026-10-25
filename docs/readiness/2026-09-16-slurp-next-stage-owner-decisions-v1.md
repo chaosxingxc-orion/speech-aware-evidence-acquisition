@@ -3711,3 +3711,16 @@ replaced the original battery/power plug, the GPU configuration can be set highe
   tool, the sidecar and the lexicon builder as pinned engineering for a later carrier where transcription is the task, e.g. Earnings). The
   realistic figure (+2.1 to +2.5 pp) is below the measured 1.49 floor only after the uptake discount; a flight would cost a Fold B column
   (about 10 GPU-h with the Thinking core re-asked on 88-91 trigger rows) for an expected +1 to +2.5 pp on SLU and nothing on intent.
+
+### 2026-10-24 20:05Z -- Owner ruling 343 A
+
+- Owner, verbatim: 「决策343：A」 (English: "Decision 343: A").
+- **343 A RULED: the triggered-ASR line on SLURP is CLOSED.** No Fold B triggered-transcription column flies. Measured record of the line
+  (TRAIN Fold B, development numbers): ceilings +4.64 (Qwen3-ASR 1.7B unbiased), +5.18 (best biasing variant V4 n-best union N = 100),
+  +5.47 (two-tool union with Whisper) perfect conversion, +2.1 to +2.5 pp at the measured uptake 0.457, against Whisper's +5.07 and the
+  gate +6.07; intent untouched. The constraint is conversion by the frozen core (uptake), not transcript containment.
+- Kept as pinned engineering (no further SLURP flights): the ASR sidecar (`scripts/flights/direct/asr_sidecar.sh|.py`, Qwen3-ASR 0.6B / 1.7B
+  GGUF under the umbrella lock), the transcription and biasing instruments (`scripts/analysis/asr339/`), the lexicon builder and the
+  `configs/asr_bias/` variants, the slot-type descriptions. They are candidates for a carrier where transcription is the task (Earnings
+  21/22) and re-enter only through that carrier's own registration. The umbrella lock entries stay; no model bytes are removed.
+- Ruling 339 (model-initiated ASR admitted, never default transcription) stays in force as a policy; it simply has no SLURP consumer now.
