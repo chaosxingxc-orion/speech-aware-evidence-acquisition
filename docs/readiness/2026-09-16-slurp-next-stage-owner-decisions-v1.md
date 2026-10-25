@@ -3668,3 +3668,16 @@ replaced the original battery/power plug, the GPU configuration can be set highe
   330 diagnostic's verdict picks the next lever (repetition loop -> decoding; enumeration -> a structural Solver supply cap column, items per
   candidate intent, after L338). B = score-only words as today (forced share reported, never a lock criterion). C = owner's own rule.
   Coordinator recommends A.
+
+### 2026-10-24 17:50Z -- Owner ruling 345 A
+
+- Owner, verbatim: 「决策345：A」 (English: "Decision 345: A").
+- **345 A RULED: the forced-close efficiency rule.** A Solver arm that cuts the Solver forced-close share by >= 15 pp (absolute, against the
+  in-flight twin / delivering lock of the same flight) with no resolved loss (SLU-F1 delta CI95 lower bound >= -1.49 pp AND intent delta CI95
+  lower bound >= -0.65 pp against the twin) enters the composed lock v3.x as an EFFICIENCY component even when its pre-registered score word is
+  NEUTRAL. The per-arm forced-close share and seconds per contact are mechanism readouts in every Solver column read.
+- Application: NX-T R3 (t1 / t3 / t4) and NX-T R4 (presence penalty, temperature arms) are read under this rule. The pre-registered readers
+  are not edited while their flights are open; the 345 readout (forced share delta per arm, with its no-resolved-loss check) is computed
+  beside each read by a model-free script over the sealed trace and the official per-row columns and recorded in the results note. If
+  neither R3 nor R4 cuts the tail, the 330 diagnostic's verdict picks the next lever: repetition loop -> the decoding axis; enumeration -> a
+  structural Solver supply-cap column (items per candidate intent), after L338.
