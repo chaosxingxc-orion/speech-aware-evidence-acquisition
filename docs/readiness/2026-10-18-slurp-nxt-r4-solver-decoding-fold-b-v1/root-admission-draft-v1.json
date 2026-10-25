@@ -7,7 +7,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-10-18-slurp-nxt-r4-solver-decoding-fold-b-v1/protocol-registered-v1.json",
-      "sha256": "6131750b226e4e906d4059e04493611ea8617d475d7fa72667f94786914fa208"
+      "sha256": "626a23fe336ad0eef11ed3dc9182aadd1e2ab90963ffe917edd2b38a1bc2922d"
     },
     "registered_facts": {
       "path": "docs/readiness/2026-10-18-slurp-nxt-r4-solver-decoding-fold-b-v1/registered-facts-v1.json",
