@@ -3767,3 +3767,57 @@ replaced the original battery/power plug, the GPU configuration can be set highe
   CI95 UPPER bound >= -0.65 pp, i.e. no resolved intent loss), SLU unchanged (lower bound >= -1.49); **B**: keep the literal lower-bound
   form (then 345 can fire only on arms with a positive intent point); **C**: intent lower bound >= -1.0 pp (the measured half-width). The
   R3 verdicts are identical under A, B and C (the forced-cut bar fails first); the choice matters for R4, whose 345 readout follows.
+
+### 2026-10-25 20:50Z -- R4 chain stopped once by a stale serving sample (rc=9, nothing flown) and relaunched; 330 A diagnostic sealed; L338 hook re-armed; R4 column flying since 18:08Z
+
+- What happened. The 330 A Solver reasoning diagnostic ran first in the R4 chain's no-flight gap (56 contacts, 17:15:01-17:38:45Z, rc=0;
+  `diagnostics/SAEA-SLURP-SOLVER-REASONING-DIAGNOSTIC-V1/results.jsonl` 56 rows, wall 1,409.7 s). Eleven seconds later the batch driver's
+  prelaunch for the R4 smoke read the serving monitor's LAST sample, still `busy 1` from the diagnostic's final contact, and stopped the chain
+  (`serving session not idle/healthy before step 1: True 1 ...`, CHAIN_NXT4_EXIT rc=9 17:38:56Z). No attempt was opened, no run directory
+  written, the resident session was healthy with 0 of 4 slots busy at 17:39:39Z. The L338 hook saw rc=9 and exited without launching, as
+  designed.
+- Recovery (coordinator, 17:41Z). `/home/chao/saea-queue/queue_l338.sh` re-stamped to CHAIN_NXT4_EXIT after 2026-10-25T17:45:00Z (the stale
+  rc=9 line is ignored); SAEA-Queue-L338 restarted (armed 17:41:21Z); SAEA-Chain-NXT4 restarted (chain start 17:41:17Z, same flight commit
+  7fae8638995bef18c56f99778234808cc1642af5; the diagnostic step refused as expected because its directory holds the sealed attempt, logged
+  rc=70, non-blocking); driver prelaunch-ok 17:41:30Z; smoke-4 sealed and inspected 17:48:23Z (pass, no fails); machine sign-off after the
+  20-min veto; the decoding column `slurp-native-stage3-nxt-r4-solver-decoding-fold-b-v1` started 18:08:39Z (prelaunch-ok 18:08:39Z); 128 of
+  1,080 rows checkpointed by 20:44Z (about 73 s per row at 4 slots, seal expected about 2026-10-26 16:00Z). No flip, no re-pin, no edit to any
+  registered artefact. The two sealed smoke rows (SMOKE-4, SMOKE-4-FIT) were closed by `ledger_mark_consumed.py --apply` (consumed check PASS).
+- Cause and follow-up. `batch_driver.sh` `prelaunch` keys on `last_monitor_sample.slots.busy` of `serving_session.sh status`, a periodic sample,
+  so any non-driver GPU job that ends within one monitor period of a driver start trips it (the diagnostic is the first such job placed
+  directly before a driver step). Fix (model-free, after this chain: the driver file is read by the running bash process and is never edited
+  under a live chain): re-poll the status up to six times at 20 s before stopping when `server_ok` is True and only `busy` is non-zero, and
+  log the retries. Tracked with the other driver follow-ups (`saea_task.ps1 -NoStart`, mode-B checkpoint hash, reaper scope).
+
+### 2026-10-25 20:55Z -- 330 A diagnostic READ (statistics only): the non-terminating Solver reasoning is a REPETITION LOOP, not an enumeration
+
+- Read discipline. The READ row SAEA-SLURP-SOLVER-REASONING-DIAGNOSTIC-READ-V1 was root countersigned 2026-10-25T20:46:53Z after the probe
+  seal (17:38:45Z) and before any statistic was read; the registered statistics-only reader `scripts/analysis/solver_reasoning_diag_read.py`
+  (gated by `read_require_countersigned`) wrote `analysis/SAEA-SLURP-SOLVER-REASONING-DIAGNOSTIC-READ-V1/read.json` (20:46Z; 56 of 56
+  contacts read, 0 missing, 0 model contacts, `text_printed` false). The reasoning bytes stay under the data root (ruling 330 A); this
+  section carries counts and pattern statistics only. The registered pattern rule (loop: a block repeated >= 3 times totalling >= 600
+  characters, or >= 50 % of the last quarter of the sentences repeated; enumeration: not a loop, >= 50 % of the supplied intent labels
+  mentioned with >= 60 % of first mentions in supply order) is a reading aid; the numbers are the verdict's basis.
+- Budget-3072 rows (40 = 16 forced-both + 8 forced-3072-only + 8 forced-6144-only + 8 natural-both): pattern **repetition-loop 21,
+  enumeration 4, other 15**; 36 of 40 contain a repeated block. The forced-close rows are the loop: forced-both 13 loop / 1 enumeration / 2
+  other, with the repeated-sentence share of the last quarter at median 0.98 (whole text 0.56), zlib ratio 0.14, the first repeat at 21 % of
+  the text (median) and a repeated block of 1,970 characters (median); the natural rows are not: 1 loop / 1 enumeration / 6 other, tail
+  repeated share median 0.07, whole-text 0.02, zlib 0.34. The reasoning does not walk the supplied labels: label coverage median 0.25 in
+  every group (mean 0.36 over the 40 rows) while the single most-mentioned label is restated 16 times (median; 19.5 on forced-both rows,
+  max 89). Mixed groups sit between (forced-3072-only 3 loop / 2 enumeration / 3 other, tail share 0.26; forced-6144-only 4 loop / 0 / 4
+  other, tail share 0.39).
+- The same 16 forced-both rows at budget 6,144: pattern 13 loop / 1 enumeration / 2 other (11 of 16 loop at both budgets); the text beyond
+  the 3,072 close (median 26,375 characters, tokens ratio 6,144 / 3,072 median 1.99) is itself a loop in 13 of 16 (repeated-sentence share
+  median 0.80, zlib 0.07), and in 14 of 16 the repeat onset in the 6,144 text lies before the 3,072 close (median onset 3,169 characters).
+  The doubled budget is spent restating; this is the mechanism behind the R2b NEEDS-NO-MORE-BUDGET read. No pair is byte-identical through
+  the close (common prefix median 1 % of the 3,072 text; `reasoning_hash_match` 0 of 56 in the run summary) although the forced close itself
+  reproduced in 14 of 16 pairs and 36 of 56 contacts overall: a temperature-0 re-issue on the np4 geometry does not replay the sealed
+  bytes, so the diagnostic reads the pattern, not the exact sealed trace.
+- Answer behaviour. The delivered intent equals the last-mentioned label in 33 of 40 rows; of the 23 rows with a restatement before the
+  answer, 7 deliver a different label from the one last restated (forced-both 5 of 13).
+- **Verdict (330 A): REPETITION LOOP.** By the 345 A application clause the next lever after R3 and R4 is the decoding axis, which is the
+  column already flying (R4: presence-penalty and temperature arms); the structural Solver supply-cap column is NOT triggered by this
+  evidence (coverage 25 % of the supplied labels: the tail does not enumerate the supply). The R3 observation that the 40+ item rows stay
+  above 50 % forced is consistent: a larger supply lengthens the pre-loop walk (first repeat at 21-33 % of the text) but the tail that
+  exhausts the budget is the same restated block. If R4 reads NO-345 as well, the next decoding candidates are a repetition penalty /
+  no-repeat n-gram window on the Solver only (model-free to register; one column), before any supply-cap column.
