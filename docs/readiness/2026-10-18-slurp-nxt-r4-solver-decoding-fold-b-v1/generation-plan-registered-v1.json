@@ -91,7 +91,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-18-slurp-nxt-r4-solver-decoding-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "543bcc86b55042a99b833ac85127867a02c8034eaf9f44d7925da6b372cc1347"
+    "sha256": "6131750b226e4e906d4059e04493611ea8617d475d7fa72667f94786914fa208"
   },
   "purpose": "SAEA-SLURP-STAGE3-NXT-R4-SOLVER-DECODING-FOLD-B-V1: Solver decoding-policy column flight (6 arms in one flight) of NX-T R4.",
   "registered_at_utc": "2026-10-18T17:30:35Z",

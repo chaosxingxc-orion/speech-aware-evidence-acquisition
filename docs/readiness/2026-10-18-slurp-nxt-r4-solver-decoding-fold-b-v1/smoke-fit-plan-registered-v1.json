@@ -9,7 +9,7 @@
   ],
   "arm_visits": "first",
   "cell": "slurp-native-stage3-nxt-r4-solver-decoding-fold-b-smoke-4-v1",
-  "composed_config_hash": "aab6054b47b58ed20d1acbce880b446e936ab6e9cde60e12288b80403ff4046f",
+  "composed_config_hash": "e2cd477deba75bfc3aab00f46bc5502152ba9433f6311e3a1d6a5c639927e589",
   "context_fit": {
     "checks": {
       "bound_is_positive": true,
@@ -103,7 +103,7 @@
     "planned_gpu_hours": 0.5,
     "planned_model_calls": 112,
     "planned_speech_audio_seconds": 143,
-    "protocol_hash": "8f307bcf266f1e0267d4412aa6449b4e3d05d9d6c5fa046c958b2309fcc9c35a",
+    "protocol_hash": "fac8ee4bac515857d79d5c1af963c368c4727c13392c7d1c117580e533403d7f",
     "run_id": "SAEA-SLURP-STAGE3-NXT-R4-SOLVER-DECODING-FOLD-B-SMOKE-4-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32",
@@ -135,7 +135,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-18-slurp-nxt-r4-solver-decoding-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "543bcc86b55042a99b833ac85127867a02c8034eaf9f44d7925da6b372cc1347"
+    "sha256": "6131750b226e4e906d4059e04493611ea8617d475d7fa72667f94786914fa208"
   },
   "purpose": "SAEA-SLURP-STAGE3-NXT-R4-SOLVER-DECODING-FOLD-B-SMOKE-4-FIT-V1: request envelopes only; reads nothing.",
   "registered_at_utc": "2026-10-18T17:30:35Z",
