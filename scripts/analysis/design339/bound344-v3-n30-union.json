@@ -1,0 +1,561 @@
+{
+ "by_type": {
+  "business_name": {
+   "miss_in_whisper": 0,
+   "miss_items": 1,
+   "val_in_whisper": 6,
+   "val_items": 28
+  },
+  "business_type": {
+   "miss_in_whisper": 7,
+   "miss_items": 7,
+   "val_in_whisper": 4,
+   "val_items": 5
+  },
+  "date": {
+   "miss_in_whisper": 8,
+   "miss_items": 10,
+   "val_in_whisper": 4,
+   "val_items": 18
+  },
+  "device_type": {
+   "miss_in_whisper": 3,
+   "miss_items": 4,
+   "val_in_whisper": 1,
+   "val_items": 2
+  },
+  "event_name": {
+   "miss_in_whisper": 4,
+   "miss_items": 8,
+   "val_in_whisper": 6,
+   "val_items": 8
+  },
+  "food_type": {
+   "miss_in_whisper": 4,
+   "miss_items": 4,
+   "val_in_whisper": 9,
+   "val_items": 10
+  },
+  "house_place": {
+   "miss_in_whisper": 4,
+   "miss_items": 4,
+   "val_in_whisper": 1,
+   "val_items": 1
+  },
+  "list_name": {
+   "miss_in_whisper": 2,
+   "miss_items": 3,
+   "val_in_whisper": 2,
+   "val_items": 4
+  },
+  "media_type": {
+   "miss_in_whisper": 7,
+   "miss_items": 9,
+   "val_in_whisper": 4,
+   "val_items": 7
+  },
+  "order_type": {
+   "miss_in_whisper": 5,
+   "miss_items": 6,
+   "val_in_whisper": 2,
+   "val_items": 3
+  },
+  "person": {
+   "miss_in_whisper": 1,
+   "miss_items": 6,
+   "val_in_whisper": 5,
+   "val_items": 13
+  },
+  "place_name": {
+   "miss_in_whisper": 2,
+   "miss_items": 7,
+   "val_in_whisper": 6,
+   "val_items": 20
+  },
+  "time": {
+   "miss_in_whisper": 5,
+   "miss_items": 6,
+   "val_in_whisper": 8,
+   "val_items": 12
+  },
+  "timeofday": {
+   "miss_in_whisper": 2,
+   "miss_items": 4,
+   "val_in_whisper": 2,
+   "val_items": 2
+  }
+ },
+ "ceiling_ci95": {
+  "any_R": [
+   10.782,
+   13.745
+  ],
+  "any_W": [
+   6.355,
+   8.877
+  ],
+  "miss_W": [
+   3.298,
+   5.259
+  ],
+  "missval_disc_W": [
+   4.224,
+   6.394
+  ]
+ },
+ "ceilings_pp_at_uptake_0457": {
+  "any_R": 5.517,
+  "any_W": 3.465,
+  "miss_R": 2.715,
+  "miss_W": 1.97,
+  "miss_all": 2.919,
+  "missval_disc_W": 2.442,
+  "val_R": 2.763,
+  "val_W": 1.48,
+  "val_all": 3.267,
+  "valdisc_W": 0.467
+ },
+ "ceilings_pp_perfect_conversion": {
+  "any_R": 12.292,
+  "any_W": 7.621,
+  "miss_R": 5.794,
+  "miss_W": 4.232,
+  "miss_all": 6.218,
+  "missval_disc_W": 5.286,
+  "val_R": 6.331,
+  "val_W": 3.318,
+  "val_all": 7.551,
+  "valdisc_W": 1.031
+ },
+ "harm_unit_pp_per_broken_exact_item": -0.0576,
+ "items": {
+  "miss:in_reference": 104,
+  "miss:in_whisper": 75,
+  "miss:items": 112,
+  "val:in_reference": 139,
+  "val:in_whisper": 77,
+  "val:in_whisper_and_delivered_also_in_whisper": 53,
+  "val:items": 166
+ },
+ "label_rows": {
+  "any_R": 219,
+  "any_W": 137,
+  "miss_R": 97,
+  "miss_W": 70,
+  "miss_all": 103,
+  "missval_disc_W": 93,
+  "val_R": 135,
+  "val_W": 75,
+  "val_all": 159,
+  "valdisc_W": 24
+ },
+ "population": {
+  "branch": "budget-3072",
+  "checks": {
+   "cands_receipt_equals_state": 1077,
+   "forced_close_known": 1080,
+   "intent_parse_agrees_sealed": 1080,
+   "rescore_matches_sealed": 1080,
+   "rows": 1080
+  },
+  "n": 1080,
+  "run": "SAEA-SLURP-STAGE3-NXT-R2B-SOLVER-BUDGET-FOLD-B-V1",
+  "slu_f1": 72.73642423980169
+ },
+ "rules": {
+  "expected_missing_max>=0.5": {
+   "calls": 204,
+   "precision_any_W": 0.1912,
+   "recall_any_W": 0.2847,
+   "yield_any_R_perfect": 3.654,
+   "yield_any_W_0457": 1.263,
+   "yield_any_W_perfect": 2.749
+  },
+  "expected_missing_max>=0.5_or_name_type": {
+   "calls": 466,
+   "precision_any_W": 0.1695,
+   "recall_any_W": 0.5766,
+   "yield_any_R_perfect": 7.808,
+   "yield_any_W_0457": 2.07,
+   "yield_any_W_perfect": 4.533
+  },
+  "name_type_delivered": {
+   "calls": 331,
+   "precision_any_W": 0.1752,
+   "recall_any_W": 0.4234,
+   "yield_any_R_perfect": 5.932,
+   "yield_any_W_0457": 1.401,
+   "yield_any_W_perfect": 3.08
+  },
+  "pred_empty": {
+   "calls": 344,
+   "precision_any_W": 0.0669,
+   "recall_any_W": 0.1679,
+   "yield_any_R_perfect": 2.011,
+   "yield_any_W_0457": 0.663,
+   "yield_any_W_perfect": 1.443
+  },
+  "solver_forced_close": {
+   "calls": 433,
+   "precision_any_W": 0.2009,
+   "recall_any_W": 0.635,
+   "yield_any_R_perfect": 7.652,
+   "yield_any_W_0457": 2.322,
+   "yield_any_W_perfect": 5.1
+  }
+ },
+ "schema": "saea-339-asr-trigger-bound-v1",
+ "signal_auc": {
+  "any_R": {
+   "delivered_value_tokens": 0.6741,
+   "expected_missing_mass": 0.5348,
+   "expected_missing_max": 0.5405,
+   "expected_type_count_gap": 0.3986,
+   "n_delivered": 0.6534,
+   "name_type_delivered": 0.6228,
+   "perception_forced_close": 0.5019,
+   "perception_tokens": 0.5234,
+   "pred_empty": 0.389,
+   "shortlist_len": 0.4606,
+   "solver_forced_close": 0.6323,
+   "solver_tokens": 0.6953
+  },
+  "any_W": {
+   "delivered_value_tokens": 0.6443,
+   "expected_missing_mass": 0.5444,
+   "expected_missing_max": 0.5629,
+   "expected_type_count_gap": 0.4221,
+   "n_delivered": 0.6276,
+   "name_type_delivered": 0.5669,
+   "perception_forced_close": 0.499,
+   "perception_tokens": 0.5326,
+   "pred_empty": 0.4137,
+   "shortlist_len": 0.4547,
+   "solver_forced_close": 0.6341,
+   "solver_tokens": 0.7135
+  },
+  "miss_W": {
+   "delivered_value_tokens": 0.491,
+   "expected_missing_mass": 0.6583,
+   "expected_missing_max": 0.676,
+   "expected_type_count_gap": 0.5668,
+   "n_delivered": 0.5079,
+   "name_type_delivered": 0.5194,
+   "perception_forced_close": 0.5084,
+   "perception_tokens": 0.5779,
+   "pred_empty": 0.5054,
+   "shortlist_len": 0.4601,
+   "solver_forced_close": 0.637,
+   "solver_tokens": 0.7102
+  },
+  "missval_disc_W": {
+   "delivered_value_tokens": 0.5649,
+   "expected_missing_mass": 0.5963,
+   "expected_missing_max": 0.624,
+   "expected_type_count_gap": 0.5052,
+   "n_delivered": 0.5619,
+   "name_type_delivered": 0.5618,
+   "perception_forced_close": 0.4992,
+   "perception_tokens": 0.5488,
+   "pred_empty": 0.461,
+   "shortlist_len": 0.45,
+   "solver_forced_close": 0.6336,
+   "solver_tokens": 0.7026
+  },
+  "val_W": {
+   "delivered_value_tokens": 0.801,
+   "expected_missing_mass": 0.4441,
+   "expected_missing_max": 0.4603,
+   "expected_type_count_gap": 0.2736,
+   "n_delivered": 0.7506,
+   "name_type_delivered": 0.6076,
+   "perception_forced_close": 0.4941,
+   "perception_tokens": 0.5041,
+   "pred_empty": 0.3289,
+   "shortlist_len": 0.4488,
+   "solver_forced_close": 0.6285,
+   "solver_tokens": 0.7072
+  }
+ },
+ "trigger": {
+  "any_R": {
+   "base_rate": 0.2028,
+   "by_rate": {
+    "0.05": {
+     "breakeven_broken_exact_items_per_100_calls_at_0457": 29.4,
+     "calls": 54,
+     "helpful_called": 31,
+     "precision": 0.5741,
+     "recall_rows": 0.1416,
+     "yield_pp_perfect": 2.011,
+     "yield_pp_uptake_0457": 0.914,
+     "yield_share_of_ceiling": 0.164
+    },
+    "0.1": {
+     "breakeven_broken_exact_items_per_100_calls_at_0457": 20.78,
+     "calls": 108,
+     "helpful_called": 48,
+     "precision": 0.4444,
+     "recall_rows": 0.2192,
+     "yield_pp_perfect": 2.85,
+     "yield_pp_uptake_0457": 1.293,
+     "yield_share_of_ceiling": 0.232
+    },
+    "0.2": {
+     "breakeven_broken_exact_items_per_100_calls_at_0457": 16.96,
+     "calls": 216,
+     "helpful_called": 79,
+     "precision": 0.3657,
+     "recall_rows": 0.3607,
+     "yield_pp_perfect": 4.649,
+     "yield_pp_uptake_0457": 2.11,
+     "yield_share_of_ceiling": 0.378
+    },
+    "0.3": {
+     "breakeven_broken_exact_items_per_100_calls_at_0457": 15.89,
+     "calls": 324,
+     "helpful_called": 115,
+     "precision": 0.3549,
+     "recall_rows": 0.5251,
+     "yield_pp_perfect": 6.577,
+     "yield_pp_uptake_0457": 2.966,
+     "yield_share_of_ceiling": 0.535
+    },
+    "0.5": {
+     "breakeven_broken_exact_items_per_100_calls_at_0457": 13.07,
+     "calls": 540,
+     "helpful_called": 163,
+     "precision": 0.3019,
+     "recall_rows": 0.7443,
+     "yield_pp_perfect": 9.041,
+     "yield_pp_uptake_0457": 4.066,
+     "yield_share_of_ceiling": 0.735
+    },
+    "1.0": {
+     "breakeven_broken_exact_items_per_100_calls_at_0457": 8.87,
+     "calls": 1080,
+     "helpful_called": 219,
+     "precision": 0.2028,
+     "recall_rows": 1.0,
+     "yield_pp_perfect": 12.292,
+     "yield_pp_uptake_0457": 5.517,
+     "yield_share_of_ceiling": 1.0
+    }
+   },
+   "oof_auc": 0.6968
+  },
+  "any_W": {
+   "base_rate": 0.1269,
+   "by_rate": {
+    "0.05": {
+     "breakeven_broken_exact_items_per_100_calls_at_0457": 17.71,
+     "calls": 54,
+     "helpful_called": 16,
+     "precision": 0.2963,
+     "recall_rows": 0.1168,
+     "yield_pp_perfect": 1.208,
+     "yield_pp_uptake_0457": 0.551,
+     "yield_share_of_ceiling": 0.159
+    },
+    "0.1": {
+     "breakeven_broken_exact_items_per_100_calls_at_0457": 15.58,
+     "calls": 108,
+     "helpful_called": 30,
+     "precision": 0.2778,
+     "recall_rows": 0.219,
+     "yield_pp_perfect": 2.122,
+     "yield_pp_uptake_0457": 0.969,
+     "yield_share_of_ceiling": 0.278
+    },
+    "0.2": {
+     "breakeven_broken_exact_items_per_100_calls_at_0457": 12.68,
+     "calls": 216,
+     "helpful_called": 55,
+     "precision": 0.2546,
+     "recall_rows": 0.4015,
+     "yield_pp_perfect": 3.458,
+     "yield_pp_uptake_0457": 1.578,
+     "yield_share_of_ceiling": 0.454
+    },
+    "0.3": {
+     "breakeven_broken_exact_items_per_100_calls_at_0457": 10.72,
+     "calls": 324,
+     "helpful_called": 73,
+     "precision": 0.2253,
+     "recall_rows": 0.5328,
+     "yield_pp_perfect": 4.393,
+     "yield_pp_uptake_0457": 2.001,
+     "yield_share_of_ceiling": 0.576
+    },
+    "0.5": {
+     "breakeven_broken_exact_items_per_100_calls_at_0457": 8.45,
+     "calls": 540,
+     "helpful_called": 101,
+     "precision": 0.187,
+     "recall_rows": 0.7372,
+     "yield_pp_perfect": 5.767,
+     "yield_pp_uptake_0457": 2.627,
+     "yield_share_of_ceiling": 0.757
+    },
+    "1.0": {
+     "breakeven_broken_exact_items_per_100_calls_at_0457": 5.57,
+     "calls": 1080,
+     "helpful_called": 137,
+     "precision": 0.1269,
+     "recall_rows": 1.0,
+     "yield_pp_perfect": 7.621,
+     "yield_pp_uptake_0457": 3.465,
+     "yield_share_of_ceiling": 1.0
+    }
+   },
+   "oof_auc": 0.6985
+  },
+  "miss_W": {
+   "base_rate": 0.0648,
+   "by_rate": {
+    "0.05": {
+     "breakeven_broken_exact_items_per_100_calls_at_0457": 13.67,
+     "calls": 54,
+     "helpful_called": 13,
+     "precision": 0.2407,
+     "recall_rows": 0.1857,
+     "yield_pp_perfect": 0.927,
+     "yield_pp_uptake_0457": 0.425,
+     "yield_share_of_ceiling": 0.219
+    },
+    "0.1": {
+     "breakeven_broken_exact_items_per_100_calls_at_0457": 12.36,
+     "calls": 108,
+     "helpful_called": 25,
+     "precision": 0.2315,
+     "recall_rows": 0.3571,
+     "yield_pp_perfect": 1.67,
+     "yield_pp_uptake_0457": 0.769,
+     "yield_share_of_ceiling": 0.395
+    },
+    "0.2": {
+     "breakeven_broken_exact_items_per_100_calls_at_0457": 8.08,
+     "calls": 216,
+     "helpful_called": 34,
+     "precision": 0.1574,
+     "recall_rows": 0.4857,
+     "yield_pp_perfect": 2.18,
+     "yield_pp_uptake_0457": 1.006,
+     "yield_share_of_ceiling": 0.515
+    },
+    "0.3": {
+     "breakeven_broken_exact_items_per_100_calls_at_0457": 6.79,
+     "calls": 324,
+     "helpful_called": 44,
+     "precision": 0.1358,
+     "recall_rows": 0.6286,
+     "yield_pp_perfect": 2.741,
+     "yield_pp_uptake_0457": 1.268,
+     "yield_share_of_ceiling": 0.648
+    },
+    "0.5": {
+     "breakeven_broken_exact_items_per_100_calls_at_0457": 4.91,
+     "calls": 540,
+     "helpful_called": 54,
+     "precision": 0.1,
+     "recall_rows": 0.7714,
+     "yield_pp_perfect": 3.297,
+     "yield_pp_uptake_0457": 1.528,
+     "yield_share_of_ceiling": 0.779
+    },
+    "1.0": {
+     "breakeven_broken_exact_items_per_100_calls_at_0457": 3.17,
+     "calls": 1080,
+     "helpful_called": 70,
+     "precision": 0.0648,
+     "recall_rows": 1.0,
+     "yield_pp_perfect": 4.232,
+     "yield_pp_uptake_0457": 1.97,
+     "yield_share_of_ceiling": 1.0
+    }
+   },
+   "oof_auc": 0.7281
+  },
+  "missval_disc_W": {
+   "base_rate": 0.0861,
+   "by_rate": {
+    "0.05": {
+     "breakeven_broken_exact_items_per_100_calls_at_0457": 12.06,
+     "calls": 54,
+     "helpful_called": 12,
+     "precision": 0.2222,
+     "recall_rows": 0.129,
+     "yield_pp_perfect": 0.819,
+     "yield_pp_uptake_0457": 0.375,
+     "yield_share_of_ceiling": 0.155
+    },
+    "0.1": {
+     "breakeven_broken_exact_items_per_100_calls_at_0457": 12.2,
+     "calls": 108,
+     "helpful_called": 25,
+     "precision": 0.2315,
+     "recall_rows": 0.2688,
+     "yield_pp_perfect": 1.652,
+     "yield_pp_uptake_0457": 0.759,
+     "yield_share_of_ceiling": 0.313
+    },
+    "0.2": {
+     "breakeven_broken_exact_items_per_100_calls_at_0457": 9.22,
+     "calls": 216,
+     "helpful_called": 39,
+     "precision": 0.1806,
+     "recall_rows": 0.4194,
+     "yield_pp_perfect": 2.494,
+     "yield_pp_uptake_0457": 1.147,
+     "yield_share_of_ceiling": 0.472
+    },
+    "0.3": {
+     "breakeven_broken_exact_items_per_100_calls_at_0457": 7.48,
+     "calls": 324,
+     "helpful_called": 50,
+     "precision": 0.1543,
+     "recall_rows": 0.5376,
+     "yield_pp_perfect": 3.032,
+     "yield_pp_uptake_0457": 1.397,
+     "yield_share_of_ceiling": 0.574
+    },
+    "0.5": {
+     "breakeven_broken_exact_items_per_100_calls_at_0457": 6.19,
+     "calls": 540,
+     "helpful_called": 72,
+     "precision": 0.1333,
+     "recall_rows": 0.7742,
+     "yield_pp_perfect": 4.174,
+     "yield_pp_uptake_0457": 1.925,
+     "yield_share_of_ceiling": 0.79
+    },
+    "1.0": {
+     "breakeven_broken_exact_items_per_100_calls_at_0457": 3.93,
+     "calls": 1080,
+     "helpful_called": 93,
+     "precision": 0.0861,
+     "recall_rows": 1.0,
+     "yield_pp_perfect": 5.286,
+     "yield_pp_uptake_0457": 2.442,
+     "yield_share_of_ceiling": 1.0
+    }
+   },
+   "oof_auc": 0.6902
+  }
+ },
+ "whisper_catalog": {
+  "asr": "/home/chao/saea-data/speechrl-data/prepared/SAEA-SLURP-ASRBIAS-TRANSCRIPTS-V1/qwen3-asr-1.7b/v3-n30/transcripts.jsonl",
+  "union": true,
+  "whisper": {
+   "decoding_config_sha256": "b90432b623ef89773d86660b43d12707fe77f0100790404cec59779369505917",
+   "producer_run_id": "SAEA-SLURP-ASR-TOOL-PASS-FOLD-B-V1",
+   "receipt_sha256": "6e5643f5804e4ae2896ec83383b62225c2ea60d1194f1d0cf9cd8b817a560c16",
+   "relpath": "prepared/SAEA-SLURP-ASR-TRANSCRIPTS-V1/fold-b/catalog.json",
+   "rows": 1080,
+   "sha256": "31462f9b0302de4a91542af82b195bf7e7c71f93a3d46b32c0e5bdf2f8e9cfbf",
+   "status": {
+    "ok": 1080
+   }
+  }
+ }
+}

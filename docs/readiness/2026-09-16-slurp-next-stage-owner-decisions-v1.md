@@ -3681,3 +3681,33 @@ replaced the original battery/power plug, the GPU configuration can be set highe
   beside each read by a model-free script over the sealed trace and the official per-row columns and recorded in the results note. If
   neither R3 nor R4 cuts the tail, the 330 diagnostic's verdict picks the next lever: repetition loop -> the decoding axis; enumeration -> a
   structural Solver supply-cap column (items per candidate intent), after L338.
+
+### 2026-10-24 19:30Z -- 344 A read: ASR context biasing on Qwen3-ASR 1.7B (TRAIN Fold B, CPU, no core contact); 343 material
+
+- Pass sealed 18:41Z (Windows task SAEA-ASRBIAS; 7 variants x 1,080 clips; v4 = five decodes per clip; ledger row
+  SAEA-SLURP-ASRBIAS-FOLD-B-V1 consumed). Ceilings by `scripts/analysis/design339/asr_trigger_bound.py --asr <variant>/transcripts.jsonl [--union]`
+  over the sealed R2b lock column (SLU 72.74), outputs `scripts/analysis/design339/bound344-<variant>[-union].json`; development numbers.
+  The headline is the perfect-conversion ceiling on the discordant missed-slot + value-error rows (`missval_disc_W`), the quantity the 343 gate
+  names; "realistic" = at the measured uptake 0.457.
+
+| transcripts | canonical WER | missed slots contained / 112 | value errors contained / 166 | ceiling (perfect) pp SLU | realistic pp |
+| --- | ---: | ---: | ---: | --- | ---: |
+| Whisper large-v3 (E5, reference) | 0.152 | 70 | 61 | +5.07 [+4.09, +6.14] | +2.34 |
+| Qwen3-ASR 1.7B unbiased (339) | 0.120 | 65 | 64 | +4.64 [+3.66, +5.70] | +2.14 |
+| V1 type vocabulary | 0.112 | 67 | 67 | +4.80 [+3.79, +5.90] | +2.21 |
+| V2 intent-scoped lexicon N = 30 / 100 | 0.109 / 0.108 | 67 / 69 | 66 / 71 | +4.78 / **+5.09** [+4.04, +6.18] | +2.20 / +2.35 |
+| V3 = V2 + logit_bias N = 30 / 100 | 0.116 / 0.109 | 68 / 70 | 62 / 70 | +4.68 / **+5.10** [+4.04, +6.20] | +2.16 / +2.35 |
+| V4 n-best union, none / N = 100 | n/a (union text) | 70 / 74 | 65 / 72 | +4.76 / **+5.18** [+4.14, +6.29] | +2.20 / +2.39 |
+| best variant + Whisper union (V2-n100 or V3-n100) | n/a | 77 | 80 | +5.47 [+4.41, +6.62] | +2.53 |
+
+- Reading. Biasing works as ASR engineering: the N = 100 lexicon lowers the canonical WER 0.120 -> 0.108 and lifts missed-slot containment
+  65 -> 69-74 of 112, i.e. it recovers Whisper's containment at a lower WER and at 1.0-1.3 s per clip on CPU. It does NOT create headroom for
+  the task: the best single-tool ceiling (+5.18) is +0.11 over Whisper's and +0.54 over the unbiased 1.7B, far from the 343 gate (>= Whisper
+  +1.0 pp = +6.07); even the two-tool union stops at +5.47 perfect / +2.53 realistic. The binding constraint is unchanged: 104 of the 112
+  missed slot values are in the reference transcript, the best tool contains 74-77, and the conversion into a delivered slot (uptake 0.457)
+  halves whatever is contained. Logit bias (V3) adds nothing over the lexicon prompt (V2) at either N; n-best union (V4) adds 4-5 contained
+  items at 3-4x the CPU cost.
+- Consequence for 343: the gate is not met by any variant; the coordinator's recommendation stays A (close the triggered-ASR line now; keep the
+  tool, the sidecar and the lexicon builder as pinned engineering for a later carrier where transcription is the task, e.g. Earnings). The
+  realistic figure (+2.1 to +2.5 pp) is below the measured 1.49 floor only after the uptake discount; a flight would cost a Fold B column
+  (about 10 GPU-h with the Thinking core re-asked on 88-91 trigger rows) for an expected +1 to +2.5 pp on SLU and nothing on intent.
