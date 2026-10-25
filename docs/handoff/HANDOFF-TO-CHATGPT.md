@@ -1,6 +1,6 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-25T17:34:49Z
+Last refreshed: 2026-10-25T20:54:25Z
 
 
 
@@ -9,6 +9,22 @@ Last refreshed: 2026-10-25T17:34:49Z
 
 
 
+
+## 330 A DIAGNOSTIC READ: the non-terminating Solver reasoning is a REPETITION LOOP (21 of 40 budget-3072 rows, forced-both 13 of 16); R4 decoding column FLYING since 18:08Z (128 of 1,080 rows by 20:44Z, seal ~2026-10-26 16:00Z); one rc=9 chain stop (stale serving sample) recovered with nothing flown (2026-10-25T20:54:25Z, Fable 5.1 root)
+
+Diagnostic sealed 17:38:45Z (56 contacts, rc=0); READ row countersigned 20:46:53Z before any statistic; statistics-only reader
+scripts/analysis/solver_reasoning_diag_read.py -> analysis/SAEA-SLURP-SOLVER-REASONING-DIAGNOSTIC-READ-V1/read.json (text never printed; bytes stay
+under the data root). Budget-3072 rows: loop 21 / enumeration 4 / other 15; forced-both rows loop 13 of 16 with the last-quarter repeated-sentence
+share at median 0.98 (natural rows 0.07); label coverage median 0.25 in every group (the tail restates one label, median 16 mentions, not the
+supply); at budget 6,144 the text beyond the 3,072 close loops in 13 of 16 (repeated share 0.80, zlib 0.07, tokens ratio 1.99) and the repeat
+onset precedes the 3,072 close in 14 of 16 -- the mechanism behind R2b NEEDS-NO-MORE-BUDGET. Verdict REPETITION LOOP: by the 345 A clause the
+decoding axis (R4, flying) stays the next lever; the supply-cap column is not triggered. R4 chain: the driver prelaunch read a stale monitor
+sample 11 s after the diagnostic and stopped (rc=9, nothing flown); relaunched 17:41Z, smoke-4 passed 17:48Z, column started 18:08:39Z at
+flight commit 7fae86389; L338 hook re-armed behind CHAIN_NXT4_EXIT after 17:45Z. Model-free follow-up after the chain: prelaunch re-poll
+(6 x 20 s) before stopping on busy > 0. Registry sections 2026-10-25 20:50Z and 20:55Z; ledger: diagnostic probe + READ rows and the two R4
+smoke rows closed. 346 still pending (A recommended); it decides the R4 345 readout form.
+
+Superseded stamp: 2026-10-25T17:34:49Z
 
 ## R3 READ: all four Solver instruction templates NEUTRAL; 345 A readout NO-345 (best forced-close cut t1 -10.9 pp, bar 15); R4 FLYING since 17:15Z behind the 330 diagnostic; 343 A ruled (ASR line closed); 346 proposed (345 rule form) (2026-10-25T17:34:49Z, Fable 5.1 root)
 
