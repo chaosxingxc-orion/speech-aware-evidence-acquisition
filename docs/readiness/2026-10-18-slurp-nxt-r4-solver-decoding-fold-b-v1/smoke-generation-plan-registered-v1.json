@@ -85,9 +85,11 @@
   "plan_kind": "generation",
   "preparation_base_commit": "32f81ade5417c0954849eb1259f30cf183f66dd1",
   "prepared_phase_supply": {
-    "note": "the flip mints this cell's own first-phase supply under its own run id (item E16)",
     "relpath": "prepared/SAEA-SLURP-STAGE3-NXT-R4-SOLVER-DECODING-FOLD-B-SMOKE-4-V1/phase-supply-v1.json",
-    "sha256": "MINTED_AT_THE_FLIP"
+    "sha256": "61b00c8b071f1a3af1a5ee31a3e157ab7ffc5831cc2a5618a102fea1dc000a84"
+  },
+  "prepared_phase_supply_annotations": {
+    "note": "the flip mints this cell's own first-phase supply under its own run id (item E16)"
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-18-slurp-nxt-r4-solver-decoding-fold-b-v1/protocol-registered-v1.json",
