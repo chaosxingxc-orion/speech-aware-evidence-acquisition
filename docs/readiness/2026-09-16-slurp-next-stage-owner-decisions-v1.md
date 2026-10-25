@@ -3821,3 +3821,19 @@ replaced the original battery/power plug, the GPU configuration can be set highe
   above 50 % forced is consistent: a larger supply lengthens the pre-loop walk (first repeat at 21-33 % of the text) but the tail that
   exhausts the budget is the same restated block. If R4 reads NO-345 as well, the next decoding candidates are a repetition penalty /
   no-repeat n-gram window on the Solver only (model-free to register; one column), before any supply-cap column.
+
+### Owner ruling 346 A (coordinator, 2026-10-25 21:05Z): the 345 intent no-loss test is the preregistered NO-RESOLVED-LOSS (upper-bound) form
+
+Owner, verbatim: 「决策346：A，继续，R4读数出来后告诉我」 (English: "Decision 346: A; continue; tell me once the R4 read is out").
+
+- **346 A:** in ruling 345 A the no-resolved-loss test reads: SLU-F1 delta CI95 LOWER bound >= -1.49 pp (unchanged) AND intent delta CI95
+  UPPER bound >= -0.65 pp (the NX-T R1 NO-RESOLVED-LOSS form already preregistered in the R3 and R4 readers: no resolved intent loss). The
+  literal intent lower-bound form of the 2026-10-24 text is retired: on a 1,080-row Fold B column the intent CI95 half-width is about 1 pp, so
+  it was failed by every null-intent arm, the in-flight twin included.
+- Application. The beside-script `scripts/analysis/forced_close/efficiency_rule_345.py` now applies the ruled form (schema
+  `saea-efficiency-rule-345-v2`, `intent_test` = CI95 upper bound; the reader-form conditions stay beside for reference); the preregistered
+  R3 / R4 readers are untouched. The R3 345 readout was recomputed under the ruled form over the same sealed read (`--force`, outputs
+  `efficiency-345.json` / `.md` beside `analysis/SAEA-SLURP-NXT-R3-SOLVER-TEMPLATE-FOLD-B-READ-V1/read.json` rewritten, numbers identical):
+  every candidate now passes both no-loss conditions (t1 / t2 / t3 / t4 intent upper bounds +0.93 / +0.28 / +0.83 / +0.37) but no arm reaches
+  the 15 pp forced-cut bar, so the R3 verdict stays **NO-345 x4** and the results note of 2026-10-25 is unchanged. The R4 345 readout is
+  taken under this form when its READ row is countersigned (seal expected about 2026-10-26 16:00Z).

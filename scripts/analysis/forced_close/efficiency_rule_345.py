@@ -1,19 +1,22 @@
-"""efficiency_rule_345.py -- owner ruling 345 A (2026-10-24) applied beside a sealed NX-T Solver column read (model-free).
+"""efficiency_rule_345.py -- owner ruling 345 A (2026-10-24), intent test in the form of ruling 346 A (2026-10-25), applied beside a sealed NX-T Solver column read (model-free).
 
 Ruling 345 A (registry docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md, section 2026-10-24 17:50Z, quoted): "A Solver arm that cuts
 the Solver forced-close share by >= 15 pp (absolute, against the in-flight twin / delivering lock of the same flight) with no resolved loss (SLU-F1
 delta CI95 lower bound >= -1.49 pp AND intent delta CI95 lower bound >= -0.65 pp against the twin) enters the composed lock v3.x as an EFFICIENCY
-component even when its pre-registered score word is NEUTRAL." The preregistered readers are untouched (registered before the ruling); this script
+component even when its pre-registered score word is NEUTRAL." Ruling 346 A (2026-10-25, section 2026-10-25 21:05Z) fixes the intent test: on a
+1,080-row column the intent CI95 half-width is about 1 pp, so the literal lower-bound floor fails every null-intent arm; the intent test is the
+preregistered NO-RESOLVED-LOSS form (intent delta CI95 UPPER bound >= -0.65 pp, i.e. no resolved intent loss) and the SLU test stays the lower-bound
+form (SLU delta CI95 lower bound >= -1.49 pp). The preregistered readers are untouched (registered before the ruling); this script
 reads the sealed trace and the official per-arm columns the reader already consumed and prints, per candidate arm against the delivering lock arm
 (the reader's paired contrast; the twin supplies the offset):
 
   * the forced-close share of the arm and of the lock on the SAME rows, the paired per-row difference (pp) with an utterance-cluster bootstrap CI95
     (the reader's seed and draw count), and whether the cut reaches the 15 pp bar (point estimate);
   * Solver seconds per contact of the arm, of the lock, and the ratio;
-  * the no-resolved-loss conditions in the RULING's form (SLU delta CI95 lower bound >= -1.49 pp; intent delta CI95 lower bound >= -0.65 pp), taken
+  * the no-resolved-loss conditions in the RULED form (345 A + 346 A: SLU delta CI95 lower bound >= -1.49 pp; intent delta CI95 upper bound >= -0.65 pp), taken
     from the deltas the preregistered read wrote (``arm_words.words[arm].slu_ci95`` / ``intent_ci95``), never recomputed; the reader's own
-    NO-RESOLVED-LOSS conditions (CI95 upper bounds) are carried beside them for reference;
-  * the 345 verdict: ENTERS-LOCK-EFFICIENCY-345 when the cut reaches the bar AND both ruling-form conditions hold, otherwise NO-345.
+    NO-RESOLVED-LOSS conditions (CI95 upper bounds for both) are carried beside them for reference;
+  * the 345 verdict: ENTERS-LOCK-EFFICIENCY-345 when the cut reaches the bar AND both ruled-form conditions hold, otherwise NO-345.
 
 Usage (after ``nxt_r<N>_read.sh`` has written ``read.json``):
 
@@ -47,8 +50,9 @@ FAMILIES = {
 }
 FORCED_CUT_BAR_PP = 15.0
 SLU_LOSS_FLOOR_PP = -1.49   # decision 190 SLU floor, as the ruling states it (CI95 lower bound of the SLU delta)
-INTENT_LOSS_FLOOR_PP = -0.65  # decision 190 intent floor (CI95 lower bound of the intent delta)
-RULING = "owner ruling 345 A (2026-10-24; registry docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md, section 2026-10-24 17:50Z)"
+INTENT_LOSS_FLOOR_PP = -0.65  # decision 190 intent floor; applied to the CI95 UPPER bound of the intent delta (ruling 346 A: no resolved intent loss)
+RULING = ("owner ruling 345 A (2026-10-24; registry docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md, section 2026-10-24 17:50Z) with the "
+          "intent test in the form of ruling 346 A (2026-10-25; section 2026-10-25 21:05Z: intent delta CI95 upper bound >= -0.65 pp)")
 
 
 def forced_share(rows: Sequence[Mapping]) -> float:
@@ -123,7 +127,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     lock_rows = by_arm[delivering]
     seed, draws = getattr(reader, "SEED", 20261018), getattr(reader, "DRAWS", 10000)
     lock_seconds = statistics.fmean(r["latency_seconds"] for r in lock_rows.values() if r.get("latency_seconds") is not None)
-    result = {"schema": "saea-efficiency-rule-345-v1", "ruling": RULING, "family": args.family, "read": str(read_path), "read_sealed_hashes": read.get("sealed_hashes"),
+    result = {"schema": "saea-efficiency-rule-345-v2", "ruling": RULING, "intent_test": "ci95-upper-bound (346 A)", "slu_test": "ci95-lower-bound (345 A)", "family": args.family, "read": str(read_path), "read_sealed_hashes": read.get("sealed_hashes"),
               "forced_cut_bar_pp": FORCED_CUT_BAR_PP, "slu_loss_floor_pp": SLU_LOSS_FLOOR_PP, "intent_loss_floor_pp": INTENT_LOSS_FLOOR_PP,
               "delivering": delivering, "seed": seed, "draws": draws,
               "lock": {"forced_share": forced_share(list(lock_rows.values())), "seconds_per_contact": lock_seconds, "rows": len(lock_rows)}, "arms": {}}
@@ -138,7 +142,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         cond = word.get("conditions") or {}
         cut_ok = pair.get("rows", 0) > 0 and (-pair["delta_pp"]) >= FORCED_CUT_BAR_PP
         slu_ok = word["slu_ci95"][0] >= SLU_LOSS_FLOOR_PP
-        intent_ok = word["intent_ci95"][0] >= INTENT_LOSS_FLOOR_PP
+        intent_ok = word["intent_ci95"][1] >= INTENT_LOSS_FLOOR_PP  # 346 A: upper bound (no resolved intent loss)
         verdict = "ENTERS-LOCK-EFFICIENCY-345" if (cut_ok and slu_ok and intent_ok) else "NO-345"
         result["arms"][arm] = {"quality_word": word.get("word"), "forced_share": forced_share(list(rows.values())), "paired_vs_lock": pair,
                                "seconds_per_contact": seconds, "seconds_ratio_vs_lock": seconds / lock_seconds if lock_seconds else float("nan"),
@@ -149,11 +153,11 @@ def main(argv: Sequence[str] | None = None) -> int:
                                "intent_delta_pp": word.get("intent_delta_pp"), "intent_ci95": word.get("intent_ci95"),
                                "verdict": verdict}
     lines = [f"# Efficiency rule 345 A beside the {args.family} read", "", f"{RULING}. Bar: forced-close share cut >= {FORCED_CUT_BAR_PP:.0f} pp against `{delivering}` "
-             f"(paired per row, utterance-cluster bootstrap CI95, seed {seed}, {draws} draws) AND no resolved loss in the ruling's form (SLU delta CI95 lower bound "
-             f">= {SLU_LOSS_FLOOR_PP} pp; intent delta CI95 lower bound >= {INTENT_LOSS_FLOOR_PP} pp; deltas copied from the preregistered read, never recomputed). "
+             f"(paired per row, utterance-cluster bootstrap CI95, seed {seed}, {draws} draws) AND no resolved loss in the ruled form (SLU delta CI95 lower bound "
+             f">= {SLU_LOSS_FLOOR_PP} pp; intent delta CI95 upper bound >= {INTENT_LOSS_FLOOR_PP} pp, ruling 346 A; deltas copied from the preregistered read, never recomputed). "
              "Development numbers; claims no benefit.", "",
              f"Lock arm `{delivering}`: forced share {result['lock']['forced_share']:.1f} %, {lock_seconds:.1f} s per Solver contact, {result['lock']['rows']} rows.", "",
-             "| arm | quality word | forced share | delta vs lock (pp) CI95 | cut >= 15 pp | s / contact (ratio) | SLU delta CI95 | intent delta CI95 | no resolved loss, ruling form (SLU lo >= -1.49 / intent lo >= -0.65) | 345 verdict |",
+             "| arm | quality word | forced share | delta vs lock (pp) CI95 | cut >= 15 pp | s / contact (ratio) | SLU delta CI95 | intent delta CI95 | no resolved loss, ruled form (SLU lo >= -1.49 / intent hi >= -0.65) | 345 verdict |",
              "| --- | --- | ---: | --- | --- | ---: | --- | --- | --- | --- |"]
     for arm, a in result["arms"].items():
         if a.get("verdict") == "ABSENT":
