@@ -1,6 +1,6 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-24T15:37:50Z
+Last refreshed: 2026-10-25T17:34:49Z
 
 
 
@@ -9,6 +9,23 @@ Last refreshed: 2026-10-24T15:37:50Z
 
 
 
+
+## R3 READ: all four Solver instruction templates NEUTRAL; 345 A readout NO-345 (best forced-close cut t1 -10.9 pp, bar 15); R4 FLYING since 17:15Z behind the 330 diagnostic; 343 A ruled (ASR line closed); 346 proposed (345 rule form) (2026-10-25T17:34:49Z, Fable 5.1 root)
+
+R3 sealed 2026-10-25T17:06Z at 033f1be39 (1,080 rows x 6 arms, 27.00 GPU-h of 43.4); READ row countersigned 17:16Z before any number;
+read 17:22Z (note docs/results/2026-10-25-slurp-nxt-r3-solver-template-column-read.md). Twin offset +0.45. t1 decide-once +0.80
+[-0.47, +2.07], t2 grounded-or-empty +0.82 [-0.39, +2.02], t3 supply-focus +0.21 [-1.01, +1.45], t4 both +1.19 [-0.10, +2.50] SLU vs lock;
+intent -0.09 / -0.65 / -0.19 / -0.56; all NEUTRAL, no Fold A confirm. 345 A beside-read (scripts/analysis/forced_close/efficiency_rule_345.py):
+lock forced share 43.5 %; t1 32.6 % (-10.93 [-14.07, -7.87]), t4 35.7 % (-7.78), t2 -2.31, t3 +1.11; no arm reaches the 15 pp bar, seconds
+ratios 0.93-1.01; NO-345 x4. The termination paragraph trims the tail a quarter at equal quality, mostly under 40 supplied items; the 40+
+rows stay above 50 % forced. 343 A ruled 2026-10-24 20:05Z: the SLURP triggered-ASR line is closed (best ceiling +5.18 vs gate +6.07;
+uptake 0.457 binds); sidecar + lexicon builder kept as pinned engineering for Earnings-type carriers. 346 proposed: the 345 A no-loss test
+as written (intent CI95 LOWER bound >= -0.65) is failed by any null-intent arm at n = 1,080 (twin -0.09 [-0.93, +0.74]); recommended A =
+the preregistered NO-RESOLVED-LOSS form (upper bound). Queue: NXT4 hook launched R4 17:09Z, flip converged 17:15Z (7fae86389), chain
+runs the 330 A reasoning diagnostic (56 contacts) then smoke-4 -> sign-off -> the decoding column (~27 GPU-h); L338 hook armed behind
+CHAIN_NXT4_EXIT. Registry: 345 A d3d93e508, 343 A 3e97f91b1, R3 read + 346 this refresh.
+
+Superseded stamp: 2026-10-24T15:37:50Z
 
 ## Resumed 2026-10-24 after the 322 window incident; R3 FLYING at full power (seal ~10-25 15:00Z); R2 rec2 READ: Perception no-think UNRESOLVED (-1.49 SLU), 324-B does not fly; 344 A biasing pass resumed; 338 part 1 merged (2026-10-24T15:37:50Z, Fable 5.1 root)
 
