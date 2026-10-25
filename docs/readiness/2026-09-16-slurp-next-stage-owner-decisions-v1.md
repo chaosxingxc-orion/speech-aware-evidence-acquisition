@@ -3724,3 +3724,46 @@ replaced the original battery/power plug, the GPU configuration can be set highe
   `configs/asr_bias/` variants, the slot-type descriptions. They are candidates for a carrier where transcription is the task (Earnings
   21/22) and re-enter only through that carrier's own registration. The umbrella lock entries stay; no model bytes are removed.
 - Ruling 339 (model-initiated ASR admitted, never default transcription) stays in force as a policy; it simply has no SLURP consumer now.
+
+### 2026-10-25 17:45Z -- NX-T R3 read (the Solver instruction-template column) with the 345 A efficiency readout; 346 proposed (rule form)
+
+- Seal and read discipline. The column flight sealed 2026-10-25T17:04:24Z (run row; driver arm exit 17:06:02Z, chain exit 17:08:31Z) at flight commit
+  033f1be39ac4c4edacaac69ff6484b61e742ae1e: 1,080 Fold B rows x 6 Solver arms, 7,560 program contacts, 22,083.6 audio seconds, 27.00 GPU-h
+  measured against the 43.4 ceiling (360.1 s per row at the 175 W cap; arm mix 3.51 lock rows, registered 3.61). The READ row
+  SAEA-SLURP-NXT-R3-SOLVER-TEMPLATE-FOLD-B-READ-V1 was root countersigned 2026-10-25T17:16:18Z (863675542) before any number was read;
+  the six arm columns were scored once each with the official scorer (`nxt_r3_read.sh columns`, 17:16-17:20Z); the preregistered reader
+  `scripts/analysis/slurp_nxt_r3_solver_template_column_read.py` wrote `analysis/SAEA-SLURP-NXT-R3-SOLVER-TEMPLATE-FOLD-B-READ-V1/read.json`
+  (17:22Z). The 345 readout is the beside-script `scripts/analysis/forced_close/efficiency_rule_345.py` (3cc3ac0bf; ruling-form fix 6aaa0f6e6) over the same sealed trace and columns -> `efficiency-345.json` / `.md` beside the read. Results note:
+  `docs/results/2026-10-25-slurp-nxt-r3-solver-template-column-read.md`. The NXT4 queue hook launched R4 at 17:09Z; the flip converged at
+  17:15Z (flight commit 7fae8638995bef18c56f99778234808cc1642af5) and the chain started with the 330 A diagnostic in the no-flight gap.
+- Words (preregistered rule; in-flight twin offset |o| = 0.45 pp SLU): **all four candidates NEUTRAL.** No NOMINATED, no EFFICIENT-NO-LOSS,
+  no HARM; no Fold A confirm is triggered.
+
+| arm | SLU-F1 | intent | SLU d vs lock (pp) CI95 | intent d (pp) CI95 | Solver s ratio | word |
+| --- | ---: | ---: | --- | --- | ---: | --- |
+| t1-decide-once | 72.84 | 85.19 | +0.80 [-0.47, +2.07] | -0.09 [-1.11, +0.93] | 0.98 | NEUTRAL |
+| t2-grounded-or-empty | 72.86 | 84.63 | +0.82 [-0.39, +2.02] | -0.65 [-1.57, +0.28] | 0.96 | NEUTRAL |
+| t3-supply-focus | 72.25 | 85.09 | +0.21 [-1.01, +1.45] | -0.19 [-1.20, +0.83] | 1.01 | NEUTRAL |
+| t4-decide-once-grounded | 73.23 | 84.72 | +1.19 [-0.10, +2.50] | -0.56 [-1.48, +0.37] | 0.93 | NEUTRAL |
+| aa (twin) | 72.49 | 85.19 | +0.45 [-0.77, +1.64] | -0.09 [-0.93, +0.74] | 0.98 | (offset) |
+| lock (delivering) | 72.04 | 85.28 | | | 1.00 | |
+
+- 345 A readout (forced-close share, paired per row against the lock, utterance-cluster bootstrap CI95): **NO-345 for every arm.** Lock
+  forced share 43.5 % (52.9 s per Solver contact). t1 -10.93 pp [-14.07, -7.87] (32.6 %), t4 -7.78 [-10.74, -4.81] (35.7 %), t2 -2.31
+  [-5.37, +0.74], t3 +1.11 [-1.85, +4.17]; none reaches the 15 pp bar and no Solver seconds ratio is <= 0.85 (0.93-1.01). The termination
+  paragraph cuts the tail about a quarter at equal quality, mostly on rows under 40 supplied items (35.4 -> 25.5 %) and less on the 40+
+  rows (64.7 -> 51.0 %); the grounding and supply-focus paragraphs do not move it; the combination does not add the cuts. The saved
+  reasoning tokens do not become time (completion tokens mean 2,060 -> 1,955; the natural stops stay long), which is why the EFFICIENT-NO-LOSS
+  seconds bar is also missed.
+- Consequence. Instruction alone does not clear the 345 bar and no arm enters lock v3.x. Nothing changes in the queue: R4 (the Solver
+  decoding axis, ruling 329 A) is flying; by the 345 A application clause the 330 diagnostic verdict then picks the next lever (repetition
+  loop -> decoding; enumeration -> a structural Solver supply-cap column) after L338. The R3 evidence narrows that choice: the share falls
+  with a shorter instruction but the 40+ item rows stay above 50 % forced, which is the supply-size signature of the R2b row analysis.
+- **346 proposed (rule form, no flight).** Ruling 345 A states the no-resolved-loss test as CI95 LOWER bounds (SLU >= -1.49, intent >= -0.65).
+  On a 1,080-row Fold B column the intent delta CI95 half-width is about 1.0 pp, so the intent lower-bound floor is failed by every arm with a
+  null intent effect, the in-flight twin included (aa -0.09 [-0.93, +0.74]); the SLU floor is reachable (half-width about 1.25 against 1.49).
+  As written, the efficiency rule can be met only by an arm with a positive intent point, which the R1-R3 readers never required. Options:
+  **A (recommended)**: the intent test is the NX-T R1 NO-RESOLVED-LOSS form already preregistered in the R3 and R4 readers (intent delta
+  CI95 UPPER bound >= -0.65 pp, i.e. no resolved intent loss), SLU unchanged (lower bound >= -1.49); **B**: keep the literal lower-bound
+  form (then 345 can fire only on arms with a positive intent point); **C**: intent lower bound >= -1.0 pp (the measured half-width). The
+  R3 verdicts are identical under A, B and C (the forced-cut bar fails first); the choice matters for R4, whose 345 readout follows.
